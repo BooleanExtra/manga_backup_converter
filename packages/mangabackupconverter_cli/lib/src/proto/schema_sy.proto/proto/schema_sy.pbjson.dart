@@ -62,14 +62,6 @@ const Backup$json = {
       '10': 'backupCategories'
     },
     {
-      '1': 'backupBrokenSources',
-      '3': 100,
-      '4': 3,
-      '5': 11,
-      '6': '.BrokenBackupSource',
-      '10': 'backupBrokenSources'
-    },
-    {
       '1': 'backupSources',
       '3': 101,
       '4': 3,
@@ -116,14 +108,13 @@ const Backup$json = {
 final $typed_data.Uint8List backupDescriptor = $convert.base64Decode(
     'CgZCYWNrdXASLgoLYmFja3VwTWFuZ2EYASADKAsyDC5CYWNrdXBNYW5nYVILYmFja3VwTWFuZ2'
     'ESOwoQYmFja3VwQ2F0ZWdvcmllcxgCIAMoCzIPLkJhY2t1cENhdGVnb3J5UhBiYWNrdXBDYXRl'
-    'Z29yaWVzEkUKE2JhY2t1cEJyb2tlblNvdXJjZXMYZCADKAsyEy5Ccm9rZW5CYWNrdXBTb3VyY2'
-    'VSE2JhY2t1cEJyb2tlblNvdXJjZXMSMwoNYmFja3VwU291cmNlcxhlIAMoCzINLkJhY2t1cFNv'
-    'dXJjZVINYmFja3VwU291cmNlcxI/ChFiYWNrdXBQcmVmZXJlbmNlcxhoIAMoCzIRLkJhY2t1cF'
-    'ByZWZlcmVuY2VSEWJhY2t1cFByZWZlcmVuY2VzElIKF2JhY2t1cFNvdXJjZVByZWZlcmVuY2Vz'
-    'GGkgAygLMhguQmFja3VwU291cmNlUHJlZmVyZW5jZXNSF2JhY2t1cFNvdXJjZVByZWZlcmVuY2'
-    'VzEkcKE2JhY2t1cEV4dGVuc2lvblJlcG8YaiADKAsyFS5CYWNrdXBFeHRlbnNpb25SZXBvc1IT'
-    'YmFja3VwRXh0ZW5zaW9uUmVwbxJFChNiYWNrdXBTYXZlZFNlYXJjaGVzGNgEIAMoCzISLkJhY2'
-    't1cFNhdmVkU2VhcmNoUhNiYWNrdXBTYXZlZFNlYXJjaGVz');
+    'Z29yaWVzEjMKDWJhY2t1cFNvdXJjZXMYZSADKAsyDS5CYWNrdXBTb3VyY2VSDWJhY2t1cFNvdX'
+    'JjZXMSPwoRYmFja3VwUHJlZmVyZW5jZXMYaCADKAsyES5CYWNrdXBQcmVmZXJlbmNlUhFiYWNr'
+    'dXBQcmVmZXJlbmNlcxJSChdiYWNrdXBTb3VyY2VQcmVmZXJlbmNlcxhpIAMoCzIYLkJhY2t1cF'
+    'NvdXJjZVByZWZlcmVuY2VzUhdiYWNrdXBTb3VyY2VQcmVmZXJlbmNlcxJHChNiYWNrdXBFeHRl'
+    'bnNpb25SZXBvGGogAygLMhUuQmFja3VwRXh0ZW5zaW9uUmVwb3NSE2JhY2t1cEV4dGVuc2lvbl'
+    'JlcG8SRQoTYmFja3VwU2F2ZWRTZWFyY2hlcxjYBCADKAsyEi5CYWNrdXBTYXZlZFNlYXJjaFIT'
+    'YmFja3VwU2F2ZWRTZWFyY2hlcw==');
 
 @$core.Deprecated('Use backupCategoryDescriptor instead')
 const BackupCategory$json = {
@@ -247,21 +238,6 @@ final $typed_data.Uint8List backupHistoryDescriptor = $convert.base64Decode(
     'Cg1CYWNrdXBIaXN0b3J5EhAKA3VybBgBIAIoCVIDdXJsEhoKCGxhc3RSZWFkGAIgAigDUghsYX'
     'N0UmVhZBIiCgxyZWFkRHVyYXRpb24YAyABKANSDHJlYWREdXJhdGlvbg==');
 
-@$core.Deprecated('Use brokenBackupHistoryDescriptor instead')
-const BrokenBackupHistory$json = {
-  '1': 'BrokenBackupHistory',
-  '2': [
-    {'1': 'url', '3': 1, '4': 2, '5': 9, '10': 'url'},
-    {'1': 'lastRead', '3': 2, '4': 2, '5': 3, '10': 'lastRead'},
-    {'1': 'readDuration', '3': 3, '4': 1, '5': 3, '10': 'readDuration'},
-  ],
-};
-
-/// Descriptor for `BrokenBackupHistory`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List brokenBackupHistoryDescriptor = $convert.base64Decode(
-    'ChNCcm9rZW5CYWNrdXBIaXN0b3J5EhAKA3VybBgBIAIoCVIDdXJsEhoKCGxhc3RSZWFkGAIgAi'
-    'gDUghsYXN0UmVhZBIiCgxyZWFkRHVyYXRpb24YAyABKANSDHJlYWREdXJhdGlvbg==');
-
 @$core.Deprecated('Use backupMangaDescriptor instead')
 const BackupManga$json = {
   '1': 'BackupManga',
@@ -296,14 +272,6 @@ const BackupManga$json = {
     },
     {'1': 'favorite', '3': 100, '4': 1, '5': 8, '10': 'favorite'},
     {'1': 'chapterFlags', '3': 101, '4': 1, '5': 5, '10': 'chapterFlags'},
-    {
-      '1': 'brokenHistory',
-      '3': 102,
-      '4': 3,
-      '5': 11,
-      '6': '.BrokenBackupHistory',
-      '10': 'brokenHistory'
-    },
     {'1': 'viewer_flags', '3': 103, '4': 1, '5': 5, '10': 'viewerFlags'},
     {
       '1': 'history',
@@ -385,21 +353,20 @@ final $typed_data.Uint8List backupMangaDescriptor = $convert.base64Decode(
     'V3ZXIYDiABKAVSBnZpZXdlchIqCghjaGFwdGVycxgQIAMoCzIOLkJhY2t1cENoYXB0ZXJSCGNo'
     'YXB0ZXJzEh4KCmNhdGVnb3JpZXMYESADKANSCmNhdGVnb3JpZXMSKwoIdHJhY2tpbmcYEiADKA'
     'syDy5CYWNrdXBUcmFja2luZ1IIdHJhY2tpbmcSGgoIZmF2b3JpdGUYZCABKAhSCGZhdm9yaXRl'
-    'EiIKDGNoYXB0ZXJGbGFncxhlIAEoBVIMY2hhcHRlckZsYWdzEjoKDWJyb2tlbkhpc3RvcnkYZi'
-    'ADKAsyFC5Ccm9rZW5CYWNrdXBIaXN0b3J5Ug1icm9rZW5IaXN0b3J5EiEKDHZpZXdlcl9mbGFn'
-    'cxhnIAEoBVILdmlld2VyRmxhZ3MSKAoHaGlzdG9yeRhoIAMoCzIOLkJhY2t1cEhpc3RvcnlSB2'
-    'hpc3RvcnkSNwoOdXBkYXRlU3RyYXRlZ3kYaSABKA4yDy5VcGRhdGVTdHJhdGVneVIOdXBkYXRl'
-    'U3RyYXRlZ3kSJgoObGFzdE1vZGlmaWVkQXQYaiABKANSDmxhc3RNb2RpZmllZEF0Ei4KEmZhdm'
-    '9yaXRlTW9kaWZpZWRBdBhrIAEoA1ISZmF2b3JpdGVNb2RpZmllZEF0Ei4KEmV4Y2x1ZGVkU2Nh'
-    'bmxhdG9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3Zlcn'
-    'Npb24SUgoVbWVyZ2VkTWFuZ2FSZWZlcmVuY2VzGNgEIAMoCzIbLkJhY2t1cE1lcmdlZE1hbmdh'
-    'UmVmZXJlbmNlUhVtZXJnZWRNYW5nYVJlZmVyZW5jZXMSOAoMZmxhdE1ldGFkYXRhGNkEIAEoCz'
-    'ITLkJhY2t1cEZsYXRNZXRhZGF0YVIMZmxhdE1ldGFkYXRhEiMKDGN1c3RvbVN0YXR1cxjaBCAB'
-    'KAVSDGN1c3RvbVN0YXR1cxIvChJjdXN0b21UaHVtYm5haWxVcmwY2wQgASgJUhJjdXN0b21UaH'
-    'VtYm5haWxVcmwSIQoLY3VzdG9tVGl0bGUYoAYgASgJUgtjdXN0b21UaXRsZRIjCgxjdXN0b21B'
-    'cnRpc3QYoQYgASgJUgxjdXN0b21BcnRpc3QSIwoMY3VzdG9tQXV0aG9yGKIGIAEoCVIMY3VzdG'
-    '9tQXV0aG9yEi0KEWN1c3RvbURlc2NyaXB0aW9uGKQGIAEoCVIRY3VzdG9tRGVzY3JpcHRpb24S'
-    'IQoLY3VzdG9tR2VucmUYpQYgAygJUgtjdXN0b21HZW5yZQ==');
+    'EiIKDGNoYXB0ZXJGbGFncxhlIAEoBVIMY2hhcHRlckZsYWdzEiEKDHZpZXdlcl9mbGFncxhnIA'
+    'EoBVILdmlld2VyRmxhZ3MSKAoHaGlzdG9yeRhoIAMoCzIOLkJhY2t1cEhpc3RvcnlSB2hpc3Rv'
+    'cnkSNwoOdXBkYXRlU3RyYXRlZ3kYaSABKA4yDy5VcGRhdGVTdHJhdGVneVIOdXBkYXRlU3RyYX'
+    'RlZ3kSJgoObGFzdE1vZGlmaWVkQXQYaiABKANSDmxhc3RNb2RpZmllZEF0Ei4KEmZhdm9yaXRl'
+    'TW9kaWZpZWRBdBhrIAEoA1ISZmF2b3JpdGVNb2RpZmllZEF0Ei4KEmV4Y2x1ZGVkU2NhbmxhdG'
+    '9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3ZlcnNpb24S'
+    'UgoVbWVyZ2VkTWFuZ2FSZWZlcmVuY2VzGNgEIAMoCzIbLkJhY2t1cE1lcmdlZE1hbmdhUmVmZX'
+    'JlbmNlUhVtZXJnZWRNYW5nYVJlZmVyZW5jZXMSOAoMZmxhdE1ldGFkYXRhGNkEIAEoCzITLkJh'
+    'Y2t1cEZsYXRNZXRhZGF0YVIMZmxhdE1ldGFkYXRhEiMKDGN1c3RvbVN0YXR1cxjaBCABKAVSDG'
+    'N1c3RvbVN0YXR1cxIvChJjdXN0b21UaHVtYm5haWxVcmwY2wQgASgJUhJjdXN0b21UaHVtYm5h'
+    'aWxVcmwSIQoLY3VzdG9tVGl0bGUYoAYgASgJUgtjdXN0b21UaXRsZRIjCgxjdXN0b21BcnRpc3'
+    'QYoQYgASgJUgxjdXN0b21BcnRpc3QSIwoMY3VzdG9tQXV0aG9yGKIGIAEoCVIMY3VzdG9tQXV0'
+    'aG9yEi0KEWN1c3RvbURlc2NyaXB0aW9uGKQGIAEoCVIRY3VzdG9tRGVzY3JpcHRpb24SIQoLY3'
+    'VzdG9tR2VucmUYpQYgAygJUgtjdXN0b21HZW5yZQ==');
 
 @$core.Deprecated('Use backupMergedMangaReferenceDescriptor instead')
 const BackupMergedMangaReference$json = {
@@ -581,20 +548,6 @@ const BackupSource$json = {
 final $typed_data.Uint8List backupSourceDescriptor = $convert.base64Decode(
     'CgxCYWNrdXBTb3VyY2USEgoEbmFtZRgBIAEoCVIEbmFtZRIaCghzb3VyY2VJZBgCIAIoA1IIc2'
     '91cmNlSWQ=');
-
-@$core.Deprecated('Use brokenBackupSourceDescriptor instead')
-const BrokenBackupSource$json = {
-  '1': 'BrokenBackupSource',
-  '2': [
-    {'1': 'name', '3': 1, '4': 1, '5': 9, '10': 'name'},
-    {'1': 'sourceId', '3': 2, '4': 2, '5': 3, '10': 'sourceId'},
-  ],
-};
-
-/// Descriptor for `BrokenBackupSource`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List brokenBackupSourceDescriptor = $convert.base64Decode(
-    'ChJCcm9rZW5CYWNrdXBTb3VyY2USEgoEbmFtZRgBIAEoCVIEbmFtZRIaCghzb3VyY2VJZBgCIA'
-    'IoA1IIc291cmNlSWQ=');
 
 @$core.Deprecated('Use backupTrackingDescriptor instead')
 const BackupTracking$json = {

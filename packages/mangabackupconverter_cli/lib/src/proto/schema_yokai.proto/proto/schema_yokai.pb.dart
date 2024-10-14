@@ -100,7 +100,6 @@ class Backup extends $pb.GeneratedMessage {
   factory Backup({
     $core.Iterable<BackupManga>? backupManga,
     $core.Iterable<BackupCategory>? backupCategories,
-    $core.Iterable<BrokenBackupSource>? backupBrokenSources,
     $core.Iterable<BackupSource>? backupSources,
     $core.Iterable<BackupPreference>? backupPreferences,
     $core.Iterable<BackupSourcePreferences>? backupSourcePreferences,
@@ -111,9 +110,6 @@ class Backup extends $pb.GeneratedMessage {
     }
     if (backupCategories != null) {
       $result.backupCategories.addAll(backupCategories);
-    }
-    if (backupBrokenSources != null) {
-      $result.backupBrokenSources.addAll(backupBrokenSources);
     }
     if (backupSources != null) {
       $result.backupSources.addAll(backupSources);
@@ -143,9 +139,6 @@ class Backup extends $pb.GeneratedMessage {
     ..pc<BackupCategory>(
         2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
         protoName: 'backupCategories', subBuilder: BackupCategory.create)
-    ..pc<BrokenBackupSource>(
-        100, _omitFieldNames ? '' : 'backupBrokenSources', $pb.PbFieldType.PM,
-        protoName: 'backupBrokenSources', subBuilder: BrokenBackupSource.create)
     ..pc<BackupSource>(
         101, _omitFieldNames ? '' : 'backupSources', $pb.PbFieldType.PM,
         protoName: 'backupSources', subBuilder: BackupSource.create)
@@ -184,18 +177,15 @@ class Backup extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.List<BackupCategory> get backupCategories => $_getList(1);
 
-  @$pb.TagNumber(100)
-  $core.List<BrokenBackupSource> get backupBrokenSources => $_getList(2);
-
   @$pb.TagNumber(101)
-  $core.List<BackupSource> get backupSources => $_getList(3);
+  $core.List<BackupSource> get backupSources => $_getList(2);
 
   @$pb.TagNumber(104)
-  $core.List<BackupPreference> get backupPreferences => $_getList(4);
+  $core.List<BackupPreference> get backupPreferences => $_getList(3);
 
   @$pb.TagNumber(105)
   $core.List<BackupSourcePreferences> get backupSourcePreferences =>
-      $_getList(5);
+      $_getList(4);
 }
 
 /// BackupCategory.kt
