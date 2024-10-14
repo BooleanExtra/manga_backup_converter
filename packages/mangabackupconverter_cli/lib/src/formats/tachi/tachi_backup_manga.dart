@@ -91,9 +91,9 @@ class TachiBackupManga with TachiBackupMangaMappable {
     required this.tracking,
     required this.favorite,
     required this.chapterFlags,
-    required this.brokenHistory,
     required this.viewerFlags,
     required this.history,
+    this.brokenHistory = const [],
     this.updateStrategy = TachiUpdateStrategy.alwaysUpdate,
     this.lastModifiedAt,
     this.favoriteModifiedAt,
@@ -132,9 +132,6 @@ class TachiBackupManga with TachiBackupMangaMappable {
           backupManga.tracking.map(TachiBackupTracking.fromMihon).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
-      brokenHistory: backupManga.brokenHistory
-          .map(TachiBrokenBackupHistory.fromMihon)
-          .toList(),
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromMihon).toList(),
       updateStrategy:
@@ -166,9 +163,6 @@ class TachiBackupManga with TachiBackupMangaMappable {
       tracking: backupManga.tracking.map(TachiBackupTracking.fromSy).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
-      brokenHistory: backupManga.brokenHistory
-          .map(TachiBrokenBackupHistory.fromSy)
-          .toList(),
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromSy).toList(),
       updateStrategy:

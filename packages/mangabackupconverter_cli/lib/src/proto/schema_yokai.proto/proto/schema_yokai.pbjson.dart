@@ -62,14 +62,6 @@ const Backup$json = {
       '10': 'backupCategories'
     },
     {
-      '1': 'backupBrokenSources',
-      '3': 100,
-      '4': 3,
-      '5': 11,
-      '6': '.BrokenBackupSource',
-      '10': 'backupBrokenSources'
-    },
-    {
       '1': 'backupSources',
       '3': 101,
       '4': 3,
@@ -100,12 +92,10 @@ const Backup$json = {
 final $typed_data.Uint8List backupDescriptor = $convert.base64Decode(
     'CgZCYWNrdXASLgoLYmFja3VwTWFuZ2EYASADKAsyDC5CYWNrdXBNYW5nYVILYmFja3VwTWFuZ2'
     'ESOwoQYmFja3VwQ2F0ZWdvcmllcxgCIAMoCzIPLkJhY2t1cENhdGVnb3J5UhBiYWNrdXBDYXRl'
-    'Z29yaWVzEkUKE2JhY2t1cEJyb2tlblNvdXJjZXMYZCADKAsyEy5Ccm9rZW5CYWNrdXBTb3VyY2'
-    'VSE2JhY2t1cEJyb2tlblNvdXJjZXMSMwoNYmFja3VwU291cmNlcxhlIAMoCzINLkJhY2t1cFNv'
-    'dXJjZVINYmFja3VwU291cmNlcxI/ChFiYWNrdXBQcmVmZXJlbmNlcxhoIAMoCzIRLkJhY2t1cF'
-    'ByZWZlcmVuY2VSEWJhY2t1cFByZWZlcmVuY2VzElIKF2JhY2t1cFNvdXJjZVByZWZlcmVuY2Vz'
-    'GGkgAygLMhguQmFja3VwU291cmNlUHJlZmVyZW5jZXNSF2JhY2t1cFNvdXJjZVByZWZlcmVuY2'
-    'Vz');
+    'Z29yaWVzEjMKDWJhY2t1cFNvdXJjZXMYZSADKAsyDS5CYWNrdXBTb3VyY2VSDWJhY2t1cFNvdX'
+    'JjZXMSPwoRYmFja3VwUHJlZmVyZW5jZXMYaCADKAsyES5CYWNrdXBQcmVmZXJlbmNlUhFiYWNr'
+    'dXBQcmVmZXJlbmNlcxJSChdiYWNrdXBTb3VyY2VQcmVmZXJlbmNlcxhpIAMoCzIYLkJhY2t1cF'
+    'NvdXJjZVByZWZlcmVuY2VzUhdiYWNrdXBTb3VyY2VQcmVmZXJlbmNlcw==');
 
 @$core.Deprecated('Use backupCategoryDescriptor instead')
 const BackupCategory$json = {
