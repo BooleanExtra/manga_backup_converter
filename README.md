@@ -1,5 +1,8 @@
 ## Flutter Branch Web Previews
 
-- [dependabot/pub/mason-0.1.0-dev.59](./dependabot/pub/mason-0.1.0-dev.59/)
-- [dependabot/pub/sqflite_common_ffi_web-0.4.52](./dependabot/pub/sqflite_common_ffi_web-0.4.52/)
+- [dependabot/pub/change_app_package_name-1.4.0](./dependabot/pub/change_app_package_name-1.4.0/)
+- [dependabot/pub/flutter_adaptive_scaffold-0.3.1](./dependabot/pub/flutter_adaptive_scaffold-0.3.1/)
+- [dependabot/pub/flutter_launcher_icons-0.14.1](./dependabot/pub/flutter_launcher_icons-0.14.1/)
+- [dependabot/pub/flutter_lints-5.0.0](./dependabot/pub/flutter_lints-5.0.0/)
+- [dependabot/pub/patrol-3.11.1](./dependabot/pub/patrol-3.11.1/)
 - [main](./main/)
