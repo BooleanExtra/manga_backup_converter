@@ -51,8 +51,6 @@ class TachiBackup with TachiBackupMappable {
 
   factory TachiBackup._fromMihon({required mihon.Backup backup}) {
     return TachiBackup(
-      backupBrokenSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromMihon).toList(),
       backupSources:
           backup.backupBrokenSources.map(TachiBackupSource.fromMihon).toList(),
       backupCategories:
@@ -72,8 +70,6 @@ class TachiBackup with TachiBackupMappable {
 
   factory TachiBackup._fromSy({required sy.Backup backup}) {
     return TachiBackup(
-      backupBrokenSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromSy).toList(),
       backupSources:
           backup.backupBrokenSources.map(TachiBackupSource.fromSy).toList(),
       backupCategories:
@@ -100,8 +96,6 @@ class TachiBackup with TachiBackupMappable {
 
   factory TachiBackup._fromJ2k({required j2k.Backup backup}) {
     return TachiBackup(
-      backupBrokenSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromJ2k).toList(),
       backupSources:
           backup.backupBrokenSources.map(TachiBackupSource.fromJ2k).toList(),
       backupCategories:
@@ -112,8 +106,6 @@ class TachiBackup with TachiBackupMappable {
 
   factory TachiBackup._fromYokai({required yokai.Backup backup}) {
     return TachiBackup(
-      backupBrokenSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromYokai).toList(),
       backupSources:
           backup.backupBrokenSources.map(TachiBackupSource.fromYokai).toList(),
       backupCategories:

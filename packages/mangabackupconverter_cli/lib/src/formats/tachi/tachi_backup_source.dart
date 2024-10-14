@@ -18,38 +18,38 @@ class TachiBackupSource with TachiBackupSourceMappable {
   const TachiBackupSource({required this.name, required this.sourceId});
 
   factory TachiBackupSource.fromMihon(
-    mihon.BrokenBackupSource brokenBackupSource,
+    mihon.BackupSource backupSource,
   ) {
     return TachiBackupSource(
-      name: brokenBackupSource.name,
-      sourceId: brokenBackupSource.sourceId.toInt(),
+      name: backupSource.name,
+      sourceId: backupSource.sourceId.toInt(),
     );
   }
 
   factory TachiBackupSource.fromSy(
-    sy.BrokenBackupSource brokenBackupSource,
+    sy.BackupSource backupSource,
   ) {
     return TachiBackupSource(
-      name: brokenBackupSource.name,
-      sourceId: brokenBackupSource.sourceId.toInt(),
+      name: backupSource.name,
+      sourceId: backupSource.sourceId.toInt(),
     );
   }
 
   factory TachiBackupSource.fromJ2k(
-    j2k.BrokenBackupSource brokenBackupSource,
+    j2k.BackupSource backupSource,
   ) {
     return TachiBackupSource(
-      name: brokenBackupSource.name,
-      sourceId: brokenBackupSource.sourceId.toInt(),
+      name: backupSource.name,
+      sourceId: backupSource.sourceId.toInt(),
     );
   }
 
   factory TachiBackupSource.fromYokai(
-    yokai.BrokenBackupSource brokenBackupSource,
+    yokai.BackupSource backupSource,
   ) {
     return TachiBackupSource(
-      name: brokenBackupSource.name,
-      sourceId: brokenBackupSource.sourceId.toInt(),
+      name: backupSource.name,
+      sourceId: backupSource.sourceId.toInt(),
     );
   }
 
