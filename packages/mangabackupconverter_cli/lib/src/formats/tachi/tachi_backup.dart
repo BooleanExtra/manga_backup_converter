@@ -52,7 +52,7 @@ class TachiBackup with TachiBackupMappable {
   factory TachiBackup._fromMihon({required mihon.Backup backup}) {
     return TachiBackup(
       backupSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromMihon).toList(),
+          backup.backupSources.map(TachiBackupSource.fromMihon).toList(),
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromMihon).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromMihon).toList(),
@@ -71,7 +71,7 @@ class TachiBackup with TachiBackupMappable {
   factory TachiBackup._fromSy({required sy.Backup backup}) {
     return TachiBackup(
       backupSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromSy).toList(),
+          backup.backupSources.map(TachiBackupSource.fromSy).toList(),
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromSy).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromSy).toList(),
@@ -97,7 +97,7 @@ class TachiBackup with TachiBackupMappable {
   factory TachiBackup._fromJ2k({required j2k.Backup backup}) {
     return TachiBackup(
       backupSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromJ2k).toList(),
+          backup.backupSources.map(TachiBackupSource.fromJ2k).toList(),
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromJ2k).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromJ2k).toList(),
@@ -107,7 +107,7 @@ class TachiBackup with TachiBackupMappable {
   factory TachiBackup._fromYokai({required yokai.Backup backup}) {
     return TachiBackup(
       backupSources:
-          backup.backupBrokenSources.map(TachiBackupSource.fromYokai).toList(),
+          backup.backupSources.map(TachiBackupSource.fromYokai).toList(),
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromYokai).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromYokai).toList(),
