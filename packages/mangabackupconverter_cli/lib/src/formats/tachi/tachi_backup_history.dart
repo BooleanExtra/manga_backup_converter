@@ -95,26 +95,6 @@ class TachiBrokenBackupHistory
     required this.readDuration,
   });
 
-  factory TachiBrokenBackupHistory.fromMihon(
-    mihon.BrokenBackupHistory backupHistory,
-  ) {
-    return TachiBrokenBackupHistory(
-      url: backupHistory.url,
-      lastRead: backupHistory.lastRead.toInt(),
-      readDuration: backupHistory.readDuration.toInt(),
-    );
-  }
-
-  factory TachiBrokenBackupHistory.fromSy(
-    sy.BrokenBackupHistory backupHistory,
-  ) {
-    return TachiBrokenBackupHistory(
-      url: backupHistory.url,
-      lastRead: backupHistory.lastRead.toInt(),
-      readDuration: backupHistory.readDuration.toInt(),
-    );
-  }
-
   factory TachiBrokenBackupHistory.fromJ2k(
     j2k.BrokenBackupHistory backupHistory,
   ) {
