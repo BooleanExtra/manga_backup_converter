@@ -100,7 +100,6 @@ class Backup extends $pb.GeneratedMessage {
   factory Backup({
     $core.Iterable<BackupManga>? backupManga,
     $core.Iterable<BackupCategory>? backupCategories,
-    $core.Iterable<BrokenBackupSource>? backupBrokenSources,
     $core.Iterable<BackupSource>? backupSources,
     $core.Iterable<BackupPreference>? backupPreferences,
     $core.Iterable<BackupSourcePreferences>? backupSourcePreferences,
@@ -113,9 +112,6 @@ class Backup extends $pb.GeneratedMessage {
     }
     if (backupCategories != null) {
       $result.backupCategories.addAll(backupCategories);
-    }
-    if (backupBrokenSources != null) {
-      $result.backupBrokenSources.addAll(backupBrokenSources);
     }
     if (backupSources != null) {
       $result.backupSources.addAll(backupSources);
@@ -151,9 +147,6 @@ class Backup extends $pb.GeneratedMessage {
     ..pc<BackupCategory>(
         2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
         protoName: 'backupCategories', subBuilder: BackupCategory.create)
-    ..pc<BrokenBackupSource>(
-        100, _omitFieldNames ? '' : 'backupBrokenSources', $pb.PbFieldType.PM,
-        protoName: 'backupBrokenSources', subBuilder: BrokenBackupSource.create)
     ..pc<BackupSource>(
         101, _omitFieldNames ? '' : 'backupSources', $pb.PbFieldType.PM,
         protoName: 'backupSources', subBuilder: BackupSource.create)
@@ -199,24 +192,21 @@ class Backup extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.List<BackupCategory> get backupCategories => $_getList(1);
 
-  @$pb.TagNumber(100)
-  $core.List<BrokenBackupSource> get backupBrokenSources => $_getList(2);
-
   @$pb.TagNumber(101)
-  $core.List<BackupSource> get backupSources => $_getList(3);
+  $core.List<BackupSource> get backupSources => $_getList(2);
 
   @$pb.TagNumber(104)
-  $core.List<BackupPreference> get backupPreferences => $_getList(4);
+  $core.List<BackupPreference> get backupPreferences => $_getList(3);
 
   @$pb.TagNumber(105)
   $core.List<BackupSourcePreferences> get backupSourcePreferences =>
-      $_getList(5);
+      $_getList(4);
 
   @$pb.TagNumber(106)
-  $core.List<BackupExtensionRepos> get backupExtensionRepo => $_getList(6);
+  $core.List<BackupExtensionRepos> get backupExtensionRepo => $_getList(5);
 
   @$pb.TagNumber(600)
-  $core.List<BackupSavedSearch> get backupSavedSearches => $_getList(7);
+  $core.List<BackupSavedSearch> get backupSavedSearches => $_getList(6);
 }
 
 /// BackupCategory.kt
@@ -873,101 +863,6 @@ class BackupHistory extends $pb.GeneratedMessage {
   void clearReadDuration() => clearField(3);
 }
 
-class BrokenBackupHistory extends $pb.GeneratedMessage {
-  factory BrokenBackupHistory({
-    $core.String? url,
-    $fixnum.Int64? lastRead,
-    $fixnum.Int64? readDuration,
-  }) {
-    final $result = create();
-    if (url != null) {
-      $result.url = url;
-    }
-    if (lastRead != null) {
-      $result.lastRead = lastRead;
-    }
-    if (readDuration != null) {
-      $result.readDuration = readDuration;
-    }
-    return $result;
-  }
-  BrokenBackupHistory._() : super();
-  factory BrokenBackupHistory.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
-  factory BrokenBackupHistory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(i, r);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BrokenBackupHistory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
-        protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aInt64(3, _omitFieldNames ? '' : 'readDuration',
-        protoName: 'readDuration');
-
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
-  BrokenBackupHistory clone() => BrokenBackupHistory()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  BrokenBackupHistory copyWith(void Function(BrokenBackupHistory) updates) =>
-      super.copyWith((message) => updates(message as BrokenBackupHistory))
-          as BrokenBackupHistory;
-
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static BrokenBackupHistory create() => BrokenBackupHistory._();
-  BrokenBackupHistory createEmptyInstance() => create();
-  static $pb.PbList<BrokenBackupHistory> createRepeated() =>
-      $pb.PbList<BrokenBackupHistory>();
-  @$core.pragma('dart2js:noInline')
-  static BrokenBackupHistory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BrokenBackupHistory>(create);
-  static BrokenBackupHistory? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get url => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set url($core.String v) {
-    $_setString(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasUrl() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearUrl() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get lastRead => $_getI64(1);
-  @$pb.TagNumber(2)
-  set lastRead($fixnum.Int64 v) {
-    $_setInt64(1, v);
-  }
-
-  @$pb.TagNumber(2)
-  $core.bool hasLastRead() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearLastRead() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $fixnum.Int64 get readDuration => $_getI64(2);
-  @$pb.TagNumber(3)
-  set readDuration($fixnum.Int64 v) {
-    $_setInt64(2, v);
-  }
-
-  @$pb.TagNumber(3)
-  $core.bool hasReadDuration() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearReadDuration() => clearField(3);
-}
-
 /// BackupManga.kt
 class BackupManga extends $pb.GeneratedMessage {
   factory BackupManga({
@@ -987,7 +882,6 @@ class BackupManga extends $pb.GeneratedMessage {
     $core.Iterable<BackupTracking>? tracking,
     $core.bool? favorite,
     $core.int? chapterFlags,
-    $core.Iterable<BrokenBackupHistory>? brokenHistory,
     $core.int? viewerFlags,
     $core.Iterable<BackupHistory>? history,
     UpdateStrategy? updateStrategy,
@@ -1053,9 +947,6 @@ class BackupManga extends $pb.GeneratedMessage {
     }
     if (chapterFlags != null) {
       $result.chapterFlags = chapterFlags;
-    }
-    if (brokenHistory != null) {
-      $result.brokenHistory.addAll(brokenHistory);
     }
     if (viewerFlags != null) {
       $result.viewerFlags = viewerFlags;
@@ -1142,9 +1033,6 @@ class BackupManga extends $pb.GeneratedMessage {
     ..a<$core.int>(
         101, _omitFieldNames ? '' : 'chapterFlags', $pb.PbFieldType.O3,
         protoName: 'chapterFlags')
-    ..pc<BrokenBackupHistory>(
-        102, _omitFieldNames ? '' : 'brokenHistory', $pb.PbFieldType.PM,
-        protoName: 'brokenHistory', subBuilder: BrokenBackupHistory.create)
     ..a<$core.int>(
         103, _omitFieldNames ? '' : 'viewerFlags', $pb.PbFieldType.O3)
     ..pc<BackupHistory>(
@@ -1359,167 +1247,164 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(101)
   void clearChapterFlags() => clearField(101);
 
-  @$pb.TagNumber(102)
-  $core.List<BrokenBackupHistory> get brokenHistory => $_getList(16);
-
   @$pb.TagNumber(103)
-  $core.int get viewerFlags => $_getIZ(17);
+  $core.int get viewerFlags => $_getIZ(16);
   @$pb.TagNumber(103)
   set viewerFlags($core.int v) {
-    $_setSignedInt32(17, v);
+    $_setSignedInt32(16, v);
   }
 
   @$pb.TagNumber(103)
-  $core.bool hasViewerFlags() => $_has(17);
+  $core.bool hasViewerFlags() => $_has(16);
   @$pb.TagNumber(103)
   void clearViewerFlags() => clearField(103);
 
   @$pb.TagNumber(104)
-  $core.List<BackupHistory> get history => $_getList(18);
+  $core.List<BackupHistory> get history => $_getList(17);
 
   @$pb.TagNumber(105)
-  UpdateStrategy get updateStrategy => $_getN(19);
+  UpdateStrategy get updateStrategy => $_getN(18);
   @$pb.TagNumber(105)
   set updateStrategy(UpdateStrategy v) {
     setField(105, v);
   }
 
   @$pb.TagNumber(105)
-  $core.bool hasUpdateStrategy() => $_has(19);
+  $core.bool hasUpdateStrategy() => $_has(18);
   @$pb.TagNumber(105)
   void clearUpdateStrategy() => clearField(105);
 
   @$pb.TagNumber(106)
-  $fixnum.Int64 get lastModifiedAt => $_getI64(20);
+  $fixnum.Int64 get lastModifiedAt => $_getI64(19);
   @$pb.TagNumber(106)
   set lastModifiedAt($fixnum.Int64 v) {
-    $_setInt64(20, v);
+    $_setInt64(19, v);
   }
 
   @$pb.TagNumber(106)
-  $core.bool hasLastModifiedAt() => $_has(20);
+  $core.bool hasLastModifiedAt() => $_has(19);
   @$pb.TagNumber(106)
   void clearLastModifiedAt() => clearField(106);
 
   @$pb.TagNumber(107)
-  $fixnum.Int64 get favoriteModifiedAt => $_getI64(21);
+  $fixnum.Int64 get favoriteModifiedAt => $_getI64(20);
   @$pb.TagNumber(107)
   set favoriteModifiedAt($fixnum.Int64 v) {
-    $_setInt64(21, v);
+    $_setInt64(20, v);
   }
 
   @$pb.TagNumber(107)
-  $core.bool hasFavoriteModifiedAt() => $_has(21);
+  $core.bool hasFavoriteModifiedAt() => $_has(20);
   @$pb.TagNumber(107)
   void clearFavoriteModifiedAt() => clearField(107);
 
   @$pb.TagNumber(108)
-  $core.List<$core.String> get excludedScanlators => $_getList(22);
+  $core.List<$core.String> get excludedScanlators => $_getList(21);
 
   @$pb.TagNumber(109)
-  $fixnum.Int64 get version => $_getI64(23);
+  $fixnum.Int64 get version => $_getI64(22);
   @$pb.TagNumber(109)
   set version($fixnum.Int64 v) {
-    $_setInt64(23, v);
+    $_setInt64(22, v);
   }
 
   @$pb.TagNumber(109)
-  $core.bool hasVersion() => $_has(23);
+  $core.bool hasVersion() => $_has(22);
   @$pb.TagNumber(109)
   void clearVersion() => clearField(109);
 
   @$pb.TagNumber(600)
   $core.List<BackupMergedMangaReference> get mergedMangaReferences =>
-      $_getList(24);
+      $_getList(23);
 
   @$pb.TagNumber(601)
-  BackupFlatMetadata get flatMetadata => $_getN(25);
+  BackupFlatMetadata get flatMetadata => $_getN(24);
   @$pb.TagNumber(601)
   set flatMetadata(BackupFlatMetadata v) {
     setField(601, v);
   }
 
   @$pb.TagNumber(601)
-  $core.bool hasFlatMetadata() => $_has(25);
+  $core.bool hasFlatMetadata() => $_has(24);
   @$pb.TagNumber(601)
   void clearFlatMetadata() => clearField(601);
   @$pb.TagNumber(601)
-  BackupFlatMetadata ensureFlatMetadata() => $_ensure(25);
+  BackupFlatMetadata ensureFlatMetadata() => $_ensure(24);
 
   @$pb.TagNumber(602)
-  $core.int get customStatus => $_getIZ(26);
+  $core.int get customStatus => $_getIZ(25);
   @$pb.TagNumber(602)
   set customStatus($core.int v) {
-    $_setSignedInt32(26, v);
+    $_setSignedInt32(25, v);
   }
 
   @$pb.TagNumber(602)
-  $core.bool hasCustomStatus() => $_has(26);
+  $core.bool hasCustomStatus() => $_has(25);
   @$pb.TagNumber(602)
   void clearCustomStatus() => clearField(602);
 
   @$pb.TagNumber(603)
-  $core.String get customThumbnailUrl => $_getSZ(27);
+  $core.String get customThumbnailUrl => $_getSZ(26);
   @$pb.TagNumber(603)
   set customThumbnailUrl($core.String v) {
-    $_setString(27, v);
+    $_setString(26, v);
   }
 
   @$pb.TagNumber(603)
-  $core.bool hasCustomThumbnailUrl() => $_has(27);
+  $core.bool hasCustomThumbnailUrl() => $_has(26);
   @$pb.TagNumber(603)
   void clearCustomThumbnailUrl() => clearField(603);
 
   @$pb.TagNumber(800)
-  $core.String get customTitle => $_getSZ(28);
+  $core.String get customTitle => $_getSZ(27);
   @$pb.TagNumber(800)
   set customTitle($core.String v) {
-    $_setString(28, v);
+    $_setString(27, v);
   }
 
   @$pb.TagNumber(800)
-  $core.bool hasCustomTitle() => $_has(28);
+  $core.bool hasCustomTitle() => $_has(27);
   @$pb.TagNumber(800)
   void clearCustomTitle() => clearField(800);
 
   @$pb.TagNumber(801)
-  $core.String get customArtist => $_getSZ(29);
+  $core.String get customArtist => $_getSZ(28);
   @$pb.TagNumber(801)
   set customArtist($core.String v) {
-    $_setString(29, v);
+    $_setString(28, v);
   }
 
   @$pb.TagNumber(801)
-  $core.bool hasCustomArtist() => $_has(29);
+  $core.bool hasCustomArtist() => $_has(28);
   @$pb.TagNumber(801)
   void clearCustomArtist() => clearField(801);
 
   @$pb.TagNumber(802)
-  $core.String get customAuthor => $_getSZ(30);
+  $core.String get customAuthor => $_getSZ(29);
   @$pb.TagNumber(802)
   set customAuthor($core.String v) {
-    $_setString(30, v);
+    $_setString(29, v);
   }
 
   @$pb.TagNumber(802)
-  $core.bool hasCustomAuthor() => $_has(30);
+  $core.bool hasCustomAuthor() => $_has(29);
   @$pb.TagNumber(802)
   void clearCustomAuthor() => clearField(802);
 
   @$pb.TagNumber(804)
-  $core.String get customDescription => $_getSZ(31);
+  $core.String get customDescription => $_getSZ(30);
   @$pb.TagNumber(804)
   set customDescription($core.String v) {
-    $_setString(31, v);
+    $_setString(30, v);
   }
 
   @$pb.TagNumber(804)
-  $core.bool hasCustomDescription() => $_has(31);
+  $core.bool hasCustomDescription() => $_has(30);
   @$pb.TagNumber(804)
   void clearCustomDescription() => clearField(804);
 
   @$pb.TagNumber(805)
-  $core.List<$core.String> get customGenre => $_getList(32);
+  $core.List<$core.String> get customGenre => $_getList(31);
 }
 
 /// BackupMergedMangaReference.kt
@@ -2383,83 +2268,6 @@ class BackupSource extends $pb.GeneratedMessage {
   static BackupSource getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<BackupSource>(create);
   static BackupSource? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String v) {
-    $_setString(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get sourceId => $_getI64(1);
-  @$pb.TagNumber(2)
-  set sourceId($fixnum.Int64 v) {
-    $_setInt64(1, v);
-  }
-
-  @$pb.TagNumber(2)
-  $core.bool hasSourceId() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearSourceId() => clearField(2);
-}
-
-class BrokenBackupSource extends $pb.GeneratedMessage {
-  factory BrokenBackupSource({
-    $core.String? name,
-    $fixnum.Int64? sourceId,
-  }) {
-    final $result = create();
-    if (name != null) {
-      $result.name = name;
-    }
-    if (sourceId != null) {
-      $result.sourceId = sourceId;
-    }
-    return $result;
-  }
-  BrokenBackupSource._() : super();
-  factory BrokenBackupSource.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(i, r);
-  factory BrokenBackupSource.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(i, r);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BrokenBackupSource',
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'sourceId', $pb.PbFieldType.Q6,
-        protoName: 'sourceId', defaultOrMaker: $fixnum.Int64.ZERO);
-
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-      'Will be removed in next major version')
-  BrokenBackupSource clone() => BrokenBackupSource()..mergeFromMessage(this);
-  @$core.Deprecated('Using this can add significant overhead to your binary. '
-      'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-      'Will be removed in next major version')
-  BrokenBackupSource copyWith(void Function(BrokenBackupSource) updates) =>
-      super.copyWith((message) => updates(message as BrokenBackupSource))
-          as BrokenBackupSource;
-
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static BrokenBackupSource create() => BrokenBackupSource._();
-  BrokenBackupSource createEmptyInstance() => create();
-  static $pb.PbList<BrokenBackupSource> createRepeated() =>
-      $pb.PbList<BrokenBackupSource>();
-  @$core.pragma('dart2js:noInline')
-  static BrokenBackupSource getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BrokenBackupSource>(create);
-  static BrokenBackupSource? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get name => $_getSZ(0);
