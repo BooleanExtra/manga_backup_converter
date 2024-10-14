@@ -857,7 +857,6 @@ jobs:
       - name: Setup sqflite
         run: |
           cd packages/mangabackupconverter_cli
-          dart run sqflite_common_ffi_web:setup
           dart run sqflite_common_ffi_web:setup --force
 
       - name: Build Web
