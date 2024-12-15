@@ -6,8 +6,8 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.24.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0 <4.0.0"
 
 dependencies:
   accessibility_tools: ^2.2.2
@@ -73,7 +73,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mason: ^0.1.0-dev.52
-  melos: ^6.1.0
+  melos: ^6.2.0
   mocktail: ^1.0.3
   modddels: ^0.2.0
   msix: ^3.16.7
