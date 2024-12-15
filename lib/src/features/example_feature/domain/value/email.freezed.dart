@@ -79,6 +79,9 @@ class _$EmailAvailableFailureCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of EmailAvailableFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -95,6 +98,9 @@ class __$$TakenImplCopyWithImpl<$Res>
   __$$TakenImplCopyWithImpl(
       _$TakenImpl _value, $Res Function(_$TakenImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of EmailAvailableFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -203,6 +209,9 @@ class __$$ReservedImplCopyWithImpl<$Res>
   __$$ReservedImplCopyWithImpl(
       _$ReservedImpl _value, $Res Function(_$ReservedImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of EmailAvailableFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -311,6 +320,9 @@ class __$$BannedImplCopyWithImpl<$Res>
   __$$BannedImplCopyWithImpl(
       _$BannedImpl _value, $Res Function(_$BannedImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of EmailAvailableFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -457,6 +469,9 @@ class _$EmailFormatFailureCopyWithImpl<$Res, $Val extends EmailFormatFailure>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of EmailFormatFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -473,6 +488,9 @@ class __$$InvalidImplCopyWithImpl<$Res>
   __$$InvalidImplCopyWithImpl(
       _$InvalidImpl _value, $Res Function(_$InvalidImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of EmailFormatFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc

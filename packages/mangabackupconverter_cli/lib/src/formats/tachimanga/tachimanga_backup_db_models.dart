@@ -1,5 +1,5 @@
 @MappableLib(generateInitializerForScope: InitializerScope.library)
-library mangabackupconverter_lib;
+library;
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';

@@ -1,4 +1,4 @@
-library localization;
+library;
 
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'src/app_localizations_context.dart';

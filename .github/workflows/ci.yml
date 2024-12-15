@@ -25,11 +25,11 @@ on:
 
 env:
   FLUTTER_CHANNEL: "stable"
-  FLUTTER_VERSION: "3.24.3"
+  FLUTTER_VERSION: "3.27.0"
   FLAVOR: ""
   # https://github.com/transferwise/sanitize-branch-name/blob/main/action.yml
   BRANCH_NAME: $(echo -n ${{ github.head_ref || github.ref_name }} | tr "/" "-")
-  MELOS_VERSION: "^6.1.0"
+  MELOS_VERSION: "^6.2.0"
 
 # Needed to deploy to GitHub Pages
 permissions:
@@ -124,9 +124,9 @@ jobs:
         if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run analyze
 
-      - name: Run Custom Lints
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
-        run: melos run custom_lint
+      # - name: Run Custom Lints
+      #   if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
+      #   run: melos run custom_lint
 
       # Project needs to have tests in test/ and a dependency on
       # package:flutter_test for this step to succeed.

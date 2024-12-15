@@ -6,7 +6,7 @@ part of 'prefs.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$prefsHash() => r'd66f304483d8c70a6e225b9f5331c9270a592b8d';
+String _$prefsHash() => r'6aaf4ca695e6d0fa1b4e6ba0224d15116a6b3ab9';
 
 /// See also [prefs].
 @ProviderFor(prefs)

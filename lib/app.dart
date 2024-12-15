@@ -1,4 +1,4 @@
-library app;
+library;
 
 import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';

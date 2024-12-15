@@ -26,27 +26,27 @@ class AidokuBackupMapper extends ClassMapperBase<AidokuBackup> {
   @override
   final String id = 'AidokuBackup';
 
-  static List<AidokuBackupLibraryManga>? _$library(AidokuBackup v) => v.library;
-  static const Field<AidokuBackup, List<AidokuBackupLibraryManga>> _f$library =
+  static Set<AidokuBackupLibraryManga>? _$library(AidokuBackup v) => v.library;
+  static const Field<AidokuBackup, Set<AidokuBackupLibraryManga>> _f$library =
       Field('library', _$library);
-  static List<AidokuBackupHistory>? _$history(AidokuBackup v) => v.history;
-  static const Field<AidokuBackup, List<AidokuBackupHistory>> _f$history =
+  static Set<AidokuBackupHistory>? _$history(AidokuBackup v) => v.history;
+  static const Field<AidokuBackup, Set<AidokuBackupHistory>> _f$history =
       Field('history', _$history);
-  static List<AidokuBackupManga>? _$manga(AidokuBackup v) => v.manga;
-  static const Field<AidokuBackup, List<AidokuBackupManga>> _f$manga =
+  static Set<AidokuBackupManga>? _$manga(AidokuBackup v) => v.manga;
+  static const Field<AidokuBackup, Set<AidokuBackupManga>> _f$manga =
       Field('manga', _$manga);
-  static List<AidokuBackupChapter>? _$chapters(AidokuBackup v) => v.chapters;
-  static const Field<AidokuBackup, List<AidokuBackupChapter>> _f$chapters =
+  static Set<AidokuBackupChapter>? _$chapters(AidokuBackup v) => v.chapters;
+  static const Field<AidokuBackup, Set<AidokuBackupChapter>> _f$chapters =
       Field('chapters', _$chapters);
-  static List<AidokuBackupTrackItem>? _$trackItems(AidokuBackup v) =>
+  static Set<AidokuBackupTrackItem>? _$trackItems(AidokuBackup v) =>
       v.trackItems;
-  static const Field<AidokuBackup, List<AidokuBackupTrackItem>> _f$trackItems =
+  static const Field<AidokuBackup, Set<AidokuBackupTrackItem>> _f$trackItems =
       Field('trackItems', _$trackItems);
-  static List<String>? _$categories(AidokuBackup v) => v.categories;
-  static const Field<AidokuBackup, List<String>> _f$categories =
+  static Set<String>? _$categories(AidokuBackup v) => v.categories;
+  static const Field<AidokuBackup, Set<String>> _f$categories =
       Field('categories', _$categories);
-  static List<String>? _$sources(AidokuBackup v) => v.sources;
-  static const Field<AidokuBackup, List<String>> _f$sources =
+  static Set<String>? _$sources(AidokuBackup v) => v.sources;
+  static const Field<AidokuBackup, Set<String>> _f$sources =
       Field('sources', _$sources);
   static DateTime _$date(AidokuBackup v) => v.date;
   static const Field<AidokuBackup, DateTime> _f$date = Field('date', _$date);
@@ -136,39 +136,14 @@ extension AidokuBackupValueCopy<$R, $Out>
 
 abstract class AidokuBackupCopyWith<$R, $In extends AidokuBackup, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<
-      $R,
-      AidokuBackupLibraryManga,
-      AidokuBackupLibraryMangaCopyWith<$R, AidokuBackupLibraryManga,
-          AidokuBackupLibraryManga>>? get library;
-  ListCopyWith<
-      $R,
-      AidokuBackupHistory,
-      AidokuBackupHistoryCopyWith<$R, AidokuBackupHistory,
-          AidokuBackupHistory>>? get history;
-  ListCopyWith<$R, AidokuBackupManga,
-          AidokuBackupMangaCopyWith<$R, AidokuBackupManga, AidokuBackupManga>>?
-      get manga;
-  ListCopyWith<
-      $R,
-      AidokuBackupChapter,
-      AidokuBackupChapterCopyWith<$R, AidokuBackupChapter,
-          AidokuBackupChapter>>? get chapters;
-  ListCopyWith<
-      $R,
-      AidokuBackupTrackItem,
-      AidokuBackupTrackItemCopyWith<$R, AidokuBackupTrackItem,
-          AidokuBackupTrackItem>>? get trackItems;
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get categories;
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get sources;
   $R call(
-      {List<AidokuBackupLibraryManga>? library,
-      List<AidokuBackupHistory>? history,
-      List<AidokuBackupManga>? manga,
-      List<AidokuBackupChapter>? chapters,
-      List<AidokuBackupTrackItem>? trackItems,
-      List<String>? categories,
-      List<String>? sources,
+      {Set<AidokuBackupLibraryManga>? library,
+      Set<AidokuBackupHistory>? history,
+      Set<AidokuBackupManga>? manga,
+      Set<AidokuBackupChapter>? chapters,
+      Set<AidokuBackupTrackItem>? trackItems,
+      Set<String>? categories,
+      Set<String>? sources,
       DateTime? date,
       String? name,
       String? version});
@@ -183,65 +158,6 @@ class _AidokuBackupCopyWithImpl<$R, $Out>
   @override
   late final ClassMapperBase<AidokuBackup> $mapper =
       AidokuBackupMapper.ensureInitialized();
-  @override
-  ListCopyWith<
-      $R,
-      AidokuBackupLibraryManga,
-      AidokuBackupLibraryMangaCopyWith<$R, AidokuBackupLibraryManga,
-          AidokuBackupLibraryManga>>? get library => $value.library != null
-      ? ListCopyWith($value.library!, (v, t) => v.copyWith.$chain(t),
-          (v) => call(library: v))
-      : null;
-  @override
-  ListCopyWith<
-      $R,
-      AidokuBackupHistory,
-      AidokuBackupHistoryCopyWith<$R, AidokuBackupHistory,
-          AidokuBackupHistory>>? get history => $value.history != null
-      ? ListCopyWith($value.history!, (v, t) => v.copyWith.$chain(t),
-          (v) => call(history: v))
-      : null;
-  @override
-  ListCopyWith<$R, AidokuBackupManga,
-          AidokuBackupMangaCopyWith<$R, AidokuBackupManga, AidokuBackupManga>>?
-      get manga => $value.manga != null
-          ? ListCopyWith($value.manga!, (v, t) => v.copyWith.$chain(t),
-              (v) => call(manga: v))
-          : null;
-  @override
-  ListCopyWith<
-      $R,
-      AidokuBackupChapter,
-      AidokuBackupChapterCopyWith<$R, AidokuBackupChapter,
-          AidokuBackupChapter>>? get chapters => $value.chapters != null
-      ? ListCopyWith($value.chapters!, (v, t) => v.copyWith.$chain(t),
-          (v) => call(chapters: v))
-      : null;
-  @override
-  ListCopyWith<
-      $R,
-      AidokuBackupTrackItem,
-      AidokuBackupTrackItemCopyWith<$R, AidokuBackupTrackItem,
-          AidokuBackupTrackItem>>? get trackItems => $value.trackItems != null
-      ? ListCopyWith($value.trackItems!, (v, t) => v.copyWith.$chain(t),
-          (v) => call(trackItems: v))
-      : null;
-  @override
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>?
-      get categories => $value.categories != null
-          ? ListCopyWith(
-              $value.categories!,
-              (v, t) => ObjectCopyWith(v, $identity, t),
-              (v) => call(categories: v))
-          : null;
-  @override
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get sources =>
-      $value.sources != null
-          ? ListCopyWith(
-              $value.sources!,
-              (v, t) => ObjectCopyWith(v, $identity, t),
-              (v) => call(sources: v))
-          : null;
   @override
   $R call(
           {Object? library = $none,

@@ -1,4 +1,4 @@
-library constants;
+library;
 
 import 'package:env/env.dart';
 import 'package:flutter/foundation.dart';

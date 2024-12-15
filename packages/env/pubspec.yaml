@@ -5,8 +5,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
-  flutter: ">=3.22.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0 <4.0.0"
 
 dependencies:
   envied: ^0.5.2
@@ -22,5 +22,4 @@ dev_dependencies:
   envied_generator: ^0.5.2
   flutter_test:
     sdk: flutter
-
 # flutter:
