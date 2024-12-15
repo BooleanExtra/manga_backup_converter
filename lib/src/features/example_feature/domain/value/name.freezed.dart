@@ -78,6 +78,9 @@ class _$NameValidFailureCopyWithImpl<$Res, $Val extends NameValidFailure>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of NameValidFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -94,6 +97,9 @@ class __$$IllegalCharactersImplCopyWithImpl<$Res>
   __$$IllegalCharactersImplCopyWithImpl(_$IllegalCharactersImpl _value,
       $Res Function(_$IllegalCharactersImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of NameValidFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -202,6 +208,9 @@ class __$$ObsceneImplCopyWithImpl<$Res>
   __$$ObsceneImplCopyWithImpl(
       _$ObsceneImpl _value, $Res Function(_$ObsceneImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of NameValidFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -310,6 +319,9 @@ class __$$EmptyImplCopyWithImpl<$Res>
   __$$EmptyImplCopyWithImpl(
       _$EmptyImpl _value, $Res Function(_$EmptyImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of NameValidFailure
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
