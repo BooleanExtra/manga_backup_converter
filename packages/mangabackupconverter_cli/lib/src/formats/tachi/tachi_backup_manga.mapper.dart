@@ -72,16 +72,17 @@ class TachiBackupMangaMapper extends ClassMapperBase<TachiBackupManga> {
   static int _$chapterFlags(TachiBackupManga v) => v.chapterFlags;
   static const Field<TachiBackupManga, int> _f$chapterFlags =
       Field('chapterFlags', _$chapterFlags);
-  static List<TachiBackupHistory> _$brokenHistory(TachiBackupManga v) =>
-      v.brokenHistory;
-  static const Field<TachiBackupManga, List<TachiBackupHistory>>
-      _f$brokenHistory = Field('brokenHistory', _$brokenHistory);
   static int _$viewerFlags(TachiBackupManga v) => v.viewerFlags;
   static const Field<TachiBackupManga, int> _f$viewerFlags =
       Field('viewerFlags', _$viewerFlags);
   static List<TachiBackupHistory> _$history(TachiBackupManga v) => v.history;
   static const Field<TachiBackupManga, List<TachiBackupHistory>> _f$history =
       Field('history', _$history);
+  static List<TachiBackupHistory> _$brokenHistory(TachiBackupManga v) =>
+      v.brokenHistory;
+  static const Field<TachiBackupManga, List<TachiBackupHistory>>
+      _f$brokenHistory =
+      Field('brokenHistory', _$brokenHistory, opt: true, def: const []);
   static TachiUpdateStrategy _$updateStrategy(TachiBackupManga v) =>
       v.updateStrategy;
   static const Field<TachiBackupManga, TachiUpdateStrategy> _f$updateStrategy =
@@ -152,9 +153,9 @@ class TachiBackupMangaMapper extends ClassMapperBase<TachiBackupManga> {
     #tracking: _f$tracking,
     #favorite: _f$favorite,
     #chapterFlags: _f$chapterFlags,
-    #brokenHistory: _f$brokenHistory,
     #viewerFlags: _f$viewerFlags,
     #history: _f$history,
+    #brokenHistory: _f$brokenHistory,
     #updateStrategy: _f$updateStrategy,
     #lastModifiedAt: _f$lastModifiedAt,
     #favoriteModifiedAt: _f$favoriteModifiedAt,
@@ -190,9 +191,9 @@ class TachiBackupMangaMapper extends ClassMapperBase<TachiBackupManga> {
         tracking: data.dec(_f$tracking),
         favorite: data.dec(_f$favorite),
         chapterFlags: data.dec(_f$chapterFlags),
-        brokenHistory: data.dec(_f$brokenHistory),
         viewerFlags: data.dec(_f$viewerFlags),
         history: data.dec(_f$history),
+        brokenHistory: data.dec(_f$brokenHistory),
         updateStrategy: data.dec(_f$updateStrategy),
         lastModifiedAt: data.dec(_f$lastModifiedAt),
         favoriteModifiedAt: data.dec(_f$favoriteModifiedAt),
@@ -280,12 +281,12 @@ abstract class TachiBackupMangaCopyWith<$R, $In extends TachiBackupManga, $Out>
       $R,
       TachiBackupHistory,
       TachiBackupHistoryCopyWith<$R, TachiBackupHistory,
-          TachiBackupHistory>> get brokenHistory;
+          TachiBackupHistory>> get history;
   ListCopyWith<
       $R,
       TachiBackupHistory,
       TachiBackupHistoryCopyWith<$R, TachiBackupHistory,
-          TachiBackupHistory>> get history;
+          TachiBackupHistory>> get brokenHistory;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>?
       get excludedScanlators;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get customGenre;
@@ -311,9 +312,9 @@ abstract class TachiBackupMangaCopyWith<$R, $In extends TachiBackupManga, $Out>
       List<TachiBackupTracking>? tracking,
       bool? favorite,
       int? chapterFlags,
-      List<TachiBackupHistory>? brokenHistory,
       int? viewerFlags,
       List<TachiBackupHistory>? history,
+      List<TachiBackupHistory>? brokenHistory,
       TachiUpdateStrategy? updateStrategy,
       int? lastModifiedAt,
       int? favoriteModifiedAt,
@@ -368,17 +369,17 @@ class _TachiBackupMangaCopyWithImpl<$R, $Out>
       $R,
       TachiBackupHistory,
       TachiBackupHistoryCopyWith<$R, TachiBackupHistory,
-          TachiBackupHistory>> get brokenHistory => ListCopyWith(
-      $value.brokenHistory,
-      (v, t) => v.copyWith.$chain(t),
-      (v) => call(brokenHistory: v));
+          TachiBackupHistory>> get history => ListCopyWith(
+      $value.history, (v, t) => v.copyWith.$chain(t), (v) => call(history: v));
   @override
   ListCopyWith<
       $R,
       TachiBackupHistory,
       TachiBackupHistoryCopyWith<$R, TachiBackupHistory,
-          TachiBackupHistory>> get history => ListCopyWith(
-      $value.history, (v, t) => v.copyWith.$chain(t), (v) => call(history: v));
+          TachiBackupHistory>> get brokenHistory => ListCopyWith(
+      $value.brokenHistory,
+      (v, t) => v.copyWith.$chain(t),
+      (v) => call(brokenHistory: v));
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>?
       get excludedScanlators => $value.excludedScanlators != null
@@ -423,9 +424,9 @@ class _TachiBackupMangaCopyWithImpl<$R, $Out>
           List<TachiBackupTracking>? tracking,
           bool? favorite,
           int? chapterFlags,
-          List<TachiBackupHistory>? brokenHistory,
           int? viewerFlags,
           List<TachiBackupHistory>? history,
+          List<TachiBackupHistory>? brokenHistory,
           TachiUpdateStrategy? updateStrategy,
           Object? lastModifiedAt = $none,
           Object? favoriteModifiedAt = $none,
@@ -458,9 +459,9 @@ class _TachiBackupMangaCopyWithImpl<$R, $Out>
         if (tracking != null) #tracking: tracking,
         if (favorite != null) #favorite: favorite,
         if (chapterFlags != null) #chapterFlags: chapterFlags,
-        if (brokenHistory != null) #brokenHistory: brokenHistory,
         if (viewerFlags != null) #viewerFlags: viewerFlags,
         if (history != null) #history: history,
+        if (brokenHistory != null) #brokenHistory: brokenHistory,
         if (updateStrategy != null) #updateStrategy: updateStrategy,
         if (lastModifiedAt != $none) #lastModifiedAt: lastModifiedAt,
         if (favoriteModifiedAt != $none)
@@ -499,9 +500,9 @@ class _TachiBackupMangaCopyWithImpl<$R, $Out>
       tracking: data.get(#tracking, or: $value.tracking),
       favorite: data.get(#favorite, or: $value.favorite),
       chapterFlags: data.get(#chapterFlags, or: $value.chapterFlags),
-      brokenHistory: data.get(#brokenHistory, or: $value.brokenHistory),
       viewerFlags: data.get(#viewerFlags, or: $value.viewerFlags),
       history: data.get(#history, or: $value.history),
+      brokenHistory: data.get(#brokenHistory, or: $value.brokenHistory),
       updateStrategy: data.get(#updateStrategy, or: $value.updateStrategy),
       lastModifiedAt: data.get(#lastModifiedAt, or: $value.lastModifiedAt),
       favoriteModifiedAt:
