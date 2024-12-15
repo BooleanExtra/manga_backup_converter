@@ -14,13 +14,13 @@ part 'aidoku_backup.mapper.dart';
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
 class AidokuBackup with AidokuBackupMappable {
-  final List<AidokuBackupLibraryManga>? library;
-  final List<AidokuBackupHistory>? history;
-  final List<AidokuBackupManga>? manga;
-  final List<AidokuBackupChapter>? chapters;
-  final List<AidokuBackupTrackItem>? trackItems;
-  final List<String>? categories;
-  final List<String>? sources;
+  final Set<AidokuBackupLibraryManga>? library;
+  final Set<AidokuBackupHistory>? history;
+  final Set<AidokuBackupManga>? manga;
+  final Set<AidokuBackupChapter>? chapters;
+  final Set<AidokuBackupTrackItem>? trackItems;
+  final Set<String>? categories;
+  final Set<String>? sources;
   final DateTime date;
   final String? name;
   final String? version;
@@ -54,4 +54,19 @@ class AidokuBackup with AidokuBackupMappable {
 
   static const fromMap = AidokuBackupMapper.fromMap;
   static const fromJson = AidokuBackupMapper.fromJson;
+
+  AidokuBackup mergeWith(AidokuBackup aidokuBackup) {
+    return AidokuBackup(
+      library: (library ?? {})..addAll(aidokuBackup.library ?? {}),
+      history: (history ?? {})..addAll(aidokuBackup.history ?? {}),
+      manga: (manga ?? {})..addAll(aidokuBackup.manga ?? {}),
+      chapters: (chapters ?? {})..addAll(aidokuBackup.chapters ?? {}),
+      trackItems: (trackItems ?? {})..addAll(aidokuBackup.trackItems ?? {}),
+      categories: (categories ?? {})..addAll(aidokuBackup.categories ?? {}),
+      sources: (sources ?? {})..addAll(aidokuBackup.sources ?? {}),
+      date: aidokuBackup.date,
+      name: '${name ?? 'Backup'}Merged',
+      version: aidokuBackup.version ?? version ?? '0.6.10',
+    );
+  }
 }
