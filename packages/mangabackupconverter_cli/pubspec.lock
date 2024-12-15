@@ -545,10 +545,10 @@ packages:
     dependency: transitive
     description:
       name: solid_lints
-      sha256: "59e93651df7d2158681ca3baa41b9953f9caf02cb7528a50e9ede823f151694a"
+      sha256: "15e6b9b505588e66e1f6d1afa40d50dd804a572490d0f38d9cf1f90772d66bf9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.5"
+    version: "0.2.3"
   source_gen:
     dependency: transitive
     description:
