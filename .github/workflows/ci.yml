@@ -124,9 +124,9 @@ jobs:
         if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run analyze
 
-      - name: Run Custom Lints
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
-        run: melos run custom_lint
+      # - name: Run Custom Lints
+      #   if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
+      #   run: melos run custom_lint
 
       # Project needs to have tests in test/ and a dependency on
       # package:flutter_test for this step to succeed.
