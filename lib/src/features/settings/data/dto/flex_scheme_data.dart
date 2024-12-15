@@ -66,34 +66,60 @@ class FlexSchemeColorConverter {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'primary': schemeColor.primary.value,
-      'primaryContainer': schemeColor.primaryContainer.value,
-      'secondary': schemeColor.secondary.value,
-      'secondaryContainer': schemeColor.secondaryContainer.value,
-      'tertiary': schemeColor.tertiary.value,
-      'tertiaryContainer': schemeColor.tertiaryContainer.value,
-      'appBarColor': schemeColor.appBarColor?.value,
-      'error': schemeColor.error?.value,
-      'errorContainer': schemeColor.errorContainer?.value,
+      'primary': schemeColor.primary.toJson(),
+      'primaryContainer': schemeColor.primaryContainer..toJson(),
+      'secondary': schemeColor.secondary..toJson(),
+      'secondaryContainer': schemeColor.secondaryContainer..toJson(),
+      'tertiary': schemeColor.tertiary..toJson(),
+      'tertiaryContainer': schemeColor.tertiaryContainer..toJson(),
+      'appBarColor': schemeColor.appBarColor?..toJson(),
+      'error': schemeColor.error?..toJson(),
+      'errorContainer': schemeColor.errorContainer?..toJson(),
       'swapOnMaterial3': schemeColor.swapOnMaterial3,
     };
   }
 
   static FlexSchemeColor fromMap(Map<dynamic, dynamic> map) {
     return FlexSchemeColor(
-      primary: Color(map['primary'] as int),
-      primaryContainer: Color(map['primaryContainer'] as int),
-      secondary: Color(map['secondary'] as int),
-      secondaryContainer: Color(map['secondaryContainer'] as int),
-      tertiary: Color(map['tertiary'] as int),
-      tertiaryContainer: Color(map['tertiaryContainer'] as int),
-      appBarColor:
-          map['appBarColor'] == null ? null : Color(map['appBarColor'] as int),
-      error: map['error'] == null ? null : Color(map['error'] as int),
+      primary: _colorFromJson(map['primary'] as ColorJson),
+      primaryContainer: _colorFromJson(map['primaryContainer'] as ColorJson),
+      secondary: _colorFromJson(map['secondary'] as ColorJson),
+      secondaryContainer:
+          _colorFromJson(map['secondaryContainer'] as ColorJson),
+      tertiary: _colorFromJson(map['tertiary'] as ColorJson),
+      tertiaryContainer: _colorFromJson(map['tertiaryContainer'] as ColorJson),
+      appBarColor: map['appBarColor'] == null
+          ? null
+          : _colorFromJson(map['appBarColor'] as ColorJson),
+      error: map['error'] == null
+          ? null
+          : _colorFromJson(map['error'] as ColorJson),
       errorContainer: map['errorContainer'] == null
           ? null
-          : Color(map['errorContainer'] as int),
+          : _colorFromJson(map['errorContainer'] as ColorJson),
       swapOnMaterial3: map['swapOnMaterial3'] as bool,
     );
+  }
+}
+
+typedef ColorJson = Map<String, double>;
+
+Color _colorFromJson(ColorJson json) {
+  return Color.from(
+    red: json['r'] ?? 255,
+    green: json['g'] ?? 255,
+    blue: json['b'] ?? 255,
+    alpha: json['a'] ?? 255,
+  );
+}
+
+extension _ColorJsonExtension on Color {
+  ColorJson toJson() {
+    return {
+      'r': r,
+      'g': g,
+      'b': b,
+      'a': a,
+    };
   }
 }
