@@ -59,17 +59,17 @@ class MergeCommand extends Command<void> {
     final io.File otherBackupFile = _parseFile(results, 'other');
     final String outputPath = results.wasParsed('output')
         ? results.option('output')!
-        : './${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aix';
+        : './${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib';
     final backupFileExtension = p.extension(backupFile.uri.toString());
     final otherBackupFileExtension =
         p.extension(otherBackupFile.uri.toString());
-    if (backupFileExtension != 'aix') {
+    if (backupFileExtension != 'aib') {
       print('Backup file format "$backupFileExtension" not supported');
       throw ArgumentError(
         'Backup file format "$backupFileExtension" not supported',
       );
     }
-    if (otherBackupFileExtension != 'aix') {
+    if (otherBackupFileExtension != 'aib') {
       print('Backup file format "$otherBackupFileExtension" not supported');
       throw ArgumentError(
         'Backup file format "$otherBackupFileExtension" not supported',
