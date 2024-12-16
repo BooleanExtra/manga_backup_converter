@@ -2,7 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'aidoku_backup_track_item.mapper.dart';
 
-@MappableClass()
+@MappableClass(ignoreNull: true)
 class AidokuBackupTrackItem with AidokuBackupTrackItemMappable {
   final String id;
   final String trackerId;

@@ -64,6 +64,8 @@ class AidokuBackupChapterMapper extends ClassMapperBase<AidokuBackupChapter> {
     #dateUploaded: _f$dateUploaded,
     #sourceOrder: _f$sourceOrder,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupChapter _instantiate(DecodingData data) {
     return AidokuBackupChapter(

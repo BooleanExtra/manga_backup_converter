@@ -53,6 +53,8 @@ class AidokuBackupHistoryMapper extends ClassMapperBase<AidokuBackupHistory> {
     #total: _f$total,
     #completed: _f$completed,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupHistory _instantiate(DecodingData data) {
     return AidokuBackupHistory(

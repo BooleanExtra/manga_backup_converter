@@ -12,7 +12,10 @@ import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(
+  includeCustomMappers: [SecondsEpochDateTimeMapper()],
+  ignoreNull: true,
+)
 class AidokuBackup with AidokuBackupMappable {
   final Set<AidokuBackupLibraryManga>? library;
   final Set<AidokuBackupHistory>? history;
@@ -65,8 +68,8 @@ class AidokuBackup with AidokuBackupMappable {
       categories: (categories ?? {})..addAll(aidokuBackup.categories ?? {}),
       sources: (sources ?? {})..addAll(aidokuBackup.sources ?? {}),
       date: aidokuBackup.date,
-      name: '${name ?? 'Backup'}Merged',
-      version: aidokuBackup.version ?? version ?? '0.6.10',
+      name: name == null ? null : '${name}_MergedWith_${aidokuBackup.name}',
+      version: version ?? aidokuBackup.version ?? '0.6.10',
     );
   }
 }

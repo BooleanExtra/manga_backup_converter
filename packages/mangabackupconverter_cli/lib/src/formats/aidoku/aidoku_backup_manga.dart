@@ -2,7 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'aidoku_backup_manga.mapper.dart';
 
-@MappableClass()
+@MappableClass(ignoreNull: true)
 class AidokuBackupManga with AidokuBackupMangaMappable {
   final String id;
   final String sourceId;
