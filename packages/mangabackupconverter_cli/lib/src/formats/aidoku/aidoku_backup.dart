@@ -59,7 +59,6 @@ class AidokuBackup with AidokuBackupMappable {
   static const fromJson = AidokuBackupMapper.fromJson;
 
   AidokuBackup mergeWith(AidokuBackup otherBackup) {
-    // TODO: Need to deduplicate libraryCombined based on date fields, also combine categories
     final libraryCombined = <AidokuBackupLibraryManga>{};
     for (final libraryItem in (library ?? <AidokuBackupLibraryManga>{})) {
       final libraryItemDuplicates = _findDuplicates(otherBackup, libraryItem);
