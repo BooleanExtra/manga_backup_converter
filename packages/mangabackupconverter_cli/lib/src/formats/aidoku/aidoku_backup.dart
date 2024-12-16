@@ -44,7 +44,7 @@ class AidokuBackup with AidokuBackupMappable {
     return fromMap(asMap);
   }
 
-  ByteData? toBinaryPropertyList() {
+  ByteData toBinaryPropertyList() {
     try {
       return PropertyListSerialization.dataWithPropertyList(toMap());
     } on PropertyListWriteStreamException catch (e) {
