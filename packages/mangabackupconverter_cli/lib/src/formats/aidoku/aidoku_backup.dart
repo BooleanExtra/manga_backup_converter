@@ -58,18 +58,132 @@ class AidokuBackup with AidokuBackupMappable {
   static const fromMap = AidokuBackupMapper.fromMap;
   static const fromJson = AidokuBackupMapper.fromJson;
 
-  AidokuBackup mergeWith(AidokuBackup aidokuBackup) {
+  AidokuBackup mergeWith(AidokuBackup otherBackup) {
+    // TODO: Need to deduplicate libraryCombined based on date fields, also combine categories
+    final libraryCombined = <AidokuBackupLibraryManga>{};
+    for (final libraryItem in (library ?? <AidokuBackupLibraryManga>{})) {
+      final libraryItemDuplicates = _findDuplicates(otherBackup, libraryItem);
+      final combinedCategories = {
+        ...libraryItem.categories,
+        ...libraryItemDuplicates.fold(
+          <String>{},
+          (previousCategories, libraryItemDuplicate) =>
+              {...previousCategories, ...libraryItemDuplicate.categories},
+        ),
+      };
+      final latestDateAdded = libraryItemDuplicates.fold(
+        libraryItem.dateAdded,
+        (previousDateAdded, libraryItem) =>
+            previousDateAdded.isAfter(libraryItem.dateAdded)
+                ? previousDateAdded
+                : libraryItem.dateAdded,
+      );
+      final latestLastOpened = libraryItemDuplicates.fold(
+        libraryItem.lastOpened,
+        (previousDateOpened, libraryItem) =>
+            previousDateOpened.isAfter(libraryItem.lastOpened)
+                ? previousDateOpened
+                : libraryItem.lastOpened,
+      );
+      final latestLastUpdated = libraryItemDuplicates.fold(
+        libraryItem.lastUpdated,
+        (previousLastUpdated, libraryItem) =>
+            previousLastUpdated.isAfter(libraryItem.lastUpdated)
+                ? previousLastUpdated
+                : libraryItem.lastUpdated,
+      );
+      final latestLastRead = libraryItemDuplicates.fold(
+        libraryItem.lastRead,
+        (previousLastRead, libraryItem) {
+          final otherLastRead = libraryItem.lastRead;
+          if (previousLastRead == null && otherLastRead == null) {
+            return null;
+          }
+          if (previousLastRead != null && otherLastRead == null) {
+            return previousLastRead;
+          }
+          return switch ((
+            previousLastRead: previousLastRead,
+            otherLastRead: otherLastRead
+          )) {
+            _ when otherLastRead == null && previousLastRead == null => null,
+            _ when otherLastRead != null && previousLastRead == null =>
+              otherLastRead,
+            _ when otherLastRead == null && previousLastRead != null =>
+              previousLastRead,
+            _ when otherLastRead != null && previousLastRead != null =>
+              previousLastRead.isAfter(otherLastRead)
+                  ? previousLastRead
+                  : libraryItem.lastRead,
+            (otherLastRead: _, previousLastRead: _) => null,
+          };
+        },
+      );
+      libraryCombined.add(
+        libraryItem.copyWith(
+          categories: combinedCategories.toList(),
+          dateAdded: latestDateAdded,
+          lastOpened: latestLastOpened,
+          lastUpdated: latestLastUpdated,
+          lastRead: latestLastRead,
+        ),
+      );
+    }
+    for (final otherLibraryItem
+        in (otherBackup.library ?? <AidokuBackupLibraryManga>{})) {
+      if (libraryCombined
+          .where(
+            (libraryItem) =>
+                libraryItem.mangaId == otherLibraryItem.mangaId &&
+                libraryItem.sourceId == otherLibraryItem.sourceId,
+          )
+          .isEmpty) {
+        libraryCombined.add(otherLibraryItem);
+      }
+    }
+    final mangaCombined = {
+      ...?manga?.map((e) => e.copyWith()).toSet(),
+      ...?otherBackup.manga?.map((e) => e.copyWith()).toSet(),
+    };
+    final historyCombined = {
+      ...?history?.map((e) => e.copyWith()).toSet(),
+      ...?otherBackup.history?.map((e) => e.copyWith()).toSet(),
+    };
+    final chaptersCombined = {
+      ...?chapters?.map((e) => e.copyWith()).toSet(),
+      ...?otherBackup.chapters?.map((e) => e.copyWith()).toSet(),
+    };
+    final trackItemsCombined = {
+      ...?trackItems?.map((e) => e.copyWith()).toSet(),
+      ...?otherBackup.trackItems?.map((e) => e.copyWith()).toSet(),
+    };
     return AidokuBackup(
-      library: (library ?? {})..addAll(aidokuBackup.library ?? {}),
-      history: (history ?? {})..addAll(aidokuBackup.history ?? {}),
-      manga: (manga ?? {})..addAll(aidokuBackup.manga ?? {}),
-      chapters: (chapters ?? {})..addAll(aidokuBackup.chapters ?? {}),
-      trackItems: (trackItems ?? {})..addAll(aidokuBackup.trackItems ?? {}),
-      categories: (categories ?? {})..addAll(aidokuBackup.categories ?? {}),
-      sources: (sources ?? {})..addAll(aidokuBackup.sources ?? {}),
+      library: libraryCombined,
+      history: historyCombined,
+      manga: mangaCombined,
+      chapters: chaptersCombined,
+      trackItems: trackItemsCombined,
+      categories: (categories ?? {})..addAll(otherBackup.categories ?? {}),
+      sources: (sources ?? {})..addAll(otherBackup.sources ?? {}),
       date: DateTime.now(),
-      name: name == null ? null : '${name}_MergedWith_${aidokuBackup.name}',
-      version: version ?? aidokuBackup.version ?? '0.6.10',
+      name: name == null ? null : '${name}_MergedWith_${otherBackup.name}',
+      version: version ?? otherBackup.version ?? '0.6.10',
     );
   }
+}
+
+Set<AidokuBackupLibraryManga> _findDuplicates(
+  AidokuBackup aidokuBackup,
+  AidokuBackupLibraryManga libraryItem,
+) {
+  final duplicates = <AidokuBackupLibraryManga>{};
+  for (final otherLibraryItem
+      in (aidokuBackup.library ?? <AidokuBackupLibraryManga>{})) {
+    if (otherLibraryItem.mangaId == libraryItem.mangaId &&
+        otherLibraryItem.sourceId == libraryItem.sourceId &&
+        libraryItem != otherLibraryItem) {
+      duplicates.add(otherLibraryItem);
+    }
+  }
+  return duplicates;
 }
