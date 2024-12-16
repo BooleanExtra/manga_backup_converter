@@ -41,7 +41,7 @@ class MergeCommand extends Command<void> {
       ..addOption(
         'output',
         abbr: 'o',
-        help: 'The path including the filename to save the merged backup',
+        help: 'The output folder to save the merged backup',
       );
   }
 
@@ -57,19 +57,18 @@ class MergeCommand extends Command<void> {
     }
     final io.File backupFile = _parseFile(results, 'backup');
     final io.File otherBackupFile = _parseFile(results, 'other');
-    final String outputPath = results.wasParsed('output')
-        ? results.option('output')!
-        : './${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib';
+    final String outputPath =
+        '${results.wasParsed('output') ? results.option('output')! : './'}${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib';
     final backupFileExtension = p.extension(backupFile.uri.toString());
     final otherBackupFileExtension =
         p.extension(otherBackupFile.uri.toString());
-    if (backupFileExtension != 'aib') {
+    if (backupFileExtension != '.aib') {
       print('Backup file format "$backupFileExtension" not supported');
       throw ArgumentError(
         'Backup file format "$backupFileExtension" not supported',
       );
     }
-    if (otherBackupFileExtension != 'aib') {
+    if (otherBackupFileExtension != '.aib') {
       print('Backup file format "$otherBackupFileExtension" not supported');
       throw ArgumentError(
         'Backup file format "$otherBackupFileExtension" not supported',
