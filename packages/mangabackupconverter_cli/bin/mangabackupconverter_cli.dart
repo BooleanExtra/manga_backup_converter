@@ -1,15 +1,9 @@
 // ignore_for_file: avoid_print
 
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
 import 'src/convert_command.dart';
 import 'src/merge_command.dart';
-
-void printUsage(ArgParser argParser) {
-  print('Usage: dart mangabackupconverter_cli.dart <flags> [arguments]');
-  print(argParser.usage);
-}
 
 void main(List<String> args) async {
   final runner = CommandRunner<void>(
