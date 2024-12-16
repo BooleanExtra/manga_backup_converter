@@ -15,6 +15,28 @@
             ]
         },
         {
+            "name": "profile mode",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "FLUTTER_APP_FLAVOR=local"
+            ]
+        },
+        {
+            "name": "release mode",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "FLUTTER_APP_FLAVOR=local"
+            ]
+        },
+        {
             "name": "Import Paperback (debug mode)",
             "request": "launch",
             "type": "dart",
@@ -120,25 +142,19 @@
             ]
         },
         {
-            "name": "profile mode",
+            "name": "Merge Aidoku Backups (debug mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile",
-            "program": "lib/main.dart",
+            "program": "packages/mangabackupconverter_cli/bin/mangabackupconverter_cli.dart",
             "args": [
-                "--dart-define",
-                "FLUTTER_APP_FLAVOR=local"
-            ]
-        },
-        {
-            "name": "release mode",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release",
-            "program": "lib/main.dart",
-            "args": [
-                "--dart-define",
-                "FLUTTER_APP_FLAVOR=local"
+                "merge",
+                "-f",
+                ".input_files/aidoku_2024-08-23_20-25-49.aib",
+                "-m",
+                ".input_files/aidoku_2024-12-16_00-39-21.aib",
+                "-o",
+                ".output_files/",
+                "-v"
             ]
         }
     ]
