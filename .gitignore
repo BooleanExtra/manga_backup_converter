@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 *.env*
 !*.env*.example
@@ -209,5 +211,6 @@ windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugin_registrant.h
 windows/flutter/generated_plugins.cmake
 /packages/mangabackupconverter_cli/.input_files
+/packages/mangabackupconverter_cli/.output_files
 packages/mangabackupconverter_cli/web/sqflite_sw.js
 packages/mangabackupconverter_cli/web/sqlite3.wasm

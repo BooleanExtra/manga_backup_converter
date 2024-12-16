@@ -15,7 +15,7 @@ class AidokuBackupLibraryMangaMapper
     if (_instance == null) {
       MapperContainer.globals
           .use(_instance = AidokuBackupLibraryMangaMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll([AidokuDateTimeMapper()]);
     }
     return _instance!;
   }
@@ -55,6 +55,8 @@ class AidokuBackupLibraryMangaMapper
     #mangaId: _f$mangaId,
     #sourceId: _f$sourceId,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupLibraryManga _instantiate(DecodingData data) {
     return AidokuBackupLibraryManga(

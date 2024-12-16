@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
@@ -12,15 +12,18 @@ import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(
+  includeCustomMappers: [AidokuDateTimeMapper()],
+  ignoreNull: true,
+)
 class AidokuBackup with AidokuBackupMappable {
-  final List<AidokuBackupLibraryManga>? library;
-  final List<AidokuBackupHistory>? history;
-  final List<AidokuBackupManga>? manga;
-  final List<AidokuBackupChapter>? chapters;
-  final List<AidokuBackupTrackItem>? trackItems;
-  final List<String>? categories;
-  final List<String>? sources;
+  final Set<AidokuBackupLibraryManga>? library;
+  final Set<AidokuBackupHistory>? history;
+  final Set<AidokuBackupManga>? manga;
+  final Set<AidokuBackupChapter>? chapters;
+  final Set<AidokuBackupTrackItem>? trackItems;
+  final Set<String>? categories;
+  final Set<String>? sources;
   final DateTime date;
   final String? name;
   final String? version;
@@ -44,7 +47,7 @@ class AidokuBackup with AidokuBackupMappable {
     return fromMap(asMap);
   }
 
-  ByteData? toBinaryPropertyList() {
+  ByteData toBinaryPropertyList() {
     try {
       return PropertyListSerialization.dataWithPropertyList(toMap());
     } on PropertyListWriteStreamException catch (e) {
@@ -54,4 +57,19 @@ class AidokuBackup with AidokuBackupMappable {
 
   static const fromMap = AidokuBackupMapper.fromMap;
   static const fromJson = AidokuBackupMapper.fromJson;
+
+  AidokuBackup mergeWith(AidokuBackup aidokuBackup) {
+    return AidokuBackup(
+      library: (library ?? {})..addAll(aidokuBackup.library ?? {}),
+      history: (history ?? {})..addAll(aidokuBackup.history ?? {}),
+      manga: (manga ?? {})..addAll(aidokuBackup.manga ?? {}),
+      chapters: (chapters ?? {})..addAll(aidokuBackup.chapters ?? {}),
+      trackItems: (trackItems ?? {})..addAll(aidokuBackup.trackItems ?? {}),
+      categories: (categories ?? {})..addAll(aidokuBackup.categories ?? {}),
+      sources: (sources ?? {})..addAll(aidokuBackup.sources ?? {}),
+      date: DateTime.now(),
+      name: name == null ? null : '${name}_MergedWith_${aidokuBackup.name}',
+      version: version ?? aidokuBackup.version ?? '0.6.10',
+    );
+  }
 }

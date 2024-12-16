@@ -13,7 +13,7 @@ class AidokuBackupChapterMapper extends ClassMapperBase<AidokuBackupChapter> {
   static AidokuBackupChapterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AidokuBackupChapterMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll([AidokuDateTimeMapper()]);
     }
     return _instance!;
   }
@@ -64,6 +64,8 @@ class AidokuBackupChapterMapper extends ClassMapperBase<AidokuBackupChapter> {
     #dateUploaded: _f$dateUploaded,
     #sourceOrder: _f$sourceOrder,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupChapter _instantiate(DecodingData data) {
     return AidokuBackupChapter(

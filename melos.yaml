@@ -17,7 +17,7 @@ command:
       # Generate environment files which should not be committed to the repository.
       # Instead, they are generated during the CI process before checking
       # if the rest of the package's code generation is up to date.
-      pre: cd packages/env && dart run build_runner build -d
+      pre: cd packages/env && flutter pub get && dart run build_runner build -d
       post: flutter pub global activate coverage ^1.11.1
 
 # See https://github.com/firebase/flutterfire/blob/master/melos.yaml for more examples

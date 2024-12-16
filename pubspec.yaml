@@ -45,10 +45,10 @@ dependencies:
   modddels_annotation_fpdart: ^0.2.0
   package_info_plus: ^8.0.2
   path: ^1.9.0
-  path_provider: ^2.1.3
+  path_provider: ^2.1.5
   riverpod: ^2.3.6
   riverpod_annotation: ^2.3.5
-  shared_preferences: ^2.3.2
+  shared_preferences: ^2.3.3
   skeletonizer: ^1.1.1
   stock: ^1.0.1
   super_clipboard: ^0.8.22

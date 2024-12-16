@@ -44,6 +44,8 @@ class AidokuBackupTrackItemMapper
     #sourceId: _f$sourceId,
     #title: _f$title,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupTrackItem _instantiate(DecodingData data) {
     return AidokuBackupTrackItem(

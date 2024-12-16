@@ -76,6 +76,8 @@ class AidokuBackupMangaMapper extends ClassMapperBase<AidokuBackupManga> {
     #chapterFlags: _f$chapterFlags,
     #langFilter: _f$langFilter,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupManga _instantiate(DecodingData data) {
     return AidokuBackupManga(
