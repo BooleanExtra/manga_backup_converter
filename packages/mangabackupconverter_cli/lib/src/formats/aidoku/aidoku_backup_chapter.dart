@@ -3,7 +3,10 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'aidoku_backup_chapter.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(
+  includeCustomMappers: [SecondsEpochDateTimeMapper()],
+  ignoreNull: true,
+)
 class AidokuBackupChapter with AidokuBackupChapterMappable {
   final String sourceId;
   final String mangaId;

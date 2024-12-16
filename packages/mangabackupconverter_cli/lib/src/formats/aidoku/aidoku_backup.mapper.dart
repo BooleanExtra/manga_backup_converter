@@ -69,6 +69,8 @@ class AidokuBackupMapper extends ClassMapperBase<AidokuBackup> {
     #name: _f$name,
     #version: _f$version,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackup _instantiate(DecodingData data) {
     return AidokuBackup(

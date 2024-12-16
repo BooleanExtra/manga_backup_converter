@@ -55,6 +55,8 @@ class AidokuBackupLibraryMangaMapper
     #mangaId: _f$mangaId,
     #sourceId: _f$sourceId,
   };
+  @override
+  final bool ignoreNull = true;
 
   static AidokuBackupLibraryManga _instantiate(DecodingData data) {
     return AidokuBackupLibraryManga(
