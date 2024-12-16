@@ -70,6 +70,9 @@ class AidokuBackup with AidokuBackupMappable {
               {...previousCategories, ...libraryItemDuplicate.categories},
         ),
       };
+      if (combinedCategories.isEmpty) {
+        combinedCategories.add('Default');
+      }
       final latestDateAdded = libraryItemDuplicates.fold(
         libraryItem.dateAdded,
         (previousDateAdded, libraryItem) =>
@@ -156,13 +159,19 @@ class AidokuBackup with AidokuBackupMappable {
       ...?trackItems?.map((e) => e.copyWith()).toSet(),
       ...?otherBackup.trackItems?.map((e) => e.copyWith()).toSet(),
     };
+    final combinedCategories = {...?categories, ...?otherBackup.categories};
+    if (libraryCombined
+        .where((l) => l.categories.contains('Default'))
+        .isNotEmpty) {
+      combinedCategories.add('Default');
+    }
     return AidokuBackup(
       library: libraryCombined,
       history: historyCombined,
       manga: mangaCombined,
       chapters: chaptersCombined,
       trackItems: trackItemsCombined,
-      categories: (categories ?? {})..addAll(otherBackup.categories ?? {}),
+      categories: combinedCategories,
       sources: (sources ?? {})..addAll(otherBackup.sources ?? {}),
       date: DateTime.now(),
       name: name == null ? null : '${name}_MergedWith_${otherBackup.name}',
