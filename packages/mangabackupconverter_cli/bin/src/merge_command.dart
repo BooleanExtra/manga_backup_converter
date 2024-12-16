@@ -84,6 +84,7 @@ class MergeCommand extends Command<void> {
     if (verbose) {
       print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
     }
+    print('Backup Library: ${aidokuBackup.library?.length}');
     final AidokuBackup otherAidokuBackup = AidokuBackup.fromBinaryPropertyList(
       ByteData.sublistView(
         otherBackupFile.readAsBytesSync(),
@@ -92,11 +93,28 @@ class MergeCommand extends Command<void> {
     if (verbose) {
       print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');
     }
+    print('Other Backup Library: ${otherAidokuBackup.library?.length}');
     final AidokuBackup combinedBackup =
         aidokuBackup.mergeWith(otherAidokuBackup);
     if (verbose) {
       print('[VERBOSE] Combined Aidoku Backup: $combinedBackup');
+      final library = combinedBackup.library!.toList();
+      final Set<String> duplicates = {};
+      for (int i = 0; i < library.length; i++) {
+        for (int j = i + 1; j < library.length; j++) {
+          final libraryManga = library[i];
+          final otherManga = library[j];
+          if (libraryManga.mangaId == otherManga.mangaId &&
+              libraryManga != otherManga) {
+            duplicates.add(libraryManga.mangaId);
+            break;
+          }
+        }
+      }
+      print('[VERBOSE] Duplicate Library Manga Ids: $duplicates');
+      print('[VERBOSE] Duplicate Library Manga: ${duplicates.length}');
     }
+    print('Combined Library: ${combinedBackup.manga?.length}');
     final ByteData combinedBackupData = combinedBackup.toBinaryPropertyList();
     final io.File outputFile = io.File(outputPath);
     outputFile.writeAsBytesSync(Int8List.sublistView(combinedBackupData));
