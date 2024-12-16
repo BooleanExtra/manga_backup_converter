@@ -57,8 +57,10 @@ class MergeCommand extends Command<void> {
     }
     final io.File backupFile = _parseFile(results, 'backup');
     final io.File otherBackupFile = _parseFile(results, 'other');
-    final String outputPath =
-        '${results.wasParsed('output') ? results.option('output')! : './'}${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib';
+    final String outputPath = p.join(
+      results.wasParsed('output') ? results.option('output')! : '.',
+      '${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib',
+    );
     final backupFileExtension = p.extension(backupFile.uri.toString());
     final otherBackupFileExtension =
         p.extension(otherBackupFile.uri.toString());
@@ -98,6 +100,7 @@ class MergeCommand extends Command<void> {
     final ByteData combinedBackupData = combinedBackup.toBinaryPropertyList();
     final io.File outputFile = io.File(outputPath);
     outputFile.writeAsBytesSync(Int8List.sublistView(combinedBackupData));
+    print('Saved merged backup to ${outputFile.path}');
   }
 
   io.File _parseFile(ArgResults results, String optionName) {
