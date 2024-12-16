@@ -15,7 +15,7 @@ class AidokuBackupLibraryMangaMapper
     if (_instance == null) {
       MapperContainer.globals
           .use(_instance = AidokuBackupLibraryMangaMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll([AidokuDateTimeMapper()]);
     }
     return _instance!;
   }

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
@@ -13,7 +13,7 @@ import 'package:propertylistserialization/propertylistserialization.dart';
 part 'aidoku_backup.mapper.dart';
 
 @MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
+  includeCustomMappers: [AidokuDateTimeMapper()],
   ignoreNull: true,
 )
 class AidokuBackup with AidokuBackupMappable {
