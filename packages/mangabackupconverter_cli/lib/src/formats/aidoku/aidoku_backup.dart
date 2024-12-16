@@ -67,7 +67,7 @@ class AidokuBackup with AidokuBackupMappable {
       trackItems: (trackItems ?? {})..addAll(aidokuBackup.trackItems ?? {}),
       categories: (categories ?? {})..addAll(aidokuBackup.categories ?? {}),
       sources: (sources ?? {})..addAll(aidokuBackup.sources ?? {}),
-      date: aidokuBackup.date,
+      date: DateTime.now(),
       name: name == null ? null : '${name}_MergedWith_${aidokuBackup.name}',
       version: version ?? aidokuBackup.version ?? '0.6.10',
     );
