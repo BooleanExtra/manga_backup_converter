@@ -140,6 +140,9 @@ class AidokuBackup with AidokuBackupMappable {
                 libraryItem.sourceId == otherLibraryItem.sourceId,
           )
           .isEmpty) {
+        if (otherLibraryItem.categories.isEmpty) {
+          otherLibraryItem.categories.add('Default');
+        }
         libraryCombined.add(otherLibraryItem);
       }
     }
