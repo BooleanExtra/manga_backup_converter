@@ -214,6 +214,7 @@ class BackupCategory extends $pb.GeneratedMessage {
   factory BackupCategory({
     $core.String? name,
     $fixnum.Int64? order,
+    $fixnum.Int64? id,
     $fixnum.Int64? flags,
   }) {
     final $result = create();
@@ -222,6 +223,9 @@ class BackupCategory extends $pb.GeneratedMessage {
     }
     if (order != null) {
       $result.order = order;
+    }
+    if (id != null) {
+      $result.id = id;
     }
     if (flags != null) {
       $result.flags = flags;
@@ -241,6 +245,7 @@ class BackupCategory extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aQS(1, _omitFieldNames ? '' : 'name')
     ..aInt64(2, _omitFieldNames ? '' : 'order')
+    ..aInt64(3, _omitFieldNames ? '' : 'id')
     ..aInt64(100, _omitFieldNames ? '' : 'flags');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -290,15 +295,27 @@ class BackupCategory extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   void clearOrder() => clearField(2);
 
-  @$pb.TagNumber(100)
-  $fixnum.Int64 get flags => $_getI64(2);
-  @$pb.TagNumber(100)
-  set flags($fixnum.Int64 v) {
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get id => $_getI64(2);
+  @$pb.TagNumber(3)
+  set id($fixnum.Int64 v) {
     $_setInt64(2, v);
   }
 
+  @$pb.TagNumber(3)
+  $core.bool hasId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearId() => clearField(3);
+
   @$pb.TagNumber(100)
-  $core.bool hasFlags() => $_has(2);
+  $fixnum.Int64 get flags => $_getI64(3);
+  @$pb.TagNumber(100)
+  set flags($fixnum.Int64 v) {
+    $_setInt64(3, v);
+  }
+
+  @$pb.TagNumber(100)
+  $core.bool hasFlags() => $_has(3);
   @$pb.TagNumber(100)
   void clearFlags() => clearField(100);
 }
@@ -2308,6 +2325,7 @@ class BackupTracking extends $pb.GeneratedMessage {
     $core.int? status,
     $fixnum.Int64? startedReadingDate,
     $fixnum.Int64? finishedReadingDate,
+    $core.bool? private,
     $fixnum.Int64? mediaId,
   }) {
     final $result = create();
@@ -2343,6 +2361,9 @@ class BackupTracking extends $pb.GeneratedMessage {
     }
     if (finishedReadingDate != null) {
       $result.finishedReadingDate = finishedReadingDate;
+    }
+    if (private != null) {
+      $result.private = private;
     }
     if (mediaId != null) {
       $result.mediaId = mediaId;
@@ -2381,6 +2402,7 @@ class BackupTracking extends $pb.GeneratedMessage {
         protoName: 'startedReadingDate')
     ..aInt64(11, _omitFieldNames ? '' : 'finishedReadingDate',
         protoName: 'finishedReadingDate')
+    ..aOB(12, _omitFieldNames ? '' : 'private')
     ..aInt64(100, _omitFieldNames ? '' : 'mediaId', protoName: 'mediaId');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -2538,15 +2560,27 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(11)
   void clearFinishedReadingDate() => clearField(11);
 
+  @$pb.TagNumber(12)
+  $core.bool get private => $_getBF(11);
+  @$pb.TagNumber(12)
+  set private($core.bool v) {
+    $_setBool(11, v);
+  }
+
+  @$pb.TagNumber(12)
+  $core.bool hasPrivate() => $_has(11);
+  @$pb.TagNumber(12)
+  void clearPrivate() => clearField(12);
+
   @$pb.TagNumber(100)
-  $fixnum.Int64 get mediaId => $_getI64(11);
+  $fixnum.Int64 get mediaId => $_getI64(12);
   @$pb.TagNumber(100)
   set mediaId($fixnum.Int64 v) {
-    $_setInt64(11, v);
+    $_setInt64(12, v);
   }
 
   @$pb.TagNumber(100)
-  $core.bool hasMediaId() => $_has(11);
+  $core.bool hasMediaId() => $_has(12);
   @$pb.TagNumber(100)
   void clearMediaId() => clearField(100);
 }
