@@ -113,6 +113,7 @@ const BackupCategory$json = {
   '2': [
     {'1': 'name', '3': 1, '4': 2, '5': 9, '10': 'name'},
     {'1': 'order', '3': 2, '4': 1, '5': 3, '10': 'order'},
+    {'1': 'id', '3': 3, '4': 1, '5': 3, '10': 'id'},
     {'1': 'flags', '3': 100, '4': 1, '5': 3, '10': 'flags'},
   ],
 };
@@ -120,7 +121,7 @@ const BackupCategory$json = {
 /// Descriptor for `BackupCategory`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List backupCategoryDescriptor = $convert.base64Decode(
     'Cg5CYWNrdXBDYXRlZ29yeRISCgRuYW1lGAEgAigJUgRuYW1lEhQKBW9yZGVyGAIgASgDUgVvcm'
-    'RlchIUCgVmbGFncxhkIAEoA1IFZmxhZ3M=');
+    'RlchIOCgJpZBgDIAEoA1ICaWQSFAoFZmxhZ3MYZCABKANSBWZsYWdz');
 
 @$core.Deprecated('Use backupChapterDescriptor instead')
 const BackupChapter$json = {
@@ -439,6 +440,7 @@ const BackupTracking$json = {
       '5': 3,
       '10': 'finishedReadingDate'
     },
+    {'1': 'private', '3': 12, '4': 1, '5': 8, '10': 'private'},
     {'1': 'mediaId', '3': 100, '4': 1, '5': 3, '10': 'mediaId'},
   ],
 };
@@ -451,5 +453,5 @@ final $typed_data.Uint8List backupTrackingDescriptor = $convert.base64Decode(
     'NoYXB0ZXJSZWFkGAYgASgCUg9sYXN0Q2hhcHRlclJlYWQSJAoNdG90YWxDaGFwdGVycxgHIAEo'
     'BVINdG90YWxDaGFwdGVycxIUCgVzY29yZRgIIAEoAlIFc2NvcmUSFgoGc3RhdHVzGAkgASgFUg'
     'ZzdGF0dXMSLgoSc3RhcnRlZFJlYWRpbmdEYXRlGAogASgDUhJzdGFydGVkUmVhZGluZ0RhdGUS'
-    'MAoTZmluaXNoZWRSZWFkaW5nRGF0ZRgLIAEoA1ITZmluaXNoZWRSZWFkaW5nRGF0ZRIYCgdtZW'
-    'RpYUlkGGQgASgDUgdtZWRpYUlk');
+    'MAoTZmluaXNoZWRSZWFkaW5nRGF0ZRgLIAEoA1ITZmluaXNoZWRSZWFkaW5nRGF0ZRIYCgdwcm'
+    'l2YXRlGAwgASgIUgdwcml2YXRlEhgKB21lZGlhSWQYZCABKANSB21lZGlhSWQ=');
