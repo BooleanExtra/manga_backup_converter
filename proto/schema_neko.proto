@@ -37,6 +37,7 @@ message BackupChapter {
   optional float chapterNumber = 9;
   optional int32 sourceOrder = 10;
   optional int32 pagesLeft = 800;
+  optional string uploader = 905;
 }
 
 // BackupHistory.kt

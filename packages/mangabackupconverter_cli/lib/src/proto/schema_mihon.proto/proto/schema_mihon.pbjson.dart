@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: proto/schema_mihon.proto
 //
-// @dart = 2.12
+// @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
 // ignore_for_file: constant_identifier_names, library_prefixes
@@ -259,6 +259,7 @@ const BackupManga$json = {
       '10': 'excludedScanlators'
     },
     {'1': 'version', '3': 109, '4': 1, '5': 3, '10': 'version'},
+    {'1': 'notes', '3': 110, '4': 1, '5': 9, '10': 'notes'},
   ],
 };
 
@@ -277,7 +278,8 @@ final $typed_data.Uint8List backupMangaDescriptor = $convert.base64Decode(
     'cnkSNwoOdXBkYXRlU3RyYXRlZ3kYaSABKA4yDy5VcGRhdGVTdHJhdGVneVIOdXBkYXRlU3RyYX'
     'RlZ3kSJgoObGFzdE1vZGlmaWVkQXQYaiABKANSDmxhc3RNb2RpZmllZEF0Ei4KEmZhdm9yaXRl'
     'TW9kaWZpZWRBdBhrIAEoA1ISZmF2b3JpdGVNb2RpZmllZEF0Ei4KEmV4Y2x1ZGVkU2NhbmxhdG'
-    '9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3ZlcnNpb24=');
+    '9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3ZlcnNpb24S'
+    'FAoFbm90ZXMYbiABKAlSBW5vdGVz');
 
 @$core.Deprecated('Use backupPreferenceDescriptor instead')
 const BackupPreference$json = {
