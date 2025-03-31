@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: proto/schema_neko.proto
 //
-// @dart = 2.12
+// @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
 // ignore_for_file: constant_identifier_names, library_prefixes
@@ -100,6 +100,7 @@ const BackupChapter$json = {
     {'1': 'chapterNumber', '3': 9, '4': 1, '5': 2, '10': 'chapterNumber'},
     {'1': 'sourceOrder', '3': 10, '4': 1, '5': 5, '10': 'sourceOrder'},
     {'1': 'pagesLeft', '3': 800, '4': 1, '5': 5, '10': 'pagesLeft'},
+    {'1': 'uploader', '3': 905, '4': 1, '5': 9, '10': 'uploader'},
   ],
 };
 
@@ -110,7 +111,8 @@ final $typed_data.Uint8List backupChapterDescriptor = $convert.base64Decode(
     'bWFyaxgFIAEoCFIIYm9va21hcmsSIgoMbGFzdFBhZ2VSZWFkGAYgASgFUgxsYXN0UGFnZVJlYW'
     'QSHAoJZGF0ZUZldGNoGAcgASgDUglkYXRlRmV0Y2gSHgoKZGF0ZVVwbG9hZBgIIAEoA1IKZGF0'
     'ZVVwbG9hZBIkCg1jaGFwdGVyTnVtYmVyGAkgASgCUg1jaGFwdGVyTnVtYmVyEiAKC3NvdXJjZU'
-    '9yZGVyGAogASgFUgtzb3VyY2VPcmRlchIdCglwYWdlc0xlZnQYoAYgASgFUglwYWdlc0xlZnQ=');
+    '9yZGVyGAogASgFUgtzb3VyY2VPcmRlchIdCglwYWdlc0xlZnQYoAYgASgFUglwYWdlc0xlZnQS'
+    'GwoIdXBsb2FkZXIYiQcgASgJUgh1cGxvYWRlcg==');
 
 @$core.Deprecated('Use brokenBackupHistoryDescriptor instead')
 const BrokenBackupHistory$json = {

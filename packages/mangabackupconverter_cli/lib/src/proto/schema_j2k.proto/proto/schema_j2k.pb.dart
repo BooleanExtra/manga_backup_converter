@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: proto/schema_j2k.proto
 //
-// @dart = 2.12
+// @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
 // ignore_for_file: constant_identifier_names, library_prefixes
@@ -15,6 +15,8 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
 import 'schema_j2k.pbenum.dart';
+
+export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 export 'schema_j2k.pbenum.dart';
 
@@ -80,7 +82,7 @@ class PreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasType() => $_has(0);
   @$pb.TagNumber(1)
-  void clearType() => clearField(1);
+  void clearType() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $core.List<$core.int> get truevalue => $_getN(1);
@@ -92,7 +94,7 @@ class PreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasTruevalue() => $_has(1);
   @$pb.TagNumber(2)
-  void clearTruevalue() => clearField(2);
+  void clearTruevalue() => $_clearField(2);
 }
 
 /// Backup.kt
@@ -179,22 +181,22 @@ class Backup extends $pb.GeneratedMessage {
   static Backup? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.List<BackupManga> get backupManga => $_getList(0);
+  $pb.PbList<BackupManga> get backupManga => $_getList(0);
 
   @$pb.TagNumber(2)
-  $core.List<BackupCategory> get backupCategories => $_getList(1);
+  $pb.PbList<BackupCategory> get backupCategories => $_getList(1);
 
   @$pb.TagNumber(100)
-  $core.List<BrokenBackupSource> get backupBrokenSources => $_getList(2);
+  $pb.PbList<BrokenBackupSource> get backupBrokenSources => $_getList(2);
 
   @$pb.TagNumber(101)
-  $core.List<BackupSource> get backupSources => $_getList(3);
+  $pb.PbList<BackupSource> get backupSources => $_getList(3);
 
   @$pb.TagNumber(104)
-  $core.List<BackupPreference> get backupPreferences => $_getList(4);
+  $pb.PbList<BackupPreference> get backupPreferences => $_getList(4);
 
   @$pb.TagNumber(105)
-  $core.List<BackupSourcePreferences> get backupSourcePreferences =>
+  $pb.PbList<BackupSourcePreferences> get backupSourcePreferences =>
       $_getList(5);
 }
 
@@ -270,7 +272,7 @@ class BackupCategory extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $core.int get order => $_getIZ(1);
@@ -282,7 +284,7 @@ class BackupCategory extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasOrder() => $_has(1);
   @$pb.TagNumber(2)
-  void clearOrder() => clearField(2);
+  void clearOrder() => $_clearField(2);
 
   @$pb.TagNumber(100)
   $core.int get flags => $_getIZ(2);
@@ -294,7 +296,7 @@ class BackupCategory extends $pb.GeneratedMessage {
   @$pb.TagNumber(100)
   $core.bool hasFlags() => $_has(2);
   @$pb.TagNumber(100)
-  void clearFlags() => clearField(100);
+  void clearFlags() => $_clearField(100);
 
   @$pb.TagNumber(800)
   $core.String get mangaSort => $_getSZ(3);
@@ -306,7 +308,7 @@ class BackupCategory extends $pb.GeneratedMessage {
   @$pb.TagNumber(800)
   $core.bool hasMangaSort() => $_has(3);
   @$pb.TagNumber(800)
-  void clearMangaSort() => clearField(800);
+  void clearMangaSort() => $_clearField(800);
 }
 
 /// BackupChapter.kt
@@ -421,7 +423,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasUrl() => $_has(0);
   @$pb.TagNumber(1)
-  void clearUrl() => clearField(1);
+  void clearUrl() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get name => $_getSZ(1);
@@ -433,7 +435,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearName() => clearField(2);
+  void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
   $core.String get scanlator => $_getSZ(2);
@@ -445,7 +447,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.bool hasScanlator() => $_has(2);
   @$pb.TagNumber(3)
-  void clearScanlator() => clearField(3);
+  void clearScanlator() => $_clearField(3);
 
   @$pb.TagNumber(4)
   $core.bool get read => $_getBF(3);
@@ -457,7 +459,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   $core.bool hasRead() => $_has(3);
   @$pb.TagNumber(4)
-  void clearRead() => clearField(4);
+  void clearRead() => $_clearField(4);
 
   @$pb.TagNumber(5)
   $core.bool get bookmark => $_getBF(4);
@@ -469,7 +471,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   $core.bool hasBookmark() => $_has(4);
   @$pb.TagNumber(5)
-  void clearBookmark() => clearField(5);
+  void clearBookmark() => $_clearField(5);
 
   @$pb.TagNumber(6)
   $core.int get lastPageRead => $_getIZ(5);
@@ -481,7 +483,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   $core.bool hasLastPageRead() => $_has(5);
   @$pb.TagNumber(6)
-  void clearLastPageRead() => clearField(6);
+  void clearLastPageRead() => $_clearField(6);
 
   @$pb.TagNumber(7)
   $fixnum.Int64 get dateFetch => $_getI64(6);
@@ -493,7 +495,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   $core.bool hasDateFetch() => $_has(6);
   @$pb.TagNumber(7)
-  void clearDateFetch() => clearField(7);
+  void clearDateFetch() => $_clearField(7);
 
   @$pb.TagNumber(8)
   $fixnum.Int64 get dateUpload => $_getI64(7);
@@ -505,7 +507,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(8)
   $core.bool hasDateUpload() => $_has(7);
   @$pb.TagNumber(8)
-  void clearDateUpload() => clearField(8);
+  void clearDateUpload() => $_clearField(8);
 
   @$pb.TagNumber(9)
   $core.double get chapterNumber => $_getN(8);
@@ -517,7 +519,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   $core.bool hasChapterNumber() => $_has(8);
   @$pb.TagNumber(9)
-  void clearChapterNumber() => clearField(9);
+  void clearChapterNumber() => $_clearField(9);
 
   @$pb.TagNumber(10)
   $core.int get sourceOrder => $_getIZ(9);
@@ -529,7 +531,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(10)
   $core.bool hasSourceOrder() => $_has(9);
   @$pb.TagNumber(10)
-  void clearSourceOrder() => clearField(10);
+  void clearSourceOrder() => $_clearField(10);
 
   @$pb.TagNumber(800)
   $core.int get pagesLeft => $_getIZ(10);
@@ -541,7 +543,7 @@ class BackupChapter extends $pb.GeneratedMessage {
   @$pb.TagNumber(800)
   $core.bool hasPagesLeft() => $_has(10);
   @$pb.TagNumber(800)
-  void clearPagesLeft() => clearField(800);
+  void clearPagesLeft() => $_clearField(800);
 }
 
 /// BackupHistory.kt
@@ -613,7 +615,7 @@ class BackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasUrl() => $_has(0);
   @$pb.TagNumber(1)
-  void clearUrl() => clearField(1);
+  void clearUrl() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get lastRead => $_getI64(1);
@@ -625,7 +627,7 @@ class BackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasLastRead() => $_has(1);
   @$pb.TagNumber(2)
-  void clearLastRead() => clearField(2);
+  void clearLastRead() => $_clearField(2);
 
   @$pb.TagNumber(3)
   $fixnum.Int64 get readDuration => $_getI64(2);
@@ -637,7 +639,7 @@ class BackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.bool hasReadDuration() => $_has(2);
   @$pb.TagNumber(3)
-  void clearReadDuration() => clearField(3);
+  void clearReadDuration() => $_clearField(3);
 }
 
 class BrokenBackupHistory extends $pb.GeneratedMessage {
@@ -708,7 +710,7 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasUrl() => $_has(0);
   @$pb.TagNumber(1)
-  void clearUrl() => clearField(1);
+  void clearUrl() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get lastRead => $_getI64(1);
@@ -720,7 +722,7 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasLastRead() => $_has(1);
   @$pb.TagNumber(2)
-  void clearLastRead() => clearField(2);
+  void clearLastRead() => $_clearField(2);
 
   @$pb.TagNumber(3)
   $fixnum.Int64 get readDuration => $_getI64(2);
@@ -732,7 +734,7 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.bool hasReadDuration() => $_has(2);
   @$pb.TagNumber(3)
-  void clearReadDuration() => clearField(3);
+  void clearReadDuration() => $_clearField(3);
 }
 
 /// BackupManga.kt
@@ -936,7 +938,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasSource() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSource() => clearField(1);
+  void clearSource() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get url => $_getSZ(1);
@@ -948,7 +950,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasUrl() => $_has(1);
   @$pb.TagNumber(2)
-  void clearUrl() => clearField(2);
+  void clearUrl() => $_clearField(2);
 
   @$pb.TagNumber(3)
   $core.String get title => $_getSZ(2);
@@ -960,7 +962,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.bool hasTitle() => $_has(2);
   @$pb.TagNumber(3)
-  void clearTitle() => clearField(3);
+  void clearTitle() => $_clearField(3);
 
   @$pb.TagNumber(4)
   $core.String get artist => $_getSZ(3);
@@ -972,7 +974,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   $core.bool hasArtist() => $_has(3);
   @$pb.TagNumber(4)
-  void clearArtist() => clearField(4);
+  void clearArtist() => $_clearField(4);
 
   @$pb.TagNumber(5)
   $core.String get author => $_getSZ(4);
@@ -984,7 +986,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   $core.bool hasAuthor() => $_has(4);
   @$pb.TagNumber(5)
-  void clearAuthor() => clearField(5);
+  void clearAuthor() => $_clearField(5);
 
   @$pb.TagNumber(6)
   $core.String get description => $_getSZ(5);
@@ -996,10 +998,10 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   $core.bool hasDescription() => $_has(5);
   @$pb.TagNumber(6)
-  void clearDescription() => clearField(6);
+  void clearDescription() => $_clearField(6);
 
   @$pb.TagNumber(7)
-  $core.List<$core.String> get genre => $_getList(6);
+  $pb.PbList<$core.String> get genre => $_getList(6);
 
   @$pb.TagNumber(8)
   $core.int get status => $_getIZ(7);
@@ -1011,7 +1013,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(8)
   $core.bool hasStatus() => $_has(7);
   @$pb.TagNumber(8)
-  void clearStatus() => clearField(8);
+  void clearStatus() => $_clearField(8);
 
   @$pb.TagNumber(9)
   $core.String get thumbnailUrl => $_getSZ(8);
@@ -1023,7 +1025,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   $core.bool hasThumbnailUrl() => $_has(8);
   @$pb.TagNumber(9)
-  void clearThumbnailUrl() => clearField(9);
+  void clearThumbnailUrl() => $_clearField(9);
 
   @$pb.TagNumber(13)
   $fixnum.Int64 get dateAdded => $_getI64(9);
@@ -1035,7 +1037,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(13)
   $core.bool hasDateAdded() => $_has(9);
   @$pb.TagNumber(13)
-  void clearDateAdded() => clearField(13);
+  void clearDateAdded() => $_clearField(13);
 
   @$pb.TagNumber(14)
   $core.int get viewer => $_getIZ(10);
@@ -1047,16 +1049,16 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(14)
   $core.bool hasViewer() => $_has(10);
   @$pb.TagNumber(14)
-  void clearViewer() => clearField(14);
+  void clearViewer() => $_clearField(14);
 
   @$pb.TagNumber(16)
-  $core.List<BackupChapter> get chapters => $_getList(11);
+  $pb.PbList<BackupChapter> get chapters => $_getList(11);
 
   @$pb.TagNumber(17)
-  $core.List<$core.int> get categories => $_getList(12);
+  $pb.PbList<$core.int> get categories => $_getList(12);
 
   @$pb.TagNumber(18)
-  $core.List<BackupTracking> get tracking => $_getList(13);
+  $pb.PbList<BackupTracking> get tracking => $_getList(13);
 
   @$pb.TagNumber(100)
   $core.bool get favorite => $_getBF(14);
@@ -1068,7 +1070,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(100)
   $core.bool hasFavorite() => $_has(14);
   @$pb.TagNumber(100)
-  void clearFavorite() => clearField(100);
+  void clearFavorite() => $_clearField(100);
 
   @$pb.TagNumber(101)
   $core.int get chapterFlags => $_getIZ(15);
@@ -1080,10 +1082,10 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(101)
   $core.bool hasChapterFlags() => $_has(15);
   @$pb.TagNumber(101)
-  void clearChapterFlags() => clearField(101);
+  void clearChapterFlags() => $_clearField(101);
 
   @$pb.TagNumber(102)
-  $core.List<BrokenBackupHistory> get brokenHistory => $_getList(16);
+  $pb.PbList<BrokenBackupHistory> get brokenHistory => $_getList(16);
 
   @$pb.TagNumber(103)
   $core.int get viewerFlags => $_getIZ(17);
@@ -1095,22 +1097,22 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(103)
   $core.bool hasViewerFlags() => $_has(17);
   @$pb.TagNumber(103)
-  void clearViewerFlags() => clearField(103);
+  void clearViewerFlags() => $_clearField(103);
 
   @$pb.TagNumber(104)
-  $core.List<BackupHistory> get history => $_getList(18);
+  $pb.PbList<BackupHistory> get history => $_getList(18);
 
   @$pb.TagNumber(105)
   UpdateStrategy get updateStrategy => $_getN(19);
   @$pb.TagNumber(105)
   set updateStrategy(UpdateStrategy v) {
-    setField(105, v);
+    $_setField(105, v);
   }
 
   @$pb.TagNumber(105)
   $core.bool hasUpdateStrategy() => $_has(19);
   @$pb.TagNumber(105)
-  void clearUpdateStrategy() => clearField(105);
+  void clearUpdateStrategy() => $_clearField(105);
 
   @$pb.TagNumber(602)
   $core.int get customStatus => $_getIZ(20);
@@ -1122,7 +1124,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(602)
   $core.bool hasCustomStatus() => $_has(20);
   @$pb.TagNumber(602)
-  void clearCustomStatus() => clearField(602);
+  void clearCustomStatus() => $_clearField(602);
 
   @$pb.TagNumber(800)
   $core.String get customTitle => $_getSZ(21);
@@ -1134,7 +1136,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(800)
   $core.bool hasCustomTitle() => $_has(21);
   @$pb.TagNumber(800)
-  void clearCustomTitle() => clearField(800);
+  void clearCustomTitle() => $_clearField(800);
 
   @$pb.TagNumber(801)
   $core.String get customArtist => $_getSZ(22);
@@ -1146,7 +1148,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(801)
   $core.bool hasCustomArtist() => $_has(22);
   @$pb.TagNumber(801)
-  void clearCustomArtist() => clearField(801);
+  void clearCustomArtist() => $_clearField(801);
 
   @$pb.TagNumber(802)
   $core.String get customAuthor => $_getSZ(23);
@@ -1158,7 +1160,7 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(802)
   $core.bool hasCustomAuthor() => $_has(23);
   @$pb.TagNumber(802)
-  void clearCustomAuthor() => clearField(802);
+  void clearCustomAuthor() => $_clearField(802);
 
   @$pb.TagNumber(804)
   $core.String get customDescription => $_getSZ(24);
@@ -1170,10 +1172,10 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(804)
   $core.bool hasCustomDescription() => $_has(24);
   @$pb.TagNumber(804)
-  void clearCustomDescription() => clearField(804);
+  void clearCustomDescription() => $_clearField(804);
 
   @$pb.TagNumber(805)
-  $core.List<$core.String> get customGenre => $_getList(25);
+  $pb.PbList<$core.String> get customGenre => $_getList(25);
 }
 
 /// BackupPreference.kt
@@ -1239,19 +1241,19 @@ class BackupPreference extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasKey() => $_has(0);
   @$pb.TagNumber(1)
-  void clearKey() => clearField(1);
+  void clearKey() => $_clearField(1);
 
   @$pb.TagNumber(2)
   PreferenceValue get value => $_getN(1);
   @$pb.TagNumber(2)
   set value(PreferenceValue v) {
-    setField(2, v);
+    $_setField(2, v);
   }
 
   @$pb.TagNumber(2)
   $core.bool hasValue() => $_has(1);
   @$pb.TagNumber(2)
-  void clearValue() => clearField(2);
+  void clearValue() => $_clearField(2);
   @$pb.TagNumber(2)
   PreferenceValue ensureValue() => $_ensure(1);
 }
@@ -1321,10 +1323,10 @@ class BackupSourcePreferences extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasSourceKey() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSourceKey() => clearField(1);
+  void clearSourceKey() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.List<BackupPreference> get prefs => $_getList(1);
+  $pb.PbList<BackupPreference> get prefs => $_getList(1);
 }
 
 class IntPreferenceValue extends $pb.GeneratedMessage {
@@ -1383,7 +1385,7 @@ class IntPreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
+  void clearValue() => $_clearField(1);
 }
 
 class LongPreferenceValue extends $pb.GeneratedMessage {
@@ -1443,7 +1445,7 @@ class LongPreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
+  void clearValue() => $_clearField(1);
 }
 
 class FloatPreferenceValue extends $pb.GeneratedMessage {
@@ -1503,7 +1505,7 @@ class FloatPreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
+  void clearValue() => $_clearField(1);
 }
 
 class StringPreferenceValue extends $pb.GeneratedMessage {
@@ -1564,7 +1566,7 @@ class StringPreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
+  void clearValue() => $_clearField(1);
 }
 
 class BooleanPreferenceValue extends $pb.GeneratedMessage {
@@ -1625,7 +1627,7 @@ class BooleanPreferenceValue extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
+  void clearValue() => $_clearField(1);
 }
 
 class StringSetPreferenceValue extends $pb.GeneratedMessage {
@@ -1678,7 +1680,7 @@ class StringSetPreferenceValue extends $pb.GeneratedMessage {
   static StringSetPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.List<$core.String> get value => $_getList(0);
+  $pb.PbList<$core.String> get value => $_getList(0);
 }
 
 /// BackupSerializer.kt
@@ -1745,7 +1747,7 @@ class BrokenBackupSource extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get sourceId => $_getI64(1);
@@ -1757,7 +1759,7 @@ class BrokenBackupSource extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasSourceId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearSourceId() => clearField(2);
+  void clearSourceId() => $_clearField(2);
 }
 
 class BackupSource extends $pb.GeneratedMessage {
@@ -1822,7 +1824,7 @@ class BackupSource extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get sourceId => $_getI64(1);
@@ -1834,7 +1836,7 @@ class BackupSource extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasSourceId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearSourceId() => clearField(2);
+  void clearSourceId() => $_clearField(2);
 }
 
 /// BackupTracking.kt
@@ -1959,7 +1961,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   $core.bool hasSyncId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSyncId() => clearField(1);
+  void clearSyncId() => $_clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get libraryId => $_getI64(1);
@@ -1971,7 +1973,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.bool hasLibraryId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearLibraryId() => clearField(2);
+  void clearLibraryId() => $_clearField(2);
 
   @$pb.TagNumber(3)
   $core.int get mediaIdInt => $_getIZ(2);
@@ -1983,7 +1985,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.bool hasMediaIdInt() => $_has(2);
   @$pb.TagNumber(3)
-  void clearMediaIdInt() => clearField(3);
+  void clearMediaIdInt() => $_clearField(3);
 
   @$pb.TagNumber(4)
   $core.String get trackingUrl => $_getSZ(3);
@@ -1995,7 +1997,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   $core.bool hasTrackingUrl() => $_has(3);
   @$pb.TagNumber(4)
-  void clearTrackingUrl() => clearField(4);
+  void clearTrackingUrl() => $_clearField(4);
 
   @$pb.TagNumber(5)
   $core.String get title => $_getSZ(4);
@@ -2007,7 +2009,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   $core.bool hasTitle() => $_has(4);
   @$pb.TagNumber(5)
-  void clearTitle() => clearField(5);
+  void clearTitle() => $_clearField(5);
 
   @$pb.TagNumber(6)
   $core.double get lastChapterRead => $_getN(5);
@@ -2019,7 +2021,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   $core.bool hasLastChapterRead() => $_has(5);
   @$pb.TagNumber(6)
-  void clearLastChapterRead() => clearField(6);
+  void clearLastChapterRead() => $_clearField(6);
 
   @$pb.TagNumber(7)
   $core.int get totalChapters => $_getIZ(6);
@@ -2031,7 +2033,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   $core.bool hasTotalChapters() => $_has(6);
   @$pb.TagNumber(7)
-  void clearTotalChapters() => clearField(7);
+  void clearTotalChapters() => $_clearField(7);
 
   @$pb.TagNumber(8)
   $core.double get score => $_getN(7);
@@ -2043,7 +2045,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(8)
   $core.bool hasScore() => $_has(7);
   @$pb.TagNumber(8)
-  void clearScore() => clearField(8);
+  void clearScore() => $_clearField(8);
 
   @$pb.TagNumber(9)
   $core.int get status => $_getIZ(8);
@@ -2055,7 +2057,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   $core.bool hasStatus() => $_has(8);
   @$pb.TagNumber(9)
-  void clearStatus() => clearField(9);
+  void clearStatus() => $_clearField(9);
 
   @$pb.TagNumber(10)
   $fixnum.Int64 get startedReadingDate => $_getI64(9);
@@ -2067,7 +2069,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(10)
   $core.bool hasStartedReadingDate() => $_has(9);
   @$pb.TagNumber(10)
-  void clearStartedReadingDate() => clearField(10);
+  void clearStartedReadingDate() => $_clearField(10);
 
   @$pb.TagNumber(11)
   $fixnum.Int64 get finishedReadingDate => $_getI64(10);
@@ -2079,7 +2081,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(11)
   $core.bool hasFinishedReadingDate() => $_has(10);
   @$pb.TagNumber(11)
-  void clearFinishedReadingDate() => clearField(11);
+  void clearFinishedReadingDate() => $_clearField(11);
 
   @$pb.TagNumber(100)
   $fixnum.Int64 get mediaId => $_getI64(11);
@@ -2091,7 +2093,7 @@ class BackupTracking extends $pb.GeneratedMessage {
   @$pb.TagNumber(100)
   $core.bool hasMediaId() => $_has(11);
   @$pb.TagNumber(100)
-  void clearMediaId() => clearField(100);
+  void clearMediaId() => $_clearField(100);
 }
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
