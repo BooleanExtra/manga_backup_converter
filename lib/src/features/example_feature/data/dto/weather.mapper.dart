@@ -24,10 +24,10 @@ class WeatherParamsMapper extends ClassMapperBase<WeatherParams> {
   static const Field<WeatherParams, double> _f$temp = Field('temp', _$temp);
   static double _$tempMin(WeatherParams v) => v.tempMin;
   static const Field<WeatherParams, double> _f$tempMin =
-      Field('tempMin', _$tempMin, key: 'temp_min');
+      Field('tempMin', _$tempMin, key: r'temp_min');
   static double _$tempMax(WeatherParams v) => v.tempMax;
   static const Field<WeatherParams, double> _f$tempMax =
-      Field('tempMax', _$tempMax, key: 'temp_max');
+      Field('tempMax', _$tempMax, key: r'temp_max');
 
   @override
   final MappableFields<WeatherParams> fields = const {
@@ -263,10 +263,10 @@ class WeatherMapper extends ClassMapperBase<Weather> {
 
   static WeatherParams _$weatherParams(Weather v) => v.weatherParams;
   static const Field<Weather, WeatherParams> _f$weatherParams =
-      Field('weatherParams', _$weatherParams, key: 'main');
+      Field('weatherParams', _$weatherParams, key: r'main');
   static List<WeatherInfo> _$weatherInfo(Weather v) => v.weatherInfo;
   static const Field<Weather, List<WeatherInfo>> _f$weatherInfo =
-      Field('weatherInfo', _$weatherInfo, key: 'weather');
+      Field('weatherInfo', _$weatherInfo, key: r'weather');
   static int _$dt(Weather v) => v.dt;
   static const Field<Weather, int> _f$dt = Field('dt', _$dt);
 

@@ -135,7 +135,7 @@ class TachimangaBackupCategoryMapper
       Field('order', _$order);
   static bool _$isDefault(TachimangaBackupCategory v) => v.isDefault;
   static const Field<TachimangaBackupCategory, bool> _f$isDefault =
-      Field('isDefault', _$isDefault, key: 'is_default');
+      Field('isDefault', _$isDefault, key: r'is_default');
 
   @override
   final MappableFields<TachimangaBackupCategory> fields = const {
@@ -407,7 +407,7 @@ class TachimangaBackupCategoryMetaMapper
       Field('value', _$value);
   static int _$categoryRef(TachimangaBackupCategoryMeta v) => v.categoryRef;
   static const Field<TachimangaBackupCategoryMeta, int> _f$categoryRef =
-      Field('categoryRef', _$categoryRef, key: 'category_ref');
+      Field('categoryRef', _$categoryRef, key: r'category_ref');
 
   @override
   final MappableFields<TachimangaBackupCategoryMeta> fields = const {
@@ -548,10 +548,10 @@ class TachimangaBackupChapterMapper
       Field('name', _$name);
   static int _$dateUpload(TachimangaBackupChapter v) => v.dateUpload;
   static const Field<TachimangaBackupChapter, int> _f$dateUpload =
-      Field('dateUpload', _$dateUpload, key: 'date_upload');
+      Field('dateUpload', _$dateUpload, key: r'date_upload');
   static double _$chapterNumber(TachimangaBackupChapter v) => v.chapterNumber;
   static const Field<TachimangaBackupChapter, double> _f$chapterNumber =
-      Field('chapterNumber', _$chapterNumber, key: 'chapter_number');
+      Field('chapterNumber', _$chapterNumber, key: r'chapter_number');
   static String? _$scanlator(TachimangaBackupChapter v) => v.scanlator;
   static const Field<TachimangaBackupChapter, String> _f$scanlator =
       Field('scanlator', _$scanlator);
@@ -563,25 +563,25 @@ class TachimangaBackupChapterMapper
       Field('bookmark', _$bookmark);
   static int _$lastPageRead(TachimangaBackupChapter v) => v.lastPageRead;
   static const Field<TachimangaBackupChapter, int> _f$lastPageRead =
-      Field('lastPageRead', _$lastPageRead, key: 'last_page_read');
+      Field('lastPageRead', _$lastPageRead, key: r'last_page_read');
   static int _$lastReadAt(TachimangaBackupChapter v) => v.lastReadAt;
   static const Field<TachimangaBackupChapter, int> _f$lastReadAt =
-      Field('lastReadAt', _$lastReadAt, key: 'last_read_at');
+      Field('lastReadAt', _$lastReadAt, key: r'last_read_at');
   static int _$fetchedAt(TachimangaBackupChapter v) => v.fetchedAt;
   static const Field<TachimangaBackupChapter, int> _f$fetchedAt =
-      Field('fetchedAt', _$fetchedAt, key: 'fetched_at');
+      Field('fetchedAt', _$fetchedAt, key: r'fetched_at');
   static int _$sourceOrder(TachimangaBackupChapter v) => v.sourceOrder;
   static const Field<TachimangaBackupChapter, int> _f$sourceOrder =
-      Field('sourceOrder', _$sourceOrder, key: 'source_order');
+      Field('sourceOrder', _$sourceOrder, key: r'source_order');
   static String? _$realUrl(TachimangaBackupChapter v) => v.realUrl;
   static const Field<TachimangaBackupChapter, String> _f$realUrl =
-      Field('realUrl', _$realUrl, key: 'real_url');
+      Field('realUrl', _$realUrl, key: r'real_url');
   static bool _$isDownloaded(TachimangaBackupChapter v) => v.isDownloaded;
   static const Field<TachimangaBackupChapter, bool> _f$isDownloaded =
-      Field('isDownloaded', _$isDownloaded, key: 'is_downloaded');
+      Field('isDownloaded', _$isDownloaded, key: r'is_downloaded');
   static int _$pageCount(TachimangaBackupChapter v) => v.pageCount;
   static const Field<TachimangaBackupChapter, int> _f$pageCount =
-      Field('pageCount', _$pageCount, key: 'page_count');
+      Field('pageCount', _$pageCount, key: r'page_count');
   static int _$manga(TachimangaBackupChapter v) => v.manga;
   static const Field<TachimangaBackupChapter, int> _f$manga =
       Field('manga', _$manga);
@@ -801,7 +801,7 @@ class TachimangaBackupChapterMetaMapper
       Field('value', _$value);
   static int _$chapterRef(TachimangaBackupChapterMeta v) => v.chapterRef;
   static const Field<TachimangaBackupChapterMeta, int> _f$chapterRef =
-      Field('chapterRef', _$chapterRef, key: 'chapter_ref');
+      Field('chapterRef', _$chapterRef, key: r'chapter_ref');
 
   @override
   final MappableFields<TachimangaBackupChapterMeta> fields = const {
@@ -936,52 +936,52 @@ class TachimangaBackupExtensionMapper
   static const Field<TachimangaBackupExtension, int> _f$id = Field('id', _$id);
   static String _$apkName(TachimangaBackupExtension v) => v.apkName;
   static const Field<TachimangaBackupExtension, String> _f$apkName =
-      Field('apkName', _$apkName, key: 'apk_name');
+      Field('apkName', _$apkName, key: r'apk_name');
   static String _$iconUrl(TachimangaBackupExtension v) => v.iconUrl;
   static const Field<TachimangaBackupExtension, String> _f$iconUrl =
-      Field('iconUrl', _$iconUrl, key: 'icon_url');
+      Field('iconUrl', _$iconUrl, key: r'icon_url');
   static String _$name(TachimangaBackupExtension v) => v.name;
   static const Field<TachimangaBackupExtension, String> _f$name =
       Field('name', _$name);
   static String _$pkgName(TachimangaBackupExtension v) => v.pkgName;
   static const Field<TachimangaBackupExtension, String> _f$pkgName =
-      Field('pkgName', _$pkgName, key: 'pkg_name');
+      Field('pkgName', _$pkgName, key: r'pkg_name');
   static String _$versionName(TachimangaBackupExtension v) => v.versionName;
   static const Field<TachimangaBackupExtension, String> _f$versionName =
-      Field('versionName', _$versionName, key: 'version_name');
+      Field('versionName', _$versionName, key: r'version_name');
   static int _$versionCode(TachimangaBackupExtension v) => v.versionCode;
   static const Field<TachimangaBackupExtension, int> _f$versionCode =
-      Field('versionCode', _$versionCode, key: 'version_code');
+      Field('versionCode', _$versionCode, key: r'version_code');
   static String _$lang(TachimangaBackupExtension v) => v.lang;
   static const Field<TachimangaBackupExtension, String> _f$lang =
       Field('lang', _$lang);
   static bool _$isNsfw(TachimangaBackupExtension v) => v.isNsfw;
   static const Field<TachimangaBackupExtension, bool> _f$isNsfw =
-      Field('isNsfw', _$isNsfw, key: 'is_nsfw');
+      Field('isNsfw', _$isNsfw, key: r'is_nsfw');
   static bool _$isInstalled(TachimangaBackupExtension v) => v.isInstalled;
   static const Field<TachimangaBackupExtension, bool> _f$isInstalled =
-      Field('isInstalled', _$isInstalled, key: 'is_installed');
+      Field('isInstalled', _$isInstalled, key: r'is_installed');
   static bool _$hasUpdate(TachimangaBackupExtension v) => v.hasUpdate;
   static const Field<TachimangaBackupExtension, bool> _f$hasUpdate =
-      Field('hasUpdate', _$hasUpdate, key: 'has_update');
+      Field('hasUpdate', _$hasUpdate, key: r'has_update');
   static bool _$isObsolete(TachimangaBackupExtension v) => v.isObsolete;
   static const Field<TachimangaBackupExtension, bool> _f$isObsolete =
-      Field('isObsolete', _$isObsolete, key: 'is_obsolete');
+      Field('isObsolete', _$isObsolete, key: r'is_obsolete');
   static String _$className(TachimangaBackupExtension v) => v.className;
   static const Field<TachimangaBackupExtension, String> _f$className =
-      Field('className', _$className, key: 'class_name');
+      Field('className', _$className, key: r'class_name');
   static String? _$pkgFactory(TachimangaBackupExtension v) => v.pkgFactory;
   static const Field<TachimangaBackupExtension, String> _f$pkgFactory =
-      Field('pkgFactory', _$pkgFactory, key: 'pkg_factory');
+      Field('pkgFactory', _$pkgFactory, key: r'pkg_factory');
   static bool _$hasChangelog(TachimangaBackupExtension v) => v.hasChangelog;
   static const Field<TachimangaBackupExtension, bool> _f$hasChangelog =
-      Field('hasChangelog', _$hasChangelog, key: 'has_changelog');
+      Field('hasChangelog', _$hasChangelog, key: r'has_changelog');
   static bool _$hasReadme(TachimangaBackupExtension v) => v.hasReadme;
   static const Field<TachimangaBackupExtension, bool> _f$hasReadme =
-      Field('hasReadme', _$hasReadme, key: 'has_readme');
+      Field('hasReadme', _$hasReadme, key: r'has_readme');
   static int _$repoId(TachimangaBackupExtension v) => v.repoId;
   static const Field<TachimangaBackupExtension, int> _f$repoId =
-      Field('repoId', _$repoId, key: 'repo_id');
+      Field('repoId', _$repoId, key: r'repo_id');
 
   @override
   final MappableFields<TachimangaBackupExtension> fields = const {
@@ -1200,19 +1200,19 @@ class TachimangaBackupHistoryMapper
   static const Field<TachimangaBackupHistory, int> _f$id = Field('id', _$id);
   static int _$createAt(TachimangaBackupHistory v) => v.createAt;
   static const Field<TachimangaBackupHistory, int> _f$createAt =
-      Field('createAt', _$createAt, key: 'create_at');
+      Field('createAt', _$createAt, key: r'create_at');
   static bool _$isDelete(TachimangaBackupHistory v) => v.isDelete;
   static const Field<TachimangaBackupHistory, bool> _f$isDelete =
-      Field('isDelete', _$isDelete, key: 'is_delete');
+      Field('isDelete', _$isDelete, key: r'is_delete');
   static int _$mangaId(TachimangaBackupHistory v) => v.mangaId;
   static const Field<TachimangaBackupHistory, int> _f$mangaId =
-      Field('mangaId', _$mangaId, key: 'manga_id');
+      Field('mangaId', _$mangaId, key: r'manga_id');
   static int _$lastChapterId(TachimangaBackupHistory v) => v.lastChapterId;
   static const Field<TachimangaBackupHistory, int> _f$lastChapterId =
-      Field('lastChapterId', _$lastChapterId, key: 'last_chapter_id');
+      Field('lastChapterId', _$lastChapterId, key: r'last_chapter_id');
   static int _$lastReadAt(TachimangaBackupHistory v) => v.lastReadAt;
   static const Field<TachimangaBackupHistory, int> _f$lastReadAt =
-      Field('lastReadAt', _$lastReadAt, key: 'last_read_at');
+      Field('lastReadAt', _$lastReadAt, key: r'last_read_at');
 
   @override
   final MappableFields<TachimangaBackupHistory> fields = const {
@@ -1385,41 +1385,41 @@ class TachimangaBackupMangaMapper
       Field('status', _$status);
   static String? _$thumbnailUrl(TachimangaBackupManga v) => v.thumbnailUrl;
   static const Field<TachimangaBackupManga, String> _f$thumbnailUrl =
-      Field('thumbnailUrl', _$thumbnailUrl, key: 'thumbnail_url');
+      Field('thumbnailUrl', _$thumbnailUrl, key: r'thumbnail_url');
   static int _$thumbnailUrlLastFetched(TachimangaBackupManga v) =>
       v.thumbnailUrlLastFetched;
   static const Field<TachimangaBackupManga, int> _f$thumbnailUrlLastFetched =
       Field('thumbnailUrlLastFetched', _$thumbnailUrlLastFetched,
-          key: 'thumbnail_url_last_fetched');
+          key: r'thumbnail_url_last_fetched');
   static bool _$inLibrary(TachimangaBackupManga v) => v.inLibrary;
   static const Field<TachimangaBackupManga, bool> _f$inLibrary =
-      Field('inLibrary', _$inLibrary, key: 'in_library');
+      Field('inLibrary', _$inLibrary, key: r'in_library');
   static bool _$defaultCategory(TachimangaBackupManga v) => v.defaultCategory;
   static const Field<TachimangaBackupManga, bool> _f$defaultCategory =
-      Field('defaultCategory', _$defaultCategory, key: 'default_category');
+      Field('defaultCategory', _$defaultCategory, key: r'default_category');
   static int _$inLibraryAt(TachimangaBackupManga v) => v.inLibraryAt;
   static const Field<TachimangaBackupManga, int> _f$inLibraryAt =
-      Field('inLibraryAt', _$inLibraryAt, key: 'in_library_at');
+      Field('inLibraryAt', _$inLibraryAt, key: r'in_library_at');
   static int _$source(TachimangaBackupManga v) => v.source;
   static const Field<TachimangaBackupManga, int> _f$source =
       Field('source', _$source);
   static String? _$realUrl(TachimangaBackupManga v) => v.realUrl;
   static const Field<TachimangaBackupManga, String> _f$realUrl =
-      Field('realUrl', _$realUrl, key: 'real_url');
+      Field('realUrl', _$realUrl, key: r'real_url');
   static int _$lastFetchedAt(TachimangaBackupManga v) => v.lastFetchedAt;
   static const Field<TachimangaBackupManga, int> _f$lastFetchedAt =
-      Field('lastFetchedAt', _$lastFetchedAt, key: 'last_fetched_at');
+      Field('lastFetchedAt', _$lastFetchedAt, key: r'last_fetched_at');
   static int _$chaptersLastFetchedAt(TachimangaBackupManga v) =>
       v.chaptersLastFetchedAt;
   static const Field<TachimangaBackupManga, int> _f$chaptersLastFetchedAt =
       Field('chaptersLastFetchedAt', _$chaptersLastFetchedAt,
-          key: 'chapters_last_fetched_at');
+          key: r'chapters_last_fetched_at');
   static String _$updateStrategy(TachimangaBackupManga v) => v.updateStrategy;
   static const Field<TachimangaBackupManga, String> _f$updateStrategy =
-      Field('updateStrategy', _$updateStrategy, key: 'update_strategy');
+      Field('updateStrategy', _$updateStrategy, key: r'update_strategy');
   static int _$lastDownloadAt(TachimangaBackupManga v) => v.lastDownloadAt;
   static const Field<TachimangaBackupManga, int> _f$lastDownloadAt =
-      Field('lastDownloadAt', _$lastDownloadAt, key: 'last_download_at');
+      Field('lastDownloadAt', _$lastDownloadAt, key: r'last_download_at');
 
   @override
   final MappableFields<TachimangaBackupManga> fields = const {
@@ -1662,7 +1662,7 @@ class TachimangaBackupMangaMetaMapper
       Field('value', _$value);
   static int _$mangaRef(TachimangaBackupMangaMeta v) => v.mangaRef;
   static const Field<TachimangaBackupMangaMeta, int> _f$mangaRef =
-      Field('mangaRef', _$mangaRef, key: 'manga_ref');
+      Field('mangaRef', _$mangaRef, key: r'manga_ref');
 
   @override
   final MappableFields<TachimangaBackupMangaMeta> fields = const {
@@ -1799,7 +1799,7 @@ class TachimangaBackupDbMigrationsMapper
       Field('name', _$name);
   static String _$executedAt(TachimangaBackupDbMigrations v) => v.executedAt;
   static const Field<TachimangaBackupDbMigrations, String> _f$executedAt =
-      Field('executedAt', _$executedAt, key: 'executed_at');
+      Field('executedAt', _$executedAt, key: r'executed_at');
 
   @override
   final MappableFields<TachimangaBackupDbMigrations> fields = const {
@@ -2077,10 +2077,10 @@ class TachimangaBackupRepoMapper extends ClassMapperBase<TachimangaBackupRepo> {
       Field('name', _$name);
   static String _$metaUrl(TachimangaBackupRepo v) => v.metaUrl;
   static const Field<TachimangaBackupRepo, String> _f$metaUrl =
-      Field('metaUrl', _$metaUrl, key: 'meta_url');
+      Field('metaUrl', _$metaUrl, key: r'meta_url');
   static String _$baseUrl(TachimangaBackupRepo v) => v.baseUrl;
   static const Field<TachimangaBackupRepo, String> _f$baseUrl =
-      Field('baseUrl', _$baseUrl, key: 'base_url');
+      Field('baseUrl', _$baseUrl, key: r'base_url');
   static String? _$homepage(TachimangaBackupRepo v) => v.homepage;
   static const Field<TachimangaBackupRepo, String> _f$homepage =
       Field('homepage', _$homepage);
@@ -2089,10 +2089,10 @@ class TachimangaBackupRepoMapper extends ClassMapperBase<TachimangaBackupRepo> {
       Field('deleted', _$deleted);
   static int _$createAt(TachimangaBackupRepo v) => v.createAt;
   static const Field<TachimangaBackupRepo, int> _f$createAt =
-      Field('createAt', _$createAt, key: 'create_at');
+      Field('createAt', _$createAt, key: r'create_at');
   static int _$updateAt(TachimangaBackupRepo v) => v.updateAt;
   static const Field<TachimangaBackupRepo, int> _f$updateAt =
-      Field('updateAt', _$updateAt, key: 'update_at');
+      Field('updateAt', _$updateAt, key: r'update_at');
 
   @override
   final MappableFields<TachimangaBackupRepo> fields = const {
@@ -2259,13 +2259,13 @@ class TachimangaBackupSettingMapper
   static const Field<TachimangaBackupSetting, int> _f$id = Field('id', _$id);
   static int _$createAt(TachimangaBackupSetting v) => v.createAt;
   static const Field<TachimangaBackupSetting, int> _f$createAt =
-      Field('createAt', _$createAt, key: 'create_at');
+      Field('createAt', _$createAt, key: r'create_at');
   static int _$updateAt(TachimangaBackupSetting v) => v.updateAt;
   static const Field<TachimangaBackupSetting, int> _f$updateAt =
-      Field('updateAt', _$updateAt, key: 'update_at');
+      Field('updateAt', _$updateAt, key: r'update_at');
   static bool _$isDelete(TachimangaBackupSetting v) => v.isDelete;
   static const Field<TachimangaBackupSetting, bool> _f$isDelete =
-      Field('isDelete', _$isDelete, key: 'is_delete');
+      Field('isDelete', _$isDelete, key: r'is_delete');
   static String _$key(TachimangaBackupSetting v) => v.key;
   static const Field<TachimangaBackupSetting, String> _f$key =
       Field('key', _$key);
@@ -2429,13 +2429,13 @@ class TachimangaBackupSourceMapper
       Field('extension', _$extension);
   static bool _$isNsfw(TachimangaBackupSource v) => v.isNsfw;
   static const Field<TachimangaBackupSource, bool> _f$isNsfw =
-      Field('isNsfw', _$isNsfw, key: 'is_nsfw');
+      Field('isNsfw', _$isNsfw, key: r'is_nsfw');
   static bool? _$isDirect(TachimangaBackupSource v) => v.isDirect;
   static const Field<TachimangaBackupSource, bool> _f$isDirect =
-      Field('isDirect', _$isDirect, key: 'is_direct');
+      Field('isDirect', _$isDirect, key: r'is_direct');
   static bool? _$randomUa(TachimangaBackupSource v) => v.randomUa;
   static const Field<TachimangaBackupSource, bool> _f$randomUa =
-      Field('randomUa', _$randomUa, key: 'random_ua');
+      Field('randomUa', _$randomUa, key: r'random_ua');
 
   @override
   final MappableFields<TachimangaBackupSource> fields = const {
@@ -2592,26 +2592,26 @@ class TachimangaBackupTrackRecordMapper
       Field('id', _$id);
   static int _$mangaId(TachimangaBackupTrackRecord v) => v.mangaId;
   static const Field<TachimangaBackupTrackRecord, int> _f$mangaId =
-      Field('mangaId', _$mangaId, key: 'manga_id');
+      Field('mangaId', _$mangaId, key: r'manga_id');
   static int _$syncId(TachimangaBackupTrackRecord v) => v.syncId;
   static const Field<TachimangaBackupTrackRecord, int> _f$syncId =
-      Field('syncId', _$syncId, key: 'sync_id');
+      Field('syncId', _$syncId, key: r'sync_id');
   static int _$remoteId(TachimangaBackupTrackRecord v) => v.remoteId;
   static const Field<TachimangaBackupTrackRecord, int> _f$remoteId =
-      Field('remoteId', _$remoteId, key: 'remote_id');
+      Field('remoteId', _$remoteId, key: r'remote_id');
   static int? _$libraryId(TachimangaBackupTrackRecord v) => v.libraryId;
   static const Field<TachimangaBackupTrackRecord, int> _f$libraryId =
-      Field('libraryId', _$libraryId, key: 'library_id');
+      Field('libraryId', _$libraryId, key: r'library_id');
   static String _$title(TachimangaBackupTrackRecord v) => v.title;
   static const Field<TachimangaBackupTrackRecord, String> _f$title =
       Field('title', _$title);
   static double _$lastChapterRead(TachimangaBackupTrackRecord v) =>
       v.lastChapterRead;
   static const Field<TachimangaBackupTrackRecord, double> _f$lastChapterRead =
-      Field('lastChapterRead', _$lastChapterRead, key: 'last_chapter_read');
+      Field('lastChapterRead', _$lastChapterRead, key: r'last_chapter_read');
   static int _$totalChapters(TachimangaBackupTrackRecord v) => v.totalChapters;
   static const Field<TachimangaBackupTrackRecord, int> _f$totalChapters =
-      Field('totalChapters', _$totalChapters, key: 'total_chapters');
+      Field('totalChapters', _$totalChapters, key: r'total_chapters');
   static int _$status(TachimangaBackupTrackRecord v) => v.status;
   static const Field<TachimangaBackupTrackRecord, int> _f$status =
       Field('status', _$status);
@@ -2620,13 +2620,13 @@ class TachimangaBackupTrackRecordMapper
       Field('score', _$score);
   static String _$remoteUrl(TachimangaBackupTrackRecord v) => v.remoteUrl;
   static const Field<TachimangaBackupTrackRecord, String> _f$remoteUrl =
-      Field('remoteUrl', _$remoteUrl, key: 'remote_url');
+      Field('remoteUrl', _$remoteUrl, key: r'remote_url');
   static int _$startDate(TachimangaBackupTrackRecord v) => v.startDate;
   static const Field<TachimangaBackupTrackRecord, int> _f$startDate =
-      Field('startDate', _$startDate, key: 'start_date');
+      Field('startDate', _$startDate, key: r'start_date');
   static int _$finishDate(TachimangaBackupTrackRecord v) => v.finishDate;
   static const Field<TachimangaBackupTrackRecord, int> _f$finishDate =
-      Field('finishDate', _$finishDate, key: 'finish_date');
+      Field('finishDate', _$finishDate, key: r'finish_date');
 
   @override
   final MappableFields<TachimangaBackupTrackRecord> fields = const {
