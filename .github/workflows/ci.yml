@@ -25,11 +25,11 @@ on:
 
 env:
   FLUTTER_CHANNEL: "stable"
-  FLUTTER_VERSION: "3.27.0"
+  FLUTTER_VERSION: "3.29.3"
   FLAVOR: ""
   # https://github.com/transferwise/sanitize-branch-name/blob/main/action.yml
   BRANCH_NAME: $(echo -n ${{ github.head_ref || github.ref_name }} | tr "/" "-")
-  MELOS_VERSION: "^6.2.0"
+  MELOS_VERSION: "^6.3.2"
 
 # Needed to deploy to GitHub Pages
 permissions:
