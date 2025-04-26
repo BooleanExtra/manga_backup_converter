@@ -28,4 +28,11 @@ class MangaBackupConverter {
   }) async {
     return await TachimangaBackup.fromZip(bytes, overrideName: overrideName);
   }
+
+  Future<void> importMangayomiBackup(
+    Uint8List bytes, {
+    String? overrideName,
+  }) async {
+    await TachimangaBackup.fromZip(bytes, overrideName: overrideName);
+  }
 }
