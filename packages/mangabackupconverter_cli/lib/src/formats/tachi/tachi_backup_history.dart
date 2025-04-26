@@ -79,20 +79,12 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
 }
 
 @MappableClass()
-class TachiBrokenBackupHistory
-    with TachiBrokenBackupHistoryMappable
-    implements TachiBackupHistory {
-  @override
-  final String url;
-  @override
-  final int lastRead;
-  @override
-  final int readDuration;
-
+class TachiBrokenBackupHistory extends TachiBackupHistory
+    with TachiBrokenBackupHistoryMappable {
   const TachiBrokenBackupHistory({
-    required this.url,
-    required this.lastRead,
-    required this.readDuration,
+    required super.url,
+    required super.lastRead,
+    required super.readDuration,
   });
 
   factory TachiBrokenBackupHistory.fromJ2k(

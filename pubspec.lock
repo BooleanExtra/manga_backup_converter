@@ -502,26 +502,26 @@ packages:
     dependency: "direct main"
     description:
       name: flex_color_picker
-      sha256: "5c846437069fb7afdd7ade6bf37e628a71d2ab0787095ddcb1253bf9345d5f3a"
+      sha256: c083b79f1c57eaeed9f464368be376951230b3cb1876323b784626152a86e480
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "3.7.0"
   flex_color_scheme:
     dependency: "direct main"
     description:
       name: flex_color_scheme
-      sha256: "32914024a4f404d90ff449f58d279191675b28e7c08824046baf06826e99d984"
+      sha256: "3344f8f6536c6ce0473b98e9f084ef80ca89024ad3b454f9c32cf840206f4387"
       url: "https://pub.dev"
     source: hosted
-    version: "7.3.1"
+    version: "8.2.0"
   flex_seed_scheme:
     dependency: transitive
     description:
       name: flex_seed_scheme
-      sha256: "4cee2f1d07259f77e8b36f4ec5f35499d19e74e17c7dce5b819554914082bc01"
+      sha256: b06d8b367b84cbf7ca5c5603c858fa5edae88486c4e4da79ac1044d73b6c62ec
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "3.5.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -531,10 +531,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_adaptive_scaffold
-      sha256: "6b587d439c7da037432bbfc78d9676e1d08f2d7490f08e8d689a20f08e049802"
+      sha256: "7279d74da2f2531a16d21c2ec327308778c3aedd672dfe4eaf3bf416463501f8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.6"
+    version: "0.3.2"
   flutter_driver:
     dependency: transitive
     description: flutter
@@ -560,10 +560,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_launcher_icons
-      sha256: "526faf84284b86a4cb36d20a5e45147747b7563d921373d4ee0559c54fcdbcea"
+      sha256: bfa04787c85d80ecb3f8777bde5fc10c3de809240c48fa061a2c2bf15ea5211c
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.1"
+    version: "0.14.3"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -1773,10 +1773,10 @@ packages:
     dependency: "direct main"
     description:
       name: wolt_modal_sheet
-      sha256: b2d1c2af08ff70c17a66325d6e510cb2f902f432c887cc55e72c55701a94fac4
+      sha256: "03e28e39dd4de44dc58a7c623877488a89ca3b41a62fc3e70bfc86b64be067d6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.4"
+    version: "0.11.0"
   xdg_directories:
     dependency: transitive
     description:
@@ -1811,4 +1811,4 @@ packages:
     version: "2.2.2"
 sdks:
   dart: ">=3.7.0 <4.0.0"
-  flutter: ">=3.27.0"
+  flutter: ">=3.29.0"
