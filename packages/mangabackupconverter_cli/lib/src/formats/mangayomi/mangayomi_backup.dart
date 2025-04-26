@@ -1,0 +1,53 @@
+import 'dart:convert' show jsonDecode;
+import 'dart:typed_data';
+
+import 'package:archive/archive.dart';
+import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart';
+import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
+import 'package:path/path.dart' as p;
+
+part 'mangayomi_backup.mapper.dart';
+
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+class MangayomiBackup with MangayomiBackupMappable {
+  final String? name;
+  final MangayomiBackupDb db;
+
+  const MangayomiBackup({
+    required this.db,
+    this.name,
+  });
+
+  static Future<MangayomiBackup> fromZip(
+    Uint8List bytes, {
+    String? overrideName,
+  }) async {
+    final backupArchive = ZipDecoder().decodeBytes(bytes);
+    final backupJsonFile = backupArchive.files.firstOrNull;
+    if (backupJsonFile == null || backupJsonFile.content == null) {
+      throw const MangayomiException(
+        'Could not decode Mangayomi backup',
+      );
+    }
+    final backupName = p.basenameWithoutExtension(backupJsonFile.name);
+    final backupJson =
+        String.fromCharCodes(backupJsonFile.content as Uint8List);
+    final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
+    if (backupMap == null) {
+      throw const MangayomiException(
+        'Could not decode Mangayomi backup',
+      );
+    }
+    final db = MangayomiBackupDb.fromMap(backupMap);
+
+    return MangayomiBackup(
+      name: overrideName ?? backupName,
+      db: db,
+    );
+  }
+
+  static const fromMap = MangayomiBackupMapper.fromMap;
+  static const fromJson = MangayomiBackupMapper.fromJson;
+}
