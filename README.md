@@ -6,4 +6,3 @@
 - [dependabot/pub/flutter_launcher_icons-0.14.3](./dependabot/pub/flutter_launcher_icons-0.14.3/)
 - [dependabot/pub/wolt_modal_sheet-0.11.0](./dependabot/pub/wolt_modal_sheet-0.11.0/)
 - [main](./main/)
-- [update_schemas](./update_schemas/)
