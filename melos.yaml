@@ -113,7 +113,7 @@ scripts:
     description: Verify formatting was applied.
 
   generate:
-    run: melos run assets && melos run env --no-select && melos run generate:pkg --no-select
+    run: melos run assets && melos run env --no-select && melos run generate:pkg --no-select && melos run format
     description: Run `build_runner build` in all packages.
 
   generate:pkg:
