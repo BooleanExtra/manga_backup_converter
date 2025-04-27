@@ -11,6 +11,7 @@ permissions:
 env:
   FLUTTER_CHANNEL: "stable"
   FLUTTER_VERSION: "3.29.3"
+  PROTOC_PLUGGIN_VERSION: "^21.1.2"
 
 jobs:
   update-schemas:
@@ -40,7 +41,7 @@ jobs:
           protoc --version
       
       - name: Activate Protoc Plugin
-        run: dart pub global activate protoc_plugin 21.1.2
+        run: dart pub global activate protoc_plugin ${{env.PROTOC_PLUGGIN_VERSION}}
 
       - name: Generate Schemas
         run: |
