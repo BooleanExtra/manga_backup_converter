@@ -37,20 +37,21 @@ class ConvertCommand extends Command<void> {
         'output-format',
         abbr: 'f',
         help: 'The output backup format the backup will be converted to',
-        allowed: ['aidoku', 'tachi', 'paperback', 'mangayomi'],
+        allowed: BackupType.values.map((e) => e.name).toList(),
         mandatory: true,
+      )
+      ..addOption(
+        'input-format',
+        abbr: 'i',
+        help:
+            'Specify the input backup format type if not detected automatically',
+        allowed: BackupType.values.map((e) => e.name).toList(),
       )
       ..addOption(
         'tachi-fork',
         abbr: 't',
         help: 'The specific Tachiyomi fork to use for the backup format',
-        allowed: [
-          TachiFork.mihon.name,
-          TachiFork.sy.name,
-          TachiFork.j2k.name,
-          TachiFork.yokai.name,
-          TachiFork.neko.name,
-        ],
+        allowed: TachiFork.values.map((e) => e.name).toList(),
         defaultsTo: TachiFork.mihon.name,
       );
   }
@@ -62,8 +63,6 @@ class ConvertCommand extends Command<void> {
 
   Future<void> _executeConvertCommand(ArgResults results) async {
     bool verbose = false;
-    String outputFormat = 'aib';
-    TachiFork outputTachiFork = TachiFork.mihon;
 
     if (results.wasParsed('verbose')) {
       verbose = true;
@@ -85,20 +84,37 @@ class ConvertCommand extends Command<void> {
       return;
     }
 
+    BackupType outputFormat = BackupType.aidoku;
+    if (results.wasParsed('output-format')) {
+      final outputFormatArg = results.option('output-format');
+      if (outputFormatArg == null) {
+        print('Output format not provided');
+        return;
+      }
+      outputFormat = BackupType.values.byName(outputFormatArg);
+    }
+
     final backupFileExtension = p.extension(backupFile.uri.toString());
+    BackupType? inputFormat = BackupType.byExtension(backupFileExtension);
     if (verbose) {
       print('Imported Backup Extension: $backupFileExtension');
     }
 
-    if (results.wasParsed('output-format')) {
-      outputFormat = results.option('output-format') ?? 'aib';
+    if (results.wasParsed('input-format')) {
+      final inputFormatArg = results.option('input-format');
+      inputFormat = inputFormatArg != null
+          ? BackupType.values.byName(inputFormatArg)
+          : null;
     }
-    if (!['.aib', '.tachibk', '.proto.gz', '.pas4', '.tmb', '.backup']
-        .contains(backupFileExtension)) {
-      print('Unsupported file extension: "$backupFileExtension"');
+    if (inputFormat == null &&
+        !BackupType.validExtensions.contains(backupFileExtension)) {
+      print(
+        'Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.',
+      );
       return;
     }
 
+    TachiFork outputTachiFork = TachiFork.mihon;
     if (results.wasParsed('tachi-fork')) {
       outputTachiFork = TachiFork.values
           .byName(results.option('tachi-fork') ?? TachiFork.mihon.name);
@@ -106,8 +122,8 @@ class ConvertCommand extends Command<void> {
 
     final converter = MangaBackupConverter();
 
-    final TachiBackup? tachiBackup = switch (backupFileExtension) {
-      '.aib' => () {
+    final TachiBackup? tachiBackup = switch (inputFormat) {
+      BackupType.aidoku => () {
           final AidokuBackup aidokuBackup = converter.importAidokuBackup(
             ByteData.sublistView(
               backupFile.readAsBytesSync(),
@@ -129,7 +145,7 @@ class ConvertCommand extends Command<void> {
           // TODO: Implement Aidoku to Tachi
           return null;
         }(),
-      '.tachibk' || '.proto.gz' => () {
+      BackupType.tachi => () {
           final TachiBackup tachibkBackup = converter.importTachibkBackup(
             backupFile.readAsBytesSync(),
             fork: outputTachiFork,
@@ -139,7 +155,7 @@ class ConvertCommand extends Command<void> {
           }
           return tachibkBackup;
         }(),
-      '.pas4' => () {
+      BackupType.paperback => () {
           final PaperbackBackup paperbackBackup =
               converter.importPaperbackPas4Backup(
             backupFile.readAsBytesSync(),
@@ -178,7 +194,7 @@ class ConvertCommand extends Command<void> {
           // TODO: Implement Paperback to Tachi
           return null;
         }(),
-      '.tmb' => await () async {
+      BackupType.tachimanga => await () async {
           final TachimangaBackup tachimangaBackup =
               await converter.importTachimangaBackup(
             backupFile.readAsBytesSync(),
@@ -246,5 +262,29 @@ class ConvertCommand extends Command<void> {
         print('Unsupported output format');
         return;
     }
+  }
+}
+
+enum BackupType {
+  aidoku(['.aib']),
+  paperback(['.pas4']),
+  tachi(['.tachibk', '.proto.gz']),
+  tachimanga(['.tmb']),
+  mangayomi(['.backup']);
+
+  const BackupType(this.extensions);
+
+  final List<String> extensions;
+
+  static List<String> get validExtensions =>
+      values.expand((e) => e.extensions).toList();
+
+  static BackupType? byExtension(String extension) {
+    for (final type in values) {
+      if (type.extensions.contains(extension)) {
+        return type;
+      }
+    }
+    return null;
   }
 }
