@@ -37,8 +37,8 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   final List<TachiBackupSourcePreferences> backupSourcePreferences;
 
   const TachiBackup({
-    required this.backupCategories,
-    required this.backupManga,
+    this.backupCategories = const [],
+    this.backupManga = const [],
     this.backupBrokenSources = const [],
     this.backupSources = const [],
     this.backupExtensionRepo = const [],
