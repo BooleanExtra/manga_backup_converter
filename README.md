@@ -7,3 +7,4 @@
 - [dependabot/pub/wolt_modal_sheet-0.11.0](./dependabot/pub/wolt_modal_sheet-0.11.0/)
 - [feature/extensionMapping](./feature/extensionMapping/)
 - [main](./main/)
+- [update_schemas](./update_schemas/)
