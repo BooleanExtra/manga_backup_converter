@@ -50,10 +50,7 @@ class _SegmentedButtonTileState<T extends HumanReadableEnum>
           for (final segment in widget.segments)
             ButtonSegment<T>(
               value: segment,
-              label: Text(
-                segment.humanName,
-                maxLines: 1,
-              ),
+              label: Text(segment.humanName, maxLines: 1),
               enabled: widget.enabled,
             ),
         ],

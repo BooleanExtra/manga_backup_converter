@@ -18,7 +18,7 @@ class _SettingDetailsRouteState extends State<SettingDetailsRoute> {
     return switch (widget.id) {
       'about' => const AboutSettingsScreen(),
       'appearance' => const AppearanceSettingsScreen(),
-      _ => UnknownSettingsScreen(id: widget.id)
+      _ => UnknownSettingsScreen(id: widget.id),
     };
   }
 }

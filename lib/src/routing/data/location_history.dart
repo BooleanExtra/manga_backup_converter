@@ -11,10 +11,7 @@ class LocationHistory with LocationHistoryMappable {
   final List<Uri> popped;
 
   /// Source: @cgestes https://github.com/flutter/flutter/issues/115353#issuecomment-1675808675
-  const LocationHistory({
-    this.history = const [],
-    this.popped = const [],
-  });
+  const LocationHistory({this.history = const [], this.popped = const []});
 
   bool hasForward() {
     return popped.isNotEmpty;

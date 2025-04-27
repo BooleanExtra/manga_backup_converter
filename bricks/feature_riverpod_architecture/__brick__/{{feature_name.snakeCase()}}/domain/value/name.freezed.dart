@@ -12,7 +12,8 @@ part of 'name.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods',
+);
 
 /// @nodoc
 mixin _$NameValidFailure {
@@ -21,52 +22,47 @@ mixin _$NameValidFailure {
     required TResult Function() illegalCharacters,
     required TResult Function() obscene,
     required TResult Function() empty,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? illegalCharacters,
     TResult? Function()? obscene,
     TResult? Function()? empty,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? illegalCharacters,
     TResult Function()? obscene,
     TResult Function()? empty,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_IllegalCharacters value) illegalCharacters,
     required TResult Function(_Obscene value) obscene,
     required TResult Function(_Empty value) empty,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_IllegalCharacters value)? illegalCharacters,
     TResult? Function(_Obscene value)? obscene,
     TResult? Function(_Empty value)? empty,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_IllegalCharacters value)? illegalCharacters,
     TResult Function(_Obscene value)? obscene,
     TResult Function(_Empty value)? empty,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $NameValidFailureCopyWith<$Res> {
   factory $NameValidFailureCopyWith(
-          NameValidFailure value, $Res Function(NameValidFailure) then) =
-      _$NameValidFailureCopyWithImpl<$Res, NameValidFailure>;
+    NameValidFailure value,
+    $Res Function(NameValidFailure) then,
+  ) = _$NameValidFailureCopyWithImpl<$Res, NameValidFailure>;
 }
 
 /// @nodoc
@@ -82,9 +78,10 @@ class _$NameValidFailureCopyWithImpl<$Res, $Val extends NameValidFailure>
 
 /// @nodoc
 abstract class _$$_IllegalCharactersCopyWith<$Res> {
-  factory _$$_IllegalCharactersCopyWith(_$_IllegalCharacters value,
-          $Res Function(_$_IllegalCharacters) then) =
-      __$$_IllegalCharactersCopyWithImpl<$Res>;
+  factory _$$_IllegalCharactersCopyWith(
+    _$_IllegalCharacters value,
+    $Res Function(_$_IllegalCharacters) then,
+  ) = __$$_IllegalCharactersCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -92,8 +89,9 @@ class __$$_IllegalCharactersCopyWithImpl<$Res>
     extends _$NameValidFailureCopyWithImpl<$Res, _$_IllegalCharacters>
     implements _$$_IllegalCharactersCopyWith<$Res> {
   __$$_IllegalCharactersCopyWithImpl(
-      _$_IllegalCharacters _value, $Res Function(_$_IllegalCharacters) _then)
-      : super(_value, _then);
+    _$_IllegalCharacters _value,
+    $Res Function(_$_IllegalCharacters) _then,
+  ) : super(_value, _then);
 }
 
 /// @nodoc
@@ -191,8 +189,9 @@ abstract class _IllegalCharacters implements NameValidFailure {
 /// @nodoc
 abstract class _$$_ObsceneCopyWith<$Res> {
   factory _$$_ObsceneCopyWith(
-          _$_Obscene value, $Res Function(_$_Obscene) then) =
-      __$$_ObsceneCopyWithImpl<$Res>;
+    _$_Obscene value,
+    $Res Function(_$_Obscene) then,
+  ) = __$$_ObsceneCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -200,7 +199,7 @@ class __$$_ObsceneCopyWithImpl<$Res>
     extends _$NameValidFailureCopyWithImpl<$Res, _$_Obscene>
     implements _$$_ObsceneCopyWith<$Res> {
   __$$_ObsceneCopyWithImpl(_$_Obscene _value, $Res Function(_$_Obscene) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -306,7 +305,7 @@ class __$$_EmptyCopyWithImpl<$Res>
     extends _$NameValidFailureCopyWithImpl<$Res, _$_Empty>
     implements _$$_EmptyCopyWith<$Res> {
   __$$_EmptyCopyWithImpl(_$_Empty _value, $Res Function(_$_Empty) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc

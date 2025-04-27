@@ -15,9 +15,7 @@ class AppearanceSettingsScreen extends ConsumerWidget {
     final isLight = Theme.of(context).brightness == Brightness.light;
     final themes = ref.watch(themesProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appearance'),
-      ),
+      appBar: AppBar(title: const Text('Appearance')),
       body: Material(
         child: ListView(
           children: <Widget>[

@@ -12,7 +12,8 @@ part of 'email.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods',
+);
 
 /// @nodoc
 mixin _$EmailAvailableFailure {
@@ -21,57 +22,54 @@ mixin _$EmailAvailableFailure {
     required TResult Function() taken,
     required TResult Function() reserved,
     required TResult Function() banned,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? taken,
     TResult? Function()? reserved,
     TResult? Function()? banned,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? taken,
     TResult Function()? reserved,
     TResult Function()? banned,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Taken value) taken,
     required TResult Function(_Reserved value) reserved,
     required TResult Function(_Banned value) banned,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Taken value)? taken,
     TResult? Function(_Reserved value)? reserved,
     TResult? Function(_Banned value)? banned,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Taken value)? taken,
     TResult Function(_Reserved value)? reserved,
     TResult Function(_Banned value)? banned,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $EmailAvailableFailureCopyWith<$Res> {
-  factory $EmailAvailableFailureCopyWith(EmailAvailableFailure value,
-          $Res Function(EmailAvailableFailure) then) =
-      _$EmailAvailableFailureCopyWithImpl<$Res, EmailAvailableFailure>;
+  factory $EmailAvailableFailureCopyWith(
+    EmailAvailableFailure value,
+    $Res Function(EmailAvailableFailure) then,
+  ) = _$EmailAvailableFailureCopyWithImpl<$Res, EmailAvailableFailure>;
 }
 
 /// @nodoc
-class _$EmailAvailableFailureCopyWithImpl<$Res,
-        $Val extends EmailAvailableFailure>
+class _$EmailAvailableFailureCopyWithImpl<
+  $Res,
+  $Val extends EmailAvailableFailure
+>
     implements $EmailAvailableFailureCopyWith<$Res> {
   _$EmailAvailableFailureCopyWithImpl(this._value, this._then);
 
@@ -92,7 +90,7 @@ class __$$_TakenCopyWithImpl<$Res>
     extends _$EmailAvailableFailureCopyWithImpl<$Res, _$_Taken>
     implements _$$_TakenCopyWith<$Res> {
   __$$_TakenCopyWithImpl(_$_Taken _value, $Res Function(_$_Taken) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -190,8 +188,9 @@ abstract class _Taken implements EmailAvailableFailure {
 /// @nodoc
 abstract class _$$_ReservedCopyWith<$Res> {
   factory _$$_ReservedCopyWith(
-          _$_Reserved value, $Res Function(_$_Reserved) then) =
-      __$$_ReservedCopyWithImpl<$Res>;
+    _$_Reserved value,
+    $Res Function(_$_Reserved) then,
+  ) = __$$_ReservedCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -199,8 +198,9 @@ class __$$_ReservedCopyWithImpl<$Res>
     extends _$EmailAvailableFailureCopyWithImpl<$Res, _$_Reserved>
     implements _$$_ReservedCopyWith<$Res> {
   __$$_ReservedCopyWithImpl(
-      _$_Reserved _value, $Res Function(_$_Reserved) _then)
-      : super(_value, _then);
+    _$_Reserved _value,
+    $Res Function(_$_Reserved) _then,
+  ) : super(_value, _then);
 }
 
 /// @nodoc
@@ -306,7 +306,7 @@ class __$$_BannedCopyWithImpl<$Res>
     extends _$EmailAvailableFailureCopyWithImpl<$Res, _$_Banned>
     implements _$$_BannedCopyWith<$Res> {
   __$$_BannedCopyWithImpl(_$_Banned _value, $Res Function(_$_Banned) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -406,42 +406,37 @@ mixin _$EmailFormatFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Invalid value) invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Invalid value)? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Invalid value)? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $EmailFormatFailureCopyWith<$Res> {
   factory $EmailFormatFailureCopyWith(
-          EmailFormatFailure value, $Res Function(EmailFormatFailure) then) =
-      _$EmailFormatFailureCopyWithImpl<$Res, EmailFormatFailure>;
+    EmailFormatFailure value,
+    $Res Function(EmailFormatFailure) then,
+  ) = _$EmailFormatFailureCopyWithImpl<$Res, EmailFormatFailure>;
 }
 
 /// @nodoc
@@ -458,8 +453,9 @@ class _$EmailFormatFailureCopyWithImpl<$Res, $Val extends EmailFormatFailure>
 /// @nodoc
 abstract class _$$_InvalidCopyWith<$Res> {
   factory _$$_InvalidCopyWith(
-          _$_Invalid value, $Res Function(_$_Invalid) then) =
-      __$$_InvalidCopyWithImpl<$Res>;
+    _$_Invalid value,
+    $Res Function(_$_Invalid) then,
+  ) = __$$_InvalidCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -467,7 +463,7 @@ class __$$_InvalidCopyWithImpl<$Res>
     extends _$EmailFormatFailureCopyWithImpl<$Res, _$_Invalid>
     implements _$$_InvalidCopyWith<$Res> {
   __$$_InvalidCopyWithImpl(_$_Invalid _value, $Res Function(_$_Invalid) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -491,17 +487,13 @@ class _$_Invalid implements _Invalid {
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() invalid,
-  }) {
+  TResult when<TResult extends Object?>({required TResult Function() invalid}) {
     return invalid();
   }
 
   @override
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? invalid,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? invalid}) {
     return invalid?.call();
   }
 

@@ -6,13 +6,10 @@ part 'email.modddel.dart';
 
 @Modddel(
   validationSteps: [
-    ValidationStep(
-      [
-        Validation('format', FailureType<EmailFormatFailure>()),
-        Validation('available', FailureType<EmailAvailableFailure>()),
-      ],
-      name: 'Value',
-    ),
+    ValidationStep([
+      Validation('format', FailureType<EmailFormatFailure>()),
+      Validation('available', FailureType<EmailAvailableFailure>()),
+    ], name: 'Value'),
   ],
 )
 class Email extends SingleValueObject<InvalidEmail, ValidEmail> with _$Email {

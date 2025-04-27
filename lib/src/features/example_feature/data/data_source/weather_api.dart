@@ -9,14 +9,14 @@ class OpenWeatherMapAPI {
   static const String _apiPath = '/data/2.5/';
 
   Uri weather(String city) => _buildUri(
-        endpoint: 'weather',
-        parametersBuilder: () => cityQueryParameters(city),
-      );
+    endpoint: 'weather',
+    parametersBuilder: () => cityQueryParameters(city),
+  );
 
   Uri forecast(String city) => _buildUri(
-        endpoint: 'forecast',
-        parametersBuilder: () => cityQueryParameters(city),
-      );
+    endpoint: 'forecast',
+    parametersBuilder: () => cityQueryParameters(city),
+  );
 
   Uri _buildUri({
     required String endpoint,
@@ -31,8 +31,8 @@ class OpenWeatherMapAPI {
   }
 
   Map<String, dynamic> cityQueryParameters(String city) => {
-        'q': city,
-        'appid': apiKey,
-        'units': 'metric',
-      };
+    'q': city,
+    'appid': apiKey,
+    'units': 'metric',
+  };
 }

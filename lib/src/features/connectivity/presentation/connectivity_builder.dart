@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 /// Shows the current connectivity status if the user is offline
 /// and the app does not have any data to show.
 class ConnectivityBuilder extends StatefulWidget {
-  const ConnectivityBuilder({
-    required this.builder,
-    this.child,
-    super.key,
-  });
+  const ConnectivityBuilder({required this.builder, this.child, super.key});
 
   /// The widget to display if the user is online or the app has data to show.
   final Widget? child;
@@ -20,7 +16,8 @@ class ConnectivityBuilder extends StatefulWidget {
     BuildContext context,
     List<ConnectivityResult> connectivity,
     Widget? child,
-  ) builder;
+  )
+  builder;
 
   @override
   State<ConnectivityBuilder> createState() => _ConnectivityBuilderState();
@@ -29,15 +26,16 @@ class ConnectivityBuilder extends StatefulWidget {
 class _ConnectivityBuilderState extends State<ConnectivityBuilder> {
   List<ConnectivityResult> _connectivityResults = [ConnectivityResult.wifi];
   late final StreamSubscription<List<ConnectivityResult>>
-      _connectivitySubscription;
+  _connectivitySubscription;
   final _connectivity = Connectivity();
 
   @override
   void initState() {
     super.initState();
     _connectivity.checkConnectivity().then(_updateConnectionStatus);
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      _updateConnectionStatus,
+    );
   }
 
   @override

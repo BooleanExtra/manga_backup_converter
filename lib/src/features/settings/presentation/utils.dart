@@ -16,38 +16,37 @@ Future<OptionT?> showOptionsMenu<OptionT extends HumanReadableEnum>(
       return [
         SliverWoltModalSheetPage(
           topBarTitle: Center(
-            child: Text(
-              title,
-              style: theme.textTheme.titleMedium,
-            ),
+            child: Text(title, style: theme.textTheme.titleMedium),
           ),
           isTopBarLayerAlwaysVisible: true,
           leadingNavBarWidget: const Padding(
             padding: EdgeInsetsDirectional.all(16.0),
             child: CloseButton(),
           ),
-          mainContentSliversBuilder: (context) => [
-            SliverList(
-              delegate: SliverChildListDelegate([
-                for (final eachOption in options)
-                  ListTile(
-                    title: Text(
-                      eachOption.humanName,
-                      style: current == eachOption
-                          ? const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )
-                          : null,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop(eachOption);
-                    },
-                    trailing:
-                        current == eachOption ? const Icon(Icons.check) : null,
-                  ),
-              ]),
-            ),
-          ],
+          mainContentSliversBuilder:
+              (context) => [
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    for (final eachOption in options)
+                      ListTile(
+                        title: Text(
+                          eachOption.humanName,
+                          style:
+                              current == eachOption
+                                  ? const TextStyle(fontWeight: FontWeight.bold)
+                                  : null,
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(eachOption);
+                        },
+                        trailing:
+                            current == eachOption
+                                ? const Icon(Icons.check)
+                                : null,
+                      ),
+                  ]),
+                ),
+              ],
         ),
       ];
     },
