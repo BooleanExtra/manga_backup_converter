@@ -5,6 +5,8 @@ import 'package:mangabackupconverter_cli/src/exceptions/extension_exception.dart
 
 part 'extensions.mapper.dart';
 
+// TODO: Write script to help generate this json
+
 const String _extensionRepoIndexJson = '''
 {
   "repos": {
@@ -16,16 +18,92 @@ const String _extensionRepoIndexJson = '''
       {
         "name": "Kavya",
         "url": "https://raw.githubusercontent.com/ACK72/kavya-aidoku/gh-pages"
-      },
+      }
+    ],
+    "mangayomi": [
       {
-        "name": "Kavya 2",
-        "url": "https://raw.githubusercontent.com/getBoolean/kavya-aidoku/gh-pages"
+        "name": "Mangayomi Extensions",
+        "url": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
+      }
+    ],
+    "tachi": [
+      {
+        "name": "Keiyoushi Extensions",
+        "url": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
       }
     ],
     "paperback": [
       {
+        "name": "Kavya",
+        "url": "https://ACK72.github.io/kavya-paperback"
+      },
+      {
+        "name": "Netsky's Extensions (0.8)",
+        "url": "https://ACK72.github.io/kavya-paperback"
+      },
+      {
+        "name": "Extensions Generic Madara (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/madara"
+      },
+      {
+        "name": "Extensions Generic MangaBox (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/mangabox"
+      },
+      {
+        "name": "Extensions Generic BuddyComplex (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/buddycomplex"
+      },
+      {
+        "name": "xOnlyFadi's Extensions (0.8)",
+        "url": "https://xonlyfadi.github.io/xonlyfadi-extensions/0.8"
+      },
+      {
         "name": "Paperback Community Extensions (0.8)",
         "url": "https://thenetsky.github.io/community-extensions/0.8"
+      },
+      {
+        "name": "Extensions Generic MangaStream (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/mangastream"
+      },
+      {
+        "name": "NmN's Foreign Extensions (0.8)",
+        "url": "https://pandeynmn.github.io/extensions-foreign/0.8"
+      },
+      {
+        "name": "NineManga Extensions (0.8)",
+        "url": "https://pandeynmn.github.io/extensions-foreign/ninemanga-0.8"
+      },
+      {
+        "name": "NmN's Extensions (0.8)",
+        "url": "https://pandeynmn.github.io/nmns-extensions/0.8"
+      },
+      {
+        "name": "Extensions Generic MangaCatalog (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/mangacatalog"
+      },
+      {
+        "name": "kameia Extensions (0.8)",
+        "url": "https://kameiaa.github.io/kameia-extensions/0.8"
+      },
+      {
+        "name": "Gabes's Extensions (0.8)",
+        "url": "https://gabrielcwt.github.io/gabe-extensions/0.8"
+      },
+      {
+        "name": "Webtoons.com (0.8)",
+        "url": "https://yvespa.github.io/webtoons-extensions/0.8"
+      },
+      {
+        "name": "Hean Generic (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/hean"
+      },
+      {
+        "name": "Liliana Generic (0.8)",
+        "url": "https://thenetsky.github.io/extensions-generic-0.8/liliana"
+      },
+      {
+        "name": "IvanMatthew's Extensions (0.8)",
+        "url": "https://ivanmatthew.github.io/ivans-paperback-extensions/paperback-0.8"
       }
     ]
   },
@@ -45,6 +123,20 @@ const String _extensionRepoIndexJson = '''
             "name": "MangaDex",
             "id": "MangaDex",
             "repo": "https://thenetsky.github.io/community-extensions/0.8"
+          }
+        ],
+        "mangayomi": [
+          {
+            "name": "MangaDex",
+            "id": "202373705",
+            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
+          }
+        ],
+        "tachi": [
+          {
+            "name": "Tachiyomi: MangaDex",
+            "id": "eu.kanade.tachiyomi.extension.all.mangadex",
+            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
           }
         ]
       }
