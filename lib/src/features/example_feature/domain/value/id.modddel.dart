@@ -10,7 +10,8 @@ part of 'id.dart';
 // **************************************************************************
 
 final _$unimplementedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.');
+  'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.',
+);
 
 class _$CopyWithDefault {
   const _$CopyWithDefault();
@@ -24,18 +25,21 @@ mixin _$Id {
   static Id _create({required String value}) {
     final $idValueHolder = _$IdValueHolder(value: value);
 
-    return _verifyValueStep($idValueHolder)
-        .fold((invalidIdValue) => invalidIdValue, (validId) => validId);
+    return _verifyValueStep(
+      $idValueHolder,
+    ).fold((invalidIdValue) => invalidIdValue, (validId) => validId);
   }
 
   static Either<InvalidIdValue, ValidId> _verifyValueStep(
-      _$IdValueHolder $idValueHolder) {
+    _$IdValueHolder $idValueHolder,
+  ) {
     // ignore: unused_local_variable
     final $idInstance = _$instance();
 
-    final allowedFailure = $idInstance
-        .validateAllowed($idValueHolder.toAllowedSubholder())
-        .toNullable();
+    final allowedFailure =
+        $idInstance
+            .validateAllowed($idValueHolder.toAllowedSubholder())
+            .toNullable();
 
     if (allowedFailure == null) {
       return right<InvalidIdValue, ValidId>(
@@ -45,52 +49,65 @@ mixin _$Id {
 
     return left<InvalidIdValue, ValidId>(
       InvalidIdValue._(
-          value: $idValueHolder.value, allowedFailure: allowedFailure),
+        value: $idValueHolder.value,
+        allowedFailure: allowedFailure,
+      ),
     );
   }
 
-  TResult map<TResult extends Object?>(
-      {required TResult Function(ValidId validId) valid,
-      required TResult Function(InvalidIdValue invalidIdValue) invalidValue}) {
+  TResult map<TResult extends Object?>({
+    required TResult Function(ValidId validId) valid,
+    required TResult Function(InvalidIdValue invalidIdValue) invalidValue,
+  }) {
     return maybeMap(
-        valid: valid,
-        invalidValue: invalidValue,
-        orElse: () => throw UnreachableError());
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeMap<TResult extends Object?>(
-          {TResult Function(ValidId validId)? valid,
-          TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
-          required TResult Function() orElse}) =>
-      throw _$unimplementedError;
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidId validId)? valid,
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+    required TResult Function() orElse,
+  }) => throw _$unimplementedError;
 
-  TResult? mapOrNull<TResult extends Object?>(
-      {TResult Function(ValidId validId)? valid,
-      TResult Function(InvalidIdValue invalidIdValue)? invalidValue}) {
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(ValidId validId)? valid,
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+  }) {
     return maybeMap(
-        valid: valid, invalidValue: invalidValue, orElse: () => null);
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => null,
+    );
   }
 
-  TResult mapValidity<TResult extends Object?>(
-      {required TResult Function(ValidId validId) valid,
-      required TResult Function(InvalidId invalidId) invalid}) {
+  TResult mapValidity<TResult extends Object?>({
+    required TResult Function(ValidId validId) valid,
+    required TResult Function(InvalidId invalidId) invalid,
+  }) {
     return maybeMap(valid: valid, orElse: () => invalid(this as InvalidId));
   }
 
-  TResult maybeMapValidity<TResult extends Object?>(
-      {required TResult Function(ValidId validId) valid,
-      TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
-      required TResult Function(InvalidId invalidId) orElse}) {
+  TResult maybeMapValidity<TResult extends Object?>({
+    required TResult Function(ValidId validId) valid,
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+    required TResult Function(InvalidId invalidId) orElse,
+  }) {
     return maybeMap(
-        valid: valid,
-        invalidValue: invalidValue,
-        orElse: () => orElse(this as InvalidId));
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => orElse(this as InvalidId),
+    );
   }
 
   Id Function({String value}) get copyWith {
     return ({Object? value = _$copyWithDefault}) {
       final $copy$value = mapValidity(
-          valid: (valid) => valid.value, invalid: (invalid) => invalid.value);
+        valid: (valid) => valid.value,
+        invalid: (invalid) => invalid.value,
+      );
 
       return Id(value == _$copyWithDefault ? $copy$value : value as String);
     };
@@ -107,10 +124,11 @@ class ValidId extends Id implements ValidValueObject {
   final String value;
 
   @override
-  TResult maybeMap<TResult extends Object?>(
-      {TResult Function(ValidId validId)? valid,
-      TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidId validId)? valid,
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return valid != null ? valid(this) : orElse();
   }
 
@@ -124,49 +142,60 @@ class ValidId extends Id implements ValidValueObject {
 mixin InvalidId implements Id, InvalidValueObject {
   String get value;
 
-  TResult mapInvalid<TResult extends Object?>(
-      {required TResult Function(InvalidIdValue invalidIdValue) invalidValue}) {
+  TResult mapInvalid<TResult extends Object?>({
+    required TResult Function(InvalidIdValue invalidIdValue) invalidValue,
+  }) {
     return maybeMap(
-        invalidValue: invalidValue, orElse: () => throw UnreachableError());
+      invalidValue: invalidValue,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeMapInvalid<TResult extends Object?>(
-      {TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMapInvalid<TResult extends Object?>({
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return maybeMap(invalidValue: invalidValue, orElse: orElse);
   }
 
-  TResult? mapOrNullInvalid<TResult extends Object?>(
-      {TResult Function(InvalidIdValue invalidIdValue)? invalidValue}) {
+  TResult? mapOrNullInvalid<TResult extends Object?>({
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+  }) {
     return maybeMap(invalidValue: invalidValue, orElse: () => null);
   }
 
-  TResult whenInvalid<TResult extends Object?>(
-      {required TResult Function(IdValidFailure allowedFailure)
-          valueFailures}) {
+  TResult whenInvalid<TResult extends Object?>({
+    required TResult Function(IdValidFailure allowedFailure) valueFailures,
+  }) {
     return maybeWhenInvalid(
-        valueFailures: valueFailures, orElse: () => throw UnreachableError());
+      valueFailures: valueFailures,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeWhenInvalid<TResult extends Object?>(
-      {TResult Function(IdValidFailure allowedFailure)? valueFailures,
-      required TResult Function() orElse}) {
+  TResult maybeWhenInvalid<TResult extends Object?>({
+    TResult Function(IdValidFailure allowedFailure)? valueFailures,
+    required TResult Function() orElse,
+  }) {
     return maybeMap(
-        invalidValue: valueFailures != null
-            ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
-            : null,
-        orElse: orElse);
+      invalidValue:
+          valueFailures != null
+              ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
+              : null,
+      orElse: orElse,
+    );
   }
 
-  TResult? whenOrNullInvalid<TResult extends Object?>(
-      {TResult Function(IdValidFailure allowedFailure)? valueFailures}) {
+  TResult? whenOrNullInvalid<TResult extends Object?>({
+    TResult Function(IdValidFailure allowedFailure)? valueFailures,
+  }) {
     return maybeWhenInvalid(valueFailures: valueFailures, orElse: () => null);
   }
 }
 
 class InvalidIdValue extends Id with InvalidId {
   InvalidIdValue._({required this.value, required this.allowedFailure})
-      : super._();
+    : super._();
 
   @override
   final String value;
@@ -180,10 +209,11 @@ class InvalidIdValue extends Id with InvalidId {
   List<Object?> get props => [value, allowedFailure];
 
   @override
-  TResult maybeMap<TResult extends Object?>(
-      {TResult Function(ValidId validId)? valid,
-      TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidId validId)? valid,
+    TResult Function(InvalidIdValue invalidIdValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return invalidValue != null ? invalidValue(this) : orElse();
   }
 
