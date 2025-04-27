@@ -17,36 +17,28 @@ class TachiBackupSource with TachiBackupSourceMappable {
 
   const TachiBackupSource({required this.name, required this.sourceId});
 
-  factory TachiBackupSource.fromMihon(
-    mihon.BackupSource backupSource,
-  ) {
+  factory TachiBackupSource.fromMihon(mihon.BackupSource backupSource) {
     return TachiBackupSource(
       name: backupSource.name,
       sourceId: backupSource.sourceId.toInt(),
     );
   }
 
-  factory TachiBackupSource.fromSy(
-    sy.BackupSource backupSource,
-  ) {
+  factory TachiBackupSource.fromSy(sy.BackupSource backupSource) {
     return TachiBackupSource(
       name: backupSource.name,
       sourceId: backupSource.sourceId.toInt(),
     );
   }
 
-  factory TachiBackupSource.fromJ2k(
-    j2k.BackupSource backupSource,
-  ) {
+  factory TachiBackupSource.fromJ2k(j2k.BackupSource backupSource) {
     return TachiBackupSource(
       name: backupSource.name,
       sourceId: backupSource.sourceId.toInt(),
     );
   }
 
-  factory TachiBackupSource.fromYokai(
-    yokai.BackupSource backupSource,
-  ) {
+  factory TachiBackupSource.fromYokai(yokai.BackupSource backupSource) {
     return TachiBackupSource(
       name: backupSource.name,
       sourceId: backupSource.sourceId.toInt(),

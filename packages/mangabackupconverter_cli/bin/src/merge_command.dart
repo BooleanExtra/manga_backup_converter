@@ -66,8 +66,9 @@ class MergeCommand extends Command<void> {
       '${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib',
     );
     final backupFileExtension = p.extension(backupFile.uri.toString());
-    final otherBackupFileExtension =
-        p.extension(otherBackupFile.uri.toString());
+    final otherBackupFileExtension = p.extension(
+      otherBackupFile.uri.toString(),
+    );
     if (backupFileExtension != '.aib') {
       print('Backup file format "$backupFileExtension" not supported');
       throw ArgumentError(
@@ -81,25 +82,22 @@ class MergeCommand extends Command<void> {
       );
     }
     final AidokuBackup aidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(
-        backupFile.readAsBytesSync(),
-      ),
+      ByteData.sublistView(backupFile.readAsBytesSync()),
     );
     if (verbose) {
       print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
     }
     print('Backup Library: ${aidokuBackup.library?.length}');
     final AidokuBackup otherAidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(
-        otherBackupFile.readAsBytesSync(),
-      ),
+      ByteData.sublistView(otherBackupFile.readAsBytesSync()),
     );
     if (verbose) {
       print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');
     }
     print('Other Backup Library: ${otherAidokuBackup.library?.length}');
-    final AidokuBackup combinedBackup =
-        aidokuBackup.mergeWith(otherAidokuBackup);
+    final AidokuBackup combinedBackup = aidokuBackup.mergeWith(
+      otherAidokuBackup,
+    );
     if (verbose) {
       print('[VERBOSE] Combined Aidoku Backup: $combinedBackup');
       final library = combinedBackup.library!.toList();

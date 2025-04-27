@@ -100,10 +100,7 @@ class MangayomiBackupManga with MangayomiBackupMangaMappable {
   static const fromJson = MangayomiBackupMangaMapper.fromJson;
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ItemType { manga, anime, novel }
 
 @MappableClass(
@@ -373,10 +370,7 @@ class MangayomiBackupExtension with MangayomiBackupExtensionMappable {
   static const fromJson = MangayomiBackupExtensionMapper.fromJson;
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum SourceCodeLanguage { dart, javascript }
 
 @MappableClass(
@@ -464,11 +458,7 @@ class SwitchPreferenceCompat with SwitchPreferenceCompatMappable {
   final String? summary;
   final bool? value;
 
-  const SwitchPreferenceCompat({
-    this.title,
-    this.summary,
-    this.value,
-  });
+  const SwitchPreferenceCompat({this.title, this.summary, this.value});
 
   static const fromMap = SwitchPreferenceCompatMapper.fromMap;
   static const fromJson = SwitchPreferenceCompatMapper.fromJson;

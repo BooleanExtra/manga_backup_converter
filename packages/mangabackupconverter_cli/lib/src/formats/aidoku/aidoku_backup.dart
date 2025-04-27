@@ -16,10 +16,7 @@ import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
 
-@MappableClass(
-  includeCustomMappers: [AidokuDateTimeMapper()],
-  ignoreNull: true,
-)
+@MappableClass(includeCustomMappers: [AidokuDateTimeMapper()], ignoreNull: true)
 class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   final Set<AidokuBackupLibraryManga>? library;
   final Set<AidokuBackupHistory>? history;
@@ -46,8 +43,9 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   });
 
   static AidokuBackup fromBinaryPropertyList(ByteData bytes) {
-    final asMap = PropertyListSerialization.propertyListWithData(bytes)
-        as Map<String, Object>;
+    final asMap =
+        PropertyListSerialization.propertyListWithData(bytes)
+            as Map<String, Object>;
     return fromMap(asMap);
   }
 
@@ -73,8 +71,10 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         ...libraryItem.categories,
         ...libraryItemDuplicates.fold(
           <String>{},
-          (previousCategories, libraryItemDuplicate) =>
-              {...previousCategories, ...libraryItemDuplicate.categories},
+          (previousCategories, libraryItemDuplicate) => {
+            ...previousCategories,
+            ...libraryItemDuplicate.categories,
+          },
         ),
       };
       if (combinedCategories.isEmpty) {
@@ -101,33 +101,33 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
                 ? previousLastUpdated
                 : libraryItem.lastUpdated,
       );
-      final latestLastRead = libraryItemDuplicates.fold(
-        libraryItem.lastRead,
-        (previousLastRead, libraryItem) {
-          final otherLastRead = libraryItem.lastRead;
-          if (previousLastRead == null && otherLastRead == null) {
-            return null;
-          }
-          if (previousLastRead != null && otherLastRead == null) {
-            return previousLastRead;
-          }
-          return switch ((
-            previousLastRead: previousLastRead,
-            otherLastRead: otherLastRead
-          )) {
-            _ when otherLastRead == null && previousLastRead == null => null,
-            _ when otherLastRead != null && previousLastRead == null =>
-              otherLastRead,
-            _ when otherLastRead == null && previousLastRead != null =>
-              previousLastRead,
-            _ when otherLastRead != null && previousLastRead != null =>
-              previousLastRead.isAfter(otherLastRead)
-                  ? previousLastRead
-                  : libraryItem.lastRead,
-            (otherLastRead: _, previousLastRead: _) => null,
-          };
-        },
-      );
+      final latestLastRead = libraryItemDuplicates.fold(libraryItem.lastRead, (
+        previousLastRead,
+        libraryItem,
+      ) {
+        final otherLastRead = libraryItem.lastRead;
+        if (previousLastRead == null && otherLastRead == null) {
+          return null;
+        }
+        if (previousLastRead != null && otherLastRead == null) {
+          return previousLastRead;
+        }
+        return switch ((
+          previousLastRead: previousLastRead,
+          otherLastRead: otherLastRead,
+        )) {
+          _ when otherLastRead == null && previousLastRead == null => null,
+          _ when otherLastRead != null && previousLastRead == null =>
+            otherLastRead,
+          _ when otherLastRead == null && previousLastRead != null =>
+            previousLastRead,
+          _ when otherLastRead != null && previousLastRead != null =>
+            previousLastRead.isAfter(otherLastRead)
+                ? previousLastRead
+                : libraryItem.lastRead,
+          (otherLastRead: _, previousLastRead: _) => null,
+        };
+      });
       libraryCombined.add(
         libraryItem.copyWith(
           categories: combinedCategories.toList(),
@@ -203,9 +203,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
     print('Manga: ${manga?.length}');
     print('Chapters: ${chapters?.length}');
     print('Manga History: ${history?.length}');
-    print(
-      'Tracked Manga Items: ${trackItems?.length}',
-    );
+    print('Tracked Manga Items: ${trackItems?.length}');
     print('Categories: ${categories?.length}');
     print('Sources: ${sources?.length}');
     print('Aidoku Backup Name: $name');

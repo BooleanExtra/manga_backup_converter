@@ -13,8 +13,9 @@ class PaperbackBackupChapterProgressMarkerMapper
   static PaperbackBackupChapterProgressMarkerMapper? _instance;
   static PaperbackBackupChapterProgressMarkerMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals
-          .use(_instance = PaperbackBackupChapterProgressMarkerMapper._());
+      MapperContainer.globals.use(
+        _instance = PaperbackBackupChapterProgressMarkerMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
       PaperbackBackupItemReferenceMapper.ensureInitialized();
     }
@@ -33,10 +34,13 @@ class PaperbackBackupChapterProgressMarkerMapper
   static const Field<PaperbackBackupChapterProgressMarker, bool> _f$completed =
       Field('completed', _$completed);
   static PaperbackBackupItemReference _$chapter(
-          PaperbackBackupChapterProgressMarker v) =>
-      v.chapter;
-  static const Field<PaperbackBackupChapterProgressMarker,
-      PaperbackBackupItemReference> _f$chapter = Field('chapter', _$chapter);
+    PaperbackBackupChapterProgressMarker v,
+  ) => v.chapter;
+  static const Field<
+    PaperbackBackupChapterProgressMarker,
+    PaperbackBackupItemReference
+  >
+  _f$chapter = Field('chapter', _$chapter);
   static int _$lastPage(PaperbackBackupChapterProgressMarker v) => v.lastPage;
   static const Field<PaperbackBackupChapterProgressMarker, int> _f$lastPage =
       Field('lastPage', _$lastPage);
@@ -59,26 +63,30 @@ class PaperbackBackupChapterProgressMarkerMapper
 
   static PaperbackBackupChapterProgressMarker _instantiate(DecodingData data) {
     return PaperbackBackupChapterProgressMarker(
-        totalPages: data.dec(_f$totalPages),
-        completed: data.dec(_f$completed),
-        chapter: data.dec(_f$chapter),
-        lastPage: data.dec(_f$lastPage),
-        time: data.dec(_f$time),
-        hidden: data.dec(_f$hidden));
+      totalPages: data.dec(_f$totalPages),
+      completed: data.dec(_f$completed),
+      chapter: data.dec(_f$chapter),
+      lastPage: data.dec(_f$lastPage),
+      time: data.dec(_f$time),
+      hidden: data.dec(_f$hidden),
+    );
   }
 
   @override
   final Function instantiate = _instantiate;
 
   static PaperbackBackupChapterProgressMarker fromMap(
-      Map<String, dynamic> map) {
-    return ensureInitialized()
-        .decodeMap<PaperbackBackupChapterProgressMarker>(map);
+    Map<String, dynamic> map,
+  ) {
+    return ensureInitialized().decodeMap<PaperbackBackupChapterProgressMarker>(
+      map,
+    );
   }
 
   static PaperbackBackupChapterProgressMarker fromJson(String json) {
-    return ensureInitialized()
-        .decodeJson<PaperbackBackupChapterProgressMarker>(json);
+    return ensureInitialized().decodeJson<PaperbackBackupChapterProgressMarker>(
+      json,
+    );
   }
 }
 
@@ -86,21 +94,27 @@ mixin PaperbackBackupChapterProgressMarkerMappable {
   String toJson() {
     return PaperbackBackupChapterProgressMarkerMapper.ensureInitialized()
         .encodeJson<PaperbackBackupChapterProgressMarker>(
-            this as PaperbackBackupChapterProgressMarker);
+          this as PaperbackBackupChapterProgressMarker,
+        );
   }
 
   Map<String, dynamic> toMap() {
     return PaperbackBackupChapterProgressMarkerMapper.ensureInitialized()
         .encodeMap<PaperbackBackupChapterProgressMarker>(
-            this as PaperbackBackupChapterProgressMarker);
+          this as PaperbackBackupChapterProgressMarker,
+        );
   }
 
   PaperbackBackupChapterProgressMarkerCopyWith<
-          PaperbackBackupChapterProgressMarker,
-          PaperbackBackupChapterProgressMarker,
-          PaperbackBackupChapterProgressMarker>
-      get copyWith => _PaperbackBackupChapterProgressMarkerCopyWithImpl(
-          this as PaperbackBackupChapterProgressMarker, $identity, $identity);
+    PaperbackBackupChapterProgressMarker,
+    PaperbackBackupChapterProgressMarker,
+    PaperbackBackupChapterProgressMarker
+  >
+  get copyWith => _PaperbackBackupChapterProgressMarkerCopyWithImpl(
+    this as PaperbackBackupChapterProgressMarker,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
     return PaperbackBackupChapterProgressMarkerMapper.ensureInitialized()
@@ -122,73 +136,99 @@ mixin PaperbackBackupChapterProgressMarkerMappable {
 
 extension PaperbackBackupChapterProgressMarkerValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PaperbackBackupChapterProgressMarker, $Out> {
-  PaperbackBackupChapterProgressMarkerCopyWith<$R,
-          PaperbackBackupChapterProgressMarker, $Out>
-      get $asPaperbackBackupChapterProgressMarker => $base.as((v, t, t2) =>
-          _PaperbackBackupChapterProgressMarkerCopyWithImpl(v, t, t2));
+  PaperbackBackupChapterProgressMarkerCopyWith<
+    $R,
+    PaperbackBackupChapterProgressMarker,
+    $Out
+  >
+  get $asPaperbackBackupChapterProgressMarker => $base.as(
+    (v, t, t2) => _PaperbackBackupChapterProgressMarkerCopyWithImpl(v, t, t2),
+  );
 }
 
 abstract class PaperbackBackupChapterProgressMarkerCopyWith<
+  $R,
+  $In extends PaperbackBackupChapterProgressMarker,
+  $Out
+>
+    implements ClassCopyWith<$R, $In, $Out> {
+  PaperbackBackupItemReferenceCopyWith<
     $R,
-    $In extends PaperbackBackupChapterProgressMarker,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
-  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference,
-      PaperbackBackupItemReference> get chapter;
-  $R call(
-      {int? totalPages,
-      bool? completed,
-      PaperbackBackupItemReference? chapter,
-      int? lastPage,
-      DateTime? time,
-      bool? hidden});
+    PaperbackBackupItemReference,
+    PaperbackBackupItemReference
+  >
+  get chapter;
+  $R call({
+    int? totalPages,
+    bool? completed,
+    PaperbackBackupItemReference? chapter,
+    int? lastPage,
+    DateTime? time,
+    bool? hidden,
+  });
   PaperbackBackupChapterProgressMarkerCopyWith<$R2, $In, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
 class _PaperbackBackupChapterProgressMarkerCopyWithImpl<$R, $Out>
     extends ClassCopyWithBase<$R, PaperbackBackupChapterProgressMarker, $Out>
     implements
-        PaperbackBackupChapterProgressMarkerCopyWith<$R,
-            PaperbackBackupChapterProgressMarker, $Out> {
+        PaperbackBackupChapterProgressMarkerCopyWith<
+          $R,
+          PaperbackBackupChapterProgressMarker,
+          $Out
+        > {
   _PaperbackBackupChapterProgressMarkerCopyWithImpl(
-      super.value, super.then, super.then2);
+    super.value,
+    super.then,
+    super.then2,
+  );
 
   @override
   late final ClassMapperBase<PaperbackBackupChapterProgressMarker> $mapper =
       PaperbackBackupChapterProgressMarkerMapper.ensureInitialized();
   @override
-  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference,
-          PaperbackBackupItemReference>
-      get chapter => $value.chapter.copyWith.$chain((v) => call(chapter: v));
+  PaperbackBackupItemReferenceCopyWith<
+    $R,
+    PaperbackBackupItemReference,
+    PaperbackBackupItemReference
+  >
+  get chapter => $value.chapter.copyWith.$chain((v) => call(chapter: v));
   @override
-  $R call(
-          {int? totalPages,
-          bool? completed,
-          PaperbackBackupItemReference? chapter,
-          int? lastPage,
-          DateTime? time,
-          bool? hidden}) =>
-      $apply(FieldCopyWithData({
-        if (totalPages != null) #totalPages: totalPages,
-        if (completed != null) #completed: completed,
-        if (chapter != null) #chapter: chapter,
-        if (lastPage != null) #lastPage: lastPage,
-        if (time != null) #time: time,
-        if (hidden != null) #hidden: hidden
-      }));
+  $R call({
+    int? totalPages,
+    bool? completed,
+    PaperbackBackupItemReference? chapter,
+    int? lastPage,
+    DateTime? time,
+    bool? hidden,
+  }) => $apply(
+    FieldCopyWithData({
+      if (totalPages != null) #totalPages: totalPages,
+      if (completed != null) #completed: completed,
+      if (chapter != null) #chapter: chapter,
+      if (lastPage != null) #lastPage: lastPage,
+      if (time != null) #time: time,
+      if (hidden != null) #hidden: hidden,
+    }),
+  );
   @override
   PaperbackBackupChapterProgressMarker $make(CopyWithData data) =>
       PaperbackBackupChapterProgressMarker(
-          totalPages: data.get(#totalPages, or: $value.totalPages),
-          completed: data.get(#completed, or: $value.completed),
-          chapter: data.get(#chapter, or: $value.chapter),
-          lastPage: data.get(#lastPage, or: $value.lastPage),
-          time: data.get(#time, or: $value.time),
-          hidden: data.get(#hidden, or: $value.hidden));
+        totalPages: data.get(#totalPages, or: $value.totalPages),
+        completed: data.get(#completed, or: $value.completed),
+        chapter: data.get(#chapter, or: $value.chapter),
+        lastPage: data.get(#lastPage, or: $value.lastPage),
+        time: data.get(#time, or: $value.time),
+        hidden: data.get(#hidden, or: $value.hidden),
+      );
 
   @override
-  PaperbackBackupChapterProgressMarkerCopyWith<$R2,
-      PaperbackBackupChapterProgressMarker, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
+  PaperbackBackupChapterProgressMarkerCopyWith<
+    $R2,
+    PaperbackBackupChapterProgressMarker,
+    $Out2
+  >
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _PaperbackBackupChapterProgressMarkerCopyWithImpl($value, $cast, t);
 }

@@ -18,9 +18,7 @@ class NekoBackupMergeManga with NekoBackupMergeMangaMappable {
     required this.mergeType,
   });
 
-  factory NekoBackupMergeManga.fromNeko(
-    neko.BackupMergeManga backupCategory,
-  ) {
+  factory NekoBackupMergeManga.fromNeko(neko.BackupMergeManga backupCategory) {
     return NekoBackupMergeManga(
       url: backupCategory.url,
       title: backupCategory.title,

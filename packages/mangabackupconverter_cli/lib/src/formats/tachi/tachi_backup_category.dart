@@ -30,15 +30,13 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     required this.flags,
     this.mangaSort,
   }) : assert(
-          mangaSort == null ||
-              mangaSort.characters.isEmpty ||
-              mangaSort.characters.singleOrNull != null,
-          'mangaSort must be null, empty, or a single character',
-        );
+         mangaSort == null ||
+             mangaSort.characters.isEmpty ||
+             mangaSort.characters.singleOrNull != null,
+         'mangaSort must be null, empty, or a single character',
+       );
 
-  factory TachiBackupCategory.fromMihon(
-    mihon.BackupCategory backupCategory,
-  ) {
+  factory TachiBackupCategory.fromMihon(mihon.BackupCategory backupCategory) {
     return TachiBackupCategory(
       name: backupCategory.name,
       order: backupCategory.order.toInt(),
@@ -46,9 +44,7 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     );
   }
 
-  factory TachiBackupCategory.fromSy(
-    sy.BackupCategory backupCategory,
-  ) {
+  factory TachiBackupCategory.fromSy(sy.BackupCategory backupCategory) {
     return TachiBackupCategory(
       name: backupCategory.name,
       order: backupCategory.order.toInt(),
@@ -56,9 +52,7 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     );
   }
 
-  factory TachiBackupCategory.fromJ2k(
-    j2k.BackupCategory backupCategory,
-  ) {
+  factory TachiBackupCategory.fromJ2k(j2k.BackupCategory backupCategory) {
     return TachiBackupCategory(
       name: backupCategory.name,
       order: backupCategory.order,
@@ -67,9 +61,7 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     );
   }
 
-  factory TachiBackupCategory.fromNeko(
-    neko.BackupCategory backupCategory,
-  ) {
+  factory TachiBackupCategory.fromNeko(neko.BackupCategory backupCategory) {
     return TachiBackupCategory(
       name: backupCategory.name,
       order: backupCategory.order,
@@ -77,9 +69,7 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     );
   }
 
-  factory TachiBackupCategory.fromYokai(
-    yokai.BackupCategory backupCategory,
-  ) {
+  factory TachiBackupCategory.fromYokai(yokai.BackupCategory backupCategory) {
     return TachiBackupCategory(
       name: backupCategory.name,
       order: backupCategory.order,

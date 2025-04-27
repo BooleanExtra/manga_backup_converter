@@ -23,11 +23,16 @@ class MangayomiBackupMapper extends ClassMapperBase<MangayomiBackup> {
   final String id = 'MangayomiBackup';
 
   static MangayomiBackupDb _$db(MangayomiBackup v) => v.db;
-  static const Field<MangayomiBackup, MangayomiBackupDb> _f$db =
-      Field('db', _$db);
+  static const Field<MangayomiBackup, MangayomiBackupDb> _f$db = Field(
+    'db',
+    _$db,
+  );
   static String? _$name(MangayomiBackup v) => v.name;
-  static const Field<MangayomiBackup, String> _f$name =
-      Field('name', _$name, opt: true);
+  static const Field<MangayomiBackup, String> _f$name = Field(
+    'name',
+    _$name,
+    opt: true,
+  );
 
   @override
   final MappableFields<MangayomiBackup> fields = const {
@@ -58,29 +63,37 @@ mixin MangayomiBackupMappable {
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupMapper.ensureInitialized()
-        .encodeMap<MangayomiBackup>(this as MangayomiBackup);
+    return MangayomiBackupMapper.ensureInitialized().encodeMap<MangayomiBackup>(
+      this as MangayomiBackup,
+    );
   }
 
   MangayomiBackupCopyWith<MangayomiBackup, MangayomiBackup, MangayomiBackup>
-      get copyWith => _MangayomiBackupCopyWithImpl(
-          this as MangayomiBackup, $identity, $identity);
+  get copyWith => _MangayomiBackupCopyWithImpl(
+    this as MangayomiBackup,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return MangayomiBackupMapper.ensureInitialized()
-        .stringifyValue(this as MangayomiBackup);
+    return MangayomiBackupMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackup,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupMapper.ensureInitialized()
-        .equalsValue(this as MangayomiBackup, other);
+    return MangayomiBackupMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackup,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupMapper.ensureInitialized()
-        .hashValue(this as MangayomiBackup);
+    return MangayomiBackupMapper.ensureInitialized().hashValue(
+      this as MangayomiBackup,
+    );
   }
 }
 
@@ -95,7 +108,8 @@ abstract class MangayomiBackupCopyWith<$R, $In extends MangayomiBackup, $Out>
   MangayomiBackupDbCopyWith<$R, MangayomiBackupDb, MangayomiBackupDb> get db;
   $R call({MangayomiBackupDb? db, String? name});
   MangayomiBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _MangayomiBackupCopyWithImpl<$R, $Out>
@@ -110,15 +124,20 @@ class _MangayomiBackupCopyWithImpl<$R, $Out>
   MangayomiBackupDbCopyWith<$R, MangayomiBackupDb, MangayomiBackupDb> get db =>
       $value.db.copyWith.$chain((v) => call(db: v));
   @override
-  $R call({MangayomiBackupDb? db, Object? name = $none}) =>
-      $apply(FieldCopyWithData(
-          {if (db != null) #db: db, if (name != $none) #name: name}));
+  $R call({MangayomiBackupDb? db, Object? name = $none}) => $apply(
+    FieldCopyWithData({
+      if (db != null) #db: db,
+      if (name != $none) #name: name,
+    }),
+  );
   @override
   MangayomiBackup $make(CopyWithData data) => MangayomiBackup(
-      db: data.get(#db, or: $value.db), name: data.get(#name, or: $value.name));
+    db: data.get(#db, or: $value.db),
+    name: data.get(#name, or: $value.name),
+  );
 
   @override
   MangayomiBackupCopyWith<$R2, MangayomiBackup, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _MangayomiBackupCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _MangayomiBackupCopyWithImpl($value, $cast, t);
 }

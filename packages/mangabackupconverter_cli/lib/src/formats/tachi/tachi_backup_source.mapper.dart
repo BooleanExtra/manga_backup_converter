@@ -23,8 +23,10 @@ class TachiBackupSourceMapper extends ClassMapperBase<TachiBackupSource> {
   static String _$name(TachiBackupSource v) => v.name;
   static const Field<TachiBackupSource, String> _f$name = Field('name', _$name);
   static int _$sourceId(TachiBackupSource v) => v.sourceId;
-  static const Field<TachiBackupSource, int> _f$sourceId =
-      Field('sourceId', _$sourceId);
+  static const Field<TachiBackupSource, int> _f$sourceId = Field(
+    'sourceId',
+    _$sourceId,
+  );
 
   @override
   final MappableFields<TachiBackupSource> fields = const {
@@ -34,7 +36,9 @@ class TachiBackupSourceMapper extends ClassMapperBase<TachiBackupSource> {
 
   static TachiBackupSource _instantiate(DecodingData data) {
     return TachiBackupSource(
-        name: data.dec(_f$name), sourceId: data.dec(_f$sourceId));
+      name: data.dec(_f$name),
+      sourceId: data.dec(_f$sourceId),
+    );
   }
 
   @override
@@ -60,41 +64,56 @@ mixin TachiBackupSourceMappable {
         .encodeMap<TachiBackupSource>(this as TachiBackupSource);
   }
 
-  TachiBackupSourceCopyWith<TachiBackupSource, TachiBackupSource,
-          TachiBackupSource>
-      get copyWith => _TachiBackupSourceCopyWithImpl(
-          this as TachiBackupSource, $identity, $identity);
+  TachiBackupSourceCopyWith<
+    TachiBackupSource,
+    TachiBackupSource,
+    TachiBackupSource
+  >
+  get copyWith => _TachiBackupSourceCopyWithImpl(
+    this as TachiBackupSource,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return TachiBackupSourceMapper.ensureInitialized()
-        .stringifyValue(this as TachiBackupSource);
+    return TachiBackupSourceMapper.ensureInitialized().stringifyValue(
+      this as TachiBackupSource,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupSourceMapper.ensureInitialized()
-        .equalsValue(this as TachiBackupSource, other);
+    return TachiBackupSourceMapper.ensureInitialized().equalsValue(
+      this as TachiBackupSource,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TachiBackupSourceMapper.ensureInitialized()
-        .hashValue(this as TachiBackupSource);
+    return TachiBackupSourceMapper.ensureInitialized().hashValue(
+      this as TachiBackupSource,
+    );
   }
 }
 
 extension TachiBackupSourceValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TachiBackupSource, $Out> {
   TachiBackupSourceCopyWith<$R, TachiBackupSource, $Out>
-      get $asTachiBackupSource =>
-          $base.as((v, t, t2) => _TachiBackupSourceCopyWithImpl(v, t, t2));
+  get $asTachiBackupSource =>
+      $base.as((v, t, t2) => _TachiBackupSourceCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupSourceCopyWith<$R, $In extends TachiBackupSource,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class TachiBackupSourceCopyWith<
+  $R,
+  $In extends TachiBackupSource,
+  $Out
+>
+    implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? name, int? sourceId});
   TachiBackupSourceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _TachiBackupSourceCopyWithImpl<$R, $Out>
@@ -106,17 +125,20 @@ class _TachiBackupSourceCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TachiBackupSource> $mapper =
       TachiBackupSourceMapper.ensureInitialized();
   @override
-  $R call({String? name, int? sourceId}) => $apply(FieldCopyWithData({
-        if (name != null) #name: name,
-        if (sourceId != null) #sourceId: sourceId
-      }));
+  $R call({String? name, int? sourceId}) => $apply(
+    FieldCopyWithData({
+      if (name != null) #name: name,
+      if (sourceId != null) #sourceId: sourceId,
+    }),
+  );
   @override
   TachiBackupSource $make(CopyWithData data) => TachiBackupSource(
-      name: data.get(#name, or: $value.name),
-      sourceId: data.get(#sourceId, or: $value.sourceId));
+    name: data.get(#name, or: $value.name),
+    sourceId: data.get(#sourceId, or: $value.sourceId),
+  );
 
   @override
   TachiBackupSourceCopyWith<$R2, TachiBackupSource, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _TachiBackupSourceCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _TachiBackupSourceCopyWithImpl($value, $cast, t);
 }

@@ -103,9 +103,10 @@ class ConvertCommand extends Command<void> {
 
     if (results.wasParsed('input-format')) {
       final inputFormatArg = results.option('input-format');
-      inputFormat = inputFormatArg != null
-          ? BackupType.values.byName(inputFormatArg)
-          : null;
+      inputFormat =
+          inputFormatArg != null
+              ? BackupType.values.byName(inputFormatArg)
+              : null;
     }
     if (inputFormat == null &&
         !BackupType.validExtensions.contains(backupFileExtension)) {
@@ -117,41 +118,43 @@ class ConvertCommand extends Command<void> {
 
     TachiFork outputTachiFork = TachiFork.mihon;
     if (results.wasParsed('tachi-fork')) {
-      outputTachiFork = TachiFork.values
-          .byName(results.option('tachi-fork') ?? TachiFork.mihon.name);
+      outputTachiFork = TachiFork.values.byName(
+        results.option('tachi-fork') ?? TachiFork.mihon.name,
+      );
     }
 
     final converter = MangaBackupConverter();
 
     final ConvertableBackup? importedBackup = switch (inputFormat) {
       BackupType.aidoku => converter.importAidokuBackup(
-          backupFile.readAsBytesSync(),
-        ),
+        backupFile.readAsBytesSync(),
+      ),
       BackupType.tachi => converter.importTachibkBackup(
-          backupFile.readAsBytesSync(),
-          fork: outputTachiFork,
-        ),
+        backupFile.readAsBytesSync(),
+        fork: outputTachiFork,
+      ),
       BackupType.paperback => converter.importPaperbackPas4Backup(
-          backupFile.readAsBytesSync(),
-          name: p.basenameWithoutExtension(backupFile.uri.toString()),
-        ),
+        backupFile.readAsBytesSync(),
+        name: p.basenameWithoutExtension(backupFile.uri.toString()),
+      ),
       BackupType.tachimanga => await converter.importTachimangaBackup(
-          backupFile.readAsBytesSync(),
-        ),
+        backupFile.readAsBytesSync(),
+      ),
       BackupType.mangayomi => converter.importMangayomiBackup(
-          backupFile.readAsBytesSync(),
-        ),
+        backupFile.readAsBytesSync(),
+      ),
       null => () {
-          print('Unsupported imported backup type');
-          return null;
-        }(),
+        print('Unsupported imported backup type');
+        return null;
+      }(),
     };
     if (importedBackup == null) {
       print('Failed to import backup type $backupFileExtension');
       return;
     }
-    final ConvertableBackup convertedBackup =
-        importedBackup.toBackup(outputFormat);
+    final ConvertableBackup convertedBackup = importedBackup.toBackup(
+      outputFormat,
+    );
 
     final io.File outputFile = io.File(
       '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',

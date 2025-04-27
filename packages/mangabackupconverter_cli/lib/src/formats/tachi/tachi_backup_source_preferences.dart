@@ -22,9 +22,10 @@ class TachiBackupSourcePreferences with TachiBackupSourcePreferencesMappable {
   ) {
     return TachiBackupSourcePreferences(
       sourceKey: backupSourcePreferences.sourceKey,
-      prefs: backupSourcePreferences.prefs
-          .map(TachiBackupPreference.fromMihon)
-          .toList(),
+      prefs:
+          backupSourcePreferences.prefs
+              .map(TachiBackupPreference.fromMihon)
+              .toList(),
     );
   }
 
@@ -33,9 +34,10 @@ class TachiBackupSourcePreferences with TachiBackupSourcePreferencesMappable {
   ) {
     return TachiBackupSourcePreferences(
       sourceKey: backupSourcePreferences.sourceKey,
-      prefs: backupSourcePreferences.prefs
-          .map(TachiBackupPreference.fromSy)
-          .toList(),
+      prefs:
+          backupSourcePreferences.prefs
+              .map(TachiBackupPreference.fromSy)
+              .toList(),
     );
   }
 

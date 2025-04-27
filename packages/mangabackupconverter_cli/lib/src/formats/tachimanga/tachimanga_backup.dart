@@ -46,9 +46,7 @@ class TachimangaBackup
     final backupArchive = ZipDecoder().decodeBytes(bytes);
     final metaFile = backupArchive.findFile('meta.json');
     if (metaFile == null || metaFile.content == null) {
-      throw const TachimangaException(
-        'Could not decode Tachimanga backup',
-      );
+      throw const TachimangaException('Could not decode Tachimanga backup');
     }
 
     final meta = TachimangaBackupMeta.fromJson(
@@ -62,16 +60,18 @@ class TachimangaBackup
         'Could not decode Tachimanga backup "$archiveName", contents.zip not found',
       );
     }
-    final contentArchive =
-        ZipDecoder().decodeBytes(contentZipFile.content as Uint8List);
+    final contentArchive = ZipDecoder().decodeBytes(
+      contentZipFile.content as Uint8List,
+    );
     final prefFile = contentArchive.findFile('pref.json');
     if (prefFile == null || prefFile.content == null) {
       throw TachimangaException(
         'Could not decode Tachimanga backup "$archiveName", pref.json not found',
       );
     }
-    final pref = jsonDecode(String.fromCharCodes(prefFile.content as Uint8List))
-        as Map<String, Object?>;
+    final pref =
+        jsonDecode(String.fromCharCodes(prefFile.content as Uint8List))
+            as Map<String, Object?>;
 
     // This json file is actually a pbxproj file
     final prefAllFile = contentArchive.findFile('pref-all.json');
@@ -80,29 +80,32 @@ class TachimangaBackup
         'Could not decode Tachimanga backup "$archiveName", pref-all.json not found',
       );
     }
-    final prefAllContent =
-        String.fromCharCodes(prefAllFile.content as Uint8List);
+    final prefAllContent = String.fromCharCodes(
+      prefAllFile.content as Uint8List,
+    );
     final prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
 
-    final prefsFiles = contentArchive.files.where(
-      (file) {
-        return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
-      },
-    ).toList();
-    final prefs =
-        prefsFiles.fold(<String, Map<String, Object?>>{}, (map, file) {
+    final prefsFiles =
+        contentArchive.files.where((file) {
+          return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
+        }).toList();
+    final prefs = prefsFiles.fold(<String, Map<String, Object?>>{}, (
+      map,
+      file,
+    ) {
       final content = file.content as Uint8List;
-      map[file.name] = PropertyListSerialization.propertyListWithData(
-        ByteData.sublistView(content),
-      ) as Map<String, Object?>;
+      map[file.name] =
+          PropertyListSerialization.propertyListWithData(
+                ByteData.sublistView(content),
+              )
+              as Map<String, Object?>;
       return map;
     });
-    final extensionFiles = contentArchive.files.where(
-      (file) {
-        return file.name.startsWith('extensions/') &&
-            file.name.endsWith('.jar');
-      },
-    ).toList();
+    final extensionFiles =
+        contentArchive.files.where((file) {
+          return file.name.startsWith('extensions/') &&
+              file.name.endsWith('.jar');
+        }).toList();
     final extensions = extensionFiles.fold(
       <String, Uint8List>{},
       (map, file) => map..addAll({file.name: file.content as Uint8List}),
@@ -132,15 +135,13 @@ class TachimangaBackup
   Future<Uint8List> toData() async {
     final contentsArchive = Archive();
     if (pref case final Map<String, Object?> pref) {
-      contentsArchive
-          .addFile(ArchiveFile.string('pref.json', jsonEncode(pref)));
+      contentsArchive.addFile(
+        ArchiveFile.string('pref.json', jsonEncode(pref)),
+      );
     }
     if (prefAll case final Pbxproj prefAll) {
       contentsArchive.addFile(
-        ArchiveFile.string(
-          'pref-all.json',
-          prefAll.toString(),
-        ),
+        ArchiveFile.string('pref-all.json', prefAll.toString()),
       );
     }
     if (extensions case final Map<String, Uint8List> extensions) {
@@ -210,21 +211,11 @@ class TachimangaBackup
   void verbosePrint(bool verbose) {
     if (!verbose) return;
     print('Imported Manga: ${db.mangaTable.length}');
-    print(
-      'Imported Chapters: ${db.chapterTable.length}',
-    );
-    print(
-      'Imported Manga History: ${db.historyTable.length}',
-    );
-    print(
-      'Imported Tracked Manga Items: ${db.trackRecordTable.length}',
-    );
-    print(
-      'Imported Categories: ${db.categoryTable.length}',
-    );
-    print(
-      'Imported Sources: ${db.sourceTable.length}',
-    );
+    print('Imported Chapters: ${db.chapterTable.length}');
+    print('Imported Manga History: ${db.historyTable.length}');
+    print('Imported Tracked Manga Items: ${db.trackRecordTable.length}');
+    print('Imported Categories: ${db.categoryTable.length}');
+    print('Imported Sources: ${db.sourceTable.length}');
     print('Imported Repos: ${db.repoTable.length}');
     print('Tachimanga Backup Name: $name');
     print('Tachimanga Version: ${meta.version}');
