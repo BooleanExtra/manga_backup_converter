@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:path/path.dart' as p;
 
 class ConvertCommand extends Command<void> {
