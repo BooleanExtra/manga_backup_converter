@@ -10,8 +10,7 @@ part of 'user_account.dart';
 // **************************************************************************
 
 final _$unimplementedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.',
-);
+    'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.');
 
 class _$CopyWithDefault {
   const _$CopyWithDefault();
@@ -22,30 +21,21 @@ const _$copyWithDefault = _$CopyWithDefault();
 mixin _$UserAccount {
   static UserAccount _$instance() => UserAccount._();
 
-  static UserAccount _create({
-    required Id id,
-    required Name name,
-    required Email email,
-  }) {
-    final $userAccountMidHolder = _$UserAccountMidHolder(
-      id: id,
-      name: name,
-      email: email,
-    );
+  static UserAccount _create(
+      {required Id id, required Name name, required Email email}) {
+    final $userAccountMidHolder =
+        _$UserAccountMidHolder(id: id, name: name, email: email);
 
     return _verifyMidStep($userAccountMidHolder).fold(
       (invalidUserAccountMid) => invalidUserAccountMid,
-      ($userAccountValueHolder) =>
-          _verifyValueStep($userAccountValueHolder).fold(
-            (invalidUserAccountValue) => invalidUserAccountValue,
-            (validUserAccount) => validUserAccount,
-          ),
+      ($userAccountValueHolder) => _verifyValueStep($userAccountValueHolder)
+          .fold((invalidUserAccountValue) => invalidUserAccountValue,
+              (validUserAccount) => validUserAccount),
     );
   }
 
   static Either<InvalidUserAccountMid, _$UserAccountValueHolder> _verifyMidStep(
-    _$UserAccountMidHolder $userAccountMidHolder,
-  ) {
+      _$UserAccountMidHolder $userAccountMidHolder) {
     // ignore: unused_local_variable
     final $userAccountInstance = _$instance();
 
@@ -54,57 +44,50 @@ mixin _$UserAccount {
     if (contentFailure == null) {
       return right<InvalidUserAccountMid, _$UserAccountValueHolder>(
         _$UserAccountValueHolder(
-          id: $userAccountMidHolder.id as ValidId,
-          name: $userAccountMidHolder.name as ValidName,
-          email: $userAccountMidHolder.email as ValidEmail,
-        ),
+            id: $userAccountMidHolder.id as ValidId,
+            name: $userAccountMidHolder.name as ValidName,
+            email: $userAccountMidHolder.email as ValidEmail),
       );
     }
 
     return left<InvalidUserAccountMid, _$UserAccountValueHolder>(
       InvalidUserAccountMid._(
-        id: $userAccountMidHolder.id,
-        name: $userAccountMidHolder.name,
-        email: $userAccountMidHolder.email,
-        contentFailure: contentFailure,
-      ),
+          id: $userAccountMidHolder.id,
+          name: $userAccountMidHolder.name,
+          email: $userAccountMidHolder.email,
+          contentFailure: contentFailure),
     );
   }
 
   static Either<InvalidUserAccountValue, ValidUserAccount> _verifyValueStep(
-    _$UserAccountValueHolder $userAccountValueHolder,
-  ) {
+      _$UserAccountValueHolder $userAccountValueHolder) {
     // ignore: unused_local_variable
     final $userAccountInstance = _$instance();
 
-    final accountFailure =
-        $userAccountInstance
-            .validateAccount($userAccountValueHolder.toAccountSubholder())
-            .toNullable();
+    final accountFailure = $userAccountInstance
+        .validateAccount($userAccountValueHolder.toAccountSubholder())
+        .toNullable();
 
     if (accountFailure == null) {
       return right<InvalidUserAccountValue, ValidUserAccount>(
         ValidUserAccount._(
-          id: $userAccountValueHolder.id,
-          name: $userAccountValueHolder.name,
-          email: $userAccountValueHolder.email,
-        ),
+            id: $userAccountValueHolder.id,
+            name: $userAccountValueHolder.name,
+            email: $userAccountValueHolder.email),
       );
     }
 
     return left<InvalidUserAccountValue, ValidUserAccount>(
       InvalidUserAccountValue._(
-        id: $userAccountValueHolder.id,
-        name: $userAccountValueHolder.name,
-        email: $userAccountValueHolder.email,
-        accountFailure: accountFailure,
-      ),
+          id: $userAccountValueHolder.id,
+          name: $userAccountValueHolder.name,
+          email: $userAccountValueHolder.email,
+          accountFailure: accountFailure),
     );
   }
 
   static Option<ContentFailure> validateContent(
-    _$UserAccountMidHolder $userAccountMidHolder,
-  ) {
+      _$UserAccountMidHolder $userAccountMidHolder) {
     final $invalid$id =
         $userAccountMidHolder.id.toEither.getLeft().toNullable();
     final $invalid$name =
@@ -124,114 +107,97 @@ mixin _$UserAccount {
       if ($invalid$name != null)
         ModddelInvalidMember(member: $invalid$name, description: 'name'),
       if ($invalid$email != null)
-        ModddelInvalidMember(member: $invalid$email, description: 'email'),
+        ModddelInvalidMember(member: $invalid$email, description: 'email')
     ]);
 
     return some($contentFailure);
   }
 
-  TResult map<TResult extends Object?>({
-    required TResult Function(ValidUserAccount validUserAccount) valid,
-    required TResult Function(InvalidUserAccountMid invalidUserAccountMid)
-    invalidMid,
-    required TResult Function(InvalidUserAccountValue invalidUserAccountValue)
-    invalidValue,
-  }) {
+  TResult map<TResult extends Object?>(
+      {required TResult Function(ValidUserAccount validUserAccount) valid,
+      required TResult Function(InvalidUserAccountMid invalidUserAccountMid)
+          invalidMid,
+      required TResult Function(InvalidUserAccountValue invalidUserAccountValue)
+          invalidValue}) {
     return maybeMap(
-      valid: valid,
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: () => throw UnreachableError(),
-    );
+        valid: valid,
+        invalidMid: invalidMid,
+        invalidValue: invalidValue,
+        orElse: () => throw UnreachableError());
   }
 
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ValidUserAccount validUserAccount)? valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function() orElse,
-  }) => throw _$unimplementedError;
+  TResult maybeMap<TResult extends Object?>(
+          {TResult Function(ValidUserAccount validUserAccount)? valid,
+          TResult Function(InvalidUserAccountMid invalidUserAccountMid)?
+              invalidMid,
+          TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+              invalidValue,
+          required TResult Function() orElse}) =>
+      throw _$unimplementedError;
 
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(ValidUserAccount validUserAccount)? valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-  }) {
+  TResult? mapOrNull<TResult extends Object?>(
+      {TResult Function(ValidUserAccount validUserAccount)? valid,
+      TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue}) {
     return maybeMap(
-      valid: valid,
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: () => null,
-    );
+        valid: valid,
+        invalidMid: invalidMid,
+        invalidValue: invalidValue,
+        orElse: () => null);
   }
 
-  TResult mapValidity<TResult extends Object?>({
-    required TResult Function(ValidUserAccount validUserAccount) valid,
-    required TResult Function(InvalidUserAccount invalidUserAccount) invalid,
-  }) {
+  TResult mapValidity<TResult extends Object?>(
+      {required TResult Function(ValidUserAccount validUserAccount) valid,
+      required TResult Function(InvalidUserAccount invalidUserAccount)
+          invalid}) {
     return maybeMap(
-      valid: valid,
-      orElse: () => invalid(this as InvalidUserAccount),
-    );
+        valid: valid, orElse: () => invalid(this as InvalidUserAccount));
   }
 
-  TResult maybeMapValidity<TResult extends Object?>({
-    required TResult Function(ValidUserAccount validUserAccount) valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function(InvalidUserAccount invalidUserAccount) orElse,
-  }) {
+  TResult maybeMapValidity<TResult extends Object?>(
+      {required TResult Function(ValidUserAccount validUserAccount) valid,
+      TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue,
+      required TResult Function(InvalidUserAccount invalidUserAccount)
+          orElse}) {
     return maybeMap(
-      valid: valid,
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: () => orElse(this as InvalidUserAccount),
-    );
+        valid: valid,
+        invalidMid: invalidMid,
+        invalidValue: invalidValue,
+        orElse: () => orElse(this as InvalidUserAccount));
   }
 
   UserAccount Function({Id id, Name name, Email email}) get copyWith {
-    return ({
-      Object? id = _$copyWithDefault,
-      Object? name = _$copyWithDefault,
-      Object? email = _$copyWithDefault,
-    }) {
+    return (
+        {Object? id = _$copyWithDefault,
+        Object? name = _$copyWithDefault,
+        Object? email = _$copyWithDefault}) {
       final $copy$id = mapValidity(
-        valid: (valid) => valid.id,
-        invalid: (invalid) => invalid.id,
-      );
+          valid: (valid) => valid.id, invalid: (invalid) => invalid.id);
       final $copy$name = mapValidity(
-        valid: (valid) => valid.name,
-        invalid: (invalid) => invalid.name,
-      );
+          valid: (valid) => valid.name, invalid: (invalid) => invalid.name);
       final $copy$email = mapValidity(
-        valid: (valid) => valid.email,
-        invalid: (invalid) => invalid.email,
-      );
+          valid: (valid) => valid.email, invalid: (invalid) => invalid.email);
 
       return UserAccount(
-        id: id == _$copyWithDefault ? $copy$id : id as Id,
-        name: name == _$copyWithDefault ? $copy$name : name as Name,
-        email: email == _$copyWithDefault ? $copy$email : email as Email,
-      );
+          id: id == _$copyWithDefault ? $copy$id : id as Id,
+          name: name == _$copyWithDefault ? $copy$name : name as Name,
+          email: email == _$copyWithDefault ? $copy$email : email as Email);
     };
   }
 
   Option<UserAccountValidFailure> validateAccount(
-    _ValidateUserAccountAccount userAccount,
-  );
+      _ValidateUserAccountAccount userAccount);
 
   List<Object?> get props => throw _$unimplementedError;
 }
 
 class ValidUserAccount extends UserAccount implements ValidEntity {
-  ValidUserAccount._({
-    required this.id,
-    required this.name,
-    required this.email,
-  }) : super._();
+  ValidUserAccount._(
+      {required this.id, required this.name, required this.email})
+      : super._();
 
   final ValidId id;
 
@@ -240,13 +206,12 @@ class ValidUserAccount extends UserAccount implements ValidEntity {
   final ValidEmail email;
 
   @override
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ValidUserAccount validUserAccount)? valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function() orElse,
-  }) {
+  TResult maybeMap<TResult extends Object?>(
+      {TResult Function(ValidUserAccount validUserAccount)? valid,
+      TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue,
+      required TResult Function() orElse}) {
     return valid != null ? valid(this) : orElse();
   }
 
@@ -264,93 +229,78 @@ mixin InvalidUserAccount implements UserAccount, InvalidEntity {
 
   Email get email;
 
-  TResult mapInvalid<TResult extends Object?>({
-    required TResult Function(InvalidUserAccountMid invalidUserAccountMid)
-    invalidMid,
-    required TResult Function(InvalidUserAccountValue invalidUserAccountValue)
-    invalidValue,
-  }) {
+  TResult mapInvalid<TResult extends Object?>(
+      {required TResult Function(InvalidUserAccountMid invalidUserAccountMid)
+          invalidMid,
+      required TResult Function(InvalidUserAccountValue invalidUserAccountValue)
+          invalidValue}) {
     return maybeMap(
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: () => throw UnreachableError(),
-    );
+        invalidMid: invalidMid,
+        invalidValue: invalidValue,
+        orElse: () => throw UnreachableError());
   }
 
-  TResult maybeMapInvalid<TResult extends Object?>({
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function() orElse,
-  }) {
+  TResult maybeMapInvalid<TResult extends Object?>(
+      {TResult Function(InvalidUserAccountMid invalidUserAccountMid)?
+          invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue,
+      required TResult Function() orElse}) {
     return maybeMap(
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: orElse,
-    );
+        invalidMid: invalidMid, invalidValue: invalidValue, orElse: orElse);
   }
 
-  TResult? mapOrNullInvalid<TResult extends Object?>({
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-  }) {
+  TResult? mapOrNullInvalid<TResult extends Object?>(
+      {TResult Function(InvalidUserAccountMid invalidUserAccountMid)?
+          invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue}) {
     return maybeMap(
-      invalidMid: invalidMid,
-      invalidValue: invalidValue,
-      orElse: () => null,
-    );
+        invalidMid: invalidMid, invalidValue: invalidValue, orElse: () => null);
   }
 
-  TResult whenInvalid<TResult extends Object?>({
-    required TResult Function(ContentFailure contentFailure) midFailures,
-    required TResult Function(UserAccountValidFailure accountFailure)
-    valueFailures,
-  }) {
+  TResult whenInvalid<TResult extends Object?>(
+      {required TResult Function(ContentFailure contentFailure) midFailures,
+      required TResult Function(UserAccountValidFailure accountFailure)
+          valueFailures}) {
     return maybeWhenInvalid(
-      midFailures: midFailures,
-      valueFailures: valueFailures,
-      orElse: () => throw UnreachableError(),
-    );
+        midFailures: midFailures,
+        valueFailures: valueFailures,
+        orElse: () => throw UnreachableError());
   }
 
-  TResult maybeWhenInvalid<TResult extends Object?>({
-    TResult Function(ContentFailure contentFailure)? midFailures,
-    TResult Function(UserAccountValidFailure accountFailure)? valueFailures,
-    required TResult Function() orElse,
-  }) {
+  TResult maybeWhenInvalid<TResult extends Object?>(
+      {TResult Function(ContentFailure contentFailure)? midFailures,
+      TResult Function(UserAccountValidFailure accountFailure)? valueFailures,
+      required TResult Function() orElse}) {
     return maybeMap(
-      invalidMid:
-          midFailures != null
-              ? (invalidMid) => midFailures(invalidMid.contentFailure)
-              : null,
-      invalidValue:
-          valueFailures != null
-              ? (invalidValue) => valueFailures(invalidValue.accountFailure)
-              : null,
-      orElse: orElse,
-    );
+        invalidMid: midFailures != null
+            ? (invalidMid) => midFailures(invalidMid.contentFailure)
+            : null,
+        invalidValue: valueFailures != null
+            ? (invalidValue) => valueFailures(invalidValue.accountFailure)
+            : null,
+        orElse: orElse);
   }
 
-  TResult? whenOrNullInvalid<TResult extends Object?>({
-    TResult Function(ContentFailure contentFailure)? midFailures,
-    TResult Function(UserAccountValidFailure accountFailure)? valueFailures,
-  }) {
+  TResult? whenOrNullInvalid<TResult extends Object?>(
+      {TResult Function(ContentFailure contentFailure)? midFailures,
+      TResult Function(UserAccountValidFailure accountFailure)?
+          valueFailures}) {
     return maybeWhenInvalid(
-      midFailures: midFailures,
-      valueFailures: valueFailures,
-      orElse: () => null,
-    );
+        midFailures: midFailures,
+        valueFailures: valueFailures,
+        orElse: () => null);
   }
 }
 
 class InvalidUserAccountMid extends UserAccount with InvalidUserAccount {
-  InvalidUserAccountMid._({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.contentFailure,
-  }) : super._();
+  InvalidUserAccountMid._(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.contentFailure})
+      : super._();
 
   @override
   final Id id;
@@ -370,13 +320,12 @@ class InvalidUserAccountMid extends UserAccount with InvalidUserAccount {
   List<Object?> get props => [id, name, email, contentFailure];
 
   @override
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ValidUserAccount validUserAccount)? valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function() orElse,
-  }) {
+  TResult maybeMap<TResult extends Object?>(
+      {TResult Function(ValidUserAccount validUserAccount)? valid,
+      TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue,
+      required TResult Function() orElse}) {
     return invalidMid != null ? invalidMid(this) : orElse();
   }
 
@@ -386,11 +335,8 @@ class InvalidUserAccountMid extends UserAccount with InvalidUserAccount {
 }
 
 class _$UserAccountMidHolder {
-  _$UserAccountMidHolder({
-    required this.id,
-    required this.name,
-    required this.email,
-  });
+  _$UserAccountMidHolder(
+      {required this.id, required this.name, required this.email});
 
   final Id id;
 
@@ -400,12 +346,12 @@ class _$UserAccountMidHolder {
 }
 
 class InvalidUserAccountValue extends UserAccount with InvalidUserAccount {
-  InvalidUserAccountValue._({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.accountFailure,
-  }) : super._();
+  InvalidUserAccountValue._(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.accountFailure})
+      : super._();
 
   @override
   final ValidId id;
@@ -425,13 +371,12 @@ class InvalidUserAccountValue extends UserAccount with InvalidUserAccount {
   List<Object?> get props => [id, name, email, accountFailure];
 
   @override
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(ValidUserAccount validUserAccount)? valid,
-    TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
-    TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
-    invalidValue,
-    required TResult Function() orElse,
-  }) {
+  TResult maybeMap<TResult extends Object?>(
+      {TResult Function(ValidUserAccount validUserAccount)? valid,
+      TResult Function(InvalidUserAccountMid invalidUserAccountMid)? invalidMid,
+      TResult Function(InvalidUserAccountValue invalidUserAccountValue)?
+          invalidValue,
+      required TResult Function() orElse}) {
     return invalidValue != null ? invalidValue(this) : orElse();
   }
 
@@ -441,11 +386,8 @@ class InvalidUserAccountValue extends UserAccount with InvalidUserAccount {
 }
 
 class _$UserAccountValueHolder {
-  _$UserAccountValueHolder({
-    required this.id,
-    required this.name,
-    required this.email,
-  });
+  _$UserAccountValueHolder(
+      {required this.id, required this.name, required this.email});
 
   final ValidId id;
 
@@ -459,11 +401,8 @@ class _$UserAccountValueHolder {
 }
 
 class _ValidateUserAccountAccount {
-  _ValidateUserAccountAccount({
-    required this.id,
-    required this.name,
-    required this.email,
-  });
+  _ValidateUserAccountAccount(
+      {required this.id, required this.name, required this.email});
 
   final ValidId id;
 

@@ -6,13 +6,15 @@
 
 part of 'paperback_backup_item_type.dart';
 
-class PaperbackBackupItemTypeMapper extends EnumMapper<PaperbackBackupItemType> {
+class PaperbackBackupItemTypeMapper
+    extends EnumMapper<PaperbackBackupItemType> {
   PaperbackBackupItemTypeMapper._();
 
   static PaperbackBackupItemTypeMapper? _instance;
   static PaperbackBackupItemTypeMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = PaperbackBackupItemTypeMapper._());
+      MapperContainer.globals
+          .use(_instance = PaperbackBackupItemTypeMapper._());
     }
     return _instance!;
   }

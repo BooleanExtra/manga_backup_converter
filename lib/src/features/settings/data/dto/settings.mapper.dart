@@ -23,40 +23,20 @@ class SettingsMapper extends ClassMapperBase<Settings> {
   final String id = 'Settings';
 
   static bool _$bannerEnabled(Settings v) => v.bannerEnabled;
-  static const Field<Settings, bool> _f$bannerEnabled = Field(
-    'bannerEnabled',
-    _$bannerEnabled,
-    opt: true,
-    def: true,
-  );
+  static const Field<Settings, bool> _f$bannerEnabled =
+      Field('bannerEnabled', _$bannerEnabled, opt: true, def: true);
   static ThemeType _$themeType(Settings v) => v.themeType;
-  static const Field<Settings, ThemeType> _f$themeType = Field(
-    'themeType',
-    _$themeType,
-    opt: true,
-    def: ThemeType.system,
-  );
+  static const Field<Settings, ThemeType> _f$themeType =
+      Field('themeType', _$themeType, opt: true, def: ThemeType.system);
   static FlexSchemeData _$lightTheme(Settings v) => v.lightTheme;
-  static const Field<Settings, FlexSchemeData> _f$lightTheme = Field(
-    'lightTheme',
-    _$lightTheme,
-    opt: true,
-    def: FlexColor.flutterDash,
-  );
+  static const Field<Settings, FlexSchemeData> _f$lightTheme =
+      Field('lightTheme', _$lightTheme, opt: true, def: FlexColor.flutterDash);
   static FlexSchemeData _$darkTheme(Settings v) => v.darkTheme;
-  static const Field<Settings, FlexSchemeData> _f$darkTheme = Field(
-    'darkTheme',
-    _$darkTheme,
-    opt: true,
-    def: FlexColor.bahamaBlue,
-  );
+  static const Field<Settings, FlexSchemeData> _f$darkTheme =
+      Field('darkTheme', _$darkTheme, opt: true, def: FlexColor.bahamaBlue);
   static List<FlexSchemeData> _$customThemes(Settings v) => v.customThemes;
-  static const Field<Settings, List<FlexSchemeData>> _f$customThemes = Field(
-    'customThemes',
-    _$customThemes,
-    opt: true,
-    def: const [],
-  );
+  static const Field<Settings, List<FlexSchemeData>> _f$customThemes =
+      Field('customThemes', _$customThemes, opt: true, def: const []);
 
   @override
   final MappableFields<Settings> fields = const {
@@ -69,12 +49,11 @@ class SettingsMapper extends ClassMapperBase<Settings> {
 
   static Settings _instantiate(DecodingData data) {
     return Settings(
-      bannerEnabled: data.dec(_f$bannerEnabled),
-      themeType: data.dec(_f$themeType),
-      lightTheme: data.dec(_f$lightTheme),
-      darkTheme: data.dec(_f$darkTheme),
-      customThemes: data.dec(_f$customThemes),
-    );
+        bannerEnabled: data.dec(_f$bannerEnabled),
+        themeType: data.dec(_f$themeType),
+        lightTheme: data.dec(_f$lightTheme),
+        darkTheme: data.dec(_f$darkTheme),
+        customThemes: data.dec(_f$customThemes));
   }
 
   @override
@@ -91,15 +70,13 @@ class SettingsMapper extends ClassMapperBase<Settings> {
 
 mixin SettingsMappable {
   String toJson() {
-    return SettingsMapper.ensureInitialized().encodeJson<Settings>(
-      this as Settings,
-    );
+    return SettingsMapper.ensureInitialized()
+        .encodeJson<Settings>(this as Settings);
   }
 
   Map<String, dynamic> toMap() {
-    return SettingsMapper.ensureInitialized().encodeMap<Settings>(
-      this as Settings,
-    );
+    return SettingsMapper.ensureInitialized()
+        .encodeMap<Settings>(this as Settings);
   }
 
   SettingsCopyWith<Settings, Settings, Settings> get copyWith =>
@@ -111,10 +88,8 @@ mixin SettingsMappable {
 
   @override
   bool operator ==(Object other) {
-    return SettingsMapper.ensureInitialized().equalsValue(
-      this as Settings,
-      other,
-    );
+    return SettingsMapper.ensureInitialized()
+        .equalsValue(this as Settings, other);
   }
 
   @override
@@ -130,19 +105,14 @@ extension SettingsValueCopy<$R, $Out> on ObjectCopyWith<$R, Settings, $Out> {
 
 abstract class SettingsCopyWith<$R, $In extends Settings, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<
-    $R,
-    FlexSchemeData,
-    ObjectCopyWith<$R, FlexSchemeData, FlexSchemeData>
-  >
-  get customThemes;
-  $R call({
-    bool? bannerEnabled,
-    ThemeType? themeType,
-    FlexSchemeData? lightTheme,
-    FlexSchemeData? darkTheme,
-    List<FlexSchemeData>? customThemes,
-  });
+  ListCopyWith<$R, FlexSchemeData,
+      ObjectCopyWith<$R, FlexSchemeData, FlexSchemeData>> get customThemes;
+  $R call(
+      {bool? bannerEnabled,
+      ThemeType? themeType,
+      FlexSchemeData? lightTheme,
+      FlexSchemeData? darkTheme,
+      List<FlexSchemeData>? customThemes});
   SettingsCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -155,43 +125,36 @@ class _SettingsCopyWithImpl<$R, $Out>
   late final ClassMapperBase<Settings> $mapper =
       SettingsMapper.ensureInitialized();
   @override
-  ListCopyWith<
-    $R,
-    FlexSchemeData,
-    ObjectCopyWith<$R, FlexSchemeData, FlexSchemeData>
-  >
-  get customThemes => ListCopyWith(
-    $value.customThemes,
-    (v, t) => ObjectCopyWith(v, $identity, t),
-    (v) => call(customThemes: v),
-  );
+  ListCopyWith<$R, FlexSchemeData,
+          ObjectCopyWith<$R, FlexSchemeData, FlexSchemeData>>
+      get customThemes => ListCopyWith(
+          $value.customThemes,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(customThemes: v));
   @override
-  $R call({
-    bool? bannerEnabled,
-    ThemeType? themeType,
-    FlexSchemeData? lightTheme,
-    FlexSchemeData? darkTheme,
-    List<FlexSchemeData>? customThemes,
-  }) => $apply(
-    FieldCopyWithData({
-      if (bannerEnabled != null) #bannerEnabled: bannerEnabled,
-      if (themeType != null) #themeType: themeType,
-      if (lightTheme != null) #lightTheme: lightTheme,
-      if (darkTheme != null) #darkTheme: darkTheme,
-      if (customThemes != null) #customThemes: customThemes,
-    }),
-  );
+  $R call(
+          {bool? bannerEnabled,
+          ThemeType? themeType,
+          FlexSchemeData? lightTheme,
+          FlexSchemeData? darkTheme,
+          List<FlexSchemeData>? customThemes}) =>
+      $apply(FieldCopyWithData({
+        if (bannerEnabled != null) #bannerEnabled: bannerEnabled,
+        if (themeType != null) #themeType: themeType,
+        if (lightTheme != null) #lightTheme: lightTheme,
+        if (darkTheme != null) #darkTheme: darkTheme,
+        if (customThemes != null) #customThemes: customThemes
+      }));
   @override
   Settings $make(CopyWithData data) => Settings(
-    bannerEnabled: data.get(#bannerEnabled, or: $value.bannerEnabled),
-    themeType: data.get(#themeType, or: $value.themeType),
-    lightTheme: data.get(#lightTheme, or: $value.lightTheme),
-    darkTheme: data.get(#darkTheme, or: $value.darkTheme),
-    customThemes: data.get(#customThemes, or: $value.customThemes),
-  );
+      bannerEnabled: data.get(#bannerEnabled, or: $value.bannerEnabled),
+      themeType: data.get(#themeType, or: $value.themeType),
+      lightTheme: data.get(#lightTheme, or: $value.lightTheme),
+      darkTheme: data.get(#darkTheme, or: $value.darkTheme),
+      customThemes: data.get(#customThemes, or: $value.customThemes));
 
   @override
   SettingsCopyWith<$R2, Settings, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _SettingsCopyWithImpl($value, $cast, t);
+          Then<$Out2, $R2> t) =>
+      _SettingsCopyWithImpl($value, $cast, t);
 }

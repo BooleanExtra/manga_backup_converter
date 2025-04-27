@@ -13,15 +13,14 @@ String _$settingsRepositoryHash() =>
 @ProviderFor(SettingsRepository)
 final settingsRepositoryProvider =
     AutoDisposeNotifierProvider<SettingsRepository, Settings>.internal(
-      SettingsRepository.new,
-      name: r'settingsRepositoryProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$settingsRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  SettingsRepository.new,
+  name: r'settingsRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$settingsRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$SettingsRepository = AutoDisposeNotifier<Settings>;
 // ignore_for_file: type=lint
