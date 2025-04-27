@@ -147,6 +147,7 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
     return switch (type) {
+      BackupType.tachimanga => this,
       BackupType.tachi => TachiBackup(
         backupCategories: db.categoryTable.map((c) => c.toType(db)).toList(),
         backupManga: db.mangaTable.map((c) => c.toType(db)).toList(),
@@ -156,7 +157,6 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
       BackupType.aidoku => throw const TachimangaException('Tachimanga backup cannot be converted to Aidoku'),
       BackupType.paperback => throw const TachimangaException('Tachimanga backup cannot be converted to Paperback'),
       BackupType.mangayomi => throw const TachimangaException('Tachimanga backup cannot be converted to Mangayomi'),
-      BackupType.tachimanga => this,
     };
   }
 
