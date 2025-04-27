@@ -5,5 +5,4 @@
 - [dependabot/pub/flutter_adaptive_scaffold-0.3.2](./dependabot/pub/flutter_adaptive_scaffold-0.3.2/)
 - [dependabot/pub/flutter_launcher_icons-0.14.3](./dependabot/pub/flutter_launcher_icons-0.14.3/)
 - [dependabot/pub/wolt_modal_sheet-0.11.0](./dependabot/pub/wolt_modal_sheet-0.11.0/)
-- [feature/mangayomi](./feature/mangayomi/)
 - [main](./main/)
