@@ -12,49 +12,45 @@ part of 'id.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods',
+);
 
 /// @nodoc
 mixin _$IdValidFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Invalid value) invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Invalid value)? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Invalid value)? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $IdValidFailureCopyWith<$Res> {
   factory $IdValidFailureCopyWith(
-          IdValidFailure value, $Res Function(IdValidFailure) then) =
-      _$IdValidFailureCopyWithImpl<$Res, IdValidFailure>;
+    IdValidFailure value,
+    $Res Function(IdValidFailure) then,
+  ) = _$IdValidFailureCopyWithImpl<$Res, IdValidFailure>;
 }
 
 /// @nodoc
@@ -71,8 +67,9 @@ class _$IdValidFailureCopyWithImpl<$Res, $Val extends IdValidFailure>
 /// @nodoc
 abstract class _$$_InvalidCopyWith<$Res> {
   factory _$$_InvalidCopyWith(
-          _$_Invalid value, $Res Function(_$_Invalid) then) =
-      __$$_InvalidCopyWithImpl<$Res>;
+    _$_Invalid value,
+    $Res Function(_$_Invalid) then,
+  ) = __$$_InvalidCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -80,7 +77,7 @@ class __$$_InvalidCopyWithImpl<$Res>
     extends _$IdValidFailureCopyWithImpl<$Res, _$_Invalid>
     implements _$$_InvalidCopyWith<$Res> {
   __$$_InvalidCopyWithImpl(_$_Invalid _value, $Res Function(_$_Invalid) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 }
 
 /// @nodoc
@@ -104,17 +101,13 @@ class _$_Invalid implements _Invalid {
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() invalid,
-  }) {
+  TResult when<TResult extends Object?>({required TResult Function() invalid}) {
     return invalid();
   }
 
   @override
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? invalid,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? invalid}) {
     return invalid?.call();
   }
 

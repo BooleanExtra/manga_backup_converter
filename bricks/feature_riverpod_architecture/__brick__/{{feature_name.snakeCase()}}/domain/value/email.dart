@@ -4,12 +4,14 @@ import 'package:modddels_annotation_fpdart/modddels_annotation_fpdart.dart';
 part 'email.freezed.dart';
 part 'email.modddel.dart';
 
-@Modddel(validationSteps: [
-  ValidationStep([
-    Validation('format', FailureType<EmailFormatFailure>()),
-    Validation('available', FailureType<EmailAvailableFailure>()),
-  ], name: 'Value'),
-])
+@Modddel(
+  validationSteps: [
+    ValidationStep([
+      Validation('format', FailureType<EmailFormatFailure>()),
+      Validation('available', FailureType<EmailAvailableFailure>()),
+    ], name: 'Value'),
+  ],
+)
 class Email extends SingleValueObject<InvalidEmail, ValidEmail> with _$Email {
   const Email._();
 

@@ -10,9 +10,7 @@ import 'package:mangabackupconverter/src/routing/router/router.dart';
 import 'package:mangabackupconverter/utils/utils.dart';
 
 class SettingsScreen extends StatefulHookConsumerWidget {
-  const SettingsScreen({
-    super.key,
-  });
+  const SettingsScreen({super.key});
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsWidgetState();
@@ -25,9 +23,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
     final developerSettings = _buildDeveloperSettings(settings: settings);
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: SettingsList(
         lightTheme: SettingsThemeData(
           settingsListBackground: theme.colorScheme.surface,
@@ -108,9 +104,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
                       },
                       child: Text(
                         'Reset',
-                        style: TextStyle(
-                          color: colorScheme.error,
-                        ),
+                        style: TextStyle(color: colorScheme.error),
                       ),
                     ),
                   ],
@@ -128,17 +122,13 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
   }) {
     return <AbstractSettingsTile>[
       if (AppFlavor.isBannerEnabled)
-        CustomSettingsTile(
-          child: _ToggleBannerButton(context: context),
-        ),
+        CustomSettingsTile(child: _ToggleBannerButton(context: context)),
     ];
   }
 }
 
 class _ToggleBannerButton extends ConsumerWidget {
-  const _ToggleBannerButton({
-    required this.context,
-  });
+  const _ToggleBannerButton({required this.context});
 
   final BuildContext context;
 
@@ -184,9 +174,6 @@ class CustomSettingsTile extends AbstractSettingsTile {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding,
-      child: child,
-    );
+    return Padding(padding: padding, child: child);
   }
 }

@@ -84,19 +84,23 @@ class FlexSchemeColorConverter {
       primary: _colorFromJson(map['primary'] as ColorJson),
       primaryContainer: _colorFromJson(map['primaryContainer'] as ColorJson),
       secondary: _colorFromJson(map['secondary'] as ColorJson),
-      secondaryContainer:
-          _colorFromJson(map['secondaryContainer'] as ColorJson),
+      secondaryContainer: _colorFromJson(
+        map['secondaryContainer'] as ColorJson,
+      ),
       tertiary: _colorFromJson(map['tertiary'] as ColorJson),
       tertiaryContainer: _colorFromJson(map['tertiaryContainer'] as ColorJson),
-      appBarColor: map['appBarColor'] == null
-          ? null
-          : _colorFromJson(map['appBarColor'] as ColorJson),
-      error: map['error'] == null
-          ? null
-          : _colorFromJson(map['error'] as ColorJson),
-      errorContainer: map['errorContainer'] == null
-          ? null
-          : _colorFromJson(map['errorContainer'] as ColorJson),
+      appBarColor:
+          map['appBarColor'] == null
+              ? null
+              : _colorFromJson(map['appBarColor'] as ColorJson),
+      error:
+          map['error'] == null
+              ? null
+              : _colorFromJson(map['error'] as ColorJson),
+      errorContainer:
+          map['errorContainer'] == null
+              ? null
+              : _colorFromJson(map['errorContainer'] as ColorJson),
       swapOnMaterial3: map['swapOnMaterial3'] as bool,
     );
   }
@@ -115,11 +119,6 @@ Color _colorFromJson(ColorJson json) {
 
 extension _ColorJsonExtension on Color {
   ColorJson toJson() {
-    return {
-      'r': r,
-      'g': g,
-      'b': b,
-      'a': a,
-    };
+    return {'r': r, 'g': g, 'b': b, 'a': a};
   }
 }

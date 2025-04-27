@@ -9,10 +9,7 @@ class Asset extends Equatable {
   ///
   /// Arguments:
   /// * `path` - Path to the asset defined in [Assets]
-  static Image image(
-    String path,
-  ) =>
-      Image.asset(path);
+  static Image image(String path) => Image.asset(path);
 
   /// Path to the asset defined in [Assets]
   final String path;

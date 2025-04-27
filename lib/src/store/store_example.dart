@@ -5,13 +5,10 @@ class FutureStore {
   _LocalDatabaseApi get _local => const _LocalDatabaseApi();
 
   /// Fetches new data from the network
-  Fetcher<String, List<String>> get futureFetcher => Fetcher.ofFuture(
-        (userId) async => [' _api.getUserTweets(userId)'],
-      );
-  Stock<String, List<String>> get stock => Stock(
-        fetcher: futureFetcher,
-        sourceOfTruth: _local.sourceOfTruthExample,
-      );
+  Fetcher<String, List<String>> get futureFetcher =>
+      Fetcher.ofFuture((userId) async => [' _api.getUserTweets(userId)']);
+  Stock<String, List<String>> get stock =>
+      Stock(fetcher: futureFetcher, sourceOfTruth: _local.sourceOfTruthExample);
 }
 
 class StreamStore {
@@ -23,10 +20,8 @@ class StreamStore {
       Fetcher.ofStream((userId) async* {
         yield [' _api.getUserTweets(userId)'];
       });
-  Stock<String, List<String>> get stock => Stock(
-        fetcher: streamFetcher,
-        sourceOfTruth: _local.sourceOfTruthExample,
-      );
+  Stock<String, List<String>> get stock =>
+      Stock(fetcher: streamFetcher, sourceOfTruth: _local.sourceOfTruthExample);
 }
 
 class _LocalDatabaseApi {

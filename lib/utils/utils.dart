@@ -103,7 +103,6 @@ DeviceType get _deviceTypeByUserAgent {
   } else if (userAgent.contains('android') || userAgent.contains('crkey')) {
     deviceType = DeviceType.Android;
   }
-
   // Desktop
   else if (userAgent.contains('macintosh')) {
     deviceType = DeviceType.MacOS;
@@ -154,8 +153,6 @@ extension BuildContextExtensions on BuildContext {
   void showSnackBar(String message) {
     final messenger = ScaffoldMessenger.maybeOf(this);
     messenger?.clearSnackBars();
-    messenger?.showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    messenger?.showSnackBar(SnackBar(content: Text(message)));
   }
 }

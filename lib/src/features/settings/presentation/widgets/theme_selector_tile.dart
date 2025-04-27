@@ -48,14 +48,11 @@ class _ThemeSelectorTileState extends State<ThemeSelectorTile> {
         thumbVisibility: $deviceType.isDesktop,
         child: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {
-              PointerDeviceKind.mouse,
-            }..addAll(ScrollConfiguration.of(context).dragDevices),
+            dragDevices: {PointerDeviceKind.mouse}
+              ..addAll(ScrollConfiguration.of(context).dragDevices),
           ),
           child: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(
-              height: 160,
-            ),
+            constraints: const BoxConstraints.tightFor(height: 160),
             child: ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
@@ -112,15 +109,10 @@ class ThemeItem extends StatelessWidget {
           Column(
             children: [
               FlexThemeModeOptionButton(
-                flexSchemeColor: colorProvider(
-                  schemes[index],
-                ),
+                flexSchemeColor: colorProvider(schemes[index]),
                 semanticLabel: 'Select ${schemes[index].name} theme',
                 selected: selectedIndex == index,
-                selectedBorder: BorderSide(
-                  color: theme.primaryColor,
-                  width: 4,
-                ),
+                selectedBorder: BorderSide(color: theme.primaryColor, width: 4),
                 unselectedBorder: BorderSide.none,
                 // TODO: maybe should scale with device size
                 width: 60,
@@ -133,9 +125,7 @@ class ThemeItem extends StatelessWidget {
               Text(
                 schemes[index].name,
                 style: theme.textTheme.bodySmall?.merge(
-                  const TextStyle(
-                    fontWeight: FontWeight.w300,
-                  ),
+                  const TextStyle(fontWeight: FontWeight.w300),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -149,11 +139,7 @@ class ThemeItem extends StatelessWidget {
               child: CircleAvatar(
                 radius: 14,
                 backgroundColor: theme.primaryColorDark,
-                child: Icon(
-                  Icons.check,
-                  color: scheme.secondary,
-                  size: 16,
-                ),
+                child: Icon(Icons.check, color: scheme.secondary, size: 16),
               ),
             ),
         ],

@@ -12,14 +12,15 @@ String _$weatherRepositoryHash() => r'61cf2b4c513d2c41baad1b3e281909f5a6e8b816';
 @ProviderFor(weatherRepository)
 final weatherRepositoryProvider =
     AutoDisposeProvider<HttpWeatherRepository>.internal(
-  weatherRepository,
-  name: r'weatherRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$weatherRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      weatherRepository,
+      name: r'weatherRepositoryProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$weatherRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element

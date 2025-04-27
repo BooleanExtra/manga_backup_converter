@@ -10,7 +10,8 @@ part of 'email.dart';
 // **************************************************************************
 
 final _$unimplementedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.');
+  'It seems like you constructed your class using `MyClass._()`, or you tried to access an instance member from within the annotated class.',
+);
 
 class _$CopyWithDefault {
   const _$CopyWithDefault();
@@ -25,21 +26,26 @@ mixin _$Email {
     final $emailValueHolder = _$EmailValueHolder(value: value);
 
     return _verifyValueStep($emailValueHolder).fold(
-        (invalidEmailValue) => invalidEmailValue, (validEmail) => validEmail);
+      (invalidEmailValue) => invalidEmailValue,
+      (validEmail) => validEmail,
+    );
   }
 
   static Either<InvalidEmailValue, ValidEmail> _verifyValueStep(
-      _$EmailValueHolder $emailValueHolder) {
+    _$EmailValueHolder $emailValueHolder,
+  ) {
     // ignore: unused_local_variable
     final $emailInstance = _$instance();
 
-    final formatFailure = $emailInstance
-        .validateFormat($emailValueHolder.toFormatSubholder())
-        .toNullable();
+    final formatFailure =
+        $emailInstance
+            .validateFormat($emailValueHolder.toFormatSubholder())
+            .toNullable();
 
-    final availableFailure = $emailInstance
-        .validateAvailable($emailValueHolder.toAvailableSubholder())
-        .toNullable();
+    final availableFailure =
+        $emailInstance
+            .validateAvailable($emailValueHolder.toAvailableSubholder())
+            .toNullable();
 
     if (formatFailure == null && availableFailure == null) {
       return right<InvalidEmailValue, ValidEmail>(
@@ -49,55 +55,66 @@ mixin _$Email {
 
     return left<InvalidEmailValue, ValidEmail>(
       InvalidEmailValue._(
-          value: $emailValueHolder.value,
-          formatFailure: formatFailure,
-          availableFailure: availableFailure),
+        value: $emailValueHolder.value,
+        formatFailure: formatFailure,
+        availableFailure: availableFailure,
+      ),
     );
   }
 
-  TResult map<TResult extends Object?>(
-      {required TResult Function(ValidEmail validEmail) valid,
-      required TResult Function(InvalidEmailValue invalidEmailValue)
-          invalidValue}) {
+  TResult map<TResult extends Object?>({
+    required TResult Function(ValidEmail validEmail) valid,
+    required TResult Function(InvalidEmailValue invalidEmailValue) invalidValue,
+  }) {
     return maybeMap(
-        valid: valid,
-        invalidValue: invalidValue,
-        orElse: () => throw UnreachableError());
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeMap<TResult extends Object?>(
-          {TResult Function(ValidEmail validEmail)? valid,
-          TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
-          required TResult Function() orElse}) =>
-      throw _$unimplementedError;
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidEmail validEmail)? valid,
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+    required TResult Function() orElse,
+  }) => throw _$unimplementedError;
 
-  TResult? mapOrNull<TResult extends Object?>(
-      {TResult Function(ValidEmail validEmail)? valid,
-      TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue}) {
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(ValidEmail validEmail)? valid,
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+  }) {
     return maybeMap(
-        valid: valid, invalidValue: invalidValue, orElse: () => null);
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => null,
+    );
   }
 
-  TResult mapValidity<TResult extends Object?>(
-      {required TResult Function(ValidEmail validEmail) valid,
-      required TResult Function(InvalidEmail invalidEmail) invalid}) {
+  TResult mapValidity<TResult extends Object?>({
+    required TResult Function(ValidEmail validEmail) valid,
+    required TResult Function(InvalidEmail invalidEmail) invalid,
+  }) {
     return maybeMap(valid: valid, orElse: () => invalid(this as InvalidEmail));
   }
 
-  TResult maybeMapValidity<TResult extends Object?>(
-      {required TResult Function(ValidEmail validEmail) valid,
-      TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
-      required TResult Function(InvalidEmail invalidEmail) orElse}) {
+  TResult maybeMapValidity<TResult extends Object?>({
+    required TResult Function(ValidEmail validEmail) valid,
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+    required TResult Function(InvalidEmail invalidEmail) orElse,
+  }) {
     return maybeMap(
-        valid: valid,
-        invalidValue: invalidValue,
-        orElse: () => orElse(this as InvalidEmail));
+      valid: valid,
+      invalidValue: invalidValue,
+      orElse: () => orElse(this as InvalidEmail),
+    );
   }
 
   Email Function({String value}) get copyWith {
     return ({Object? value = _$copyWithDefault}) {
       final $copy$value = mapValidity(
-          valid: (valid) => valid.value, invalid: (invalid) => invalid.value);
+        valid: (valid) => valid.value,
+        invalid: (invalid) => invalid.value,
+      );
 
       return Email(value == _$copyWithDefault ? $copy$value : value as String);
     };
@@ -105,7 +122,8 @@ mixin _$Email {
 
   Option<EmailFormatFailure> validateFormat(_ValidateEmailFormat email);
   Option<EmailAvailableFailure> validateAvailable(
-      _ValidateEmailAvailable email);
+    _ValidateEmailAvailable email,
+  );
 
   List<Object?> get props => throw _$unimplementedError;
 }
@@ -116,10 +134,11 @@ class ValidEmail extends Email implements ValidValueObject {
   final String value;
 
   @override
-  TResult maybeMap<TResult extends Object?>(
-      {TResult Function(ValidEmail validEmail)? valid,
-      TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidEmail validEmail)? valid,
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return valid != null ? valid(this) : orElse();
   }
 
@@ -133,59 +152,78 @@ class ValidEmail extends Email implements ValidValueObject {
 mixin InvalidEmail implements Email, InvalidValueObject {
   String get value;
 
-  TResult mapInvalid<TResult extends Object?>(
-      {required TResult Function(InvalidEmailValue invalidEmailValue)
-          invalidValue}) {
+  TResult mapInvalid<TResult extends Object?>({
+    required TResult Function(InvalidEmailValue invalidEmailValue) invalidValue,
+  }) {
     return maybeMap(
-        invalidValue: invalidValue, orElse: () => throw UnreachableError());
+      invalidValue: invalidValue,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeMapInvalid<TResult extends Object?>(
-      {TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMapInvalid<TResult extends Object?>({
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return maybeMap(invalidValue: invalidValue, orElse: orElse);
   }
 
-  TResult? mapOrNullInvalid<TResult extends Object?>(
-      {TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue}) {
+  TResult? mapOrNullInvalid<TResult extends Object?>({
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+  }) {
     return maybeMap(invalidValue: invalidValue, orElse: () => null);
   }
 
-  TResult whenInvalid<TResult extends Object?>(
-      {required TResult Function(EmailFormatFailure? formatFailure,
-              EmailAvailableFailure? availableFailure)
-          valueFailures}) {
+  TResult whenInvalid<TResult extends Object?>({
+    required TResult Function(
+      EmailFormatFailure? formatFailure,
+      EmailAvailableFailure? availableFailure,
+    )
+    valueFailures,
+  }) {
     return maybeWhenInvalid(
-        valueFailures: valueFailures, orElse: () => throw UnreachableError());
+      valueFailures: valueFailures,
+      orElse: () => throw UnreachableError(),
+    );
   }
 
-  TResult maybeWhenInvalid<TResult extends Object?>(
-      {TResult Function(EmailFormatFailure? formatFailure,
-              EmailAvailableFailure? availableFailure)?
-          valueFailures,
-      required TResult Function() orElse}) {
+  TResult maybeWhenInvalid<TResult extends Object?>({
+    TResult Function(
+      EmailFormatFailure? formatFailure,
+      EmailAvailableFailure? availableFailure,
+    )?
+    valueFailures,
+    required TResult Function() orElse,
+  }) {
     return maybeMap(
-        invalidValue: valueFailures != null
-            ? (invalidValue) => valueFailures(
-                invalidValue.formatFailure, invalidValue.availableFailure)
-            : null,
-        orElse: orElse);
+      invalidValue:
+          valueFailures != null
+              ? (invalidValue) => valueFailures(
+                invalidValue.formatFailure,
+                invalidValue.availableFailure,
+              )
+              : null,
+      orElse: orElse,
+    );
   }
 
-  TResult? whenOrNullInvalid<TResult extends Object?>(
-      {TResult Function(EmailFormatFailure? formatFailure,
-              EmailAvailableFailure? availableFailure)?
-          valueFailures}) {
+  TResult? whenOrNullInvalid<TResult extends Object?>({
+    TResult Function(
+      EmailFormatFailure? formatFailure,
+      EmailAvailableFailure? availableFailure,
+    )?
+    valueFailures,
+  }) {
     return maybeWhenInvalid(valueFailures: valueFailures, orElse: () => null);
   }
 }
 
 class InvalidEmailValue extends Email with InvalidEmail {
-  InvalidEmailValue._(
-      {required this.value,
-      required this.formatFailure,
-      required this.availableFailure})
-      : super._();
+  InvalidEmailValue._({
+    required this.value,
+    required this.formatFailure,
+    required this.availableFailure,
+  }) : super._();
 
   @override
   final String value;
@@ -200,18 +238,19 @@ class InvalidEmailValue extends Email with InvalidEmail {
 
   @override
   List<ValueFailure> get failures => [
-        if (formatFailure != null) formatFailure!,
-        if (availableFailure != null) availableFailure!
-      ];
+    if (formatFailure != null) formatFailure!,
+    if (availableFailure != null) availableFailure!,
+  ];
 
   @override
   List<Object?> get props => [value, formatFailure, availableFailure];
 
   @override
-  TResult maybeMap<TResult extends Object?>(
-      {TResult Function(ValidEmail validEmail)? valid,
-      TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
-      required TResult Function() orElse}) {
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ValidEmail validEmail)? valid,
+    TResult Function(InvalidEmailValue invalidEmailValue)? invalidValue,
+    required TResult Function() orElse,
+  }) {
     return invalidValue != null ? invalidValue(this) : orElse();
   }
 

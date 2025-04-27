@@ -36,35 +36,36 @@ extension _FlavorToConfig on Flavor {
   FlavorConfig? createConfig() {
     return switch (this) {
       Flavor.beta => FlavorConfig(
-          name: 'BETA',
-          color: Colors.deepOrange,
-          location: BannerLocation.topEnd,
-        ),
+        name: 'BETA',
+        color: Colors.deepOrange,
+        location: BannerLocation.topEnd,
+      ),
       Flavor.dev => FlavorConfig(
-          name: 'DEVELOP',
-          location: BannerLocation.topEnd,
-        ),
+        name: 'DEVELOP',
+        location: BannerLocation.topEnd,
+      ),
       Flavor.staging => FlavorConfig(
-          name: 'STAGING',
-          color: Colors.green,
-          location: BannerLocation.topEnd,
-        ),
+        name: 'STAGING',
+        color: Colors.green,
+        location: BannerLocation.topEnd,
+      ),
       Flavor.local => _createDebugModeFlavor(),
       _ => null,
     };
   }
 
-  FlavorConfig? _createDebugModeFlavor() => kDebugMode
-      ? FlavorConfig(
-          name: 'DEBUG',
-          color: Colors.blue,
-          location: BannerLocation.topEnd,
-        )
-      : kReleaseMode
+  FlavorConfig? _createDebugModeFlavor() =>
+      kDebugMode
+          ? FlavorConfig(
+            name: 'DEBUG',
+            color: Colors.blue,
+            location: BannerLocation.topEnd,
+          )
+          : kReleaseMode
           ? null
           : FlavorConfig(
-              name: 'LOCAL',
-              color: Colors.blue,
-              location: BannerLocation.topEnd,
-            );
+            name: 'LOCAL',
+            color: Colors.blue,
+            location: BannerLocation.topEnd,
+          );
 }

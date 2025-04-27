@@ -34,36 +34,29 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
     final versionId =
         'v$version${((!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && version == buildNumber) || buildNumber.isEmpty) ? '' : '+$buildNumber'}';
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('About'),
-      ),
+      appBar: AppBar(title: const Text('About')),
       body: Material(
         child: ListView(
           children: <Widget>[
             ListTile(
               title: const Text('Version'),
               leading: const Icon(Icons.info),
-              subtitle: Text(
-                versionId,
-              ),
-              onTap: clipboard == null
-                  ? null
-                  : () async {
-                      final item = DataWriterItem();
-                      item.add(
-                        Formats.plainText(
-                          versionId,
-                        ),
-                      );
-                      await clipboard!.write([item]);
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Version copied to clipboard'),
-                          ),
-                        );
-                      }
-                    },
+              subtitle: Text(versionId),
+              onTap:
+                  clipboard == null
+                      ? null
+                      : () async {
+                        final item = DataWriterItem();
+                        item.add(Formats.plainText(versionId));
+                        await clipboard!.write([item]);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Version copied to clipboard'),
+                            ),
+                          );
+                        }
+                      },
             ),
             ListTile(
               title: const Text('Open Source Licenses'),

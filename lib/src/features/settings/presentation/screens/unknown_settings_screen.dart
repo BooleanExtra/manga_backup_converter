@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UnknownSettingsScreen extends StatelessWidget {
-  const UnknownSettingsScreen({
-    super.key,
-    this.id,
-  });
+  const UnknownSettingsScreen({super.key, this.id});
 
   final String? id;
 
