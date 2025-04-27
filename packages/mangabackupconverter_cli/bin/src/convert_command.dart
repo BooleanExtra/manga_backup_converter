@@ -243,25 +243,37 @@ class ConvertCommand extends Command<void> {
       );
     }
 
-    // TODO: Fix output format not the extension
     final io.File outputFile = io.File(
-      '${p.basenameWithoutExtension(backupFile.uri.toString())}.$outputFormat',
+      '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
     );
-    switch (outputFormat) {
-      case 'tachi':
-        outputFile.writeAsStringSync(
-          tachiBackup.toJson(),
-        );
-      case 'paperback':
+    final Uint8List? fileData = switch (outputFormat) {
+      BackupType.tachi => tachiBackup.toBackup(),
+      BackupType.paperback =>
         // TODO: Implement Tachi to Paperback
-        break;
-      case 'aidoku':
+        null,
+      BackupType.aidoku =>
         // TODO: Implement Tachi to Aidoku
-        break;
-      default:
-        print('Unsupported output format');
-        return;
+        null,
+      BackupType.tachimanga =>
+        // TODO: Implement Tachi to Tachimanga
+        null,
+      BackupType.mangayomi =>
+        // TODO: Implement Tachi to Mangayomi
+        null,
+    };
+    if (fileData == null) {
+      print(
+        'Failed to convert backup type $inputFormat to $outputFormat format',
+      );
+      return;
     }
+    if (verbose) {
+      print('Converted Backup Size: ${fileData.length}');
+    }
+    if (outputFile.existsSync()) {
+      print('Output file already exists, overwriting...');
+    }
+    outputFile.writeAsBytesSync(fileData);
   }
 }
 
