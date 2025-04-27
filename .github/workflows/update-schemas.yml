@@ -68,6 +68,8 @@ jobs:
               fi
           done
 
+      - name: Update Packages
+        run: flutter pub get
       - name: Format Generated Dart Code
         run: dart format .
       
