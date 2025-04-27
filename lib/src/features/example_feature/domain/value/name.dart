@@ -6,12 +6,9 @@ part 'name.modddel.dart';
 
 @Modddel(
   validationSteps: [
-    ValidationStep(
-      [
-        Validation('allowed', FailureType<NameValidFailure>()),
-      ],
-      name: 'Value',
-    ),
+    ValidationStep([
+      Validation('allowed', FailureType<NameValidFailure>()),
+    ], name: 'Value'),
   ],
 )
 class Name extends MultiValueObject<InvalidName, ValidName> with _$Name {
@@ -19,12 +16,11 @@ class Name extends MultiValueObject<InvalidName, ValidName> with _$Name {
     required String firstName,
     required String lastName,
     String middleName = '',
-  }) =>
-      _$Name._create(
-        firstName: firstName,
-        lastName: lastName,
-        middleName: middleName,
-      );
+  }) => _$Name._create(
+    firstName: firstName,
+    lastName: lastName,
+    middleName: middleName,
+  );
   const Name._();
 
   @override

@@ -4,16 +4,11 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_chapter.
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_history.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_tracking.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_update_strategy.dart';
-import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart'
-    as j2k;
-import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart'
-    as mihon;
-import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart'
-    as neko;
-import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart'
-    as sy;
-import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart'
-    as yokai;
+import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
+import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
+import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
+import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart' as sy;
+import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart' as yokai;
 
 part 'tachi_backup_manga.mapper.dart';
 
@@ -111,9 +106,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
     this.mergeMangaList,
   });
 
-  factory TachiBackupManga.fromMihon(
-    mihon.BackupManga backupManga,
-  ) {
+  factory TachiBackupManga.fromMihon(mihon.BackupManga backupManga) {
     return TachiBackupManga(
       source: backupManga.source.toInt(),
       url: backupManga.url,
@@ -128,14 +121,12 @@ class TachiBackupManga with TachiBackupMangaMappable {
       viewer: backupManga.viewer,
       chapters: backupManga.chapters.map(TachiBackupChapter.fromMihon).toList(),
       categories: backupManga.categories.map((i) => i.toInt()).toList(),
-      tracking:
-          backupManga.tracking.map(TachiBackupTracking.fromMihon).toList(),
+      tracking: backupManga.tracking.map(TachiBackupTracking.fromMihon).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromMihon).toList(),
-      updateStrategy:
-          TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
+      updateStrategy: TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
       lastModifiedAt: backupManga.lastModifiedAt.toInt(),
       favoriteModifiedAt: backupManga.favoriteModifiedAt.toInt(),
       excludedScanlators: backupManga.excludedScanlators,
@@ -143,9 +134,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
     );
   }
 
-  factory TachiBackupManga.fromSy(
-    sy.BackupManga backupManga,
-  ) {
+  factory TachiBackupManga.fromSy(sy.BackupManga backupManga) {
     return TachiBackupManga(
       source: backupManga.source.toInt(),
       url: backupManga.url,
@@ -165,8 +154,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
       chapterFlags: backupManga.chapterFlags,
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromSy).toList(),
-      updateStrategy:
-          TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
+      updateStrategy: TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
       lastModifiedAt: backupManga.lastModifiedAt.toInt(),
       favoriteModifiedAt: backupManga.favoriteModifiedAt.toInt(),
       excludedScanlators: backupManga.excludedScanlators,
@@ -181,9 +169,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
     );
   }
 
-  factory TachiBackupManga.fromJ2k(
-    j2k.BackupManga backupManga,
-  ) {
+  factory TachiBackupManga.fromJ2k(j2k.BackupManga backupManga) {
     return TachiBackupManga(
       source: backupManga.source.toInt(),
       url: backupManga.url,
@@ -201,13 +187,10 @@ class TachiBackupManga with TachiBackupMangaMappable {
       tracking: backupManga.tracking.map(TachiBackupTracking.fromJ2k).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
-      brokenHistory: backupManga.brokenHistory
-          .map(TachiBrokenBackupHistory.fromJ2k)
-          .toList(),
+      brokenHistory: backupManga.brokenHistory.map(TachiBrokenBackupHistory.fromJ2k).toList(),
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromJ2k).toList(),
-      updateStrategy:
-          TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
+      updateStrategy: TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
       customStatus: backupManga.customStatus,
       customTitle: backupManga.customTitle,
       customArtist: backupManga.customArtist,
@@ -217,9 +200,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
     );
   }
 
-  factory TachiBackupManga.fromNeko(
-    neko.BackupManga backupManga,
-  ) {
+  factory TachiBackupManga.fromNeko(neko.BackupManga backupManga) {
     return TachiBackupManga(
       source: backupManga.source.toInt(),
       url: backupManga.url,
@@ -237,22 +218,16 @@ class TachiBackupManga with TachiBackupMangaMappable {
       tracking: backupManga.tracking.map(TachiBackupTracking.fromNeko).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
-      brokenHistory: backupManga.brokenHistory
-          .map(TachiBrokenBackupHistory.fromNeko)
-          .toList(),
+      brokenHistory: backupManga.brokenHistory.map(TachiBrokenBackupHistory.fromNeko).toList(),
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromNeko).toList(),
       scanlatorFilter: backupManga.scanlatorFilter,
       alternativeArtwork: backupManga.alternativeArtwork,
-      mergeMangaList: backupManga.mergeMangaList
-          .map(NekoBackupMergeManga.fromNeko)
-          .toList(),
+      mergeMangaList: backupManga.mergeMangaList.map(NekoBackupMergeManga.fromNeko).toList(),
     );
   }
 
-  factory TachiBackupManga.fromYokai(
-    yokai.BackupManga backupManga,
-  ) {
+  factory TachiBackupManga.fromYokai(yokai.BackupManga backupManga) {
     return TachiBackupManga(
       source: backupManga.source.toInt(),
       url: backupManga.url,
@@ -267,17 +242,13 @@ class TachiBackupManga with TachiBackupMangaMappable {
       viewer: backupManga.viewer,
       chapters: backupManga.chapters.map(TachiBackupChapter.fromYokai).toList(),
       categories: backupManga.categories,
-      tracking:
-          backupManga.tracking.map(TachiBackupTracking.fromYokai).toList(),
+      tracking: backupManga.tracking.map(TachiBackupTracking.fromYokai).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
-      brokenHistory: backupManga.brokenHistory
-          .map(TachiBrokenBackupHistory.fromYokai)
-          .toList(),
+      brokenHistory: backupManga.brokenHistory.map(TachiBrokenBackupHistory.fromYokai).toList(),
       viewerFlags: backupManga.viewerFlags,
       history: backupManga.history.map(TachiBackupHistory.fromYokai).toList(),
-      updateStrategy:
-          TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
+      updateStrategy: TachiUpdateStrategyMapper.fromValue(backupManga.updateStrategy.value),
       customStatus: backupManga.customStatus,
       customTitle: backupManga.customTitle,
       customArtist: backupManga.customArtist,

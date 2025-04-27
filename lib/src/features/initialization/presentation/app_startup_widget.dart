@@ -17,29 +17,28 @@ class AppStartupWidget extends ConsumerWidget {
       switchOutCurve: Curves.easeOut,
       child: appStartupState.when(
         // use an external widget builder to decide what to return
-        data: (_) => Container(
-          key: const ValueKey('appStartupData'),
-          child: widget,
-        ),
-        loading: () => const AppStartupLoadingWidget(
-          key: ValueKey('appStartupLoading'),
-        ),
-        error: (e, st) => AppStartupErrorWidget(
-          key: const ValueKey('appStartupError'),
-          message: e.toString(),
-          onRetry: () {
-            ref.invalidate(appStartupProvider);
-          },
-        ),
+        data:
+            (_) =>
+                Container(key: const ValueKey('appStartupData'), child: widget),
+        loading:
+            () => const AppStartupLoadingWidget(
+              key: ValueKey('appStartupLoading'),
+            ),
+        error:
+            (e, st) => AppStartupErrorWidget(
+              key: const ValueKey('appStartupError'),
+              message: e.toString(),
+              onRetry: () {
+                ref.invalidate(appStartupProvider);
+              },
+            ),
       ),
     );
   }
 }
 
 class AppStartupLoadingWidget extends StatelessWidget {
-  const AppStartupLoadingWidget({
-    super.key,
-  });
+  const AppStartupLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,10 +78,7 @@ class AppStartupErrorWidget extends StatelessWidget {
             children: [
               Text(message, style: Theme.of(context).textTheme.headlineSmall),
               gap16,
-              ElevatedButton(
-                onPressed: onRetry,
-                child: const Text('Retry'),
-              ),
+              ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
             ],
           ),
         ),

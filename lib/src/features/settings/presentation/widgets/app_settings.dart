@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mangabackupconverter/src/features/settings/data/dto/settings.dart';
 
 class AppSettings extends InheritedModel<String> {
-  const AppSettings({
-    required this.settings,
-    required super.child,
-    super.key,
-  });
+  const AppSettings({required this.settings, required super.child, super.key});
 
   final Settings settings;
 

@@ -6,19 +6,13 @@ part 'id.modddel.dart';
 
 @Modddel(
   validationSteps: [
-    ValidationStep(
-      [
-        Validation('allowed', FailureType<IdValidFailure>()),
-      ],
-      name: 'Value',
-    ),
+    ValidationStep([
+      Validation('allowed', FailureType<IdValidFailure>()),
+    ], name: 'Value'),
   ],
 )
 class Id extends SingleValueObject<InvalidId, ValidId> with _$Id {
-  factory Id(
-    String value,
-  ) =>
-      _$Id._create(value: value);
+  factory Id(String value) => _$Id._create(value: value);
   const Id._();
 
   @override

@@ -24,8 +24,6 @@ class SettingsRepository extends _$SettingsRepository {
   }
 
   Settings getSettings() {
-    return Settings.fromJson(
-      _prefs.getString('settings') ?? '{}',
-    );
+    return Settings.fromJson(_prefs.getString('settings') ?? '{}');
   }
 }

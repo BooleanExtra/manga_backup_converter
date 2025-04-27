@@ -12,14 +12,15 @@ String _$settingsServiceHash() => r'f0a9a32518be65506f7e04b93687c7714f6bb6a2';
 @ProviderFor(SettingsService)
 final settingsServiceProvider =
     AutoDisposeNotifierProvider<SettingsService, Settings>.internal(
-  SettingsService.new,
-  name: r'settingsServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$settingsServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      SettingsService.new,
+      name: r'settingsServiceProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$settingsServiceHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$SettingsService = AutoDisposeNotifier<Settings>;
 // ignore_for_file: type=lint

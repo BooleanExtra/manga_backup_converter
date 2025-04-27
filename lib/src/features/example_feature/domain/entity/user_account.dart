@@ -9,15 +9,10 @@ part 'user_account.modddel.dart';
 
 @Modddel(
   validationSteps: [
+    ValidationStep([contentValidation]),
     ValidationStep([
-      contentValidation,
-    ]),
-    ValidationStep(
-      [
-        Validation('account', FailureType<UserAccountValidFailure>()),
-      ],
-      name: 'Value',
-    ),
+      Validation('account', FailureType<UserAccountValidFailure>()),
+    ], name: 'Value'),
   ],
 )
 class UserAccount extends SimpleEntity<InvalidUserAccount, ValidUserAccount>

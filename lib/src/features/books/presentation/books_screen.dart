@@ -3,9 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mangabackupconverter/src/routing/router/router.dart';
 
 class BooksScreen extends StatelessWidget {
-  const BooksScreen({
-    super.key,
-  });
+  const BooksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +14,7 @@ class BooksScreen extends StatelessWidget {
           child: FilledButton(
             key: const ValueKey('home_settings_button'),
             onPressed: () async {
-              context.goNamed(
-                RouteName.settings.name,
-              );
+              context.goNamed(RouteName.settings.name);
             },
             child: const Text('Open Settings'),
           ),

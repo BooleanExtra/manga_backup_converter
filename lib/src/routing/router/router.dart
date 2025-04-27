@@ -5,14 +5,11 @@ import 'package:mangabackupconverter/src/routing/presentation/routes/books_route
 import 'package:mangabackupconverter/src/routing/presentation/routes/setting_details_route.dart';
 import 'package:mangabackupconverter/src/routing/presentation/routes/settings_route.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'root',
+);
 
-enum RouteName {
-  home(),
-  settings(),
-  settingDetails();
-}
+enum RouteName { home(), settings(), settingDetails() }
 
 final routerProvider = Provider<GoRouter>((ref) => createRouter());
 
@@ -34,9 +31,9 @@ GoRouter createRouter() {
               GoRoute(
                 path: 'settings/:id',
                 name: RouteName.settingDetails.name,
-                builder: (context, state) => SettingDetailsRoute(
-                  id: state.pathParameters['id'],
-                ),
+                builder:
+                    (context, state) =>
+                        SettingDetailsRoute(id: state.pathParameters['id']),
               ),
             ],
           ),

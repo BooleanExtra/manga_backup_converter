@@ -15,12 +15,7 @@ class PrototypeHeight extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        IgnorePointer(
-          child: Opacity(
-            opacity: 0.0,
-            child: prototype,
-          ),
-        ),
+        IgnorePointer(child: Opacity(opacity: 0.0, child: prototype)),
         const SizedBox(width: double.infinity),
         PositionedDirectional(child: listView),
       ],

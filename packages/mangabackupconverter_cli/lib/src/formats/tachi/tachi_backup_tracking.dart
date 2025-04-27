@@ -1,14 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart'
-    as j2k;
-import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart'
-    as mihon;
-import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart'
-    as neko;
-import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart'
-    as sy;
-import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart'
-    as yokai;
+import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
+import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
+import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
+import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart' as sy;
+import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart' as yokai;
 
 part 'tachi_backup_tracking.mapper.dart';
 
@@ -42,9 +37,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     required this.mediaId,
   });
 
-  factory TachiBackupTracking.fromMihon(
-    mihon.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromMihon(mihon.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -61,9 +54,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromSy(
-    sy.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromSy(sy.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -80,9 +71,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromJ2k(
-    j2k.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromJ2k(j2k.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -99,9 +88,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromNeko(
-    neko.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromNeko(neko.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -118,9 +105,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromYokai(
-    yokai.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromYokai(yokai.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),

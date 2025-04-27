@@ -37,25 +37,19 @@ class SettingsService extends _$SettingsService {
   }
 
   void setLightTheme(FlexSchemeData lightTheme) {
-    final newSettings = state.copyWith(
-      lightTheme: lightTheme,
-    );
+    final newSettings = state.copyWith(lightTheme: lightTheme);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }
 
   void setDarkTheme(FlexSchemeData darkTheme) {
-    final newSettings = state.copyWith(
-      darkTheme: darkTheme,
-    );
+    final newSettings = state.copyWith(darkTheme: darkTheme);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }
 
   void setCustomThemes(List<FlexSchemeData> customThemes) {
-    final newSettings = state.copyWith(
-      customThemes: customThemes,
-    );
+    final newSettings = state.copyWith(customThemes: customThemes);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }

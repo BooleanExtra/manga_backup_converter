@@ -16,10 +16,10 @@ abstract class EnvFlavor implements EnvFields {
       EnvFlavor.rawFlavor == 'prod' || EnvFlavor.rawFlavor == 'beta'
           ? ProdEnv()
           : EnvFlavor.rawFlavor == 'staging'
-              ? StagingEnv()
-              : EnvFlavor.rawFlavor == 'local'
-                  ? LocalEnv()
-                  : DevEnv();
+          ? StagingEnv()
+          : EnvFlavor.rawFlavor == 'local'
+          ? LocalEnv()
+          : DevEnv();
 
   static const bool isProd = flavor == Flavor.prod;
   static const bool isStaging = flavor == Flavor.staging;
@@ -30,10 +30,10 @@ abstract class EnvFlavor implements EnvFields {
       EnvFlavor.rawFlavor == 'prod' || EnvFlavor.rawFlavor == 'beta'
           ? Flavor.prod
           : EnvFlavor.rawFlavor == 'staging'
-              ? Flavor.staging
-              : EnvFlavor.rawFlavor == 'local'
-                  ? Flavor.local
-                  : Flavor.dev;
+          ? Flavor.staging
+          : EnvFlavor.rawFlavor == 'local'
+          ? Flavor.local
+          : Flavor.dev;
 
   const EnvFlavor._();
 }

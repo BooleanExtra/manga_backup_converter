@@ -92,8 +92,9 @@ class App extends ConsumerWidget {
     );
 
     // avoids nullcheck error in FlavorBanner() with no child
-    final showBanner = !(FlavorConfig.instance.name == null ||
-        (FlavorConfig.instance.name?.isEmpty ?? true));
+    final showBanner =
+        !(FlavorConfig.instance.name == null ||
+            (FlavorConfig.instance.name?.isEmpty ?? true));
 
     return Directionality(
       textDirection: TextDirection.ltr,

@@ -17,10 +17,7 @@ class AnimatedFadeSwitcher extends StatelessWidget {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 150),
       transitionBuilder: (Widget child, Animation<double> animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
       child: shouldSwitch ? child : secondChild,
     );

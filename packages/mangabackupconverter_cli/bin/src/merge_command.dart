@@ -21,29 +21,10 @@ class MergeCommand extends Command<void> {
     // we can add command specific arguments here.
     // [argParser] is automatically created by the parent class.
     argParser
-      ..addFlag(
-        'verbose',
-        abbr: 'v',
-        negatable: false,
-        help: 'Show additional command output.',
-      )
-      ..addOption(
-        'backup',
-        abbr: 'f',
-        help: 'A backup file from Aidoku',
-        mandatory: true,
-      )
-      ..addOption(
-        'other',
-        abbr: 'm',
-        help: 'The other Aidoku backup to merge with the first',
-        mandatory: true,
-      )
-      ..addOption(
-        'output',
-        abbr: 'o',
-        help: 'The output folder to save the merged backup',
-      );
+      ..addFlag('verbose', abbr: 'v', negatable: false, help: 'Show additional command output.')
+      ..addOption('backup', abbr: 'f', help: 'A backup file from Aidoku', mandatory: true)
+      ..addOption('other', abbr: 'm', help: 'The other Aidoku backup to merge with the first', mandatory: true)
+      ..addOption('output', abbr: 'o', help: 'The output folder to save the merged backup');
   }
 
   @override
@@ -58,48 +39,33 @@ class MergeCommand extends Command<void> {
     }
     final io.File backupFile = _parseFile(results, 'backup');
     final io.File otherBackupFile = _parseFile(results, 'other');
-    final outputFolder =
-        results.wasParsed('output') ? results.option('output')! : '.';
+    final outputFolder = results.wasParsed('output') ? results.option('output')! : '.';
     io.Directory(outputFolder).createSync(recursive: true);
     final String outputPath = p.join(
       outputFolder,
       '${p.basenameWithoutExtension(backupFile.path)}_MergedWith_${p.basenameWithoutExtension(otherBackupFile.path)}.aib',
     );
     final backupFileExtension = p.extension(backupFile.uri.toString());
-    final otherBackupFileExtension =
-        p.extension(otherBackupFile.uri.toString());
+    final otherBackupFileExtension = p.extension(otherBackupFile.uri.toString());
     if (backupFileExtension != '.aib') {
       print('Backup file format "$backupFileExtension" not supported');
-      throw ArgumentError(
-        'Backup file format "$backupFileExtension" not supported',
-      );
+      throw ArgumentError('Backup file format "$backupFileExtension" not supported');
     }
     if (otherBackupFileExtension != '.aib') {
       print('Backup file format "$otherBackupFileExtension" not supported');
-      throw ArgumentError(
-        'Backup file format "$otherBackupFileExtension" not supported',
-      );
+      throw ArgumentError('Backup file format "$otherBackupFileExtension" not supported');
     }
-    final AidokuBackup aidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(
-        backupFile.readAsBytesSync(),
-      ),
-    );
+    final AidokuBackup aidokuBackup = AidokuBackup.fromData(backupFile.readAsBytesSync());
     if (verbose) {
       print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
     }
     print('Backup Library: ${aidokuBackup.library?.length}');
-    final AidokuBackup otherAidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(
-        otherBackupFile.readAsBytesSync(),
-      ),
-    );
+    final AidokuBackup otherAidokuBackup = AidokuBackup.fromData(otherBackupFile.readAsBytesSync());
     if (verbose) {
       print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');
     }
     print('Other Backup Library: ${otherAidokuBackup.library?.length}');
-    final AidokuBackup combinedBackup =
-        aidokuBackup.mergeWith(otherAidokuBackup);
+    final AidokuBackup combinedBackup = aidokuBackup.mergeWith(otherAidokuBackup);
     if (verbose) {
       print('[VERBOSE] Combined Aidoku Backup: $combinedBackup');
       final library = combinedBackup.library!.toList();
@@ -108,8 +74,7 @@ class MergeCommand extends Command<void> {
         for (int j = i + 1; j < library.length; j++) {
           final libraryManga = library[i];
           final otherManga = library[j];
-          if (libraryManga.mangaId == otherManga.mangaId &&
-              libraryManga != otherManga) {
+          if (libraryManga.mangaId == otherManga.mangaId && libraryManga != otherManga) {
             duplicates.add(libraryManga.mangaId);
             break;
           }
@@ -119,9 +84,9 @@ class MergeCommand extends Command<void> {
       print('[VERBOSE] Duplicate Library Manga: ${duplicates.length}');
     }
     print('Combined Library: ${combinedBackup.manga?.length}');
-    final ByteData combinedBackupData = combinedBackup.toBinaryPropertyList();
+    final Uint8List combinedBackupData = await combinedBackup.toData();
     final io.File outputFile = io.File(outputPath);
-    outputFile.writeAsBytesSync(Int8List.sublistView(combinedBackupData));
+    outputFile.writeAsBytesSync(combinedBackupData);
     print('Saved merged backup to ${outputFile.path}');
   }
 

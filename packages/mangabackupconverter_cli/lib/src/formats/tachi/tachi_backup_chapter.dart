@@ -1,14 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart'
-    as j2k;
-import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart'
-    as mihon;
-import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart'
-    as neko;
-import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart'
-    as sy;
-import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart'
-    as yokai;
+import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
+import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
+import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
+import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart' as sy;
+import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart' as yokai;
 
 part 'tachi_backup_chapter.mapper.dart';
 
@@ -46,9 +41,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     this.pagesLeft,
   });
 
-  factory TachiBackupChapter.fromMihon(
-    mihon.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromMihon(mihon.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -65,9 +58,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromSy(
-    sy.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromSy(sy.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -84,9 +75,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromJ2k(
-    j2k.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromJ2k(j2k.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -102,9 +91,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromNeko(
-    neko.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromNeko(neko.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -119,9 +106,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromYokai(
-    yokai.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromYokai(yokai.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
