@@ -1,10 +1,13 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, avoid_print
 
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/exceptions/tachi_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_category.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_extension_repo.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_manga.dart';
@@ -28,7 +31,7 @@ import 'package:protobuf/protobuf.dart';
 part 'tachi_backup.mapper.dart';
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
-class TachiBackup with TachiBackupMappable {
+class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   final TachiFork fork;
   final List<TachiBackupSource> backupBrokenSources;
   final List<TachiBackupSource> backupSources;
@@ -138,7 +141,8 @@ class TachiBackup with TachiBackupMappable {
     };
   }
 
-  Uint8List? toBackup() {
+  @override
+  Future<Uint8List> toData() async {
     final json = toJson();
     final backupJson = switch (fork) {
       TachiFork.mihon => mihon.Backup.fromJson(json).toProto3Json(),
@@ -148,9 +152,29 @@ class TachiBackup with TachiBackupMappable {
       TachiFork.neko => neko.Backup.fromJson(json).toProto3Json(),
     };
     final gzip = GZipEncoder().encode(backupJson);
-    return gzip == null ? null : Uint8List.fromList(gzip);
+    if (gzip == null) {
+      throw const TachiException('Could not encode Tachi backup');
+    }
+    return Uint8List.fromList(gzip);
+  }
+
+  @override
+  ConvertableBackup toBackup(BackupType type) {
+    // TODO: implement toBackup
+    throw UnimplementedError();
   }
 
   static const fromMap = TachiBackupMapper.fromMap;
   static const fromJson = TachiBackupMapper.fromJson;
+
+  @override
+  void verbosePrint(bool verbose) {
+    if (!verbose) return;
+    print('Categories: ${backupCategories.length}');
+    print('Manga: ${backupManga.length}');
+    print('Sources: ${backupSources.length}');
+    print(
+      'Extension Repos: ${backupExtensionRepo.length}',
+    );
+  }
 }

@@ -119,9 +119,9 @@ class MergeCommand extends Command<void> {
       print('[VERBOSE] Duplicate Library Manga: ${duplicates.length}');
     }
     print('Combined Library: ${combinedBackup.manga?.length}');
-    final ByteData combinedBackupData = combinedBackup.toBinaryPropertyList();
+    final Uint8List combinedBackupData = await combinedBackup.toData();
     final io.File outputFile = io.File(outputPath);
-    outputFile.writeAsBytesSync(Int8List.sublistView(combinedBackupData));
+    outputFile.writeAsBytesSync(combinedBackupData);
     print('Saved merged backup to ${outputFile.path}');
   }
 

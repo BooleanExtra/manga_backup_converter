@@ -9,7 +9,7 @@ part 'tachimanga_backup_db_models.mapper.dart';
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupCategory
     with TachimangaBackupCategoryMappable
-    implements Convertable<TachiBackupCategory, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupCategory, TachimangaBackupDb> {
   final int id;
   final String name;
   final int order;
@@ -23,7 +23,7 @@ class TachimangaBackupCategory
   });
 
   @override
-  TachiBackupCategory toTachi(TachimangaBackupDb db) {
+  TachiBackupCategory toType(TachimangaBackupDb db) {
     return TachiBackupCategory(
       name: name,
       order: order,
@@ -72,7 +72,7 @@ class TachimangaBackupCategoryMeta with TachimangaBackupCategoryMetaMappable {
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupChapter
     with TachimangaBackupChapterMappable
-    implements Convertable<TachiBackupChapter, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupChapter, TachimangaBackupDb> {
   final int id;
   final String url;
   final String name;
@@ -112,7 +112,7 @@ class TachimangaBackupChapter
   });
 
   @override
-  TachiBackupChapter toTachi(TachimangaBackupDb db) {
+  TachiBackupChapter toType(TachimangaBackupDb db) {
     return TachiBackupChapter(
       url: url,
       name: name,
@@ -197,7 +197,7 @@ class TachimangaBackupExtension with TachimangaBackupExtensionMappable {
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupHistory
     with TachimangaBackupHistoryMappable
-    implements Convertable<TachiBackupHistory, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupHistory, TachimangaBackupDb> {
   final int id;
   final int createAt;
   final bool isDelete;
@@ -215,7 +215,7 @@ class TachimangaBackupHistory
   });
 
   @override
-  TachiBackupHistory toTachi(TachimangaBackupDb db) {
+  TachiBackupHistory toType(TachimangaBackupDb db) {
     final manga = db.mangaTable.firstWhere((manga) => manga.id == mangaId);
     return TachiBackupHistory(
       url: manga.realUrl ?? manga.url,
@@ -231,7 +231,7 @@ class TachimangaBackupHistory
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupManga
     with TachimangaBackupMangaMappable
-    implements Convertable<TachiBackupManga, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupManga, TachimangaBackupDb> {
   final int id;
   final String url;
   final String title;
@@ -277,7 +277,7 @@ class TachimangaBackupManga
   });
 
   @override
-  TachiBackupManga toTachi(TachimangaBackupDb db) {
+  TachiBackupManga toType(TachimangaBackupDb db) {
     TachiUpdateStrategyMapper.ensureInitialized();
     return TachiBackupManga(
       url: realUrl ?? url,
@@ -295,11 +295,11 @@ class TachimangaBackupManga
       viewerFlags: 1,
       chapterFlags: 1,
       favorite: false,
-      chapters: db.chapterTable.map((c) => c.toTachi(db)).toList(),
-      history: db.historyTable.map((c) => c.toTachi(db)).toList(),
+      chapters: db.chapterTable.map((c) => c.toType(db)).toList(),
+      history: db.historyTable.map((c) => c.toType(db)).toList(),
       brokenHistory: [],
       categories: db.categoryTable.map((c) => c.id).toList(),
-      tracking: db.trackRecordTable.map((c) => c.toTachi(db)).toList(),
+      tracking: db.trackRecordTable.map((c) => c.toType(db)).toList(),
     );
   }
 
@@ -364,7 +364,7 @@ class TachimangaBackupPage with TachimangaBackupPageMappable {
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupRepo
     with TachimangaBackupRepoMappable
-    implements Convertable<TachiBackupExtensionRepo, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupExtensionRepo, TachimangaBackupDb> {
   final int id;
   final int type;
   final String name;
@@ -388,7 +388,7 @@ class TachimangaBackupRepo
   });
 
   @override
-  TachiBackupExtensionRepo toTachi(TachimangaBackupDb arg) {
+  TachiBackupExtensionRepo toType(TachimangaBackupDb arg) {
     return TachiBackupExtensionRepo(
       name: name,
       baseUrl: baseUrl,
@@ -427,7 +427,7 @@ class TachimangaBackupSetting with TachimangaBackupSettingMappable {
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupSource
     with TachimangaBackupSourceMappable
-    implements Convertable<TachiBackupSource, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupSource, TachimangaBackupDb> {
   final int id;
   final String name;
   final String lang;
@@ -447,7 +447,7 @@ class TachimangaBackupSource
   });
 
   @override
-  TachiBackupSource toTachi(TachimangaBackupDb arg) {
+  TachiBackupSource toType(TachimangaBackupDb arg) {
     return TachiBackupSource(name: name, sourceId: id);
   }
 
@@ -458,7 +458,7 @@ class TachimangaBackupSource
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupTrackRecord
     with TachimangaBackupTrackRecordMappable
-    implements Convertable<TachiBackupTracking, TachimangaBackupDb> {
+    implements ConvertableType<TachiBackupTracking, TachimangaBackupDb> {
   final int id;
   final int mangaId;
   final int syncId;
@@ -490,7 +490,7 @@ class TachimangaBackupTrackRecord
   });
 
   @override
-  TachiBackupTracking toTachi(TachimangaBackupDb db) {
+  TachiBackupTracking toType(TachimangaBackupDb db) {
     return TachiBackupTracking(
       syncId: syncId,
       libraryId: libraryId ?? -1,

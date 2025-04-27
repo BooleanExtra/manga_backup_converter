@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
@@ -14,7 +18,9 @@ part 'mangayomi_backup.mapper.dart';
   includeCustomMappers: [SecondsEpochDateTimeMapper()],
   caseStyle: CaseStyle.camelCase,
 )
-class MangayomiBackup with MangayomiBackupMappable {
+class MangayomiBackup
+    with MangayomiBackupMappable
+    implements ConvertableBackup {
   final String? name;
   final MangayomiBackupDb db;
 
@@ -53,13 +59,40 @@ class MangayomiBackup with MangayomiBackupMappable {
     );
   }
 
-  Uint8List toZip() {
+  static const fromMap = MangayomiBackupMapper.fromMap;
+  static const fromJson = MangayomiBackupMapper.fromJson;
+
+  @override
+  ConvertableBackup toBackup(BackupType type) {
+    // TODO: implement toBackup
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Uint8List> toData() async {
     final archive = Archive();
     final dbJson = jsonEncode(db.toMap()).codeUnits;
     archive.addFile(ArchiveFile('$name.db', dbJson.length, dbJson));
     return Uint8List.fromList(ZipEncoder().encode(archive) ?? []);
   }
 
-  static const fromMap = MangayomiBackupMapper.fromMap;
-  static const fromJson = MangayomiBackupMapper.fromJson;
+  @override
+  void verbosePrint(bool verbose) {
+    if (!verbose) return;
+
+    print('Mangayomi name: $name');
+    print('Manga: ${db.manga?.length}');
+    print('Categories: ${db.categories?.length}');
+    print('Chapters: ${db.chapters?.length}');
+    print('Downloads: ${db.downloads?.length}');
+    print('Tracks: ${db.tracks?.length}');
+    print('History: ${db.history?.length}');
+    print('Updates: ${db.updates?.length}');
+    print('Settings: ${db.settings?.length}');
+    print(
+      'Extension Preferences: ${db.extensionPreferences?.length}',
+    );
+    print('Track Preferences: ${db.trackPreferences?.length}');
+    print('Extensions: ${db.extensions?.length}');
+  }
 }
