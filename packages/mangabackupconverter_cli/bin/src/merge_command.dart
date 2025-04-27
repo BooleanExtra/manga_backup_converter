@@ -8,6 +8,7 @@ import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:path/path.dart' as p;
 
+/// A command to merge two Aidoku backups.
 class MergeCommand extends Command<void> {
   // The [name] and [description] properties must be defined by every
   // subclass.
