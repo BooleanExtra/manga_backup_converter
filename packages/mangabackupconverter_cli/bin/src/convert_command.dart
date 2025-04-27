@@ -37,7 +37,7 @@ class ConvertCommand extends Command<void> {
         'output-format',
         abbr: 'f',
         help: 'The output backup format the backup will be converted to',
-        allowed: ['aidoku', 'tachi', 'paperback'],
+        allowed: ['aidoku', 'tachi', 'paperback', 'mangayomi'],
         mandatory: true,
       )
       ..addOption(
@@ -93,7 +93,7 @@ class ConvertCommand extends Command<void> {
     if (results.wasParsed('output-format')) {
       outputFormat = results.option('output-format') ?? 'aib';
     }
-    if (!['.aib', '.tachibk', '.proto.gz', '.pas4', '.tmb']
+    if (!['.aib', '.tachibk', '.proto.gz', '.pas4', '.tmb', '.backup']
         .contains(backupFileExtension)) {
       print('Unsupported file extension: "$backupFileExtension"');
       return;
@@ -126,6 +126,7 @@ class ConvertCommand extends Command<void> {
             print('Aidoku Backup Name: ${aidokuBackup.name}');
             print('Aidoku Version: ${aidokuBackup.version}');
           }
+          // TODO: Implement Aidoku to Tachi
           return null;
         }(),
       '.tachibk' || '.proto.gz' => () {
@@ -174,6 +175,7 @@ class ConvertCommand extends Command<void> {
             print('Manga with Tags: ${mangaTagsWithTags?.length}');
           }
 
+          // TODO: Implement Paperback to Tachi
           return null;
         }(),
       '.tmb' => await () async {
@@ -210,22 +212,36 @@ class ConvertCommand extends Command<void> {
           return null;
         }(),
     };
-    if (verbose) {
-      print('Converted Categories: ${tachiBackup?.backupCategories.length}');
-      print('Converted Manga: ${tachiBackup?.backupManga.length}');
-      print('Converted Sources: ${tachiBackup?.backupSources.length}');
+    if (tachiBackup == null) {
       print(
-        'Converted Extension Repos: ${tachiBackup?.backupExtensionRepo.length}',
+        'Failed to convert backup type $backupFileExtension to Tachi format',
+      );
+      return;
+    }
+    if (verbose) {
+      print('Converted Categories: ${tachiBackup.backupCategories.length}');
+      print('Converted Manga: ${tachiBackup.backupManga.length}');
+      print('Converted Sources: ${tachiBackup.backupSources.length}');
+      print(
+        'Converted Extension Repos: ${tachiBackup.backupExtensionRepo.length}',
       );
     }
 
+    // TODO: Fix output format not the extension
+    final io.File outputFile = io.File(
+      '${p.basenameWithoutExtension(backupFile.uri.toString())}.$outputFormat',
+    );
     switch (outputFormat) {
       case 'tachi':
-        return;
+        outputFile.writeAsStringSync(
+          tachiBackup.toJson(),
+        );
       case 'paperback':
-      // TODO: Implement Tachi to Paperback
+        // TODO: Implement Tachi to Paperback
+        break;
       case 'aidoku':
-      // TODO: Implement Tachi to Aidoku
+        // TODO: Implement Tachi to Aidoku
+        break;
       default:
         print('Unsupported output format');
         return;

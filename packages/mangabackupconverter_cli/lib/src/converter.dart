@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_fork.dart';
@@ -29,10 +30,10 @@ class MangaBackupConverter {
     return await TachimangaBackup.fromZip(bytes, overrideName: overrideName);
   }
 
-  Future<void> importMangayomiBackup(
+  MangayomiBackup importMangayomiBackup(
     Uint8List bytes, {
     String? overrideName,
-  }) async {
-    await TachimangaBackup.fromZip(bytes, overrideName: overrideName);
+  }) {
+    return MangayomiBackup.fromZip(bytes, overrideName: overrideName);
   }
 }
