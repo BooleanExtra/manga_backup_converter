@@ -1,15 +1,14 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, avoid_redundant_argument_values
 
 import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
-import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart';
-import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
 import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
@@ -46,7 +45,21 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
     // TODO: implement toBackup
     return switch (type) {
       BackupType.mangayomi => this,
-      BackupType.tachi => throw const MangayomiException('Mangayomi backup cannot be converted to Tachi'),
+      BackupType.tachi => TachiBackup(
+        backupCategories:
+            (db.categories ?? [])
+                .map(
+                  (category) =>
+                      TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
+                )
+                .toList(),
+        backupManga: [],
+        backupBrokenSources: [],
+        backupSources: [],
+        backupExtensionRepo: [],
+        backupPreferences: [],
+        backupSourcePreferences: [],
+      ),
       BackupType.aidoku => throw const MangayomiException('Mangayomi backup cannot be converted to Aidoku'),
       BackupType.paperback => throw const MangayomiException('Mangayomi backup cannot be converted to Paperback'),
       BackupType.tachimanga => throw const MangayomiException('Mangayomi backup cannot be converted to Tachiyomi'),
