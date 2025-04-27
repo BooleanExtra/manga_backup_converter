@@ -21,11 +21,19 @@ class LocationHistoryMapper extends ClassMapperBase<LocationHistory> {
   final String id = 'LocationHistory';
 
   static List<Uri> _$history(LocationHistory v) => v.history;
-  static const Field<LocationHistory, List<Uri>> _f$history =
-      Field('history', _$history, opt: true, def: const []);
+  static const Field<LocationHistory, List<Uri>> _f$history = Field(
+    'history',
+    _$history,
+    opt: true,
+    def: const [],
+  );
   static List<Uri> _$popped(LocationHistory v) => v.popped;
-  static const Field<LocationHistory, List<Uri>> _f$popped =
-      Field('popped', _$popped, opt: true, def: const []);
+  static const Field<LocationHistory, List<Uri>> _f$popped = Field(
+    'popped',
+    _$popped,
+    opt: true,
+    def: const [],
+  );
 
   @override
   final MappableFields<LocationHistory> fields = const {
@@ -35,7 +43,9 @@ class LocationHistoryMapper extends ClassMapperBase<LocationHistory> {
 
   static LocationHistory _instantiate(DecodingData data) {
     return LocationHistory(
-        history: data.dec(_f$history), popped: data.dec(_f$popped));
+      history: data.dec(_f$history),
+      popped: data.dec(_f$popped),
+    );
   }
 
   @override
@@ -57,29 +67,37 @@ mixin LocationHistoryMappable {
   }
 
   Map<String, dynamic> toMap() {
-    return LocationHistoryMapper.ensureInitialized()
-        .encodeMap<LocationHistory>(this as LocationHistory);
+    return LocationHistoryMapper.ensureInitialized().encodeMap<LocationHistory>(
+      this as LocationHistory,
+    );
   }
 
   LocationHistoryCopyWith<LocationHistory, LocationHistory, LocationHistory>
-      get copyWith => _LocationHistoryCopyWithImpl(
-          this as LocationHistory, $identity, $identity);
+  get copyWith => _LocationHistoryCopyWithImpl(
+    this as LocationHistory,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return LocationHistoryMapper.ensureInitialized()
-        .stringifyValue(this as LocationHistory);
+    return LocationHistoryMapper.ensureInitialized().stringifyValue(
+      this as LocationHistory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return LocationHistoryMapper.ensureInitialized()
-        .equalsValue(this as LocationHistory, other);
+    return LocationHistoryMapper.ensureInitialized().equalsValue(
+      this as LocationHistory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return LocationHistoryMapper.ensureInitialized()
-        .hashValue(this as LocationHistory);
+    return LocationHistoryMapper.ensureInitialized().hashValue(
+      this as LocationHistory,
+    );
   }
 }
 
@@ -95,7 +113,8 @@ abstract class LocationHistoryCopyWith<$R, $In extends LocationHistory, $Out>
   ListCopyWith<$R, Uri, ObjectCopyWith<$R, Uri, Uri>> get popped;
   $R call({List<Uri>? history, List<Uri>? popped});
   LocationHistoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _LocationHistoryCopyWithImpl<$R, $Out>
@@ -108,24 +127,33 @@ class _LocationHistoryCopyWithImpl<$R, $Out>
       LocationHistoryMapper.ensureInitialized();
   @override
   ListCopyWith<$R, Uri, ObjectCopyWith<$R, Uri, Uri>> get history =>
-      ListCopyWith($value.history, (v, t) => ObjectCopyWith(v, $identity, t),
-          (v) => call(history: v));
+      ListCopyWith(
+        $value.history,
+        (v, t) => ObjectCopyWith(v, $identity, t),
+        (v) => call(history: v),
+      );
   @override
   ListCopyWith<$R, Uri, ObjectCopyWith<$R, Uri, Uri>> get popped =>
-      ListCopyWith($value.popped, (v, t) => ObjectCopyWith(v, $identity, t),
-          (v) => call(popped: v));
+      ListCopyWith(
+        $value.popped,
+        (v, t) => ObjectCopyWith(v, $identity, t),
+        (v) => call(popped: v),
+      );
   @override
-  $R call({List<Uri>? history, List<Uri>? popped}) => $apply(FieldCopyWithData({
-        if (history != null) #history: history,
-        if (popped != null) #popped: popped
-      }));
+  $R call({List<Uri>? history, List<Uri>? popped}) => $apply(
+    FieldCopyWithData({
+      if (history != null) #history: history,
+      if (popped != null) #popped: popped,
+    }),
+  );
   @override
   LocationHistory $make(CopyWithData data) => LocationHistory(
-      history: data.get(#history, or: $value.history),
-      popped: data.get(#popped, or: $value.popped));
+    history: data.get(#history, or: $value.history),
+    popped: data.get(#popped, or: $value.popped),
+  );
 
   @override
   LocationHistoryCopyWith<$R2, LocationHistory, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _LocationHistoryCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _LocationHistoryCopyWithImpl($value, $cast, t);
 }

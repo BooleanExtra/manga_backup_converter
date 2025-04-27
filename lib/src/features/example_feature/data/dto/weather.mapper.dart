@@ -23,11 +23,17 @@ class WeatherParamsMapper extends ClassMapperBase<WeatherParams> {
   static double _$temp(WeatherParams v) => v.temp;
   static const Field<WeatherParams, double> _f$temp = Field('temp', _$temp);
   static double _$tempMin(WeatherParams v) => v.tempMin;
-  static const Field<WeatherParams, double> _f$tempMin =
-      Field('tempMin', _$tempMin, key: r'temp_min');
+  static const Field<WeatherParams, double> _f$tempMin = Field(
+    'tempMin',
+    _$tempMin,
+    key: r'temp_min',
+  );
   static double _$tempMax(WeatherParams v) => v.tempMax;
-  static const Field<WeatherParams, double> _f$tempMax =
-      Field('tempMax', _$tempMax, key: r'temp_max');
+  static const Field<WeatherParams, double> _f$tempMax = Field(
+    'tempMax',
+    _$tempMax,
+    key: r'temp_max',
+  );
 
   @override
   final MappableFields<WeatherParams> fields = const {
@@ -38,9 +44,10 @@ class WeatherParamsMapper extends ClassMapperBase<WeatherParams> {
 
   static WeatherParams _instantiate(DecodingData data) {
     return WeatherParams(
-        temp: data.dec(_f$temp),
-        tempMin: data.dec(_f$tempMin),
-        tempMax: data.dec(_f$tempMax));
+      temp: data.dec(_f$temp),
+      tempMin: data.dec(_f$tempMin),
+      tempMax: data.dec(_f$tempMax),
+    );
   }
 
   @override
@@ -57,34 +64,40 @@ class WeatherParamsMapper extends ClassMapperBase<WeatherParams> {
 
 mixin WeatherParamsMappable {
   String toJson() {
-    return WeatherParamsMapper.ensureInitialized()
-        .encodeJson<WeatherParams>(this as WeatherParams);
+    return WeatherParamsMapper.ensureInitialized().encodeJson<WeatherParams>(
+      this as WeatherParams,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return WeatherParamsMapper.ensureInitialized()
-        .encodeMap<WeatherParams>(this as WeatherParams);
+    return WeatherParamsMapper.ensureInitialized().encodeMap<WeatherParams>(
+      this as WeatherParams,
+    );
   }
 
   WeatherParamsCopyWith<WeatherParams, WeatherParams, WeatherParams>
-      get copyWith => _WeatherParamsCopyWithImpl(
-          this as WeatherParams, $identity, $identity);
+  get copyWith =>
+      _WeatherParamsCopyWithImpl(this as WeatherParams, $identity, $identity);
   @override
   String toString() {
-    return WeatherParamsMapper.ensureInitialized()
-        .stringifyValue(this as WeatherParams);
+    return WeatherParamsMapper.ensureInitialized().stringifyValue(
+      this as WeatherParams,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return WeatherParamsMapper.ensureInitialized()
-        .equalsValue(this as WeatherParams, other);
+    return WeatherParamsMapper.ensureInitialized().equalsValue(
+      this as WeatherParams,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return WeatherParamsMapper.ensureInitialized()
-        .hashValue(this as WeatherParams);
+    return WeatherParamsMapper.ensureInitialized().hashValue(
+      this as WeatherParams,
+    );
   }
 }
 
@@ -109,22 +122,24 @@ class _WeatherParamsCopyWithImpl<$R, $Out>
   late final ClassMapperBase<WeatherParams> $mapper =
       WeatherParamsMapper.ensureInitialized();
   @override
-  $R call({double? temp, double? tempMin, double? tempMax}) =>
-      $apply(FieldCopyWithData({
-        if (temp != null) #temp: temp,
-        if (tempMin != null) #tempMin: tempMin,
-        if (tempMax != null) #tempMax: tempMax
-      }));
+  $R call({double? temp, double? tempMin, double? tempMax}) => $apply(
+    FieldCopyWithData({
+      if (temp != null) #temp: temp,
+      if (tempMin != null) #tempMin: tempMin,
+      if (tempMax != null) #tempMax: tempMax,
+    }),
+  );
   @override
   WeatherParams $make(CopyWithData data) => WeatherParams(
-      temp: data.get(#temp, or: $value.temp),
-      tempMin: data.get(#tempMin, or: $value.tempMin),
-      tempMax: data.get(#tempMax, or: $value.tempMax));
+    temp: data.get(#temp, or: $value.temp),
+    tempMin: data.get(#tempMin, or: $value.tempMin),
+    tempMax: data.get(#tempMax, or: $value.tempMax),
+  );
 
   @override
   WeatherParamsCopyWith<$R2, WeatherParams, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _WeatherParamsCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _WeatherParamsCopyWithImpl($value, $cast, t);
 }
 
 class WeatherInfoMapper extends ClassMapperBase<WeatherInfo> {
@@ -144,8 +159,10 @@ class WeatherInfoMapper extends ClassMapperBase<WeatherInfo> {
   static String _$main(WeatherInfo v) => v.main;
   static const Field<WeatherInfo, String> _f$main = Field('main', _$main);
   static String _$description(WeatherInfo v) => v.description;
-  static const Field<WeatherInfo, String> _f$description =
-      Field('description', _$description);
+  static const Field<WeatherInfo, String> _f$description = Field(
+    'description',
+    _$description,
+  );
   static String _$icon(WeatherInfo v) => v.icon;
   static const Field<WeatherInfo, String> _f$icon = Field('icon', _$icon);
 
@@ -158,9 +175,10 @@ class WeatherInfoMapper extends ClassMapperBase<WeatherInfo> {
 
   static WeatherInfo _instantiate(DecodingData data) {
     return WeatherInfo(
-        main: data.dec(_f$main),
-        description: data.dec(_f$description),
-        icon: data.dec(_f$icon));
+      main: data.dec(_f$main),
+      description: data.dec(_f$description),
+      icon: data.dec(_f$icon),
+    );
   }
 
   @override
@@ -177,27 +195,32 @@ class WeatherInfoMapper extends ClassMapperBase<WeatherInfo> {
 
 mixin WeatherInfoMappable {
   String toJson() {
-    return WeatherInfoMapper.ensureInitialized()
-        .encodeJson<WeatherInfo>(this as WeatherInfo);
+    return WeatherInfoMapper.ensureInitialized().encodeJson<WeatherInfo>(
+      this as WeatherInfo,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return WeatherInfoMapper.ensureInitialized()
-        .encodeMap<WeatherInfo>(this as WeatherInfo);
+    return WeatherInfoMapper.ensureInitialized().encodeMap<WeatherInfo>(
+      this as WeatherInfo,
+    );
   }
 
   WeatherInfoCopyWith<WeatherInfo, WeatherInfo, WeatherInfo> get copyWith =>
       _WeatherInfoCopyWithImpl(this as WeatherInfo, $identity, $identity);
   @override
   String toString() {
-    return WeatherInfoMapper.ensureInitialized()
-        .stringifyValue(this as WeatherInfo);
+    return WeatherInfoMapper.ensureInitialized().stringifyValue(
+      this as WeatherInfo,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return WeatherInfoMapper.ensureInitialized()
-        .equalsValue(this as WeatherInfo, other);
+    return WeatherInfoMapper.ensureInitialized().equalsValue(
+      this as WeatherInfo,
+      other,
+    );
   }
 
   @override
@@ -227,22 +250,24 @@ class _WeatherInfoCopyWithImpl<$R, $Out>
   late final ClassMapperBase<WeatherInfo> $mapper =
       WeatherInfoMapper.ensureInitialized();
   @override
-  $R call({String? main, String? description, String? icon}) =>
-      $apply(FieldCopyWithData({
-        if (main != null) #main: main,
-        if (description != null) #description: description,
-        if (icon != null) #icon: icon
-      }));
+  $R call({String? main, String? description, String? icon}) => $apply(
+    FieldCopyWithData({
+      if (main != null) #main: main,
+      if (description != null) #description: description,
+      if (icon != null) #icon: icon,
+    }),
+  );
   @override
   WeatherInfo $make(CopyWithData data) => WeatherInfo(
-      main: data.get(#main, or: $value.main),
-      description: data.get(#description, or: $value.description),
-      icon: data.get(#icon, or: $value.icon));
+    main: data.get(#main, or: $value.main),
+    description: data.get(#description, or: $value.description),
+    icon: data.get(#icon, or: $value.icon),
+  );
 
   @override
   WeatherInfoCopyWith<$R2, WeatherInfo, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _WeatherInfoCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _WeatherInfoCopyWithImpl($value, $cast, t);
 }
 
 class WeatherMapper extends ClassMapperBase<Weather> {
@@ -262,11 +287,17 @@ class WeatherMapper extends ClassMapperBase<Weather> {
   final String id = 'Weather';
 
   static WeatherParams _$weatherParams(Weather v) => v.weatherParams;
-  static const Field<Weather, WeatherParams> _f$weatherParams =
-      Field('weatherParams', _$weatherParams, key: r'main');
+  static const Field<Weather, WeatherParams> _f$weatherParams = Field(
+    'weatherParams',
+    _$weatherParams,
+    key: r'main',
+  );
   static List<WeatherInfo> _$weatherInfo(Weather v) => v.weatherInfo;
-  static const Field<Weather, List<WeatherInfo>> _f$weatherInfo =
-      Field('weatherInfo', _$weatherInfo, key: r'weather');
+  static const Field<Weather, List<WeatherInfo>> _f$weatherInfo = Field(
+    'weatherInfo',
+    _$weatherInfo,
+    key: r'weather',
+  );
   static int _$dt(Weather v) => v.dt;
   static const Field<Weather, int> _f$dt = Field('dt', _$dt);
 
@@ -279,9 +310,10 @@ class WeatherMapper extends ClassMapperBase<Weather> {
 
   static Weather _instantiate(DecodingData data) {
     return Weather(
-        weatherParams: data.dec(_f$weatherParams),
-        weatherInfo: data.dec(_f$weatherInfo),
-        dt: data.dec(_f$dt));
+      weatherParams: data.dec(_f$weatherParams),
+      weatherInfo: data.dec(_f$weatherInfo),
+      dt: data.dec(_f$dt),
+    );
   }
 
   @override
@@ -298,13 +330,15 @@ class WeatherMapper extends ClassMapperBase<Weather> {
 
 mixin WeatherMappable {
   String toJson() {
-    return WeatherMapper.ensureInitialized()
-        .encodeJson<Weather>(this as Weather);
+    return WeatherMapper.ensureInitialized().encodeJson<Weather>(
+      this as Weather,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return WeatherMapper.ensureInitialized()
-        .encodeMap<Weather>(this as Weather);
+    return WeatherMapper.ensureInitialized().encodeMap<Weather>(
+      this as Weather,
+    );
   }
 
   WeatherCopyWith<Weather, Weather, Weather> get copyWith =>
@@ -316,8 +350,10 @@ mixin WeatherMappable {
 
   @override
   bool operator ==(Object other) {
-    return WeatherMapper.ensureInitialized()
-        .equalsValue(this as Weather, other);
+    return WeatherMapper.ensureInitialized().equalsValue(
+      this as Weather,
+      other,
+    );
   }
 
   @override
@@ -334,10 +370,17 @@ extension WeatherValueCopy<$R, $Out> on ObjectCopyWith<$R, Weather, $Out> {
 abstract class WeatherCopyWith<$R, $In extends Weather, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   WeatherParamsCopyWith<$R, WeatherParams, WeatherParams> get weatherParams;
-  ListCopyWith<$R, WeatherInfo,
-      WeatherInfoCopyWith<$R, WeatherInfo, WeatherInfo>> get weatherInfo;
-  $R call(
-      {WeatherParams? weatherParams, List<WeatherInfo>? weatherInfo, int? dt});
+  ListCopyWith<
+    $R,
+    WeatherInfo,
+    WeatherInfoCopyWith<$R, WeatherInfo, WeatherInfo>
+  >
+  get weatherInfo;
+  $R call({
+    WeatherParams? weatherParams,
+    List<WeatherInfo>? weatherInfo,
+    int? dt,
+  });
   WeatherCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -353,25 +396,34 @@ class _WeatherCopyWithImpl<$R, $Out>
   WeatherParamsCopyWith<$R, WeatherParams, WeatherParams> get weatherParams =>
       $value.weatherParams.copyWith.$chain((v) => call(weatherParams: v));
   @override
-  ListCopyWith<$R, WeatherInfo,
-          WeatherInfoCopyWith<$R, WeatherInfo, WeatherInfo>>
-      get weatherInfo => ListCopyWith($value.weatherInfo,
-          (v, t) => v.copyWith.$chain(t), (v) => call(weatherInfo: v));
+  ListCopyWith<
+    $R,
+    WeatherInfo,
+    WeatherInfoCopyWith<$R, WeatherInfo, WeatherInfo>
+  >
+  get weatherInfo => ListCopyWith(
+    $value.weatherInfo,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(weatherInfo: v),
+  );
   @override
-  $R call(
-          {WeatherParams? weatherParams,
-          List<WeatherInfo>? weatherInfo,
-          int? dt}) =>
-      $apply(FieldCopyWithData({
-        if (weatherParams != null) #weatherParams: weatherParams,
-        if (weatherInfo != null) #weatherInfo: weatherInfo,
-        if (dt != null) #dt: dt
-      }));
+  $R call({
+    WeatherParams? weatherParams,
+    List<WeatherInfo>? weatherInfo,
+    int? dt,
+  }) => $apply(
+    FieldCopyWithData({
+      if (weatherParams != null) #weatherParams: weatherParams,
+      if (weatherInfo != null) #weatherInfo: weatherInfo,
+      if (dt != null) #dt: dt,
+    }),
+  );
   @override
   Weather $make(CopyWithData data) => Weather(
-      weatherParams: data.get(#weatherParams, or: $value.weatherParams),
-      weatherInfo: data.get(#weatherInfo, or: $value.weatherInfo),
-      dt: data.get(#dt, or: $value.dt));
+    weatherParams: data.get(#weatherParams, or: $value.weatherParams),
+    weatherInfo: data.get(#weatherInfo, or: $value.weatherInfo),
+    dt: data.get(#dt, or: $value.dt),
+  );
 
   @override
   WeatherCopyWith<$R2, Weather, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

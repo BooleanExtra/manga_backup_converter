@@ -12,54 +12,52 @@ part of 'user_account.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$UserAccountValidFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Invalid value) invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Invalid value)? invalid,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Invalid value)? invalid,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $UserAccountValidFailureCopyWith<$Res> {
-  factory $UserAccountValidFailureCopyWith(UserAccountValidFailure value,
-          $Res Function(UserAccountValidFailure) then) =
-      _$UserAccountValidFailureCopyWithImpl<$Res, UserAccountValidFailure>;
+  factory $UserAccountValidFailureCopyWith(
+    UserAccountValidFailure value,
+    $Res Function(UserAccountValidFailure) then,
+  ) = _$UserAccountValidFailureCopyWithImpl<$Res, UserAccountValidFailure>;
 }
 
 /// @nodoc
-class _$UserAccountValidFailureCopyWithImpl<$Res,
-        $Val extends UserAccountValidFailure>
+class _$UserAccountValidFailureCopyWithImpl<
+  $Res,
+  $Val extends UserAccountValidFailure
+>
     implements $UserAccountValidFailureCopyWith<$Res> {
   _$UserAccountValidFailureCopyWithImpl(this._value, this._then);
 
@@ -75,8 +73,9 @@ class _$UserAccountValidFailureCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$InvalidImplCopyWith<$Res> {
   factory _$$InvalidImplCopyWith(
-          _$InvalidImpl value, $Res Function(_$InvalidImpl) then) =
-      __$$InvalidImplCopyWithImpl<$Res>;
+    _$InvalidImpl value,
+    $Res Function(_$InvalidImpl) then,
+  ) = __$$InvalidImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -84,8 +83,9 @@ class __$$InvalidImplCopyWithImpl<$Res>
     extends _$UserAccountValidFailureCopyWithImpl<$Res, _$InvalidImpl>
     implements _$$InvalidImplCopyWith<$Res> {
   __$$InvalidImplCopyWithImpl(
-      _$InvalidImpl _value, $Res Function(_$InvalidImpl) _then)
-      : super(_value, _then);
+    _$InvalidImpl _value,
+    $Res Function(_$InvalidImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of UserAccountValidFailure
   /// with the given fields replaced by the non-null parameter values.
@@ -112,17 +112,13 @@ class _$InvalidImpl implements _Invalid {
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() invalid,
-  }) {
+  TResult when<TResult extends Object?>({required TResult Function() invalid}) {
     return invalid();
   }
 
   @override
   @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? invalid,
-  }) {
+  TResult? whenOrNull<TResult extends Object?>({TResult? Function()? invalid}) {
     return invalid?.call();
   }
 
