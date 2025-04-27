@@ -63,7 +63,7 @@ jobs:
       - name: Build Web
         run: |
           flutter pub get
-          flutter build web --release --web-renderer=canvaskit --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
+          flutter build web --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:

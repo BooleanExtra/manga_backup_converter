@@ -791,7 +791,7 @@ jobs:
       - name: Build Web
         run: |
           flutter pub get
-          flutter build web --dart-define FLUTTER_APP_FLAVOR=${{ env.FLAVOR }} --release --web-renderer=canvaskit
+          flutter build web --dart-define FLUTTER_APP_FLAVOR=${{ env.FLAVOR }} --release
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -863,7 +863,7 @@ jobs:
         if: github.actor != 'dependabot[bot]'
         run: |
           flutter pub get
-          flutter build web --dart-define FLUTTER_APP_FLAVOR=staging --release --web-renderer=canvaskit --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
+          flutter build web --dart-define FLUTTER_APP_FLAVOR=staging --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
 
       - name: Deploy to GitHub Pages 🚀
         if: github.actor != 'dependabot[bot]'
