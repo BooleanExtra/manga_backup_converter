@@ -3,10 +3,7 @@ import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart
 
 part 'aidoku_backup_library_manga.mapper.dart';
 
-@MappableClass(
-  includeCustomMappers: [AidokuDateTimeMapper()],
-  ignoreNull: true,
-)
+@MappableClass(includeCustomMappers: [AidokuDateTimeMapper()], ignoreNull: true)
 class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
   final DateTime lastOpened;
   final DateTime lastUpdated;

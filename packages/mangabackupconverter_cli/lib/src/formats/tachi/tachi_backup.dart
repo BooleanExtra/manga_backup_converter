@@ -59,15 +59,18 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromMihon).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromMihon).toList(),
-      backupExtensionRepo: backup.backupExtensionRepo
-          .map(TachiBackupExtensionRepo.fromMihon)
-          .toList(),
-      backupPreferences: backup.backupPreferences
-          .map(TachiBackupPreference.fromMihon)
-          .toList(),
-      backupSourcePreferences: backup.backupSourcePreferences
-          .map(TachiBackupSourcePreferences.fromMihon)
-          .toList(),
+      backupExtensionRepo:
+          backup.backupExtensionRepo
+              .map(TachiBackupExtensionRepo.fromMihon)
+              .toList(),
+      backupPreferences:
+          backup.backupPreferences
+              .map(TachiBackupPreference.fromMihon)
+              .toList(),
+      backupSourcePreferences:
+          backup.backupSourcePreferences
+              .map(TachiBackupSourcePreferences.fromMihon)
+              .toList(),
     );
   }
 
@@ -78,14 +81,16 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
       backupCategories:
           backup.backupCategories.map(TachiBackupCategory.fromSy).toList(),
       backupManga: backup.backupManga.map(TachiBackupManga.fromSy).toList(),
-      backupExtensionRepo: backup.backupExtensionRepo
-          .map(TachiBackupExtensionRepo.fromSy)
-          .toList(),
+      backupExtensionRepo:
+          backup.backupExtensionRepo
+              .map(TachiBackupExtensionRepo.fromSy)
+              .toList(),
       backupPreferences:
           backup.backupPreferences.map(TachiBackupPreference.fromSy).toList(),
-      backupSourcePreferences: backup.backupSourcePreferences
-          .map(TachiBackupSourcePreferences.fromSy)
-          .toList(),
+      backupSourcePreferences:
+          backup.backupSourcePreferences
+              .map(TachiBackupSourcePreferences.fromSy)
+              .toList(),
     );
   }
 
@@ -124,20 +129,20 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     final backupArchive = GZipDecoder().decodeBytes(bytes);
     return switch (fork) {
       TachiFork.mihon => TachiBackup._fromMihon(
-          backup: mihon.Backup.fromBuffer(backupArchive),
-        ),
+        backup: mihon.Backup.fromBuffer(backupArchive),
+      ),
       TachiFork.sy => TachiBackup._fromSy(
-          backup: sy.Backup.fromBuffer(backupArchive),
-        ),
+        backup: sy.Backup.fromBuffer(backupArchive),
+      ),
       TachiFork.j2k => TachiBackup._fromJ2k(
-          backup: j2k.Backup.fromBuffer(backupArchive),
-        ),
+        backup: j2k.Backup.fromBuffer(backupArchive),
+      ),
       TachiFork.yokai => TachiBackup._fromYokai(
-          backup: yokai.Backup.fromBuffer(backupArchive),
-        ),
+        backup: yokai.Backup.fromBuffer(backupArchive),
+      ),
       TachiFork.neko => TachiBackup._fromNeko(
-          backup: neko.Backup.fromBuffer(backupArchive),
-        ),
+        backup: neko.Backup.fromBuffer(backupArchive),
+      ),
     };
   }
 
@@ -173,8 +178,6 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     print('Categories: ${backupCategories.length}');
     print('Manga: ${backupManga.length}');
     print('Sources: ${backupSources.length}');
-    print(
-      'Extension Repos: ${backupExtensionRepo.length}',
-    );
+    print('Extension Repos: ${backupExtensionRepo.length}');
   }
 }

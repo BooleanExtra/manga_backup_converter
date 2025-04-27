@@ -42,9 +42,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     required this.mediaId,
   });
 
-  factory TachiBackupTracking.fromMihon(
-    mihon.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromMihon(mihon.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -61,9 +59,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromSy(
-    sy.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromSy(sy.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -80,9 +76,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromJ2k(
-    j2k.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromJ2k(j2k.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -99,9 +93,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromNeko(
-    neko.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromNeko(neko.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),
@@ -118,9 +110,7 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  factory TachiBackupTracking.fromYokai(
-    yokai.BackupTracking backupTracking,
-  ) {
+  factory TachiBackupTracking.fromYokai(yokai.BackupTracking backupTracking) {
     return TachiBackupTracking(
       syncId: backupTracking.syncId,
       libraryId: backupTracking.libraryId.toInt(),

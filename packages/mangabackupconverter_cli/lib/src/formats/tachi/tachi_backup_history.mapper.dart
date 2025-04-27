@@ -24,11 +24,15 @@ class TachiBackupHistoryMapper extends ClassMapperBase<TachiBackupHistory> {
   static String _$url(TachiBackupHistory v) => v.url;
   static const Field<TachiBackupHistory, String> _f$url = Field('url', _$url);
   static int _$lastRead(TachiBackupHistory v) => v.lastRead;
-  static const Field<TachiBackupHistory, int> _f$lastRead =
-      Field('lastRead', _$lastRead);
+  static const Field<TachiBackupHistory, int> _f$lastRead = Field(
+    'lastRead',
+    _$lastRead,
+  );
   static int _$readDuration(TachiBackupHistory v) => v.readDuration;
-  static const Field<TachiBackupHistory, int> _f$readDuration =
-      Field('readDuration', _$readDuration);
+  static const Field<TachiBackupHistory, int> _f$readDuration = Field(
+    'readDuration',
+    _$readDuration,
+  );
 
   @override
   final MappableFields<TachiBackupHistory> fields = const {
@@ -39,9 +43,10 @@ class TachiBackupHistoryMapper extends ClassMapperBase<TachiBackupHistory> {
 
   static TachiBackupHistory _instantiate(DecodingData data) {
     return TachiBackupHistory(
-        url: data.dec(_f$url),
-        lastRead: data.dec(_f$lastRead),
-        readDuration: data.dec(_f$readDuration));
+      url: data.dec(_f$url),
+      lastRead: data.dec(_f$lastRead),
+      readDuration: data.dec(_f$readDuration),
+    );
   }
 
   @override
@@ -67,41 +72,56 @@ mixin TachiBackupHistoryMappable {
         .encodeMap<TachiBackupHistory>(this as TachiBackupHistory);
   }
 
-  TachiBackupHistoryCopyWith<TachiBackupHistory, TachiBackupHistory,
-          TachiBackupHistory>
-      get copyWith => _TachiBackupHistoryCopyWithImpl(
-          this as TachiBackupHistory, $identity, $identity);
+  TachiBackupHistoryCopyWith<
+    TachiBackupHistory,
+    TachiBackupHistory,
+    TachiBackupHistory
+  >
+  get copyWith => _TachiBackupHistoryCopyWithImpl(
+    this as TachiBackupHistory,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return TachiBackupHistoryMapper.ensureInitialized()
-        .stringifyValue(this as TachiBackupHistory);
+    return TachiBackupHistoryMapper.ensureInitialized().stringifyValue(
+      this as TachiBackupHistory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupHistoryMapper.ensureInitialized()
-        .equalsValue(this as TachiBackupHistory, other);
+    return TachiBackupHistoryMapper.ensureInitialized().equalsValue(
+      this as TachiBackupHistory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TachiBackupHistoryMapper.ensureInitialized()
-        .hashValue(this as TachiBackupHistory);
+    return TachiBackupHistoryMapper.ensureInitialized().hashValue(
+      this as TachiBackupHistory,
+    );
   }
 }
 
 extension TachiBackupHistoryValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TachiBackupHistory, $Out> {
   TachiBackupHistoryCopyWith<$R, TachiBackupHistory, $Out>
-      get $asTachiBackupHistory =>
-          $base.as((v, t, t2) => _TachiBackupHistoryCopyWithImpl(v, t, t2));
+  get $asTachiBackupHistory =>
+      $base.as((v, t, t2) => _TachiBackupHistoryCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupHistoryCopyWith<$R, $In extends TachiBackupHistory,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class TachiBackupHistoryCopyWith<
+  $R,
+  $In extends TachiBackupHistory,
+  $Out
+>
+    implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? url, int? lastRead, int? readDuration});
   TachiBackupHistoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _TachiBackupHistoryCopyWithImpl<$R, $Out>
@@ -113,22 +133,24 @@ class _TachiBackupHistoryCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TachiBackupHistory> $mapper =
       TachiBackupHistoryMapper.ensureInitialized();
   @override
-  $R call({String? url, int? lastRead, int? readDuration}) =>
-      $apply(FieldCopyWithData({
-        if (url != null) #url: url,
-        if (lastRead != null) #lastRead: lastRead,
-        if (readDuration != null) #readDuration: readDuration
-      }));
+  $R call({String? url, int? lastRead, int? readDuration}) => $apply(
+    FieldCopyWithData({
+      if (url != null) #url: url,
+      if (lastRead != null) #lastRead: lastRead,
+      if (readDuration != null) #readDuration: readDuration,
+    }),
+  );
   @override
   TachiBackupHistory $make(CopyWithData data) => TachiBackupHistory(
-      url: data.get(#url, or: $value.url),
-      lastRead: data.get(#lastRead, or: $value.lastRead),
-      readDuration: data.get(#readDuration, or: $value.readDuration));
+    url: data.get(#url, or: $value.url),
+    lastRead: data.get(#lastRead, or: $value.lastRead),
+    readDuration: data.get(#readDuration, or: $value.readDuration),
+  );
 
   @override
   TachiBackupHistoryCopyWith<$R2, TachiBackupHistory, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _TachiBackupHistoryCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _TachiBackupHistoryCopyWithImpl($value, $cast, t);
 }
 
 class TachiBrokenBackupHistoryMapper
@@ -138,8 +160,9 @@ class TachiBrokenBackupHistoryMapper
   static TachiBrokenBackupHistoryMapper? _instance;
   static TachiBrokenBackupHistoryMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals
-          .use(_instance = TachiBrokenBackupHistoryMapper._());
+      MapperContainer.globals.use(
+        _instance = TachiBrokenBackupHistoryMapper._(),
+      );
       TachiBackupHistoryMapper.ensureInitialized();
     }
     return _instance!;
@@ -149,14 +172,20 @@ class TachiBrokenBackupHistoryMapper
   final String id = 'TachiBrokenBackupHistory';
 
   static String _$url(TachiBrokenBackupHistory v) => v.url;
-  static const Field<TachiBrokenBackupHistory, String> _f$url =
-      Field('url', _$url);
+  static const Field<TachiBrokenBackupHistory, String> _f$url = Field(
+    'url',
+    _$url,
+  );
   static int _$lastRead(TachiBrokenBackupHistory v) => v.lastRead;
-  static const Field<TachiBrokenBackupHistory, int> _f$lastRead =
-      Field('lastRead', _$lastRead);
+  static const Field<TachiBrokenBackupHistory, int> _f$lastRead = Field(
+    'lastRead',
+    _$lastRead,
+  );
   static int _$readDuration(TachiBrokenBackupHistory v) => v.readDuration;
-  static const Field<TachiBrokenBackupHistory, int> _f$readDuration =
-      Field('readDuration', _$readDuration);
+  static const Field<TachiBrokenBackupHistory, int> _f$readDuration = Field(
+    'readDuration',
+    _$readDuration,
+  );
 
   @override
   final MappableFields<TachiBrokenBackupHistory> fields = const {
@@ -167,9 +196,10 @@ class TachiBrokenBackupHistoryMapper
 
   static TachiBrokenBackupHistory _instantiate(DecodingData data) {
     return TachiBrokenBackupHistory(
-        url: data.dec(_f$url),
-        lastRead: data.dec(_f$lastRead),
-        readDuration: data.dec(_f$readDuration));
+      url: data.dec(_f$url),
+      lastRead: data.dec(_f$lastRead),
+      readDuration: data.dec(_f$readDuration),
+    );
   }
 
   @override
@@ -195,44 +225,57 @@ mixin TachiBrokenBackupHistoryMappable {
         .encodeMap<TachiBrokenBackupHistory>(this as TachiBrokenBackupHistory);
   }
 
-  TachiBrokenBackupHistoryCopyWith<TachiBrokenBackupHistory,
-          TachiBrokenBackupHistory, TachiBrokenBackupHistory>
-      get copyWith => _TachiBrokenBackupHistoryCopyWithImpl(
-          this as TachiBrokenBackupHistory, $identity, $identity);
+  TachiBrokenBackupHistoryCopyWith<
+    TachiBrokenBackupHistory,
+    TachiBrokenBackupHistory,
+    TachiBrokenBackupHistory
+  >
+  get copyWith => _TachiBrokenBackupHistoryCopyWithImpl(
+    this as TachiBrokenBackupHistory,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return TachiBrokenBackupHistoryMapper.ensureInitialized()
-        .stringifyValue(this as TachiBrokenBackupHistory);
+    return TachiBrokenBackupHistoryMapper.ensureInitialized().stringifyValue(
+      this as TachiBrokenBackupHistory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBrokenBackupHistoryMapper.ensureInitialized()
-        .equalsValue(this as TachiBrokenBackupHistory, other);
+    return TachiBrokenBackupHistoryMapper.ensureInitialized().equalsValue(
+      this as TachiBrokenBackupHistory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TachiBrokenBackupHistoryMapper.ensureInitialized()
-        .hashValue(this as TachiBrokenBackupHistory);
+    return TachiBrokenBackupHistoryMapper.ensureInitialized().hashValue(
+      this as TachiBrokenBackupHistory,
+    );
   }
 }
 
 extension TachiBrokenBackupHistoryValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TachiBrokenBackupHistory, $Out> {
   TachiBrokenBackupHistoryCopyWith<$R, TachiBrokenBackupHistory, $Out>
-      get $asTachiBrokenBackupHistory => $base
-          .as((v, t, t2) => _TachiBrokenBackupHistoryCopyWithImpl(v, t, t2));
+  get $asTachiBrokenBackupHistory =>
+      $base.as((v, t, t2) => _TachiBrokenBackupHistoryCopyWithImpl(v, t, t2));
 }
 
 abstract class TachiBrokenBackupHistoryCopyWith<
-    $R,
-    $In extends TachiBrokenBackupHistory,
-    $Out> implements TachiBackupHistoryCopyWith<$R, $In, $Out> {
+  $R,
+  $In extends TachiBrokenBackupHistory,
+  $Out
+>
+    implements TachiBackupHistoryCopyWith<$R, $In, $Out> {
   @override
   $R call({String? url, int? lastRead, int? readDuration});
   TachiBrokenBackupHistoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _TachiBrokenBackupHistoryCopyWithImpl<$R, $Out>
@@ -245,20 +288,22 @@ class _TachiBrokenBackupHistoryCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TachiBrokenBackupHistory> $mapper =
       TachiBrokenBackupHistoryMapper.ensureInitialized();
   @override
-  $R call({String? url, int? lastRead, int? readDuration}) =>
-      $apply(FieldCopyWithData({
-        if (url != null) #url: url,
-        if (lastRead != null) #lastRead: lastRead,
-        if (readDuration != null) #readDuration: readDuration
-      }));
+  $R call({String? url, int? lastRead, int? readDuration}) => $apply(
+    FieldCopyWithData({
+      if (url != null) #url: url,
+      if (lastRead != null) #lastRead: lastRead,
+      if (readDuration != null) #readDuration: readDuration,
+    }),
+  );
   @override
   TachiBrokenBackupHistory $make(CopyWithData data) => TachiBrokenBackupHistory(
-      url: data.get(#url, or: $value.url),
-      lastRead: data.get(#lastRead, or: $value.lastRead),
-      readDuration: data.get(#readDuration, or: $value.readDuration));
+    url: data.get(#url, or: $value.url),
+    lastRead: data.get(#lastRead, or: $value.lastRead),
+    readDuration: data.get(#readDuration, or: $value.readDuration),
+  );
 
   @override
   TachiBrokenBackupHistoryCopyWith<$R2, TachiBrokenBackupHistory, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _TachiBrokenBackupHistoryCopyWithImpl($value, $cast, t);
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _TachiBrokenBackupHistoryCopyWithImpl($value, $cast, t);
 }

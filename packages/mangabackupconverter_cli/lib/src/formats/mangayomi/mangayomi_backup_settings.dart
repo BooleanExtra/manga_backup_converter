@@ -237,22 +237,13 @@ class MangayomiBackupSettings with MangayomiBackupSettingsMappable {
   static const fromJson = MangayomiBackupSettingsMapper.fromJson;
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum SectionType { all, anime, manga }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum DisplayType { compactGrid, comfortableGrid, coverOnlyGrid, list }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ScaleType {
   fitScreen,
   stretch,
@@ -262,10 +253,7 @@ enum ScaleType {
   smartFit,
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum BackgroundColor { black, grey, white, automatic }
 
 @MappableClass(
@@ -447,10 +435,7 @@ class PersonalPageMode with PersonalPageModeMappable {
   static const fromJson = PersonalPageModeMapper.fromJson;
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ReaderMode {
   vertical,
   ltr,
@@ -460,16 +445,10 @@ enum ReaderMode {
   horizontalContinuous,
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum NovelTextAlign { left, center, right, block }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum PageMode { onePage, doublePage }
 
 @MappableClass(
@@ -559,10 +538,7 @@ class PlayerSubtitleSettings with PlayerSubtitleSettingsMappable {
   static const fromJson = PlayerSubtitleSettingsMapper.fromJson;
 }
 
-@MappableEnum(
-  mode: ValuesMode.indexed,
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ColorFilterBlendMode {
   none,
   multiply,

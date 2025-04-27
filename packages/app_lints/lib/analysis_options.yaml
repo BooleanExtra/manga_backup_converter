@@ -73,7 +73,7 @@ linter:
     missing_whitespace_between_adjacent_strings: true
     only_throw_errors: true
     prefer_asserts_with_message: true
-    # require_trailing_commas: false
+    require_trailing_commas: false
     unnecessary_null_aware_operator_on_extension_on_nullable: true
     # while important, it is not a priority for an app
     public_member_api_docs: false

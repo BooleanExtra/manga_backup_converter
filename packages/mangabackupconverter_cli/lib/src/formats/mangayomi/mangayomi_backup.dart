@@ -24,39 +24,28 @@ class MangayomiBackup
   final String? name;
   final MangayomiBackupDb db;
 
-  const MangayomiBackup({
-    required this.db,
-    this.name,
-  });
+  const MangayomiBackup({required this.db, this.name});
 
-  factory MangayomiBackup.fromZip(
-    Uint8List bytes, {
-    String? overrideName,
-  }) {
+  factory MangayomiBackup.fromZip(Uint8List bytes, {String? overrideName}) {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
-    final backupJsonFile = backupArchive.files
-        .where((file) => file.name.endsWith('.db'))
-        .firstOrNull;
+    final backupJsonFile =
+        backupArchive.files
+            .where((file) => file.name.endsWith('.db'))
+            .firstOrNull;
     if (backupJsonFile == null || backupJsonFile.content == null) {
-      throw const MangayomiException(
-        'Could not decode Mangayomi backup',
-      );
+      throw const MangayomiException('Could not decode Mangayomi backup');
     }
     final backupName = p.basenameWithoutExtension(backupJsonFile.name);
-    final backupJson =
-        String.fromCharCodes(backupJsonFile.content as Uint8List);
+    final backupJson = String.fromCharCodes(
+      backupJsonFile.content as Uint8List,
+    );
     final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
     if (backupMap == null) {
-      throw const MangayomiException(
-        'Could not decode Mangayomi backup',
-      );
+      throw const MangayomiException('Could not decode Mangayomi backup');
     }
     final db = MangayomiBackupDb.fromMap(backupMap);
 
-    return MangayomiBackup(
-      name: overrideName ?? backupName,
-      db: db,
-    );
+    return MangayomiBackup(name: overrideName ?? backupName, db: db);
   }
 
   static const fromMap = MangayomiBackupMapper.fromMap;
@@ -89,9 +78,7 @@ class MangayomiBackup
     print('History: ${db.history?.length}');
     print('Updates: ${db.updates?.length}');
     print('Settings: ${db.settings?.length}');
-    print(
-      'Extension Preferences: ${db.extensionPreferences?.length}',
-    );
+    print('Extension Preferences: ${db.extensionPreferences?.length}');
     print('Track Preferences: ${db.trackPreferences?.length}');
     print('Extensions: ${db.extensions?.length}');
   }

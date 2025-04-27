@@ -13,8 +13,9 @@ class PaperbackBackupItemTypeMapper
   static PaperbackBackupItemTypeMapper? _instance;
   static PaperbackBackupItemTypeMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals
-          .use(_instance = PaperbackBackupItemTypeMapper._());
+      MapperContainer.globals.use(
+        _instance = PaperbackBackupItemTypeMapper._(),
+      );
     }
     return _instance!;
   }

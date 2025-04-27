@@ -9,10 +9,7 @@ class PaperbackBackupItemReference with PaperbackBackupItemReferenceMappable {
   final PaperbackBackupItemType type;
   final String id;
 
-  PaperbackBackupItemReference({
-    required this.type,
-    required this.id,
-  });
+  PaperbackBackupItemReference({required this.type, required this.id});
 
   static const fromMap = PaperbackBackupItemReferenceMapper.fromMap;
   static const fromJson = PaperbackBackupItemReferenceMapper.fromJson;

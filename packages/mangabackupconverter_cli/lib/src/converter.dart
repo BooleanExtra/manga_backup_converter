@@ -9,9 +9,7 @@ import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backu
 
 class MangaBackupConverter {
   AidokuBackup importAidokuBackup(Uint8List bytes) {
-    return AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(bytes),
-    );
+    return AidokuBackup.fromBinaryPropertyList(ByteData.sublistView(bytes));
   }
 
   PaperbackBackup importPaperbackPas4Backup(Uint8List bytes, {String? name}) {

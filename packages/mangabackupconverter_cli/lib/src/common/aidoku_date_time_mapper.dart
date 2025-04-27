@@ -6,9 +6,7 @@ class AidokuDateTimeMapper extends SimpleMapper<DateTime> {
   @override
   DateTime decode(Object value) {
     if (value is num) {
-      return DateTime.fromMillisecondsSinceEpoch(
-        (value * 1000).round(),
-      );
+      return DateTime.fromMillisecondsSinceEpoch((value * 1000).round());
     } else if (value is String) {
       return DateTime.parse(value);
     } else if (value is DateTime) {

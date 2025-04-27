@@ -11,10 +11,7 @@ class TachiBackupPreference with TachiBackupPreferenceMappable {
   final String key;
   final TachiBackupPreferenceValue value;
 
-  const TachiBackupPreference({
-    required this.key,
-    required this.value,
-  });
+  const TachiBackupPreference({required this.key, required this.value});
 
   factory TachiBackupPreference.fromMihon(
     mihon.BackupPreference backupPreference,
@@ -25,9 +22,7 @@ class TachiBackupPreference with TachiBackupPreferenceMappable {
     );
   }
 
-  factory TachiBackupPreference.fromSy(
-    sy.BackupPreference backupPreference,
-  ) {
+  factory TachiBackupPreference.fromSy(sy.BackupPreference backupPreference) {
     return TachiBackupPreference(
       key: backupPreference.key,
       value: TachiBackupPreferenceValue.fromSy(backupPreference.value),
@@ -48,18 +43,14 @@ class TachiBackupPreferenceValue with TachiBackupPreferenceValueMappable {
     required this.truevalue,
   });
 
-  factory TachiBackupPreferenceValue.fromMihon(
-    mihon.PreferenceValue value,
-  ) {
+  factory TachiBackupPreferenceValue.fromMihon(mihon.PreferenceValue value) {
     return TachiBackupPreferenceValue(
       type: value.type,
       truevalue: value.truevalue,
     );
   }
 
-  factory TachiBackupPreferenceValue.fromSy(
-    sy.PreferenceValue value,
-  ) {
+  factory TachiBackupPreferenceValue.fromSy(sy.PreferenceValue value) {
     return TachiBackupPreferenceValue(
       type: value.type,
       truevalue: value.truevalue,

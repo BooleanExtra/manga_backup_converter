@@ -46,9 +46,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     this.pagesLeft,
   });
 
-  factory TachiBackupChapter.fromMihon(
-    mihon.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromMihon(mihon.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -65,9 +63,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromSy(
-    sy.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromSy(sy.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -84,9 +80,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromJ2k(
-    j2k.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromJ2k(j2k.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -102,9 +96,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromNeko(
-    neko.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromNeko(neko.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,
@@ -119,9 +111,7 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  factory TachiBackupChapter.fromYokai(
-    yokai.BackupChapter backupChapter,
-  ) {
+  factory TachiBackupChapter.fromYokai(yokai.BackupChapter backupChapter) {
     return TachiBackupChapter(
       url: backupChapter.url,
       name: backupChapter.name,

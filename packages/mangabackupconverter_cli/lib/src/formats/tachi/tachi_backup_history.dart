@@ -24,9 +24,7 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     required this.readDuration,
   });
 
-  factory TachiBackupHistory.fromMihon(
-    mihon.BackupHistory backupHistory,
-  ) {
+  factory TachiBackupHistory.fromMihon(mihon.BackupHistory backupHistory) {
     return TachiBackupHistory(
       url: backupHistory.url,
       lastRead: backupHistory.lastRead.toInt(),
@@ -34,9 +32,7 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     );
   }
 
-  factory TachiBackupHistory.fromSy(
-    sy.BackupHistory backupHistory,
-  ) {
+  factory TachiBackupHistory.fromSy(sy.BackupHistory backupHistory) {
     return TachiBackupHistory(
       url: backupHistory.url,
       lastRead: backupHistory.lastRead.toInt(),
@@ -44,9 +40,7 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     );
   }
 
-  factory TachiBackupHistory.fromJ2k(
-    j2k.BackupHistory backupHistory,
-  ) {
+  factory TachiBackupHistory.fromJ2k(j2k.BackupHistory backupHistory) {
     return TachiBackupHistory(
       url: backupHistory.url,
       lastRead: backupHistory.lastRead.toInt(),
@@ -54,9 +48,7 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     );
   }
 
-  factory TachiBackupHistory.fromNeko(
-    neko.BackupHistory backupHistory,
-  ) {
+  factory TachiBackupHistory.fromNeko(neko.BackupHistory backupHistory) {
     return TachiBackupHistory(
       url: backupHistory.url,
       lastRead: backupHistory.lastRead.toInt(),
@@ -64,9 +56,7 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     );
   }
 
-  factory TachiBackupHistory.fromYokai(
-    yokai.BackupHistory backupHistory,
-  ) {
+  factory TachiBackupHistory.fromYokai(yokai.BackupHistory backupHistory) {
     return TachiBackupHistory(
       url: backupHistory.url,
       lastRead: backupHistory.lastRead.toInt(),

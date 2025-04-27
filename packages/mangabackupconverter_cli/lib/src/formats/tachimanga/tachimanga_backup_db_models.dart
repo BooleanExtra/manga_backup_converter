@@ -24,11 +24,7 @@ class TachimangaBackupCategory
 
   @override
   TachiBackupCategory toType(TachimangaBackupDb db) {
-    return TachiBackupCategory(
-      name: name,
-      order: order,
-      flags: 1,
-    );
+    return TachiBackupCategory(name: name, order: order, flags: 1);
   }
 
   static const fromMap = TachimangaBackupCategoryMapper.fromMap;
@@ -517,10 +513,7 @@ class TachimangaBackupSqliteSequence
   final String? name;
   final int? seq;
 
-  const TachimangaBackupSqliteSequence({
-    required this.name,
-    required this.seq,
-  });
+  const TachimangaBackupSqliteSequence({required this.name, required this.seq});
 
   static const fromMap = TachimangaBackupSqliteSequenceMapper.fromMap;
   static const fromJson = TachimangaBackupSqliteSequenceMapper.fromJson;
