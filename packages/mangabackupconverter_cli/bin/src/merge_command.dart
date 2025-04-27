@@ -81,15 +81,15 @@ class MergeCommand extends Command<void> {
         'Backup file format "$otherBackupFileExtension" not supported',
       );
     }
-    final AidokuBackup aidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(backupFile.readAsBytesSync()),
+    final AidokuBackup aidokuBackup = AidokuBackup.fromData(
+      backupFile.readAsBytesSync(),
     );
     if (verbose) {
       print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
     }
     print('Backup Library: ${aidokuBackup.library?.length}');
-    final AidokuBackup otherAidokuBackup = AidokuBackup.fromBinaryPropertyList(
-      ByteData.sublistView(otherBackupFile.readAsBytesSync()),
+    final AidokuBackup otherAidokuBackup = AidokuBackup.fromData(
+      otherBackupFile.readAsBytesSync(),
     );
     if (verbose) {
       print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');

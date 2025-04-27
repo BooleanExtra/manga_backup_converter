@@ -122,7 +122,7 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     );
   }
 
-  factory TachiBackup.fromBackup(
+  factory TachiBackup.fromData(
     Uint8List bytes, {
     TachiFork fork = TachiFork.mihon,
   }) {

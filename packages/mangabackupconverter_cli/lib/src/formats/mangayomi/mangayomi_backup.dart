@@ -26,7 +26,7 @@ class MangayomiBackup
 
   const MangayomiBackup({required this.db, this.name});
 
-  factory MangayomiBackup.fromZip(Uint8List bytes, {String? overrideName}) {
+  factory MangayomiBackup.fromData(Uint8List bytes, {String? overrideName}) {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
     final backupJsonFile =
         backupArchive.files
