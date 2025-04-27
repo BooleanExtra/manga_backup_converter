@@ -7,6 +7,10 @@ part 'extensions.mapper.dart';
 
 // TODO: Write script to help generate this json
 
+// 1. given these repos, query for extensions of each
+// 2. for each site, manually record the ids of the matching extensions
+// 3. try to identify common sites and group them together using the aliases
+
 const String _extensionRepoIndexJson = '''
 {
   "repos": {
