@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/tachimanga_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
@@ -14,7 +18,9 @@ import 'package:xcode_parser/xcode_parser.dart';
 part 'tachimanga_backup.mapper.dart';
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
-class TachimangaBackup with TachimangaBackupMappable {
+class TachimangaBackup
+    with TachimangaBackupMappable
+    implements ConvertableBackup {
   final String? name;
   final TachimangaBackupMeta meta;
   final Map<String, Object?>? pref;
@@ -122,7 +128,8 @@ class TachimangaBackup with TachimangaBackupMappable {
     );
   }
 
-  Future<Uint8List?> toZip() async {
+  @override
+  Future<Uint8List> toData() async {
     final contentsArchive = Archive();
     if (pref case final Map<String, Object?> pref) {
       contentsArchive
@@ -180,18 +187,46 @@ class TachimangaBackup with TachimangaBackupMappable {
       ),
     );
     final backupEncoded = ZipEncoder().encode(backupArchive);
-    return backupEncoded == null ? null : Uint8List.fromList(backupEncoded);
+    if (backupEncoded == null) {
+      throw const TachimangaException('Could not encode Tachimanga backup');
+    }
+    return Uint8List.fromList(backupEncoded);
   }
 
-  TachiBackup toTachi() {
+  @override
+  TachiBackup toBackup(BackupType type) {
     return TachiBackup(
-      backupCategories: db.categoryTable.map((c) => c.toTachi(db)).toList(),
-      backupManga: db.mangaTable.map((c) => c.toTachi(db)).toList(),
-      backupSources: db.sourceTable.map((c) => c.toTachi(db)).toList(),
-      backupExtensionRepo: db.repoTable.map((c) => c.toTachi(db)).toList(),
+      backupCategories: db.categoryTable.map((c) => c.toType(db)).toList(),
+      backupManga: db.mangaTable.map((c) => c.toType(db)).toList(),
+      backupSources: db.sourceTable.map((c) => c.toType(db)).toList(),
+      backupExtensionRepo: db.repoTable.map((c) => c.toType(db)).toList(),
     );
   }
 
   static const fromMap = TachimangaBackupMapper.fromMap;
   static const fromJson = TachimangaBackupMapper.fromJson;
+
+  @override
+  void verbosePrint(bool verbose) {
+    if (!verbose) return;
+    print('Imported Manga: ${db.mangaTable.length}');
+    print(
+      'Imported Chapters: ${db.chapterTable.length}',
+    );
+    print(
+      'Imported Manga History: ${db.historyTable.length}',
+    );
+    print(
+      'Imported Tracked Manga Items: ${db.trackRecordTable.length}',
+    );
+    print(
+      'Imported Categories: ${db.categoryTable.length}',
+    );
+    print(
+      'Imported Sources: ${db.sourceTable.length}',
+    );
+    print('Imported Repos: ${db.repoTable.length}');
+    print('Tachimanga Backup Name: $name');
+    print('Tachimanga Version: ${meta.version}');
+  }
 }

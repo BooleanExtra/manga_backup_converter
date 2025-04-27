@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:path/path.dart' as p;
 
 class ConvertCommand extends Command<void> {
@@ -122,151 +123,42 @@ class ConvertCommand extends Command<void> {
 
     final converter = MangaBackupConverter();
 
-    final TachiBackup? tachiBackup = switch (inputFormat) {
-      BackupType.aidoku => () {
-          final AidokuBackup aidokuBackup = converter.importAidokuBackup(
-            ByteData.sublistView(
-              backupFile.readAsBytesSync(),
-            ),
-          );
-          if (verbose) {
-            print('Imported Library Manga: ${aidokuBackup.library?.length}');
-            print('Imported Manga: ${aidokuBackup.manga?.length}');
-            print('Imported Chapters: ${aidokuBackup.chapters?.length}');
-            print('Imported Manga History: ${aidokuBackup.history?.length}');
-            print(
-              'Imported Tracked Manga Items: ${aidokuBackup.trackItems?.length}',
-            );
-            print('Imported Categories: ${aidokuBackup.categories?.length}');
-            print('Imported Sources: ${aidokuBackup.sources?.length}');
-            print('Aidoku Backup Name: ${aidokuBackup.name}');
-            print('Aidoku Version: ${aidokuBackup.version}');
-          }
-          // TODO: Implement Aidoku to Tachi
-          return null;
-        }(),
-      BackupType.tachi => () {
-          final TachiBackup tachibkBackup = converter.importTachibkBackup(
+    final ConvertableBackup? importedBackup = switch (inputFormat) {
+      BackupType.aidoku => converter.importAidokuBackup(
+          ByteData.sublistView(
             backupFile.readAsBytesSync(),
-            fork: outputTachiFork,
-          );
-          if (verbose) {
-            print(tachibkBackup);
-          }
-          return tachibkBackup;
-        }(),
-      BackupType.paperback => () {
-          final PaperbackBackup paperbackBackup =
-              converter.importPaperbackPas4Backup(
-            backupFile.readAsBytesSync(),
-            name: p.basenameWithoutExtension(backupFile.uri.toString()),
-          );
-          if (verbose) {
-            print('Imported Manga Info: ${paperbackBackup.mangaInfo?.length}');
-            print(
-              'Imported Library Manga: ${paperbackBackup.libraryManga?.length}',
-            );
-            print('Imported Chapters: ${paperbackBackup.chapters?.length}');
-            print(
-              'Imported Chapter Progress Marker: ${paperbackBackup.chapterProgressMarker?.length}',
-            );
-            print(
-              'Imported Source Manga: ${paperbackBackup.sourceManga?.length}',
-            );
-            final trackedManga = paperbackBackup.libraryManga
-                ?.where((i) => i.trackedSources.isNotEmpty)
-                .toList();
-            print('Tracked Manga: ${trackedManga?.length}');
-            final mangaWithSecondarySources = paperbackBackup.libraryManga
-                ?.where((i) => i.secondarySources.isNotEmpty)
-                .toList();
-            print(
-              'Manga with Secondary Sources: ${mangaWithSecondarySources?.length}',
-            );
-            final mangaTagsWithTags = paperbackBackup.mangaInfo
-                ?.where(
-                  (i) => i.tags.where((e) => e.tags.isNotEmpty).isNotEmpty,
-                )
-                .toList();
-            print('Manga with Tags: ${mangaTagsWithTags?.length}');
-          }
-
-          // TODO: Implement Paperback to Tachi
-          return null;
-        }(),
-      BackupType.tachimanga => await () async {
-          final TachimangaBackup tachimangaBackup =
-              await converter.importTachimangaBackup(
-            backupFile.readAsBytesSync(),
-          );
-          if (verbose) {
-            print('Imported Manga: ${tachimangaBackup.db.mangaTable.length}');
-            print(
-              'Imported Chapters: ${tachimangaBackup.db.chapterTable.length}',
-            );
-            print(
-              'Imported Manga History: ${tachimangaBackup.db.historyTable.length}',
-            );
-            print(
-              'Imported Tracked Manga Items: ${tachimangaBackup.db.trackRecordTable.length}',
-            );
-            print(
-              'Imported Categories: ${tachimangaBackup.db.categoryTable.length}',
-            );
-            print(
-              'Imported Sources: ${tachimangaBackup.db.sourceTable.length}',
-            );
-            print('Imported Repos: ${tachimangaBackup.db.repoTable.length}');
-            print('Tachimanga Backup Name: ${tachimangaBackup.name}');
-            print('Tachimanga Version: ${tachimangaBackup.meta.version}');
-          }
-
-          return tachimangaBackup.toTachi();
-        }(),
-      _ => () {
+          ),
+        ),
+      BackupType.tachi => converter.importTachibkBackup(
+          backupFile.readAsBytesSync(),
+          fork: outputTachiFork,
+        ),
+      BackupType.paperback => converter.importPaperbackPas4Backup(
+          backupFile.readAsBytesSync(),
+          name: p.basenameWithoutExtension(backupFile.uri.toString()),
+        ),
+      BackupType.tachimanga => await converter.importTachimangaBackup(
+          backupFile.readAsBytesSync(),
+        ),
+      BackupType.mangayomi => converter.importMangayomiBackup(
+          backupFile.readAsBytesSync(),
+        ),
+      null => () {
           print('Unsupported imported backup type');
           return null;
         }(),
     };
-    if (tachiBackup == null) {
-      print(
-        'Failed to convert backup type $backupFileExtension to Tachi format',
-      );
+    if (importedBackup == null) {
+      print('Failed to import backup type $backupFileExtension');
       return;
     }
-    if (verbose) {
-      print('Converted Categories: ${tachiBackup.backupCategories.length}');
-      print('Converted Manga: ${tachiBackup.backupManga.length}');
-      print('Converted Sources: ${tachiBackup.backupSources.length}');
-      print(
-        'Converted Extension Repos: ${tachiBackup.backupExtensionRepo.length}',
-      );
-    }
+    final ConvertableBackup convertedBackup =
+        importedBackup.toBackup(outputFormat);
 
     final io.File outputFile = io.File(
       '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
     );
-    final Uint8List? fileData = switch (outputFormat) {
-      BackupType.tachi => tachiBackup.toBackup(),
-      BackupType.paperback =>
-        // TODO: Implement Tachi to Paperback
-        null,
-      BackupType.aidoku =>
-        // TODO: Implement Tachi to Aidoku
-        null,
-      BackupType.tachimanga =>
-        // TODO: Implement Tachi to Tachimanga
-        null,
-      BackupType.mangayomi =>
-        // TODO: Implement Tachi to Mangayomi
-        null,
-    };
-    if (fileData == null) {
-      print(
-        'Failed to convert backup type $inputFormat to $outputFormat format',
-      );
-      return;
-    }
+    final Uint8List fileData = await convertedBackup.toData();
     if (verbose) {
       print('Converted Backup Size: ${fileData.length}');
     }
@@ -274,29 +166,5 @@ class ConvertCommand extends Command<void> {
       print('Output file already exists, overwriting...');
     }
     outputFile.writeAsBytesSync(fileData);
-  }
-}
-
-enum BackupType {
-  aidoku(['.aib']),
-  paperback(['.pas4']),
-  tachi(['.tachibk', '.proto.gz']),
-  tachimanga(['.tmb']),
-  mangayomi(['.backup']);
-
-  const BackupType(this.extensions);
-
-  final List<String> extensions;
-
-  static List<String> get validExtensions =>
-      values.expand((e) => e.extensions).toList();
-
-  static BackupType? byExtension(String extension) {
-    for (final type in values) {
-      if (type.extensions.contains(extension)) {
-        return type;
-      }
-    }
-    return null;
   }
 }

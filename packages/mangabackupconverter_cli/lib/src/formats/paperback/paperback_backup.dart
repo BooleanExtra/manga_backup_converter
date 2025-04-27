@@ -1,9 +1,14 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/exceptions/paperback_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
@@ -13,7 +18,9 @@ import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_
 part 'paperback_backup.mapper.dart';
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
-class PaperbackBackup with PaperbackBackupMappable {
+class PaperbackBackup
+    with PaperbackBackupMappable
+    implements ConvertableBackup {
   final List<PaperbackBackupChapterProgressMarker>? chapterProgressMarker;
   final List<PaperbackBackupChapter>? chapters;
   final List<PaperbackBackupLibraryManga>? libraryManga;
@@ -120,7 +127,17 @@ class PaperbackBackup with PaperbackBackupMappable {
     );
   }
 
-  Uint8List? toZip() {
+  static const fromMap = PaperbackBackupMapper.fromMap;
+  static const fromJson = PaperbackBackupMapper.fromJson;
+
+  @override
+  ConvertableBackup toBackup(BackupType type) {
+    // TODO: implement toBackup
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Uint8List> toData() async {
     final archive = Archive();
 
     archive.addFile(
@@ -139,9 +156,39 @@ class PaperbackBackup with PaperbackBackupMappable {
       ArchiveFile.string('__SOURCE_MANGA_V4', jsonEncode(sourceManga)),
     );
     final encodingResult = ZipEncoder().encode(archive);
-    return encodingResult == null ? null : Uint8List.fromList(encodingResult);
+    if (encodingResult == null) {
+      throw const PaperbackException('Could not encode Paperback backup');
+    }
+    return Uint8List.fromList(encodingResult);
   }
 
-  static const fromMap = PaperbackBackupMapper.fromMap;
-  static const fromJson = PaperbackBackupMapper.fromJson;
+  @override
+  void verbosePrint(bool verbose) {
+    if (!verbose) return;
+    print('Manga Info: ${mangaInfo?.length}');
+    print(
+      'Library Manga: ${libraryManga?.length}',
+    );
+    print('Chapters: ${chapters?.length}');
+    print(
+      'Chapter Progress Marker: ${chapterProgressMarker?.length}',
+    );
+    print(
+      'Source Manga: ${sourceManga?.length}',
+    );
+    final trackedManga =
+        libraryManga?.where((i) => i.trackedSources.isNotEmpty).toList();
+    print('Tracked Manga: ${trackedManga?.length}');
+    final mangaWithSecondarySources =
+        libraryManga?.where((i) => i.secondarySources.isNotEmpty).toList();
+    print(
+      'Manga with Secondary Sources: ${mangaWithSecondarySources?.length}',
+    );
+    final mangaTagsWithTags = mangaInfo
+        ?.where(
+          (i) => i.tags.where((e) => e.tags.isNotEmpty).isNotEmpty,
+        )
+        .toList();
+    print('Manga with Tags: ${mangaTagsWithTags?.length}');
+  }
 }

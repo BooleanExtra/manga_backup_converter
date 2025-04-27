@@ -1,7 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'dart:typed_data';
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
+import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
@@ -16,7 +20,7 @@ part 'aidoku_backup.mapper.dart';
   includeCustomMappers: [AidokuDateTimeMapper()],
   ignoreNull: true,
 )
-class AidokuBackup with AidokuBackupMappable {
+class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   final Set<AidokuBackupLibraryManga>? library;
   final Set<AidokuBackupHistory>? history;
   final Set<AidokuBackupManga>? manga;
@@ -47,9 +51,12 @@ class AidokuBackup with AidokuBackupMappable {
     return fromMap(asMap);
   }
 
-  ByteData toBinaryPropertyList() {
+  @override
+  Future<Uint8List> toData() async {
     try {
-      return PropertyListSerialization.dataWithPropertyList(toMap());
+      return Uint8List.sublistView(
+        PropertyListSerialization.dataWithPropertyList(toMap()),
+      );
     } on PropertyListWriteStreamException catch (e) {
       throw AidokuException(e);
     }
@@ -180,6 +187,29 @@ class AidokuBackup with AidokuBackupMappable {
       name: name == null ? null : '${name}_MergedWith_${otherBackup.name}',
       version: version ?? otherBackup.version ?? '0.6.10',
     );
+  }
+
+  @override
+  ConvertableBackup toBackup(BackupType type) {
+    // TODO: implement toBackup
+    throw UnimplementedError();
+  }
+
+  @override
+  void verbosePrint(bool verbose) {
+    if (!verbose) return;
+
+    print('Library Manga: ${library?.length}');
+    print('Manga: ${manga?.length}');
+    print('Chapters: ${chapters?.length}');
+    print('Manga History: ${history?.length}');
+    print(
+      'Tracked Manga Items: ${trackItems?.length}',
+    );
+    print('Categories: ${categories?.length}');
+    print('Sources: ${sources?.length}');
+    print('Aidoku Backup Name: $name');
+    print('Aidoku Version: $version');
   }
 }
 
