@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
@@ -23,10 +23,10 @@ class MangayomiBackup with MangayomiBackupMappable {
     this.name,
   });
 
-  static Future<MangayomiBackup> fromZip(
+  factory MangayomiBackup.fromZip(
     Uint8List bytes, {
     String? overrideName,
-  }) async {
+  }) {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
     final backupJsonFile = backupArchive.files
         .where((file) => file.name.endsWith('.db'))
@@ -51,6 +51,13 @@ class MangayomiBackup with MangayomiBackupMappable {
       name: overrideName ?? backupName,
       db: db,
     );
+  }
+
+  Uint8List toZip() {
+    final archive = Archive();
+    final dbJson = jsonEncode(db.toMap()).codeUnits;
+    archive.addFile(ArchiveFile('$name.db', dbJson.length, dbJson));
+    return Uint8List.fromList(ZipEncoder().encode(archive) ?? []);
   }
 
   static const fromMap = MangayomiBackupMapper.fromMap;
