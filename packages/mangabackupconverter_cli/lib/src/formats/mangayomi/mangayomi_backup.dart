@@ -45,11 +45,11 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
     return switch (type) {
+      BackupType.mangayomi => this,
       BackupType.tachi => throw const MangayomiException('Mangayomi backup cannot be converted to Tachi'),
       BackupType.aidoku => throw const MangayomiException('Mangayomi backup cannot be converted to Aidoku'),
       BackupType.paperback => throw const MangayomiException('Mangayomi backup cannot be converted to Paperback'),
       BackupType.tachimanga => throw const MangayomiException('Mangayomi backup cannot be converted to Tachiyomi'),
-      BackupType.mangayomi => throw const MangayomiException('Mangayomi backup cannot be converted to Aidoku'),
     };
   }
 
