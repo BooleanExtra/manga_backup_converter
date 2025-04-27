@@ -21,13 +21,17 @@ class TachiBackupCategoryMapper extends ClassMapperBase<TachiBackupCategory> {
   final String id = 'TachiBackupCategory';
 
   static String _$name(TachiBackupCategory v) => v.name;
-  static const Field<TachiBackupCategory, String> _f$name = Field('name', _$name);
+  static const Field<TachiBackupCategory, String> _f$name =
+      Field('name', _$name);
   static int _$order(TachiBackupCategory v) => v.order;
-  static const Field<TachiBackupCategory, int> _f$order = Field('order', _$order);
+  static const Field<TachiBackupCategory, int> _f$order =
+      Field('order', _$order);
   static int _$flags(TachiBackupCategory v) => v.flags;
-  static const Field<TachiBackupCategory, int> _f$flags = Field('flags', _$flags);
+  static const Field<TachiBackupCategory, int> _f$flags =
+      Field('flags', _$flags);
   static String? _$mangaSort(TachiBackupCategory v) => v.mangaSort;
-  static const Field<TachiBackupCategory, String> _f$mangaSort = Field('mangaSort', _$mangaSort, opt: true);
+  static const Field<TachiBackupCategory, String> _f$mangaSort =
+      Field('mangaSort', _$mangaSort, opt: true);
 
   @override
   final MappableFields<TachiBackupCategory> fields = const {
@@ -39,11 +43,10 @@ class TachiBackupCategoryMapper extends ClassMapperBase<TachiBackupCategory> {
 
   static TachiBackupCategory _instantiate(DecodingData data) {
     return TachiBackupCategory(
-      name: data.dec(_f$name),
-      order: data.dec(_f$order),
-      flags: data.dec(_f$flags),
-      mangaSort: data.dec(_f$mangaSort),
-    );
+        name: data.dec(_f$name),
+        order: data.dec(_f$order),
+        flags: data.dec(_f$flags),
+        mangaSort: data.dec(_f$mangaSort));
   }
 
   @override
@@ -60,66 +63,77 @@ class TachiBackupCategoryMapper extends ClassMapperBase<TachiBackupCategory> {
 
 mixin TachiBackupCategoryMappable {
   String toJson() {
-    return TachiBackupCategoryMapper.ensureInitialized().encodeJson<TachiBackupCategory>(this as TachiBackupCategory);
+    return TachiBackupCategoryMapper.ensureInitialized()
+        .encodeJson<TachiBackupCategory>(this as TachiBackupCategory);
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupCategoryMapper.ensureInitialized().encodeMap<TachiBackupCategory>(this as TachiBackupCategory);
+    return TachiBackupCategoryMapper.ensureInitialized()
+        .encodeMap<TachiBackupCategory>(this as TachiBackupCategory);
   }
 
-  TachiBackupCategoryCopyWith<TachiBackupCategory, TachiBackupCategory, TachiBackupCategory> get copyWith =>
-      _TachiBackupCategoryCopyWithImpl(this as TachiBackupCategory, $identity, $identity);
+  TachiBackupCategoryCopyWith<TachiBackupCategory, TachiBackupCategory,
+          TachiBackupCategory>
+      get copyWith => _TachiBackupCategoryCopyWithImpl(
+          this as TachiBackupCategory, $identity, $identity);
   @override
   String toString() {
-    return TachiBackupCategoryMapper.ensureInitialized().stringifyValue(this as TachiBackupCategory);
+    return TachiBackupCategoryMapper.ensureInitialized()
+        .stringifyValue(this as TachiBackupCategory);
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupCategoryMapper.ensureInitialized().equalsValue(this as TachiBackupCategory, other);
+    return TachiBackupCategoryMapper.ensureInitialized()
+        .equalsValue(this as TachiBackupCategory, other);
   }
 
   @override
   int get hashCode {
-    return TachiBackupCategoryMapper.ensureInitialized().hashValue(this as TachiBackupCategory);
+    return TachiBackupCategoryMapper.ensureInitialized()
+        .hashValue(this as TachiBackupCategory);
   }
 }
 
-extension TachiBackupCategoryValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackupCategory, $Out> {
-  TachiBackupCategoryCopyWith<$R, TachiBackupCategory, $Out> get $asTachiBackupCategory =>
-      $base.as((v, t, t2) => _TachiBackupCategoryCopyWithImpl(v, t, t2));
+extension TachiBackupCategoryValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, TachiBackupCategory, $Out> {
+  TachiBackupCategoryCopyWith<$R, TachiBackupCategory, $Out>
+      get $asTachiBackupCategory =>
+          $base.as((v, t, t2) => _TachiBackupCategoryCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupCategoryCopyWith<$R, $In extends TachiBackupCategory, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class TachiBackupCategoryCopyWith<$R, $In extends TachiBackupCategory,
+    $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? name, int? order, int? flags, String? mangaSort});
-  TachiBackupCategoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  TachiBackupCategoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+      Then<$Out2, $R2> t);
 }
 
-class _TachiBackupCategoryCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachiBackupCategory, $Out>
+class _TachiBackupCategoryCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, TachiBackupCategory, $Out>
     implements TachiBackupCategoryCopyWith<$R, TachiBackupCategory, $Out> {
   _TachiBackupCategoryCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachiBackupCategory> $mapper = TachiBackupCategoryMapper.ensureInitialized();
+  late final ClassMapperBase<TachiBackupCategory> $mapper =
+      TachiBackupCategoryMapper.ensureInitialized();
   @override
-  $R call({String? name, int? order, int? flags, Object? mangaSort = $none}) => $apply(
-    FieldCopyWithData({
-      if (name != null) #name: name,
-      if (order != null) #order: order,
-      if (flags != null) #flags: flags,
-      if (mangaSort != $none) #mangaSort: mangaSort,
-    }),
-  );
+  $R call({String? name, int? order, int? flags, Object? mangaSort = $none}) =>
+      $apply(FieldCopyWithData({
+        if (name != null) #name: name,
+        if (order != null) #order: order,
+        if (flags != null) #flags: flags,
+        if (mangaSort != $none) #mangaSort: mangaSort
+      }));
   @override
   TachiBackupCategory $make(CopyWithData data) => TachiBackupCategory(
-    name: data.get(#name, or: $value.name),
-    order: data.get(#order, or: $value.order),
-    flags: data.get(#flags, or: $value.flags),
-    mangaSort: data.get(#mangaSort, or: $value.mangaSort),
-  );
+      name: data.get(#name, or: $value.name),
+      order: data.get(#order, or: $value.order),
+      flags: data.get(#flags, or: $value.flags),
+      mangaSort: data.get(#mangaSort, or: $value.mangaSort));
 
   @override
-  TachiBackupCategoryCopyWith<$R2, TachiBackupCategory, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _TachiBackupCategoryCopyWithImpl($value, $cast, t);
+  TachiBackupCategoryCopyWith<$R2, TachiBackupCategory, $Out2>
+      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+          _TachiBackupCategoryCopyWithImpl($value, $cast, t);
 }
