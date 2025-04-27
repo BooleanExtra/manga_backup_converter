@@ -22,70 +22,33 @@ class TachimangaBackupMetaMapper extends ClassMapperBase<TachimangaBackupMeta> {
   final String id = 'TachimangaBackupMeta';
 
   static String _$name(TachimangaBackupMeta v) => v.name;
-  static const Field<TachimangaBackupMeta, String> _f$name = Field(
-    'name',
-    _$name,
-  );
+  static const Field<TachimangaBackupMeta, String> _f$name = Field('name', _$name);
   static bool _$remoteBackup(TachimangaBackupMeta v) => v.remoteBackup;
-  static const Field<TachimangaBackupMeta, bool> _f$remoteBackup = Field(
-    'remoteBackup',
-    _$remoteBackup,
-  );
+  static const Field<TachimangaBackupMeta, bool> _f$remoteBackup = Field('remoteBackup', _$remoteBackup);
   static bool _$downloaded(TachimangaBackupMeta v) => v.downloaded;
-  static const Field<TachimangaBackupMeta, bool> _f$downloaded = Field(
-    'downloaded',
-    _$downloaded,
-  );
+  static const Field<TachimangaBackupMeta, bool> _f$downloaded = Field('downloaded', _$downloaded);
   static int _$backupId(TachimangaBackupMeta v) => v.backupId;
-  static const Field<TachimangaBackupMeta, int> _f$backupId = Field(
-    'backupId',
-    _$backupId,
-  );
+  static const Field<TachimangaBackupMeta, int> _f$backupId = Field('backupId', _$backupId);
   static int _$updateAt(TachimangaBackupMeta v) => v.updateAt;
-  static const Field<TachimangaBackupMeta, int> _f$updateAt = Field(
-    'updateAt',
-    _$updateAt,
-  );
+  static const Field<TachimangaBackupMeta, int> _f$updateAt = Field('updateAt', _$updateAt);
   static int _$type(TachimangaBackupMeta v) => v.type;
   static const Field<TachimangaBackupMeta, int> _f$type = Field('type', _$type);
   static int _$size(TachimangaBackupMeta v) => v.size;
   static const Field<TachimangaBackupMeta, int> _f$size = Field('size', _$size);
   static String _$checksum(TachimangaBackupMeta v) => v.checksum;
-  static const Field<TachimangaBackupMeta, String> _f$checksum = Field(
-    'checksum',
-    _$checksum,
-  );
+  static const Field<TachimangaBackupMeta, String> _f$checksum = Field('checksum', _$checksum);
   static int _$createAt(TachimangaBackupMeta v) => v.createAt;
-  static const Field<TachimangaBackupMeta, int> _f$createAt = Field(
-    'createAt',
-    _$createAt,
-  );
+  static const Field<TachimangaBackupMeta, int> _f$createAt = Field('createAt', _$createAt);
   static bool _$cloudBackup(TachimangaBackupMeta v) => v.cloudBackup;
-  static const Field<TachimangaBackupMeta, bool> _f$cloudBackup = Field(
-    'cloudBackup',
-    _$cloudBackup,
-  );
+  static const Field<TachimangaBackupMeta, bool> _f$cloudBackup = Field('cloudBackup', _$cloudBackup);
   static int _$version(TachimangaBackupMeta v) => v.version;
-  static const Field<TachimangaBackupMeta, int> _f$version = Field(
-    'version',
-    _$version,
-  );
-  static double _$downloadProgress(TachimangaBackupMeta v) =>
-      v.downloadProgress;
-  static const Field<TachimangaBackupMeta, double> _f$downloadProgress = Field(
-    'downloadProgress',
-    _$downloadProgress,
-  );
+  static const Field<TachimangaBackupMeta, int> _f$version = Field('version', _$version);
+  static double _$downloadProgress(TachimangaBackupMeta v) => v.downloadProgress;
+  static const Field<TachimangaBackupMeta, double> _f$downloadProgress = Field('downloadProgress', _$downloadProgress);
   static int _$state(TachimangaBackupMeta v) => v.state;
-  static const Field<TachimangaBackupMeta, int> _f$state = Field(
-    'state',
-    _$state,
-  );
+  static const Field<TachimangaBackupMeta, int> _f$state = Field('state', _$state);
   static Object? _$extInfo(TachimangaBackupMeta v) => v.extInfo;
-  static const Field<TachimangaBackupMeta, Object> _f$extInfo = Field(
-    'extInfo',
-    _$extInfo,
-  );
+  static const Field<TachimangaBackupMeta, Object> _f$extInfo = Field('extInfo', _$extInfo);
 
   @override
   final MappableFields<TachimangaBackupMeta> fields = const {
@@ -138,60 +101,39 @@ class TachimangaBackupMetaMapper extends ClassMapperBase<TachimangaBackupMeta> {
 
 mixin TachimangaBackupMetaMappable {
   String toJson() {
-    return TachimangaBackupMetaMapper.ensureInitialized()
-        .encodeJson<TachimangaBackupMeta>(this as TachimangaBackupMeta);
+    return TachimangaBackupMetaMapper.ensureInitialized().encodeJson<TachimangaBackupMeta>(
+      this as TachimangaBackupMeta,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return TachimangaBackupMetaMapper.ensureInitialized()
-        .encodeMap<TachimangaBackupMeta>(this as TachimangaBackupMeta);
+    return TachimangaBackupMetaMapper.ensureInitialized().encodeMap<TachimangaBackupMeta>(this as TachimangaBackupMeta);
   }
 
-  TachimangaBackupMetaCopyWith<
-    TachimangaBackupMeta,
-    TachimangaBackupMeta,
-    TachimangaBackupMeta
-  >
-  get copyWith => _TachimangaBackupMetaCopyWithImpl(
-    this as TachimangaBackupMeta,
-    $identity,
-    $identity,
-  );
+  TachimangaBackupMetaCopyWith<TachimangaBackupMeta, TachimangaBackupMeta, TachimangaBackupMeta> get copyWith =>
+      _TachimangaBackupMetaCopyWithImpl(this as TachimangaBackupMeta, $identity, $identity);
   @override
   String toString() {
-    return TachimangaBackupMetaMapper.ensureInitialized().stringifyValue(
-      this as TachimangaBackupMeta,
-    );
+    return TachimangaBackupMetaMapper.ensureInitialized().stringifyValue(this as TachimangaBackupMeta);
   }
 
   @override
   bool operator ==(Object other) {
-    return TachimangaBackupMetaMapper.ensureInitialized().equalsValue(
-      this as TachimangaBackupMeta,
-      other,
-    );
+    return TachimangaBackupMetaMapper.ensureInitialized().equalsValue(this as TachimangaBackupMeta, other);
   }
 
   @override
   int get hashCode {
-    return TachimangaBackupMetaMapper.ensureInitialized().hashValue(
-      this as TachimangaBackupMeta,
-    );
+    return TachimangaBackupMetaMapper.ensureInitialized().hashValue(this as TachimangaBackupMeta);
   }
 }
 
-extension TachimangaBackupMetaValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, TachimangaBackupMeta, $Out> {
-  TachimangaBackupMetaCopyWith<$R, TachimangaBackupMeta, $Out>
-  get $asTachimangaBackupMeta =>
+extension TachimangaBackupMetaValueCopy<$R, $Out> on ObjectCopyWith<$R, TachimangaBackupMeta, $Out> {
+  TachimangaBackupMetaCopyWith<$R, TachimangaBackupMeta, $Out> get $asTachimangaBackupMeta =>
       $base.as((v, t, t2) => _TachimangaBackupMetaCopyWithImpl(v, t, t2));
 }
 
-abstract class TachimangaBackupMetaCopyWith<
-  $R,
-  $In extends TachimangaBackupMeta,
-  $Out
->
+abstract class TachimangaBackupMetaCopyWith<$R, $In extends TachimangaBackupMeta, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     String? name,
@@ -209,19 +151,15 @@ abstract class TachimangaBackupMetaCopyWith<
     int? state,
     Object? extInfo,
   });
-  TachimangaBackupMetaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  TachimangaBackupMetaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _TachimangaBackupMetaCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, TachimangaBackupMeta, $Out>
+class _TachimangaBackupMetaCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachimangaBackupMeta, $Out>
     implements TachimangaBackupMetaCopyWith<$R, TachimangaBackupMeta, $Out> {
   _TachimangaBackupMetaCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachimangaBackupMeta> $mapper =
-      TachimangaBackupMetaMapper.ensureInitialized();
+  late final ClassMapperBase<TachimangaBackupMeta> $mapper = TachimangaBackupMetaMapper.ensureInitialized();
   @override
   $R call({
     String? name,
@@ -275,8 +213,6 @@ class _TachimangaBackupMetaCopyWithImpl<$R, $Out>
   );
 
   @override
-  TachimangaBackupMetaCopyWith<$R2, TachimangaBackupMeta, $Out2> $chain<
-    $R2,
-    $Out2
-  >(Then<$Out2, $R2> t) => _TachimangaBackupMetaCopyWithImpl($value, $cast, t);
+  TachimangaBackupMetaCopyWith<$R2, TachimangaBackupMeta, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _TachimangaBackupMetaCopyWithImpl($value, $cast, t);
 }

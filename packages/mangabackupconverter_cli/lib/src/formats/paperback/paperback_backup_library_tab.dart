@@ -9,11 +9,7 @@ class PaperbackBackupLibraryTab with PaperbackBackupLibraryTabMappable {
   final String id;
   final String name;
 
-  PaperbackBackupLibraryTab({
-    required this.sortOrder,
-    required this.id,
-    required this.name,
-  });
+  PaperbackBackupLibraryTab({required this.sortOrder, required this.id, required this.name});
 
   static const fromMap = PaperbackBackupLibraryTabMapper.fromMap;
   static const fromJson = PaperbackBackupLibraryTabMapper.fromJson;

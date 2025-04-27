@@ -36,16 +36,13 @@ class PreferenceValue extends $pb.GeneratedMessage {
   factory PreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory PreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory PreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'PreferenceValue',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'type')
-    ..a<$core.List<$core.int>>(
-        2, _omitFieldNames ? '' : 'truevalue', $pb.PbFieldType.QY);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'PreferenceValue', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'type')
+        ..a<$core.List<$core.int>>(2, _omitFieldNames ? '' : 'truevalue', $pb.PbFieldType.QY);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -55,19 +52,17 @@ class PreferenceValue extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   PreferenceValue copyWith(void Function(PreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as PreferenceValue))
-          as PreferenceValue;
+      super.copyWith((message) => updates(message as PreferenceValue)) as PreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static PreferenceValue create() => PreferenceValue._();
   PreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<PreferenceValue> createRepeated() =>
-      $pb.PbList<PreferenceValue>();
+  static $pb.PbList<PreferenceValue> createRepeated() => $pb.PbList<PreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static PreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<PreferenceValue>(create);
+  static PreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PreferenceValue>(create);
   static PreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -112,21 +107,15 @@ class Backup extends $pb.GeneratedMessage {
     return $result;
   }
   Backup._() : super();
-  factory Backup.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory Backup.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory Backup.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory Backup.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'Backup',
-      createEmptyInstance: create)
-    ..pc<BackupManga>(
-        1, _omitFieldNames ? '' : 'backupManga', $pb.PbFieldType.PM,
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Backup', createEmptyInstance: create)
+    ..pc<BackupManga>(1, _omitFieldNames ? '' : 'backupManga', $pb.PbFieldType.PM,
         protoName: 'backupManga', subBuilder: BackupManga.create)
-    ..pc<BackupCategory>(
-        2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
+    ..pc<BackupCategory>(2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
         protoName: 'backupCategories', subBuilder: BackupCategory.create);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -136,8 +125,7 @@ class Backup extends $pb.GeneratedMessage {
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  Backup copyWith(void Function(Backup) updates) =>
-      super.copyWith((message) => updates(message as Backup)) as Backup;
+  Backup copyWith(void Function(Backup) updates) => super.copyWith((message) => updates(message as Backup)) as Backup;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -146,8 +134,7 @@ class Backup extends $pb.GeneratedMessage {
   Backup createEmptyInstance() => create();
   static $pb.PbList<Backup> createRepeated() => $pb.PbList<Backup>();
   @$core.pragma('dart2js:noInline')
-  static Backup getDefault() =>
-      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Backup>(create);
+  static Backup getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Backup>(create);
   static Backup? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -177,19 +164,16 @@ class BackupCategory extends $pb.GeneratedMessage {
     return $result;
   }
   BackupCategory._() : super();
-  factory BackupCategory.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupCategory.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupCategory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupCategory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupCategory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'name')
-    ..a<$core.int>(2, _omitFieldNames ? '' : 'order', $pb.PbFieldType.O3)
-    ..a<$core.int>(100, _omitFieldNames ? '' : 'flags', $pb.PbFieldType.O3);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupCategory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'name')
+        ..a<$core.int>(2, _omitFieldNames ? '' : 'order', $pb.PbFieldType.O3)
+        ..a<$core.int>(100, _omitFieldNames ? '' : 'flags', $pb.PbFieldType.O3);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -199,19 +183,16 @@ class BackupCategory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupCategory copyWith(void Function(BackupCategory) updates) =>
-      super.copyWith((message) => updates(message as BackupCategory))
-          as BackupCategory;
+      super.copyWith((message) => updates(message as BackupCategory)) as BackupCategory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupCategory create() => BackupCategory._();
   BackupCategory createEmptyInstance() => create();
-  static $pb.PbList<BackupCategory> createRepeated() =>
-      $pb.PbList<BackupCategory>();
+  static $pb.PbList<BackupCategory> createRepeated() => $pb.PbList<BackupCategory>();
   @$core.pragma('dart2js:noInline')
-  static BackupCategory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupCategory>(create);
+  static BackupCategory getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupCategory>(create);
   static BackupCategory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -307,33 +288,25 @@ class BackupChapter extends $pb.GeneratedMessage {
     return $result;
   }
   BackupChapter._() : super();
-  factory BackupChapter.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupChapter.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupChapter.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupChapter.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupChapter',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..aQS(2, _omitFieldNames ? '' : 'name')
-    ..aOS(3, _omitFieldNames ? '' : 'scanlator')
-    ..aOB(4, _omitFieldNames ? '' : 'read')
-    ..aOB(5, _omitFieldNames ? '' : 'bookmark')
-    ..a<$core.int>(6, _omitFieldNames ? '' : 'lastPageRead', $pb.PbFieldType.O3,
-        protoName: 'lastPageRead')
-    ..aInt64(7, _omitFieldNames ? '' : 'dateFetch', protoName: 'dateFetch')
-    ..aInt64(8, _omitFieldNames ? '' : 'dateUpload', protoName: 'dateUpload')
-    ..a<$core.double>(
-        9, _omitFieldNames ? '' : 'chapterNumber', $pb.PbFieldType.OF,
-        protoName: 'chapterNumber')
-    ..a<$core.int>(10, _omitFieldNames ? '' : 'sourceOrder', $pb.PbFieldType.O3,
-        protoName: 'sourceOrder')
-    ..a<$core.int>(800, _omitFieldNames ? '' : 'pagesLeft', $pb.PbFieldType.O3,
-        protoName: 'pagesLeft')
-    ..aOS(905, _omitFieldNames ? '' : 'uploader');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupChapter', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..aQS(2, _omitFieldNames ? '' : 'name')
+        ..aOS(3, _omitFieldNames ? '' : 'scanlator')
+        ..aOB(4, _omitFieldNames ? '' : 'read')
+        ..aOB(5, _omitFieldNames ? '' : 'bookmark')
+        ..a<$core.int>(6, _omitFieldNames ? '' : 'lastPageRead', $pb.PbFieldType.O3, protoName: 'lastPageRead')
+        ..aInt64(7, _omitFieldNames ? '' : 'dateFetch', protoName: 'dateFetch')
+        ..aInt64(8, _omitFieldNames ? '' : 'dateUpload', protoName: 'dateUpload')
+        ..a<$core.double>(9, _omitFieldNames ? '' : 'chapterNumber', $pb.PbFieldType.OF, protoName: 'chapterNumber')
+        ..a<$core.int>(10, _omitFieldNames ? '' : 'sourceOrder', $pb.PbFieldType.O3, protoName: 'sourceOrder')
+        ..a<$core.int>(800, _omitFieldNames ? '' : 'pagesLeft', $pb.PbFieldType.O3, protoName: 'pagesLeft')
+        ..aOS(905, _omitFieldNames ? '' : 'uploader');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -343,19 +316,16 @@ class BackupChapter extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupChapter copyWith(void Function(BackupChapter) updates) =>
-      super.copyWith((message) => updates(message as BackupChapter))
-          as BackupChapter;
+      super.copyWith((message) => updates(message as BackupChapter)) as BackupChapter;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupChapter create() => BackupChapter._();
   BackupChapter createEmptyInstance() => create();
-  static $pb.PbList<BackupChapter> createRepeated() =>
-      $pb.PbList<BackupChapter>();
+  static $pb.PbList<BackupChapter> createRepeated() => $pb.PbList<BackupChapter>();
   @$core.pragma('dart2js:noInline')
-  static BackupChapter getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupChapter>(create);
+  static BackupChapter getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupChapter>(create);
   static BackupChapter? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -526,18 +496,15 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
   factory BrokenBackupHistory.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BrokenBackupHistory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BrokenBackupHistory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BrokenBackupHistory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
-        protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aInt64(3, _omitFieldNames ? '' : 'readDuration',
-        protoName: 'readDuration');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BrokenBackupHistory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
+            protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..aInt64(3, _omitFieldNames ? '' : 'readDuration', protoName: 'readDuration');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -547,19 +514,17 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BrokenBackupHistory copyWith(void Function(BrokenBackupHistory) updates) =>
-      super.copyWith((message) => updates(message as BrokenBackupHistory))
-          as BrokenBackupHistory;
+      super.copyWith((message) => updates(message as BrokenBackupHistory)) as BrokenBackupHistory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BrokenBackupHistory create() => BrokenBackupHistory._();
   BrokenBackupHistory createEmptyInstance() => create();
-  static $pb.PbList<BrokenBackupHistory> createRepeated() =>
-      $pb.PbList<BrokenBackupHistory>();
+  static $pb.PbList<BrokenBackupHistory> createRepeated() => $pb.PbList<BrokenBackupHistory>();
   @$core.pragma('dart2js:noInline')
-  static BrokenBackupHistory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BrokenBackupHistory>(create);
+  static BrokenBackupHistory getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BrokenBackupHistory>(create);
   static BrokenBackupHistory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -618,21 +583,17 @@ class BackupHistory extends $pb.GeneratedMessage {
     return $result;
   }
   BackupHistory._() : super();
-  factory BackupHistory.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupHistory.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupHistory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupHistory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupHistory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
-        protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aInt64(3, _omitFieldNames ? '' : 'readDuration',
-        protoName: 'readDuration');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupHistory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
+            protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..aInt64(3, _omitFieldNames ? '' : 'readDuration', protoName: 'readDuration');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -642,19 +603,16 @@ class BackupHistory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupHistory copyWith(void Function(BackupHistory) updates) =>
-      super.copyWith((message) => updates(message as BackupHistory))
-          as BackupHistory;
+      super.copyWith((message) => updates(message as BackupHistory)) as BackupHistory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupHistory create() => BackupHistory._();
   BackupHistory createEmptyInstance() => create();
-  static $pb.PbList<BackupHistory> createRepeated() =>
-      $pb.PbList<BackupHistory>();
+  static $pb.PbList<BackupHistory> createRepeated() => $pb.PbList<BackupHistory>();
   @$core.pragma('dart2js:noInline')
-  static BackupHistory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupHistory>(create);
+  static BackupHistory getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupHistory>(create);
   static BackupHistory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -794,18 +752,13 @@ class BackupManga extends $pb.GeneratedMessage {
     return $result;
   }
   BackupManga._() : super();
-  factory BackupManga.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupManga.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupManga.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupManga.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupManga',
-      createEmptyInstance: create)
-    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'source', $pb.PbFieldType.Q6,
-        defaultOrMaker: $fixnum.Int64.ZERO)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupManga', createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'source', $pb.PbFieldType.Q6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aQS(2, _omitFieldNames ? '' : 'url')
     ..aOS(3, _omitFieldNames ? '' : 'title')
     ..aOS(4, _omitFieldNames ? '' : 'artist')
@@ -816,32 +769,19 @@ class BackupManga extends $pb.GeneratedMessage {
     ..aOS(9, _omitFieldNames ? '' : 'thumbnailUrl', protoName: 'thumbnailUrl')
     ..aInt64(13, _omitFieldNames ? '' : 'dateAdded', protoName: 'dateAdded')
     ..a<$core.int>(14, _omitFieldNames ? '' : 'viewer', $pb.PbFieldType.O3)
-    ..pc<BackupChapter>(
-        16, _omitFieldNames ? '' : 'chapters', $pb.PbFieldType.PM,
-        subBuilder: BackupChapter.create)
+    ..pc<BackupChapter>(16, _omitFieldNames ? '' : 'chapters', $pb.PbFieldType.PM, subBuilder: BackupChapter.create)
     ..p<$core.int>(17, _omitFieldNames ? '' : 'categories', $pb.PbFieldType.P3)
-    ..pc<BackupTracking>(
-        18, _omitFieldNames ? '' : 'tracking', $pb.PbFieldType.PM,
-        subBuilder: BackupTracking.create)
+    ..pc<BackupTracking>(18, _omitFieldNames ? '' : 'tracking', $pb.PbFieldType.PM, subBuilder: BackupTracking.create)
     ..aOB(100, _omitFieldNames ? '' : 'favorite')
-    ..a<$core.int>(
-        101, _omitFieldNames ? '' : 'chapterFlags', $pb.PbFieldType.O3,
-        protoName: 'chapterFlags')
-    ..pc<BrokenBackupHistory>(
-        102, _omitFieldNames ? '' : 'brokenHistory', $pb.PbFieldType.PM,
+    ..a<$core.int>(101, _omitFieldNames ? '' : 'chapterFlags', $pb.PbFieldType.O3, protoName: 'chapterFlags')
+    ..pc<BrokenBackupHistory>(102, _omitFieldNames ? '' : 'brokenHistory', $pb.PbFieldType.PM,
         protoName: 'brokenHistory', subBuilder: BrokenBackupHistory.create)
-    ..a<$core.int>(
-        103, _omitFieldNames ? '' : 'viewerFlags', $pb.PbFieldType.O3)
-    ..pc<BackupHistory>(
-        104, _omitFieldNames ? '' : 'history', $pb.PbFieldType.PM,
-        subBuilder: BackupHistory.create)
+    ..a<$core.int>(103, _omitFieldNames ? '' : 'viewerFlags', $pb.PbFieldType.O3)
+    ..pc<BackupHistory>(104, _omitFieldNames ? '' : 'history', $pb.PbFieldType.PM, subBuilder: BackupHistory.create)
     ..aOS(800, _omitFieldNames ? '' : 'customTitle', protoName: 'customTitle')
-    ..aOS(901, _omitFieldNames ? '' : 'scanlatorFilter',
-        protoName: 'scanlatorFilter')
-    ..aOS(903, _omitFieldNames ? '' : 'alternativeArtwork',
-        protoName: 'alternativeArtwork')
-    ..pc<BackupMergeManga>(
-        904, _omitFieldNames ? '' : 'mergeMangaList', $pb.PbFieldType.PM,
+    ..aOS(901, _omitFieldNames ? '' : 'scanlatorFilter', protoName: 'scanlatorFilter')
+    ..aOS(903, _omitFieldNames ? '' : 'alternativeArtwork', protoName: 'alternativeArtwork')
+    ..pc<BackupMergeManga>(904, _omitFieldNames ? '' : 'mergeMangaList', $pb.PbFieldType.PM,
         protoName: 'mergeMangaList', subBuilder: BackupMergeManga.create);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -852,8 +792,7 @@ class BackupManga extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupManga copyWith(void Function(BackupManga) updates) =>
-      super.copyWith((message) => updates(message as BackupManga))
-          as BackupManga;
+      super.copyWith((message) => updates(message as BackupManga)) as BackupManga;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -862,8 +801,7 @@ class BackupManga extends $pb.GeneratedMessage {
   BackupManga createEmptyInstance() => create();
   static $pb.PbList<BackupManga> createRepeated() => $pb.PbList<BackupManga>();
   @$core.pragma('dart2js:noInline')
-  static BackupManga getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupManga>(create);
+  static BackupManga getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupManga>(create);
   static BackupManga? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1107,18 +1045,15 @@ class BackupMergeManga extends $pb.GeneratedMessage {
   factory BackupMergeManga.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupMergeManga.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupMergeManga.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupMergeManga',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..aOS(2, _omitFieldNames ? '' : 'title')
-    ..aOS(3, _omitFieldNames ? '' : 'coverUrl', protoName: 'coverUrl')
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'mergeType', $pb.PbFieldType.Q3,
-        protoName: 'mergeType');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupMergeManga', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..aOS(2, _omitFieldNames ? '' : 'title')
+        ..aOS(3, _omitFieldNames ? '' : 'coverUrl', protoName: 'coverUrl')
+        ..a<$core.int>(4, _omitFieldNames ? '' : 'mergeType', $pb.PbFieldType.Q3, protoName: 'mergeType');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1128,19 +1063,17 @@ class BackupMergeManga extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupMergeManga copyWith(void Function(BackupMergeManga) updates) =>
-      super.copyWith((message) => updates(message as BackupMergeManga))
-          as BackupMergeManga;
+      super.copyWith((message) => updates(message as BackupMergeManga)) as BackupMergeManga;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupMergeManga create() => BackupMergeManga._();
   BackupMergeManga createEmptyInstance() => create();
-  static $pb.PbList<BackupMergeManga> createRepeated() =>
-      $pb.PbList<BackupMergeManga>();
+  static $pb.PbList<BackupMergeManga> createRepeated() => $pb.PbList<BackupMergeManga>();
   @$core.pragma('dart2js:noInline')
-  static BackupMergeManga getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupMergeManga>(create);
+  static BackupMergeManga getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupMergeManga>(create);
   static BackupMergeManga? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1248,38 +1181,26 @@ class BackupTracking extends $pb.GeneratedMessage {
     return $result;
   }
   BackupTracking._() : super();
-  factory BackupTracking.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupTracking.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupTracking.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupTracking.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupTracking',
-      createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'syncId', $pb.PbFieldType.Q3,
-        protoName: 'syncId')
-    ..a<$fixnum.Int64>(
-        2, _omitFieldNames ? '' : 'libraryId', $pb.PbFieldType.Q6,
-        protoName: 'libraryId', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'mediaIdInt', $pb.PbFieldType.O3,
-        protoName: 'mediaIdInt')
-    ..aOS(4, _omitFieldNames ? '' : 'trackingUrl', protoName: 'trackingUrl')
-    ..aOS(5, _omitFieldNames ? '' : 'title')
-    ..a<$core.double>(
-        6, _omitFieldNames ? '' : 'lastChapterRead', $pb.PbFieldType.OF,
-        protoName: 'lastChapterRead')
-    ..a<$core.int>(
-        7, _omitFieldNames ? '' : 'totalChapters', $pb.PbFieldType.O3,
-        protoName: 'totalChapters')
-    ..a<$core.double>(8, _omitFieldNames ? '' : 'score', $pb.PbFieldType.OF)
-    ..a<$core.int>(9, _omitFieldNames ? '' : 'status', $pb.PbFieldType.O3)
-    ..aInt64(10, _omitFieldNames ? '' : 'startedReadingDate',
-        protoName: 'startedReadingDate')
-    ..aInt64(11, _omitFieldNames ? '' : 'finishedReadingDate',
-        protoName: 'finishedReadingDate')
-    ..aInt64(100, _omitFieldNames ? '' : 'mediaId', protoName: 'mediaId');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupTracking', createEmptyInstance: create)
+        ..a<$core.int>(1, _omitFieldNames ? '' : 'syncId', $pb.PbFieldType.Q3, protoName: 'syncId')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'libraryId', $pb.PbFieldType.Q6,
+            protoName: 'libraryId', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..a<$core.int>(3, _omitFieldNames ? '' : 'mediaIdInt', $pb.PbFieldType.O3, protoName: 'mediaIdInt')
+        ..aOS(4, _omitFieldNames ? '' : 'trackingUrl', protoName: 'trackingUrl')
+        ..aOS(5, _omitFieldNames ? '' : 'title')
+        ..a<$core.double>(6, _omitFieldNames ? '' : 'lastChapterRead', $pb.PbFieldType.OF, protoName: 'lastChapterRead')
+        ..a<$core.int>(7, _omitFieldNames ? '' : 'totalChapters', $pb.PbFieldType.O3, protoName: 'totalChapters')
+        ..a<$core.double>(8, _omitFieldNames ? '' : 'score', $pb.PbFieldType.OF)
+        ..a<$core.int>(9, _omitFieldNames ? '' : 'status', $pb.PbFieldType.O3)
+        ..aInt64(10, _omitFieldNames ? '' : 'startedReadingDate', protoName: 'startedReadingDate')
+        ..aInt64(11, _omitFieldNames ? '' : 'finishedReadingDate', protoName: 'finishedReadingDate')
+        ..aInt64(100, _omitFieldNames ? '' : 'mediaId', protoName: 'mediaId');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1289,19 +1210,16 @@ class BackupTracking extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupTracking copyWith(void Function(BackupTracking) updates) =>
-      super.copyWith((message) => updates(message as BackupTracking))
-          as BackupTracking;
+      super.copyWith((message) => updates(message as BackupTracking)) as BackupTracking;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupTracking create() => BackupTracking._();
   BackupTracking createEmptyInstance() => create();
-  static $pb.PbList<BackupTracking> createRepeated() =>
-      $pb.PbList<BackupTracking>();
+  static $pb.PbList<BackupTracking> createRepeated() => $pb.PbList<BackupTracking>();
   @$core.pragma('dart2js:noInline')
-  static BackupTracking getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupTracking>(create);
+  static BackupTracking getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupTracking>(create);
   static BackupTracking? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1450,5 +1368,4 @@ class BackupTracking extends $pb.GeneratedMessage {
 }
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
-const _omitMessageNames =
-    $core.bool.fromEnvironment('protobuf.omit_message_names');
+const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

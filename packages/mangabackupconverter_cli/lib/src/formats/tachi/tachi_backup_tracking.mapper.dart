@@ -21,67 +21,35 @@ class TachiBackupTrackingMapper extends ClassMapperBase<TachiBackupTracking> {
   final String id = 'TachiBackupTracking';
 
   static int _$syncId(TachiBackupTracking v) => v.syncId;
-  static const Field<TachiBackupTracking, int> _f$syncId = Field(
-    'syncId',
-    _$syncId,
-  );
+  static const Field<TachiBackupTracking, int> _f$syncId = Field('syncId', _$syncId);
   static int _$libraryId(TachiBackupTracking v) => v.libraryId;
-  static const Field<TachiBackupTracking, int> _f$libraryId = Field(
-    'libraryId',
-    _$libraryId,
-  );
+  static const Field<TachiBackupTracking, int> _f$libraryId = Field('libraryId', _$libraryId);
   static int _$mediaIdInt(TachiBackupTracking v) => v.mediaIdInt;
-  static const Field<TachiBackupTracking, int> _f$mediaIdInt = Field(
-    'mediaIdInt',
-    _$mediaIdInt,
-  );
+  static const Field<TachiBackupTracking, int> _f$mediaIdInt = Field('mediaIdInt', _$mediaIdInt);
   static String _$trackingUrl(TachiBackupTracking v) => v.trackingUrl;
-  static const Field<TachiBackupTracking, String> _f$trackingUrl = Field(
-    'trackingUrl',
-    _$trackingUrl,
-  );
+  static const Field<TachiBackupTracking, String> _f$trackingUrl = Field('trackingUrl', _$trackingUrl);
   static String _$title(TachiBackupTracking v) => v.title;
-  static const Field<TachiBackupTracking, String> _f$title = Field(
-    'title',
-    _$title,
-  );
+  static const Field<TachiBackupTracking, String> _f$title = Field('title', _$title);
   static double _$lastChapterRead(TachiBackupTracking v) => v.lastChapterRead;
-  static const Field<TachiBackupTracking, double> _f$lastChapterRead = Field(
-    'lastChapterRead',
-    _$lastChapterRead,
-  );
+  static const Field<TachiBackupTracking, double> _f$lastChapterRead = Field('lastChapterRead', _$lastChapterRead);
   static int _$totalChapters(TachiBackupTracking v) => v.totalChapters;
-  static const Field<TachiBackupTracking, int> _f$totalChapters = Field(
-    'totalChapters',
-    _$totalChapters,
-  );
+  static const Field<TachiBackupTracking, int> _f$totalChapters = Field('totalChapters', _$totalChapters);
   static double _$score(TachiBackupTracking v) => v.score;
-  static const Field<TachiBackupTracking, double> _f$score = Field(
-    'score',
-    _$score,
-  );
+  static const Field<TachiBackupTracking, double> _f$score = Field('score', _$score);
   static int _$status(TachiBackupTracking v) => v.status;
-  static const Field<TachiBackupTracking, int> _f$status = Field(
-    'status',
-    _$status,
-  );
-  static int _$startedReadingDate(TachiBackupTracking v) =>
-      v.startedReadingDate;
+  static const Field<TachiBackupTracking, int> _f$status = Field('status', _$status);
+  static int _$startedReadingDate(TachiBackupTracking v) => v.startedReadingDate;
   static const Field<TachiBackupTracking, int> _f$startedReadingDate = Field(
     'startedReadingDate',
     _$startedReadingDate,
   );
-  static int _$finishedReadingDate(TachiBackupTracking v) =>
-      v.finishedReadingDate;
+  static int _$finishedReadingDate(TachiBackupTracking v) => v.finishedReadingDate;
   static const Field<TachiBackupTracking, int> _f$finishedReadingDate = Field(
     'finishedReadingDate',
     _$finishedReadingDate,
   );
   static int _$mediaId(TachiBackupTracking v) => v.mediaId;
-  static const Field<TachiBackupTracking, int> _f$mediaId = Field(
-    'mediaId',
-    _$mediaId,
-  );
+  static const Field<TachiBackupTracking, int> _f$mediaId = Field('mediaId', _$mediaId);
 
   @override
   final MappableFields<TachiBackupTracking> fields = const {
@@ -130,60 +98,37 @@ class TachiBackupTrackingMapper extends ClassMapperBase<TachiBackupTracking> {
 
 mixin TachiBackupTrackingMappable {
   String toJson() {
-    return TachiBackupTrackingMapper.ensureInitialized()
-        .encodeJson<TachiBackupTracking>(this as TachiBackupTracking);
+    return TachiBackupTrackingMapper.ensureInitialized().encodeJson<TachiBackupTracking>(this as TachiBackupTracking);
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupTrackingMapper.ensureInitialized()
-        .encodeMap<TachiBackupTracking>(this as TachiBackupTracking);
+    return TachiBackupTrackingMapper.ensureInitialized().encodeMap<TachiBackupTracking>(this as TachiBackupTracking);
   }
 
-  TachiBackupTrackingCopyWith<
-    TachiBackupTracking,
-    TachiBackupTracking,
-    TachiBackupTracking
-  >
-  get copyWith => _TachiBackupTrackingCopyWithImpl(
-    this as TachiBackupTracking,
-    $identity,
-    $identity,
-  );
+  TachiBackupTrackingCopyWith<TachiBackupTracking, TachiBackupTracking, TachiBackupTracking> get copyWith =>
+      _TachiBackupTrackingCopyWithImpl(this as TachiBackupTracking, $identity, $identity);
   @override
   String toString() {
-    return TachiBackupTrackingMapper.ensureInitialized().stringifyValue(
-      this as TachiBackupTracking,
-    );
+    return TachiBackupTrackingMapper.ensureInitialized().stringifyValue(this as TachiBackupTracking);
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupTrackingMapper.ensureInitialized().equalsValue(
-      this as TachiBackupTracking,
-      other,
-    );
+    return TachiBackupTrackingMapper.ensureInitialized().equalsValue(this as TachiBackupTracking, other);
   }
 
   @override
   int get hashCode {
-    return TachiBackupTrackingMapper.ensureInitialized().hashValue(
-      this as TachiBackupTracking,
-    );
+    return TachiBackupTrackingMapper.ensureInitialized().hashValue(this as TachiBackupTracking);
   }
 }
 
-extension TachiBackupTrackingValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, TachiBackupTracking, $Out> {
-  TachiBackupTrackingCopyWith<$R, TachiBackupTracking, $Out>
-  get $asTachiBackupTracking =>
+extension TachiBackupTrackingValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackupTracking, $Out> {
+  TachiBackupTrackingCopyWith<$R, TachiBackupTracking, $Out> get $asTachiBackupTracking =>
       $base.as((v, t, t2) => _TachiBackupTrackingCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupTrackingCopyWith<
-  $R,
-  $In extends TachiBackupTracking,
-  $Out
->
+abstract class TachiBackupTrackingCopyWith<$R, $In extends TachiBackupTracking, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     int? syncId,
@@ -199,19 +144,15 @@ abstract class TachiBackupTrackingCopyWith<
     int? finishedReadingDate,
     int? mediaId,
   });
-  TachiBackupTrackingCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  TachiBackupTrackingCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _TachiBackupTrackingCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, TachiBackupTracking, $Out>
+class _TachiBackupTrackingCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachiBackupTracking, $Out>
     implements TachiBackupTrackingCopyWith<$R, TachiBackupTracking, $Out> {
   _TachiBackupTrackingCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachiBackupTracking> $mapper =
-      TachiBackupTrackingMapper.ensureInitialized();
+  late final ClassMapperBase<TachiBackupTracking> $mapper = TachiBackupTrackingMapper.ensureInitialized();
   @override
   $R call({
     int? syncId,
@@ -238,8 +179,7 @@ class _TachiBackupTrackingCopyWithImpl<$R, $Out>
       if (score != null) #score: score,
       if (status != null) #status: status,
       if (startedReadingDate != null) #startedReadingDate: startedReadingDate,
-      if (finishedReadingDate != null)
-        #finishedReadingDate: finishedReadingDate,
+      if (finishedReadingDate != null) #finishedReadingDate: finishedReadingDate,
       if (mediaId != null) #mediaId: mediaId,
     }),
   );
@@ -254,20 +194,12 @@ class _TachiBackupTrackingCopyWithImpl<$R, $Out>
     totalChapters: data.get(#totalChapters, or: $value.totalChapters),
     score: data.get(#score, or: $value.score),
     status: data.get(#status, or: $value.status),
-    startedReadingDate: data.get(
-      #startedReadingDate,
-      or: $value.startedReadingDate,
-    ),
-    finishedReadingDate: data.get(
-      #finishedReadingDate,
-      or: $value.finishedReadingDate,
-    ),
+    startedReadingDate: data.get(#startedReadingDate, or: $value.startedReadingDate),
+    finishedReadingDate: data.get(#finishedReadingDate, or: $value.finishedReadingDate),
     mediaId: data.get(#mediaId, or: $value.mediaId),
   );
 
   @override
-  TachiBackupTrackingCopyWith<$R2, TachiBackupTracking, $Out2> $chain<
-    $R2,
-    $Out2
-  >(Then<$Out2, $R2> t) => _TachiBackupTrackingCopyWithImpl($value, $cast, t);
+  TachiBackupTrackingCopyWith<$R2, TachiBackupTracking, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _TachiBackupTrackingCopyWithImpl($value, $cast, t);
 }

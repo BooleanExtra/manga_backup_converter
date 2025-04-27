@@ -17,10 +17,7 @@ class TachimangaBackupDbManager {
     return result.map(table.fromMap).toList();
   }
 
-  Future<void> insert<T>(
-    TachimangaBackupTable<T> table,
-    List<T> categories,
-  ) async {
+  Future<void> insert<T>(TachimangaBackupTable<T> table, List<T> categories) async {
     tachimanga_init.initializeMappers();
     for (final category in categories) {
       await db.insert(table.name, MapperContainer.globals.toMap(category));

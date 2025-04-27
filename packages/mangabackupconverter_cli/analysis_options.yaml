@@ -35,3 +35,6 @@ analyzer:
     - "**/*.pbenum.dart"
     - "**/*.pbjson.dart"
     - "**/*.pbserver.dart"
+
+formatter:
+  page_width: 120

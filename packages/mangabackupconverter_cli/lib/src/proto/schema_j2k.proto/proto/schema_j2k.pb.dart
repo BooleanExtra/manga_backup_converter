@@ -38,16 +38,13 @@ class PreferenceValue extends $pb.GeneratedMessage {
   factory PreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory PreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory PreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'PreferenceValue',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'type')
-    ..a<$core.List<$core.int>>(
-        2, _omitFieldNames ? '' : 'truevalue', $pb.PbFieldType.QY);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'PreferenceValue', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'type')
+        ..a<$core.List<$core.int>>(2, _omitFieldNames ? '' : 'truevalue', $pb.PbFieldType.QY);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -57,19 +54,17 @@ class PreferenceValue extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   PreferenceValue copyWith(void Function(PreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as PreferenceValue))
-          as PreferenceValue;
+      super.copyWith((message) => updates(message as PreferenceValue)) as PreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static PreferenceValue create() => PreferenceValue._();
   PreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<PreferenceValue> createRepeated() =>
-      $pb.PbList<PreferenceValue>();
+  static $pb.PbList<PreferenceValue> createRepeated() => $pb.PbList<PreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static PreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<PreferenceValue>(create);
+  static PreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PreferenceValue>(create);
   static PreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -129,35 +124,24 @@ class Backup extends $pb.GeneratedMessage {
     return $result;
   }
   Backup._() : super();
-  factory Backup.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory Backup.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory Backup.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory Backup.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'Backup',
-      createEmptyInstance: create)
-    ..pc<BackupManga>(
-        1, _omitFieldNames ? '' : 'backupManga', $pb.PbFieldType.PM,
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Backup', createEmptyInstance: create)
+    ..pc<BackupManga>(1, _omitFieldNames ? '' : 'backupManga', $pb.PbFieldType.PM,
         protoName: 'backupManga', subBuilder: BackupManga.create)
-    ..pc<BackupCategory>(
-        2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
+    ..pc<BackupCategory>(2, _omitFieldNames ? '' : 'backupCategories', $pb.PbFieldType.PM,
         protoName: 'backupCategories', subBuilder: BackupCategory.create)
-    ..pc<BrokenBackupSource>(
-        100, _omitFieldNames ? '' : 'backupBrokenSources', $pb.PbFieldType.PM,
+    ..pc<BrokenBackupSource>(100, _omitFieldNames ? '' : 'backupBrokenSources', $pb.PbFieldType.PM,
         protoName: 'backupBrokenSources', subBuilder: BrokenBackupSource.create)
-    ..pc<BackupSource>(
-        101, _omitFieldNames ? '' : 'backupSources', $pb.PbFieldType.PM,
+    ..pc<BackupSource>(101, _omitFieldNames ? '' : 'backupSources', $pb.PbFieldType.PM,
         protoName: 'backupSources', subBuilder: BackupSource.create)
-    ..pc<BackupPreference>(
-        104, _omitFieldNames ? '' : 'backupPreferences', $pb.PbFieldType.PM,
+    ..pc<BackupPreference>(104, _omitFieldNames ? '' : 'backupPreferences', $pb.PbFieldType.PM,
         protoName: 'backupPreferences', subBuilder: BackupPreference.create)
-    ..pc<BackupSourcePreferences>(105,
-        _omitFieldNames ? '' : 'backupSourcePreferences', $pb.PbFieldType.PM,
-        protoName: 'backupSourcePreferences',
-        subBuilder: BackupSourcePreferences.create);
+    ..pc<BackupSourcePreferences>(105, _omitFieldNames ? '' : 'backupSourcePreferences', $pb.PbFieldType.PM,
+        protoName: 'backupSourcePreferences', subBuilder: BackupSourcePreferences.create);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -166,8 +150,7 @@ class Backup extends $pb.GeneratedMessage {
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  Backup copyWith(void Function(Backup) updates) =>
-      super.copyWith((message) => updates(message as Backup)) as Backup;
+  Backup copyWith(void Function(Backup) updates) => super.copyWith((message) => updates(message as Backup)) as Backup;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -176,8 +159,7 @@ class Backup extends $pb.GeneratedMessage {
   Backup createEmptyInstance() => create();
   static $pb.PbList<Backup> createRepeated() => $pb.PbList<Backup>();
   @$core.pragma('dart2js:noInline')
-  static Backup getDefault() =>
-      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Backup>(create);
+  static Backup getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Backup>(create);
   static Backup? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -196,8 +178,7 @@ class Backup extends $pb.GeneratedMessage {
   $pb.PbList<BackupPreference> get backupPreferences => $_getList(4);
 
   @$pb.TagNumber(105)
-  $pb.PbList<BackupSourcePreferences> get backupSourcePreferences =>
-      $_getList(5);
+  $pb.PbList<BackupSourcePreferences> get backupSourcePreferences => $_getList(5);
 }
 
 /// BackupCategory.kt
@@ -224,20 +205,17 @@ class BackupCategory extends $pb.GeneratedMessage {
     return $result;
   }
   BackupCategory._() : super();
-  factory BackupCategory.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupCategory.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupCategory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupCategory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupCategory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'name')
-    ..a<$core.int>(2, _omitFieldNames ? '' : 'order', $pb.PbFieldType.O3)
-    ..a<$core.int>(100, _omitFieldNames ? '' : 'flags', $pb.PbFieldType.O3)
-    ..aOS(800, _omitFieldNames ? '' : 'mangaSort', protoName: 'mangaSort');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupCategory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'name')
+        ..a<$core.int>(2, _omitFieldNames ? '' : 'order', $pb.PbFieldType.O3)
+        ..a<$core.int>(100, _omitFieldNames ? '' : 'flags', $pb.PbFieldType.O3)
+        ..aOS(800, _omitFieldNames ? '' : 'mangaSort', protoName: 'mangaSort');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -247,19 +225,16 @@ class BackupCategory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupCategory copyWith(void Function(BackupCategory) updates) =>
-      super.copyWith((message) => updates(message as BackupCategory))
-          as BackupCategory;
+      super.copyWith((message) => updates(message as BackupCategory)) as BackupCategory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupCategory create() => BackupCategory._();
   BackupCategory createEmptyInstance() => create();
-  static $pb.PbList<BackupCategory> createRepeated() =>
-      $pb.PbList<BackupCategory>();
+  static $pb.PbList<BackupCategory> createRepeated() => $pb.PbList<BackupCategory>();
   @$core.pragma('dart2js:noInline')
-  static BackupCategory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupCategory>(create);
+  static BackupCategory getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupCategory>(create);
   static BackupCategory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -363,32 +338,24 @@ class BackupChapter extends $pb.GeneratedMessage {
     return $result;
   }
   BackupChapter._() : super();
-  factory BackupChapter.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupChapter.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupChapter.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupChapter.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupChapter',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..aQS(2, _omitFieldNames ? '' : 'name')
-    ..aOS(3, _omitFieldNames ? '' : 'scanlator')
-    ..aOB(4, _omitFieldNames ? '' : 'read')
-    ..aOB(5, _omitFieldNames ? '' : 'bookmark')
-    ..a<$core.int>(6, _omitFieldNames ? '' : 'lastPageRead', $pb.PbFieldType.O3,
-        protoName: 'lastPageRead')
-    ..aInt64(7, _omitFieldNames ? '' : 'dateFetch', protoName: 'dateFetch')
-    ..aInt64(8, _omitFieldNames ? '' : 'dateUpload', protoName: 'dateUpload')
-    ..a<$core.double>(
-        9, _omitFieldNames ? '' : 'chapterNumber', $pb.PbFieldType.OF,
-        protoName: 'chapterNumber')
-    ..a<$core.int>(10, _omitFieldNames ? '' : 'sourceOrder', $pb.PbFieldType.O3,
-        protoName: 'sourceOrder')
-    ..a<$core.int>(800, _omitFieldNames ? '' : 'pagesLeft', $pb.PbFieldType.O3,
-        protoName: 'pagesLeft');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupChapter', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..aQS(2, _omitFieldNames ? '' : 'name')
+        ..aOS(3, _omitFieldNames ? '' : 'scanlator')
+        ..aOB(4, _omitFieldNames ? '' : 'read')
+        ..aOB(5, _omitFieldNames ? '' : 'bookmark')
+        ..a<$core.int>(6, _omitFieldNames ? '' : 'lastPageRead', $pb.PbFieldType.O3, protoName: 'lastPageRead')
+        ..aInt64(7, _omitFieldNames ? '' : 'dateFetch', protoName: 'dateFetch')
+        ..aInt64(8, _omitFieldNames ? '' : 'dateUpload', protoName: 'dateUpload')
+        ..a<$core.double>(9, _omitFieldNames ? '' : 'chapterNumber', $pb.PbFieldType.OF, protoName: 'chapterNumber')
+        ..a<$core.int>(10, _omitFieldNames ? '' : 'sourceOrder', $pb.PbFieldType.O3, protoName: 'sourceOrder')
+        ..a<$core.int>(800, _omitFieldNames ? '' : 'pagesLeft', $pb.PbFieldType.O3, protoName: 'pagesLeft');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -398,19 +365,16 @@ class BackupChapter extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupChapter copyWith(void Function(BackupChapter) updates) =>
-      super.copyWith((message) => updates(message as BackupChapter))
-          as BackupChapter;
+      super.copyWith((message) => updates(message as BackupChapter)) as BackupChapter;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupChapter create() => BackupChapter._();
   BackupChapter createEmptyInstance() => create();
-  static $pb.PbList<BackupChapter> createRepeated() =>
-      $pb.PbList<BackupChapter>();
+  static $pb.PbList<BackupChapter> createRepeated() => $pb.PbList<BackupChapter>();
   @$core.pragma('dart2js:noInline')
-  static BackupChapter getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupChapter>(create);
+  static BackupChapter getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupChapter>(create);
   static BackupChapter? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -566,21 +530,17 @@ class BackupHistory extends $pb.GeneratedMessage {
     return $result;
   }
   BackupHistory._() : super();
-  factory BackupHistory.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupHistory.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupHistory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupHistory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupHistory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
-        protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aInt64(3, _omitFieldNames ? '' : 'readDuration',
-        protoName: 'readDuration');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupHistory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
+            protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..aInt64(3, _omitFieldNames ? '' : 'readDuration', protoName: 'readDuration');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -590,19 +550,16 @@ class BackupHistory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupHistory copyWith(void Function(BackupHistory) updates) =>
-      super.copyWith((message) => updates(message as BackupHistory))
-          as BackupHistory;
+      super.copyWith((message) => updates(message as BackupHistory)) as BackupHistory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupHistory create() => BackupHistory._();
   BackupHistory createEmptyInstance() => create();
-  static $pb.PbList<BackupHistory> createRepeated() =>
-      $pb.PbList<BackupHistory>();
+  static $pb.PbList<BackupHistory> createRepeated() => $pb.PbList<BackupHistory>();
   @$core.pragma('dart2js:noInline')
-  static BackupHistory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupHistory>(create);
+  static BackupHistory getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupHistory>(create);
   static BackupHistory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -664,18 +621,15 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
   factory BrokenBackupHistory.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BrokenBackupHistory.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BrokenBackupHistory.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BrokenBackupHistory',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'url')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
-        protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aInt64(3, _omitFieldNames ? '' : 'readDuration',
-        protoName: 'readDuration');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BrokenBackupHistory', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'url')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'lastRead', $pb.PbFieldType.Q6,
+            protoName: 'lastRead', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..aInt64(3, _omitFieldNames ? '' : 'readDuration', protoName: 'readDuration');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -685,19 +639,17 @@ class BrokenBackupHistory extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BrokenBackupHistory copyWith(void Function(BrokenBackupHistory) updates) =>
-      super.copyWith((message) => updates(message as BrokenBackupHistory))
-          as BrokenBackupHistory;
+      super.copyWith((message) => updates(message as BrokenBackupHistory)) as BrokenBackupHistory;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BrokenBackupHistory create() => BrokenBackupHistory._();
   BrokenBackupHistory createEmptyInstance() => create();
-  static $pb.PbList<BrokenBackupHistory> createRepeated() =>
-      $pb.PbList<BrokenBackupHistory>();
+  static $pb.PbList<BrokenBackupHistory> createRepeated() => $pb.PbList<BrokenBackupHistory>();
   @$core.pragma('dart2js:noInline')
-  static BrokenBackupHistory getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BrokenBackupHistory>(create);
+  static BrokenBackupHistory getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BrokenBackupHistory>(create);
   static BrokenBackupHistory? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -849,18 +801,13 @@ class BackupManga extends $pb.GeneratedMessage {
     return $result;
   }
   BackupManga._() : super();
-  factory BackupManga.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupManga.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupManga.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupManga.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupManga',
-      createEmptyInstance: create)
-    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'source', $pb.PbFieldType.Q6,
-        defaultOrMaker: $fixnum.Int64.ZERO)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupManga', createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'source', $pb.PbFieldType.Q6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aQS(2, _omitFieldNames ? '' : 'url')
     ..aOS(3, _omitFieldNames ? '' : 'title')
     ..aOS(4, _omitFieldNames ? '' : 'artist')
@@ -871,39 +818,25 @@ class BackupManga extends $pb.GeneratedMessage {
     ..aOS(9, _omitFieldNames ? '' : 'thumbnailUrl', protoName: 'thumbnailUrl')
     ..aInt64(13, _omitFieldNames ? '' : 'dateAdded', protoName: 'dateAdded')
     ..a<$core.int>(14, _omitFieldNames ? '' : 'viewer', $pb.PbFieldType.O3)
-    ..pc<BackupChapter>(
-        16, _omitFieldNames ? '' : 'chapters', $pb.PbFieldType.PM,
-        subBuilder: BackupChapter.create)
+    ..pc<BackupChapter>(16, _omitFieldNames ? '' : 'chapters', $pb.PbFieldType.PM, subBuilder: BackupChapter.create)
     ..p<$core.int>(17, _omitFieldNames ? '' : 'categories', $pb.PbFieldType.P3)
-    ..pc<BackupTracking>(
-        18, _omitFieldNames ? '' : 'tracking', $pb.PbFieldType.PM,
-        subBuilder: BackupTracking.create)
+    ..pc<BackupTracking>(18, _omitFieldNames ? '' : 'tracking', $pb.PbFieldType.PM, subBuilder: BackupTracking.create)
     ..aOB(100, _omitFieldNames ? '' : 'favorite')
-    ..a<$core.int>(
-        101, _omitFieldNames ? '' : 'chapterFlags', $pb.PbFieldType.O3,
-        protoName: 'chapterFlags')
-    ..pc<BrokenBackupHistory>(
-        102, _omitFieldNames ? '' : 'brokenHistory', $pb.PbFieldType.PM,
+    ..a<$core.int>(101, _omitFieldNames ? '' : 'chapterFlags', $pb.PbFieldType.O3, protoName: 'chapterFlags')
+    ..pc<BrokenBackupHistory>(102, _omitFieldNames ? '' : 'brokenHistory', $pb.PbFieldType.PM,
         protoName: 'brokenHistory', subBuilder: BrokenBackupHistory.create)
-    ..a<$core.int>(
-        103, _omitFieldNames ? '' : 'viewerFlags', $pb.PbFieldType.O3)
-    ..pc<BackupHistory>(
-        104, _omitFieldNames ? '' : 'history', $pb.PbFieldType.PM,
-        subBuilder: BackupHistory.create)
-    ..e<UpdateStrategy>(
-        105, _omitFieldNames ? '' : 'updateStrategy', $pb.PbFieldType.OE,
+    ..a<$core.int>(103, _omitFieldNames ? '' : 'viewerFlags', $pb.PbFieldType.O3)
+    ..pc<BackupHistory>(104, _omitFieldNames ? '' : 'history', $pb.PbFieldType.PM, subBuilder: BackupHistory.create)
+    ..e<UpdateStrategy>(105, _omitFieldNames ? '' : 'updateStrategy', $pb.PbFieldType.OE,
         protoName: 'updateStrategy',
         defaultOrMaker: UpdateStrategy.ALWAYS_UPDATE,
         valueOf: UpdateStrategy.valueOf,
         enumValues: UpdateStrategy.values)
-    ..a<$core.int>(
-        602, _omitFieldNames ? '' : 'customStatus', $pb.PbFieldType.O3,
-        protoName: 'customStatus')
+    ..a<$core.int>(602, _omitFieldNames ? '' : 'customStatus', $pb.PbFieldType.O3, protoName: 'customStatus')
     ..aOS(800, _omitFieldNames ? '' : 'customTitle', protoName: 'customTitle')
     ..aOS(801, _omitFieldNames ? '' : 'customArtist', protoName: 'customArtist')
     ..aOS(802, _omitFieldNames ? '' : 'customAuthor', protoName: 'customAuthor')
-    ..aOS(804, _omitFieldNames ? '' : 'customDescription',
-        protoName: 'customDescription')
+    ..aOS(804, _omitFieldNames ? '' : 'customDescription', protoName: 'customDescription')
     ..pPS(805, _omitFieldNames ? '' : 'customGenre', protoName: 'customGenre');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -914,8 +847,7 @@ class BackupManga extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupManga copyWith(void Function(BackupManga) updates) =>
-      super.copyWith((message) => updates(message as BackupManga))
-          as BackupManga;
+      super.copyWith((message) => updates(message as BackupManga)) as BackupManga;
 
   $pb.BuilderInfo get info_ => _i;
 
@@ -924,8 +856,7 @@ class BackupManga extends $pb.GeneratedMessage {
   BackupManga createEmptyInstance() => create();
   static $pb.PbList<BackupManga> createRepeated() => $pb.PbList<BackupManga>();
   @$core.pragma('dart2js:noInline')
-  static BackupManga getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupManga>(create);
+  static BackupManga getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupManga>(create);
   static BackupManga? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1197,16 +1128,13 @@ class BackupPreference extends $pb.GeneratedMessage {
   factory BackupPreference.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupPreference.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupPreference.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupPreference',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'key')
-    ..aQM<PreferenceValue>(2, _omitFieldNames ? '' : 'value',
-        subBuilder: PreferenceValue.create);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupPreference', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'key')
+        ..aQM<PreferenceValue>(2, _omitFieldNames ? '' : 'value', subBuilder: PreferenceValue.create);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1216,19 +1144,17 @@ class BackupPreference extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupPreference copyWith(void Function(BackupPreference) updates) =>
-      super.copyWith((message) => updates(message as BackupPreference))
-          as BackupPreference;
+      super.copyWith((message) => updates(message as BackupPreference)) as BackupPreference;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupPreference create() => BackupPreference._();
   BackupPreference createEmptyInstance() => create();
-  static $pb.PbList<BackupPreference> createRepeated() =>
-      $pb.PbList<BackupPreference>();
+  static $pb.PbList<BackupPreference> createRepeated() => $pb.PbList<BackupPreference>();
   @$core.pragma('dart2js:noInline')
-  static BackupPreference getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupPreference>(create);
+  static BackupPreference getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupPreference>(create);
   static BackupPreference? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1276,41 +1202,33 @@ class BackupSourcePreferences extends $pb.GeneratedMessage {
   factory BackupSourcePreferences.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupSourcePreferences.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupSourcePreferences.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupSourcePreferences',
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupSourcePreferences',
       createEmptyInstance: create)
     ..aQS(1, _omitFieldNames ? '' : 'sourceKey', protoName: 'sourceKey')
-    ..pc<BackupPreference>(
-        2, _omitFieldNames ? '' : 'prefs', $pb.PbFieldType.PM,
-        subBuilder: BackupPreference.create);
+    ..pc<BackupPreference>(2, _omitFieldNames ? '' : 'prefs', $pb.PbFieldType.PM, subBuilder: BackupPreference.create);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
       'Will be removed in next major version')
-  BackupSourcePreferences clone() =>
-      BackupSourcePreferences()..mergeFromMessage(this);
+  BackupSourcePreferences clone() => BackupSourcePreferences()..mergeFromMessage(this);
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  BackupSourcePreferences copyWith(
-          void Function(BackupSourcePreferences) updates) =>
-      super.copyWith((message) => updates(message as BackupSourcePreferences))
-          as BackupSourcePreferences;
+  BackupSourcePreferences copyWith(void Function(BackupSourcePreferences) updates) =>
+      super.copyWith((message) => updates(message as BackupSourcePreferences)) as BackupSourcePreferences;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupSourcePreferences create() => BackupSourcePreferences._();
   BackupSourcePreferences createEmptyInstance() => create();
-  static $pb.PbList<BackupSourcePreferences> createRepeated() =>
-      $pb.PbList<BackupSourcePreferences>();
+  static $pb.PbList<BackupSourcePreferences> createRepeated() => $pb.PbList<BackupSourcePreferences>();
   @$core.pragma('dart2js:noInline')
-  static BackupSourcePreferences getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupSourcePreferences>(create);
+  static BackupSourcePreferences getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupSourcePreferences>(create);
   static BackupSourcePreferences? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1343,14 +1261,12 @@ class IntPreferenceValue extends $pb.GeneratedMessage {
   factory IntPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory IntPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory IntPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'IntPreferenceValue',
-      createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q3);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'IntPreferenceValue', createEmptyInstance: create)
+        ..a<$core.int>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q3);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1360,19 +1276,17 @@ class IntPreferenceValue extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   IntPreferenceValue copyWith(void Function(IntPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as IntPreferenceValue))
-          as IntPreferenceValue;
+      super.copyWith((message) => updates(message as IntPreferenceValue)) as IntPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static IntPreferenceValue create() => IntPreferenceValue._();
   IntPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<IntPreferenceValue> createRepeated() =>
-      $pb.PbList<IntPreferenceValue>();
+  static $pb.PbList<IntPreferenceValue> createRepeated() => $pb.PbList<IntPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static IntPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<IntPreferenceValue>(create);
+  static IntPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IntPreferenceValue>(create);
   static IntPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1402,15 +1316,12 @@ class LongPreferenceValue extends $pb.GeneratedMessage {
   factory LongPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory LongPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory LongPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'LongPreferenceValue',
-      createEmptyInstance: create)
-    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q6,
-        defaultOrMaker: $fixnum.Int64.ZERO);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'LongPreferenceValue', createEmptyInstance: create)
+        ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q6, defaultOrMaker: $fixnum.Int64.ZERO);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1420,19 +1331,17 @@ class LongPreferenceValue extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   LongPreferenceValue copyWith(void Function(LongPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as LongPreferenceValue))
-          as LongPreferenceValue;
+      super.copyWith((message) => updates(message as LongPreferenceValue)) as LongPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static LongPreferenceValue create() => LongPreferenceValue._();
   LongPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<LongPreferenceValue> createRepeated() =>
-      $pb.PbList<LongPreferenceValue>();
+  static $pb.PbList<LongPreferenceValue> createRepeated() => $pb.PbList<LongPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static LongPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<LongPreferenceValue>(create);
+  static LongPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LongPreferenceValue>(create);
   static LongPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1462,37 +1371,32 @@ class FloatPreferenceValue extends $pb.GeneratedMessage {
   factory FloatPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory FloatPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory FloatPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'FloatPreferenceValue',
-      createEmptyInstance: create)
-    ..a<$core.double>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QF);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'FloatPreferenceValue', createEmptyInstance: create)
+        ..a<$core.double>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QF);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
       'Will be removed in next major version')
-  FloatPreferenceValue clone() =>
-      FloatPreferenceValue()..mergeFromMessage(this);
+  FloatPreferenceValue clone() => FloatPreferenceValue()..mergeFromMessage(this);
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   FloatPreferenceValue copyWith(void Function(FloatPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as FloatPreferenceValue))
-          as FloatPreferenceValue;
+      super.copyWith((message) => updates(message as FloatPreferenceValue)) as FloatPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static FloatPreferenceValue create() => FloatPreferenceValue._();
   FloatPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<FloatPreferenceValue> createRepeated() =>
-      $pb.PbList<FloatPreferenceValue>();
+  static $pb.PbList<FloatPreferenceValue> createRepeated() => $pb.PbList<FloatPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static FloatPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<FloatPreferenceValue>(create);
+  static FloatPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FloatPreferenceValue>(create);
   static FloatPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1522,38 +1426,32 @@ class StringPreferenceValue extends $pb.GeneratedMessage {
   factory StringPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory StringPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory StringPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'StringPreferenceValue',
-      createEmptyInstance: create)
-    ..aQS(1, _omitFieldNames ? '' : 'value');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'StringPreferenceValue', createEmptyInstance: create)
+        ..aQS(1, _omitFieldNames ? '' : 'value');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
       'Will be removed in next major version')
-  StringPreferenceValue clone() =>
-      StringPreferenceValue()..mergeFromMessage(this);
+  StringPreferenceValue clone() => StringPreferenceValue()..mergeFromMessage(this);
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  StringPreferenceValue copyWith(
-          void Function(StringPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as StringPreferenceValue))
-          as StringPreferenceValue;
+  StringPreferenceValue copyWith(void Function(StringPreferenceValue) updates) =>
+      super.copyWith((message) => updates(message as StringPreferenceValue)) as StringPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static StringPreferenceValue create() => StringPreferenceValue._();
   StringPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<StringPreferenceValue> createRepeated() =>
-      $pb.PbList<StringPreferenceValue>();
+  static $pb.PbList<StringPreferenceValue> createRepeated() => $pb.PbList<StringPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static StringPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<StringPreferenceValue>(create);
+  static StringPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StringPreferenceValue>(create);
   static StringPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1583,38 +1481,32 @@ class BooleanPreferenceValue extends $pb.GeneratedMessage {
   factory BooleanPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BooleanPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BooleanPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BooleanPreferenceValue',
-      createEmptyInstance: create)
-    ..a<$core.bool>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QB);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BooleanPreferenceValue', createEmptyInstance: create)
+        ..a<$core.bool>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QB);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
       'Will be removed in next major version')
-  BooleanPreferenceValue clone() =>
-      BooleanPreferenceValue()..mergeFromMessage(this);
+  BooleanPreferenceValue clone() => BooleanPreferenceValue()..mergeFromMessage(this);
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  BooleanPreferenceValue copyWith(
-          void Function(BooleanPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as BooleanPreferenceValue))
-          as BooleanPreferenceValue;
+  BooleanPreferenceValue copyWith(void Function(BooleanPreferenceValue) updates) =>
+      super.copyWith((message) => updates(message as BooleanPreferenceValue)) as BooleanPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BooleanPreferenceValue create() => BooleanPreferenceValue._();
   BooleanPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<BooleanPreferenceValue> createRepeated() =>
-      $pb.PbList<BooleanPreferenceValue>();
+  static $pb.PbList<BooleanPreferenceValue> createRepeated() => $pb.PbList<BooleanPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static BooleanPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BooleanPreferenceValue>(create);
+  static BooleanPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BooleanPreferenceValue>(create);
   static BooleanPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1644,39 +1536,33 @@ class StringSetPreferenceValue extends $pb.GeneratedMessage {
   factory StringSetPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory StringSetPreferenceValue.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory StringSetPreferenceValue.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'StringSetPreferenceValue',
-      createEmptyInstance: create)
-    ..pPS(1, _omitFieldNames ? '' : 'value')
-    ..hasRequiredFields = false;
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'StringSetPreferenceValue', createEmptyInstance: create)
+        ..pPS(1, _omitFieldNames ? '' : 'value')
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
       'Will be removed in next major version')
-  StringSetPreferenceValue clone() =>
-      StringSetPreferenceValue()..mergeFromMessage(this);
+  StringSetPreferenceValue clone() => StringSetPreferenceValue()..mergeFromMessage(this);
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
-  StringSetPreferenceValue copyWith(
-          void Function(StringSetPreferenceValue) updates) =>
-      super.copyWith((message) => updates(message as StringSetPreferenceValue))
-          as StringSetPreferenceValue;
+  StringSetPreferenceValue copyWith(void Function(StringSetPreferenceValue) updates) =>
+      super.copyWith((message) => updates(message as StringSetPreferenceValue)) as StringSetPreferenceValue;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static StringSetPreferenceValue create() => StringSetPreferenceValue._();
   StringSetPreferenceValue createEmptyInstance() => create();
-  static $pb.PbList<StringSetPreferenceValue> createRepeated() =>
-      $pb.PbList<StringSetPreferenceValue>();
+  static $pb.PbList<StringSetPreferenceValue> createRepeated() => $pb.PbList<StringSetPreferenceValue>();
   @$core.pragma('dart2js:noInline')
-  static StringSetPreferenceValue getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<StringSetPreferenceValue>(create);
+  static StringSetPreferenceValue getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StringSetPreferenceValue>(create);
   static StringSetPreferenceValue? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1703,16 +1589,14 @@ class BrokenBackupSource extends $pb.GeneratedMessage {
   factory BrokenBackupSource.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BrokenBackupSource.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BrokenBackupSource.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BrokenBackupSource',
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'sourceId', $pb.PbFieldType.Q6,
-        protoName: 'sourceId', defaultOrMaker: $fixnum.Int64.ZERO);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BrokenBackupSource', createEmptyInstance: create)
+        ..aOS(1, _omitFieldNames ? '' : 'name')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'sourceId', $pb.PbFieldType.Q6,
+            protoName: 'sourceId', defaultOrMaker: $fixnum.Int64.ZERO);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1722,19 +1606,17 @@ class BrokenBackupSource extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BrokenBackupSource copyWith(void Function(BrokenBackupSource) updates) =>
-      super.copyWith((message) => updates(message as BrokenBackupSource))
-          as BrokenBackupSource;
+      super.copyWith((message) => updates(message as BrokenBackupSource)) as BrokenBackupSource;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BrokenBackupSource create() => BrokenBackupSource._();
   BrokenBackupSource createEmptyInstance() => create();
-  static $pb.PbList<BrokenBackupSource> createRepeated() =>
-      $pb.PbList<BrokenBackupSource>();
+  static $pb.PbList<BrokenBackupSource> createRepeated() => $pb.PbList<BrokenBackupSource>();
   @$core.pragma('dart2js:noInline')
-  static BrokenBackupSource getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BrokenBackupSource>(create);
+  static BrokenBackupSource getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BrokenBackupSource>(create);
   static BrokenBackupSource? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1777,19 +1659,16 @@ class BackupSource extends $pb.GeneratedMessage {
     return $result;
   }
   BackupSource._() : super();
-  factory BackupSource.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupSource.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupSource.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupSource.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupSource',
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'sourceId', $pb.PbFieldType.Q6,
-        protoName: 'sourceId', defaultOrMaker: $fixnum.Int64.ZERO);
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupSource', createEmptyInstance: create)
+        ..aOS(1, _omitFieldNames ? '' : 'name')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'sourceId', $pb.PbFieldType.Q6,
+            protoName: 'sourceId', defaultOrMaker: $fixnum.Int64.ZERO);
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1799,19 +1678,16 @@ class BackupSource extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupSource copyWith(void Function(BackupSource) updates) =>
-      super.copyWith((message) => updates(message as BackupSource))
-          as BackupSource;
+      super.copyWith((message) => updates(message as BackupSource)) as BackupSource;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupSource create() => BackupSource._();
   BackupSource createEmptyInstance() => create();
-  static $pb.PbList<BackupSource> createRepeated() =>
-      $pb.PbList<BackupSource>();
+  static $pb.PbList<BackupSource> createRepeated() => $pb.PbList<BackupSource>();
   @$core.pragma('dart2js:noInline')
-  static BackupSource getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupSource>(create);
+  static BackupSource getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupSource>(create);
   static BackupSource? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -1895,38 +1771,26 @@ class BackupTracking extends $pb.GeneratedMessage {
     return $result;
   }
   BackupTracking._() : super();
-  factory BackupTracking.fromBuffer($core.List<$core.int> i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupTracking.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(i, r);
-  factory BackupTracking.fromJson($core.String i,
-          [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
+  factory BackupTracking.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'BackupTracking',
-      createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'syncId', $pb.PbFieldType.Q3,
-        protoName: 'syncId')
-    ..a<$fixnum.Int64>(
-        2, _omitFieldNames ? '' : 'libraryId', $pb.PbFieldType.Q6,
-        protoName: 'libraryId', defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'mediaIdInt', $pb.PbFieldType.O3,
-        protoName: 'mediaIdInt')
-    ..aOS(4, _omitFieldNames ? '' : 'trackingUrl', protoName: 'trackingUrl')
-    ..aOS(5, _omitFieldNames ? '' : 'title')
-    ..a<$core.double>(
-        6, _omitFieldNames ? '' : 'lastChapterRead', $pb.PbFieldType.OF,
-        protoName: 'lastChapterRead')
-    ..a<$core.int>(
-        7, _omitFieldNames ? '' : 'totalChapters', $pb.PbFieldType.O3,
-        protoName: 'totalChapters')
-    ..a<$core.double>(8, _omitFieldNames ? '' : 'score', $pb.PbFieldType.OF)
-    ..a<$core.int>(9, _omitFieldNames ? '' : 'status', $pb.PbFieldType.O3)
-    ..aInt64(10, _omitFieldNames ? '' : 'startedReadingDate',
-        protoName: 'startedReadingDate')
-    ..aInt64(11, _omitFieldNames ? '' : 'finishedReadingDate',
-        protoName: 'finishedReadingDate')
-    ..aInt64(100, _omitFieldNames ? '' : 'mediaId', protoName: 'mediaId');
+  static final $pb.BuilderInfo _i =
+      $pb.BuilderInfo(_omitMessageNames ? '' : 'BackupTracking', createEmptyInstance: create)
+        ..a<$core.int>(1, _omitFieldNames ? '' : 'syncId', $pb.PbFieldType.Q3, protoName: 'syncId')
+        ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'libraryId', $pb.PbFieldType.Q6,
+            protoName: 'libraryId', defaultOrMaker: $fixnum.Int64.ZERO)
+        ..a<$core.int>(3, _omitFieldNames ? '' : 'mediaIdInt', $pb.PbFieldType.O3, protoName: 'mediaIdInt')
+        ..aOS(4, _omitFieldNames ? '' : 'trackingUrl', protoName: 'trackingUrl')
+        ..aOS(5, _omitFieldNames ? '' : 'title')
+        ..a<$core.double>(6, _omitFieldNames ? '' : 'lastChapterRead', $pb.PbFieldType.OF, protoName: 'lastChapterRead')
+        ..a<$core.int>(7, _omitFieldNames ? '' : 'totalChapters', $pb.PbFieldType.O3, protoName: 'totalChapters')
+        ..a<$core.double>(8, _omitFieldNames ? '' : 'score', $pb.PbFieldType.OF)
+        ..a<$core.int>(9, _omitFieldNames ? '' : 'status', $pb.PbFieldType.O3)
+        ..aInt64(10, _omitFieldNames ? '' : 'startedReadingDate', protoName: 'startedReadingDate')
+        ..aInt64(11, _omitFieldNames ? '' : 'finishedReadingDate', protoName: 'finishedReadingDate')
+        ..aInt64(100, _omitFieldNames ? '' : 'mediaId', protoName: 'mediaId');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1936,19 +1800,16 @@ class BackupTracking extends $pb.GeneratedMessage {
       'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
       'Will be removed in next major version')
   BackupTracking copyWith(void Function(BackupTracking) updates) =>
-      super.copyWith((message) => updates(message as BackupTracking))
-          as BackupTracking;
+      super.copyWith((message) => updates(message as BackupTracking)) as BackupTracking;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
   static BackupTracking create() => BackupTracking._();
   BackupTracking createEmptyInstance() => create();
-  static $pb.PbList<BackupTracking> createRepeated() =>
-      $pb.PbList<BackupTracking>();
+  static $pb.PbList<BackupTracking> createRepeated() => $pb.PbList<BackupTracking>();
   @$core.pragma('dart2js:noInline')
-  static BackupTracking getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<BackupTracking>(create);
+  static BackupTracking getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BackupTracking>(create);
   static BackupTracking? _defaultInstance;
 
   @$pb.TagNumber(1)
@@ -2097,5 +1958,4 @@ class BackupTracking extends $pb.GeneratedMessage {
 }
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
-const _omitMessageNames =
-    $core.bool.fromEnvironment('protobuf.omit_message_names');
+const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

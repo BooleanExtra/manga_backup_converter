@@ -1,15 +1,10 @@
 import 'package:characters/characters.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart'
-    as j2k;
-import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart'
-    as mihon;
-import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart'
-    as neko;
-import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart'
-    as sy;
-import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart'
-    as yokai;
+import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
+import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
+import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
+import 'package:mangabackupconverter_cli/src/proto/schema_sy.proto/proto/schema_sy.pb.dart' as sy;
+import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/schema_yokai.pb.dart' as yokai;
 
 part 'tachi_backup_category.mapper.dart';
 
@@ -24,17 +19,11 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
   /// This is represented by a char and must be null or exactly 1 char
   final String? mangaSort;
 
-  TachiBackupCategory({
-    required this.name,
-    required this.order,
-    required this.flags,
-    this.mangaSort,
-  }) : assert(
-         mangaSort == null ||
-             mangaSort.characters.isEmpty ||
-             mangaSort.characters.singleOrNull != null,
-         'mangaSort must be null, empty, or a single character',
-       );
+  TachiBackupCategory({required this.name, required this.order, required this.flags, this.mangaSort})
+    : assert(
+        mangaSort == null || mangaSort.characters.isEmpty || mangaSort.characters.singleOrNull != null,
+        'mangaSort must be null, empty, or a single character',
+      );
 
   factory TachiBackupCategory.fromMihon(mihon.BackupCategory backupCategory) {
     return TachiBackupCategory(
@@ -62,11 +51,7 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
   }
 
   factory TachiBackupCategory.fromNeko(neko.BackupCategory backupCategory) {
-    return TachiBackupCategory(
-      name: backupCategory.name,
-      order: backupCategory.order,
-      flags: backupCategory.flags,
-    );
+    return TachiBackupCategory(name: backupCategory.name, order: backupCategory.order, flags: backupCategory.flags);
   }
 
   factory TachiBackupCategory.fromYokai(yokai.BackupCategory backupCategory) {

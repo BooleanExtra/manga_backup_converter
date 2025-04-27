@@ -6,10 +6,7 @@ part 'mangayomi_backup_settings.mapper.dart';
 const _defaultUserAgent =
     'Mozilla/5.0 (Linux; Android 13; 22081212UG Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.131 Mobile Safari/537.36';
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupSettings with MangayomiBackupSettingsMappable {
   final int? id;
   final DisplayType displayType;
@@ -244,22 +241,12 @@ enum SectionType { all, anime, manga }
 enum DisplayType { compactGrid, comfortableGrid, coverOnlyGrid, list }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
-enum ScaleType {
-  fitScreen,
-  stretch,
-  fitWidth,
-  fitHeight,
-  originalSize,
-  smartFit,
-}
+enum ScaleType { fitScreen, stretch, fitWidth, fitHeight, originalSize, smartFit }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum BackgroundColor { black, grey, white, automatic }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MCookie with MCookieMappable {
   final String? host;
   final String? cookie;
@@ -270,10 +257,7 @@ class MCookie with MCookieMappable {
   static const fromJson = MCookieMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SortLibraryManga with SortLibraryMangaMappable {
   final bool? reverse;
   final int? index;
@@ -284,10 +268,7 @@ class SortLibraryManga with SortLibraryMangaMappable {
   static const fromJson = SortLibraryMangaMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SortChapter with SortChapterMappable {
   final int? mangaId;
   final bool? reverse;
@@ -299,10 +280,7 @@ class SortChapter with SortChapterMappable {
   static const fromJson = SortChapterMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterDownloaded with ChapterFilterDownloadedMappable {
   final int? mangaId;
   final int? type;
@@ -313,10 +291,7 @@ class ChapterFilterDownloaded with ChapterFilterDownloadedMappable {
   static const fromJson = ChapterFilterDownloadedMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterUnread with ChapterFilterUnreadMappable {
   final int? mangaId;
   final int? type;
@@ -327,10 +302,7 @@ class ChapterFilterUnread with ChapterFilterUnreadMappable {
   static const fromJson = ChapterFilterUnreadMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterBookmarked with ChapterFilterBookmarkedMappable {
   final int? mangaId;
   final int? type;
@@ -341,10 +313,7 @@ class ChapterFilterBookmarked with ChapterFilterBookmarkedMappable {
   static const fromJson = ChapterFilterBookmarkedMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterPageurls with ChapterPageurlsMappable {
   final int? chapterId;
   final List<String>? urls;
@@ -356,10 +325,7 @@ class ChapterPageurls with ChapterPageurlsMappable {
   static const fromJson = ChapterPageurlsMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterPageIndex with ChapterPageIndexMappable {
   final int? chapterId;
   final int? index;
@@ -370,46 +336,30 @@ class ChapterPageIndex with ChapterPageIndexMappable {
   static const fromJson = ChapterPageIndexMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PersonalReaderMode with PersonalReaderModeMappable {
   final int? mangaId;
   final ReaderMode readerMode;
 
-  const PersonalReaderMode({
-    this.mangaId,
-    this.readerMode = ReaderMode.vertical,
-  });
+  const PersonalReaderMode({this.mangaId, this.readerMode = ReaderMode.vertical});
 
   static const fromMap = PersonalReaderModeMapper.fromMap;
   static const fromJson = PersonalReaderModeMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class AutoScrollPages with AutoScrollPagesMappable {
   final int? mangaId;
   final double? pageOffset;
   final bool? autoScroll;
 
-  const AutoScrollPages({
-    this.mangaId,
-    this.pageOffset = 10,
-    this.autoScroll = false,
-  });
+  const AutoScrollPages({this.mangaId, this.pageOffset = 10, this.autoScroll = false});
 
   static const fromMap = AutoScrollPagesMapper.fromMap;
   static const fromJson = AutoScrollPagesMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class Repo with RepoMappable {
   final String? name;
   final String? website;
@@ -421,10 +371,7 @@ class Repo with RepoMappable {
   static const fromJson = RepoMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PersonalPageMode with PersonalPageModeMappable {
   final int? mangaId;
   final PageMode pageMode;
@@ -436,14 +383,7 @@ class PersonalPageMode with PersonalPageModeMappable {
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
-enum ReaderMode {
-  vertical,
-  ltr,
-  rtl,
-  verticalContinuous,
-  webtoon,
-  horizontalContinuous,
-}
+enum ReaderMode { vertical, ltr, rtl, verticalContinuous, webtoon, horizontalContinuous }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum NovelTextAlign { left, center, right, block }
@@ -451,10 +391,7 @@ enum NovelTextAlign { left, center, right, block }
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum PageMode { onePage, doublePage }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class FilterScanlator with FilterScanlatorMappable {
   final int? mangaId;
   final List<String>? scanlators;
@@ -465,10 +402,7 @@ class FilterScanlator with FilterScanlatorMappable {
   static const fromJson = FilterScanlatorMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class L10nLocale with L10nLocaleMappable {
   final String? languageCode;
   final String? countryCode;
@@ -479,10 +413,7 @@ class L10nLocale with L10nLocaleMappable {
   static const fromJson = L10nLocaleMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class CustomColorFilter with CustomColorFilterMappable {
   final int? a;
   final int? r;
@@ -495,10 +426,7 @@ class CustomColorFilter with CustomColorFilterMappable {
   static const fromJson = CustomColorFilterMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PlayerSubtitleSettings with PlayerSubtitleSettingsMappable {
   final int? fontSize;
   final bool? useBold;

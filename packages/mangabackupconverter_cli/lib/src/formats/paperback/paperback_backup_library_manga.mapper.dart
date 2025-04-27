@@ -6,16 +6,13 @@
 
 part of 'paperback_backup_library_manga.dart';
 
-class PaperbackBackupLibraryMangaMapper
-    extends ClassMapperBase<PaperbackBackupLibraryManga> {
+class PaperbackBackupLibraryMangaMapper extends ClassMapperBase<PaperbackBackupLibraryManga> {
   PaperbackBackupLibraryMangaMapper._();
 
   static PaperbackBackupLibraryMangaMapper? _instance;
   static PaperbackBackupLibraryMangaMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(
-        _instance = PaperbackBackupLibraryMangaMapper._(),
-      );
+      MapperContainer.globals.use(_instance = PaperbackBackupLibraryMangaMapper._());
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
       PaperbackBackupLibraryTabMapper.ensureInitialized();
       PaperbackBackupItemReferenceMapper.ensureInitialized();
@@ -26,49 +23,35 @@ class PaperbackBackupLibraryMangaMapper
   @override
   final String id = 'PaperbackBackupLibraryManga';
 
-  static List<PaperbackBackupLibraryTab> _$libraryTabs(
-    PaperbackBackupLibraryManga v,
-  ) => v.libraryTabs;
-  static const Field<
-    PaperbackBackupLibraryManga,
-    List<PaperbackBackupLibraryTab>
-  >
-  _f$libraryTabs = Field('libraryTabs', _$libraryTabs);
+  static List<PaperbackBackupLibraryTab> _$libraryTabs(PaperbackBackupLibraryManga v) => v.libraryTabs;
+  static const Field<PaperbackBackupLibraryManga, List<PaperbackBackupLibraryTab>> _f$libraryTabs = Field(
+    'libraryTabs',
+    _$libraryTabs,
+  );
   static DateTime? _$lastRead(PaperbackBackupLibraryManga v) => v.lastRead;
-  static const Field<PaperbackBackupLibraryManga, DateTime> _f$lastRead = Field(
-    'lastRead',
-    _$lastRead,
+  static const Field<PaperbackBackupLibraryManga, DateTime> _f$lastRead = Field('lastRead', _$lastRead);
+  static PaperbackBackupItemReference _$primarySource(PaperbackBackupLibraryManga v) => v.primarySource;
+  static const Field<PaperbackBackupLibraryManga, PaperbackBackupItemReference> _f$primarySource = Field(
+    'primarySource',
+    _$primarySource,
   );
-  static PaperbackBackupItemReference _$primarySource(
-    PaperbackBackupLibraryManga v,
-  ) => v.primarySource;
-  static const Field<PaperbackBackupLibraryManga, PaperbackBackupItemReference>
-  _f$primarySource = Field('primarySource', _$primarySource);
-  static DateTime? _$dateBookmarked(PaperbackBackupLibraryManga v) =>
-      v.dateBookmarked;
-  static const Field<PaperbackBackupLibraryManga, DateTime> _f$dateBookmarked =
-      Field('dateBookmarked', _$dateBookmarked);
-  static List<PaperbackBackupItemReference> _$trackedSources(
-    PaperbackBackupLibraryManga v,
-  ) => v.trackedSources;
-  static const Field<
-    PaperbackBackupLibraryManga,
-    List<PaperbackBackupItemReference>
-  >
-  _f$trackedSources = Field('trackedSources', _$trackedSources);
+  static DateTime? _$dateBookmarked(PaperbackBackupLibraryManga v) => v.dateBookmarked;
+  static const Field<PaperbackBackupLibraryManga, DateTime> _f$dateBookmarked = Field(
+    'dateBookmarked',
+    _$dateBookmarked,
+  );
+  static List<PaperbackBackupItemReference> _$trackedSources(PaperbackBackupLibraryManga v) => v.trackedSources;
+  static const Field<PaperbackBackupLibraryManga, List<PaperbackBackupItemReference>> _f$trackedSources = Field(
+    'trackedSources',
+    _$trackedSources,
+  );
   static String _$id(PaperbackBackupLibraryManga v) => v.id;
-  static const Field<PaperbackBackupLibraryManga, String> _f$id = Field(
-    'id',
-    _$id,
+  static const Field<PaperbackBackupLibraryManga, String> _f$id = Field('id', _$id);
+  static List<PaperbackBackupItemReference> _$secondarySources(PaperbackBackupLibraryManga v) => v.secondarySources;
+  static const Field<PaperbackBackupLibraryManga, List<PaperbackBackupItemReference>> _f$secondarySources = Field(
+    'secondarySources',
+    _$secondarySources,
   );
-  static List<PaperbackBackupItemReference> _$secondarySources(
-    PaperbackBackupLibraryManga v,
-  ) => v.secondarySources;
-  static const Field<
-    PaperbackBackupLibraryManga,
-    List<PaperbackBackupItemReference>
-  >
-  _f$secondarySources = Field('secondarySources', _$secondarySources);
 
   @override
   final MappableFields<PaperbackBackupLibraryManga> fields = const {
@@ -107,17 +90,15 @@ class PaperbackBackupLibraryMangaMapper
 
 mixin PaperbackBackupLibraryMangaMappable {
   String toJson() {
-    return PaperbackBackupLibraryMangaMapper.ensureInitialized()
-        .encodeJson<PaperbackBackupLibraryManga>(
-          this as PaperbackBackupLibraryManga,
-        );
+    return PaperbackBackupLibraryMangaMapper.ensureInitialized().encodeJson<PaperbackBackupLibraryManga>(
+      this as PaperbackBackupLibraryManga,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return PaperbackBackupLibraryMangaMapper.ensureInitialized()
-        .encodeMap<PaperbackBackupLibraryManga>(
-          this as PaperbackBackupLibraryManga,
-        );
+    return PaperbackBackupLibraryMangaMapper.ensureInitialized().encodeMap<PaperbackBackupLibraryManga>(
+      this as PaperbackBackupLibraryManga,
+    );
   }
 
   PaperbackBackupLibraryMangaCopyWith<
@@ -125,16 +106,10 @@ mixin PaperbackBackupLibraryMangaMappable {
     PaperbackBackupLibraryManga,
     PaperbackBackupLibraryManga
   >
-  get copyWith => _PaperbackBackupLibraryMangaCopyWithImpl(
-    this as PaperbackBackupLibraryManga,
-    $identity,
-    $identity,
-  );
+  get copyWith => _PaperbackBackupLibraryMangaCopyWithImpl(this as PaperbackBackupLibraryManga, $identity, $identity);
   @override
   String toString() {
-    return PaperbackBackupLibraryMangaMapper.ensureInitialized().stringifyValue(
-      this as PaperbackBackupLibraryManga,
-    );
+    return PaperbackBackupLibraryMangaMapper.ensureInitialized().stringifyValue(this as PaperbackBackupLibraryManga);
   }
 
   @override
@@ -147,60 +122,35 @@ mixin PaperbackBackupLibraryMangaMappable {
 
   @override
   int get hashCode {
-    return PaperbackBackupLibraryMangaMapper.ensureInitialized().hashValue(
-      this as PaperbackBackupLibraryManga,
-    );
+    return PaperbackBackupLibraryMangaMapper.ensureInitialized().hashValue(this as PaperbackBackupLibraryManga);
   }
 }
 
-extension PaperbackBackupLibraryMangaValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, PaperbackBackupLibraryManga, $Out> {
-  PaperbackBackupLibraryMangaCopyWith<$R, PaperbackBackupLibraryManga, $Out>
-  get $asPaperbackBackupLibraryManga => $base.as(
-    (v, t, t2) => _PaperbackBackupLibraryMangaCopyWithImpl(v, t, t2),
-  );
+extension PaperbackBackupLibraryMangaValueCopy<$R, $Out> on ObjectCopyWith<$R, PaperbackBackupLibraryManga, $Out> {
+  PaperbackBackupLibraryMangaCopyWith<$R, PaperbackBackupLibraryManga, $Out> get $asPaperbackBackupLibraryManga =>
+      $base.as((v, t, t2) => _PaperbackBackupLibraryMangaCopyWithImpl(v, t, t2));
 }
 
-abstract class PaperbackBackupLibraryMangaCopyWith<
-  $R,
-  $In extends PaperbackBackupLibraryManga,
-  $Out
->
+abstract class PaperbackBackupLibraryMangaCopyWith<$R, $In extends PaperbackBackupLibraryManga, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<
     $R,
     PaperbackBackupLibraryTab,
-    PaperbackBackupLibraryTabCopyWith<
-      $R,
-      PaperbackBackupLibraryTab,
-      PaperbackBackupLibraryTab
-    >
+    PaperbackBackupLibraryTabCopyWith<$R, PaperbackBackupLibraryTab, PaperbackBackupLibraryTab>
   >
   get libraryTabs;
-  PaperbackBackupItemReferenceCopyWith<
-    $R,
-    PaperbackBackupItemReference,
-    PaperbackBackupItemReference
-  >
+  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
   get primarySource;
   ListCopyWith<
     $R,
     PaperbackBackupItemReference,
-    PaperbackBackupItemReferenceCopyWith<
-      $R,
-      PaperbackBackupItemReference,
-      PaperbackBackupItemReference
-    >
+    PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
   >
   get trackedSources;
   ListCopyWith<
     $R,
     PaperbackBackupItemReference,
-    PaperbackBackupItemReferenceCopyWith<
-      $R,
-      PaperbackBackupItemReference,
-      PaperbackBackupItemReference
-    >
+    PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
   >
   get secondarySources;
   $R call({
@@ -212,24 +162,13 @@ abstract class PaperbackBackupLibraryMangaCopyWith<
     String? id,
     List<PaperbackBackupItemReference>? secondarySources,
   });
-  PaperbackBackupLibraryMangaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  PaperbackBackupLibraryMangaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
 class _PaperbackBackupLibraryMangaCopyWithImpl<$R, $Out>
     extends ClassCopyWithBase<$R, PaperbackBackupLibraryManga, $Out>
-    implements
-        PaperbackBackupLibraryMangaCopyWith<
-          $R,
-          PaperbackBackupLibraryManga,
-          $Out
-        > {
-  _PaperbackBackupLibraryMangaCopyWithImpl(
-    super.value,
-    super.then,
-    super.then2,
-  );
+    implements PaperbackBackupLibraryMangaCopyWith<$R, PaperbackBackupLibraryManga, $Out> {
+  _PaperbackBackupLibraryMangaCopyWithImpl(super.value, super.then, super.then2);
 
   @override
   late final ClassMapperBase<PaperbackBackupLibraryManga> $mapper =
@@ -238,55 +177,28 @@ class _PaperbackBackupLibraryMangaCopyWithImpl<$R, $Out>
   ListCopyWith<
     $R,
     PaperbackBackupLibraryTab,
-    PaperbackBackupLibraryTabCopyWith<
-      $R,
-      PaperbackBackupLibraryTab,
-      PaperbackBackupLibraryTab
-    >
+    PaperbackBackupLibraryTabCopyWith<$R, PaperbackBackupLibraryTab, PaperbackBackupLibraryTab>
   >
-  get libraryTabs => ListCopyWith(
-    $value.libraryTabs,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(libraryTabs: v),
-  );
+  get libraryTabs => ListCopyWith($value.libraryTabs, (v, t) => v.copyWith.$chain(t), (v) => call(libraryTabs: v));
   @override
-  PaperbackBackupItemReferenceCopyWith<
-    $R,
-    PaperbackBackupItemReference,
-    PaperbackBackupItemReference
-  >
-  get primarySource =>
-      $value.primarySource.copyWith.$chain((v) => call(primarySource: v));
+  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
+  get primarySource => $value.primarySource.copyWith.$chain((v) => call(primarySource: v));
   @override
   ListCopyWith<
     $R,
     PaperbackBackupItemReference,
-    PaperbackBackupItemReferenceCopyWith<
-      $R,
-      PaperbackBackupItemReference,
-      PaperbackBackupItemReference
-    >
+    PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
   >
-  get trackedSources => ListCopyWith(
-    $value.trackedSources,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(trackedSources: v),
-  );
+  get trackedSources =>
+      ListCopyWith($value.trackedSources, (v, t) => v.copyWith.$chain(t), (v) => call(trackedSources: v));
   @override
   ListCopyWith<
     $R,
     PaperbackBackupItemReference,
-    PaperbackBackupItemReferenceCopyWith<
-      $R,
-      PaperbackBackupItemReference,
-      PaperbackBackupItemReference
-    >
+    PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
   >
-  get secondarySources => ListCopyWith(
-    $value.secondarySources,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(secondarySources: v),
-  );
+  get secondarySources =>
+      ListCopyWith($value.secondarySources, (v, t) => v.copyWith.$chain(t), (v) => call(secondarySources: v));
   @override
   $R call({
     List<PaperbackBackupLibraryTab>? libraryTabs,
@@ -308,22 +220,17 @@ class _PaperbackBackupLibraryMangaCopyWithImpl<$R, $Out>
     }),
   );
   @override
-  PaperbackBackupLibraryManga $make(CopyWithData data) =>
-      PaperbackBackupLibraryManga(
-        libraryTabs: data.get(#libraryTabs, or: $value.libraryTabs),
-        lastRead: data.get(#lastRead, or: $value.lastRead),
-        primarySource: data.get(#primarySource, or: $value.primarySource),
-        dateBookmarked: data.get(#dateBookmarked, or: $value.dateBookmarked),
-        trackedSources: data.get(#trackedSources, or: $value.trackedSources),
-        id: data.get(#id, or: $value.id),
-        secondarySources: data.get(
-          #secondarySources,
-          or: $value.secondarySources,
-        ),
-      );
+  PaperbackBackupLibraryManga $make(CopyWithData data) => PaperbackBackupLibraryManga(
+    libraryTabs: data.get(#libraryTabs, or: $value.libraryTabs),
+    lastRead: data.get(#lastRead, or: $value.lastRead),
+    primarySource: data.get(#primarySource, or: $value.primarySource),
+    dateBookmarked: data.get(#dateBookmarked, or: $value.dateBookmarked),
+    trackedSources: data.get(#trackedSources, or: $value.trackedSources),
+    id: data.get(#id, or: $value.id),
+    secondarySources: data.get(#secondarySources, or: $value.secondarySources),
+  );
 
   @override
-  PaperbackBackupLibraryMangaCopyWith<$R2, PaperbackBackupLibraryManga, $Out2>
-  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+  PaperbackBackupLibraryMangaCopyWith<$R2, PaperbackBackupLibraryManga, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _PaperbackBackupLibraryMangaCopyWithImpl($value, $cast, t);
 }

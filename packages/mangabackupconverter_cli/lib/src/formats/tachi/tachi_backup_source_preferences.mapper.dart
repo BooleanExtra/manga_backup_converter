@@ -6,16 +6,13 @@
 
 part of 'tachi_backup_source_preferences.dart';
 
-class TachiBackupSourcePreferencesMapper
-    extends ClassMapperBase<TachiBackupSourcePreferences> {
+class TachiBackupSourcePreferencesMapper extends ClassMapperBase<TachiBackupSourcePreferences> {
   TachiBackupSourcePreferencesMapper._();
 
   static TachiBackupSourcePreferencesMapper? _instance;
   static TachiBackupSourcePreferencesMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(
-        _instance = TachiBackupSourcePreferencesMapper._(),
-      );
+      MapperContainer.globals.use(_instance = TachiBackupSourcePreferencesMapper._());
       TachiBackupPreferenceMapper.ensureInitialized();
     }
     return _instance!;
@@ -25,26 +22,15 @@ class TachiBackupSourcePreferencesMapper
   final String id = 'TachiBackupSourcePreferences';
 
   static String _$sourceKey(TachiBackupSourcePreferences v) => v.sourceKey;
-  static const Field<TachiBackupSourcePreferences, String> _f$sourceKey = Field(
-    'sourceKey',
-    _$sourceKey,
-  );
-  static List<TachiBackupPreference> _$prefs(TachiBackupSourcePreferences v) =>
-      v.prefs;
-  static const Field<TachiBackupSourcePreferences, List<TachiBackupPreference>>
-  _f$prefs = Field('prefs', _$prefs);
+  static const Field<TachiBackupSourcePreferences, String> _f$sourceKey = Field('sourceKey', _$sourceKey);
+  static List<TachiBackupPreference> _$prefs(TachiBackupSourcePreferences v) => v.prefs;
+  static const Field<TachiBackupSourcePreferences, List<TachiBackupPreference>> _f$prefs = Field('prefs', _$prefs);
 
   @override
-  final MappableFields<TachiBackupSourcePreferences> fields = const {
-    #sourceKey: _f$sourceKey,
-    #prefs: _f$prefs,
-  };
+  final MappableFields<TachiBackupSourcePreferences> fields = const {#sourceKey: _f$sourceKey, #prefs: _f$prefs};
 
   static TachiBackupSourcePreferences _instantiate(DecodingData data) {
-    return TachiBackupSourcePreferences(
-      sourceKey: data.dec(_f$sourceKey),
-      prefs: data.dec(_f$prefs),
-    );
+    return TachiBackupSourcePreferences(sourceKey: data.dec(_f$sourceKey), prefs: data.dec(_f$prefs));
   }
 
   @override
@@ -61,17 +47,15 @@ class TachiBackupSourcePreferencesMapper
 
 mixin TachiBackupSourcePreferencesMappable {
   String toJson() {
-    return TachiBackupSourcePreferencesMapper.ensureInitialized()
-        .encodeJson<TachiBackupSourcePreferences>(
-          this as TachiBackupSourcePreferences,
-        );
+    return TachiBackupSourcePreferencesMapper.ensureInitialized().encodeJson<TachiBackupSourcePreferences>(
+      this as TachiBackupSourcePreferences,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupSourcePreferencesMapper.ensureInitialized()
-        .encodeMap<TachiBackupSourcePreferences>(
-          this as TachiBackupSourcePreferences,
-        );
+    return TachiBackupSourcePreferencesMapper.ensureInitialized().encodeMap<TachiBackupSourcePreferences>(
+      this as TachiBackupSourcePreferences,
+    );
   }
 
   TachiBackupSourcePreferencesCopyWith<
@@ -79,15 +63,10 @@ mixin TachiBackupSourcePreferencesMappable {
     TachiBackupSourcePreferences,
     TachiBackupSourcePreferences
   >
-  get copyWith => _TachiBackupSourcePreferencesCopyWithImpl(
-    this as TachiBackupSourcePreferences,
-    $identity,
-    $identity,
-  );
+  get copyWith => _TachiBackupSourcePreferencesCopyWithImpl(this as TachiBackupSourcePreferences, $identity, $identity);
   @override
   String toString() {
-    return TachiBackupSourcePreferencesMapper.ensureInitialized()
-        .stringifyValue(this as TachiBackupSourcePreferences);
+    return TachiBackupSourcePreferencesMapper.ensureInitialized().stringifyValue(this as TachiBackupSourcePreferences);
   }
 
   @override
@@ -100,55 +79,31 @@ mixin TachiBackupSourcePreferencesMappable {
 
   @override
   int get hashCode {
-    return TachiBackupSourcePreferencesMapper.ensureInitialized().hashValue(
-      this as TachiBackupSourcePreferences,
-    );
+    return TachiBackupSourcePreferencesMapper.ensureInitialized().hashValue(this as TachiBackupSourcePreferences);
   }
 }
 
-extension TachiBackupSourcePreferencesValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, TachiBackupSourcePreferences, $Out> {
-  TachiBackupSourcePreferencesCopyWith<$R, TachiBackupSourcePreferences, $Out>
-  get $asTachiBackupSourcePreferences => $base.as(
-    (v, t, t2) => _TachiBackupSourcePreferencesCopyWithImpl(v, t, t2),
-  );
+extension TachiBackupSourcePreferencesValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackupSourcePreferences, $Out> {
+  TachiBackupSourcePreferencesCopyWith<$R, TachiBackupSourcePreferences, $Out> get $asTachiBackupSourcePreferences =>
+      $base.as((v, t, t2) => _TachiBackupSourcePreferencesCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupSourcePreferencesCopyWith<
-  $R,
-  $In extends TachiBackupSourcePreferences,
-  $Out
->
+abstract class TachiBackupSourcePreferencesCopyWith<$R, $In extends TachiBackupSourcePreferences, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<
     $R,
     TachiBackupPreference,
-    TachiBackupPreferenceCopyWith<
-      $R,
-      TachiBackupPreference,
-      TachiBackupPreference
-    >
+    TachiBackupPreferenceCopyWith<$R, TachiBackupPreference, TachiBackupPreference>
   >
   get prefs;
   $R call({String? sourceKey, List<TachiBackupPreference>? prefs});
-  TachiBackupSourcePreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  TachiBackupSourcePreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
 class _TachiBackupSourcePreferencesCopyWithImpl<$R, $Out>
     extends ClassCopyWithBase<$R, TachiBackupSourcePreferences, $Out>
-    implements
-        TachiBackupSourcePreferencesCopyWith<
-          $R,
-          TachiBackupSourcePreferences,
-          $Out
-        > {
-  _TachiBackupSourcePreferencesCopyWithImpl(
-    super.value,
-    super.then,
-    super.then2,
-  );
+    implements TachiBackupSourcePreferencesCopyWith<$R, TachiBackupSourcePreferences, $Out> {
+  _TachiBackupSourcePreferencesCopyWithImpl(super.value, super.then, super.then2);
 
   @override
   late final ClassMapperBase<TachiBackupSourcePreferences> $mapper =
@@ -157,33 +112,20 @@ class _TachiBackupSourcePreferencesCopyWithImpl<$R, $Out>
   ListCopyWith<
     $R,
     TachiBackupPreference,
-    TachiBackupPreferenceCopyWith<
-      $R,
-      TachiBackupPreference,
-      TachiBackupPreference
-    >
+    TachiBackupPreferenceCopyWith<$R, TachiBackupPreference, TachiBackupPreference>
   >
-  get prefs => ListCopyWith(
-    $value.prefs,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(prefs: v),
-  );
+  get prefs => ListCopyWith($value.prefs, (v, t) => v.copyWith.$chain(t), (v) => call(prefs: v));
   @override
-  $R call({String? sourceKey, List<TachiBackupPreference>? prefs}) => $apply(
-    FieldCopyWithData({
-      if (sourceKey != null) #sourceKey: sourceKey,
-      if (prefs != null) #prefs: prefs,
-    }),
-  );
+  $R call({String? sourceKey, List<TachiBackupPreference>? prefs}) =>
+      $apply(FieldCopyWithData({if (sourceKey != null) #sourceKey: sourceKey, if (prefs != null) #prefs: prefs}));
   @override
-  TachiBackupSourcePreferences $make(CopyWithData data) =>
-      TachiBackupSourcePreferences(
-        sourceKey: data.get(#sourceKey, or: $value.sourceKey),
-        prefs: data.get(#prefs, or: $value.prefs),
-      );
+  TachiBackupSourcePreferences $make(CopyWithData data) => TachiBackupSourcePreferences(
+    sourceKey: data.get(#sourceKey, or: $value.sourceKey),
+    prefs: data.get(#prefs, or: $value.prefs),
+  );
 
   @override
-  TachiBackupSourcePreferencesCopyWith<$R2, TachiBackupSourcePreferences, $Out2>
-  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _TachiBackupSourcePreferencesCopyWithImpl($value, $cast, t);
+  TachiBackupSourcePreferencesCopyWith<$R2, TachiBackupSourcePreferences, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _TachiBackupSourcePreferencesCopyWithImpl($value, $cast, t);
 }

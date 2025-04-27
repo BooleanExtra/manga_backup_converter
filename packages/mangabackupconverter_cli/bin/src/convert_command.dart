@@ -21,17 +21,11 @@ class ConvertCommand extends Command<void> {
     // we can add command specific arguments here.
     // [argParser] is automatically created by the parent class.
     argParser
-      ..addFlag(
-        'verbose',
-        abbr: 'v',
-        negatable: false,
-        help: 'Show additional command output.',
-      )
+      ..addFlag('verbose', abbr: 'v', negatable: false, help: 'Show additional command output.')
       ..addOption(
         'backup',
         abbr: 'b',
-        help:
-            'A backup file from Mihon, Aidoku, Paperback, or Tachimanga to convert to the output format',
+        help: 'A backup file from Mihon, Aidoku, Paperback, or Tachimanga to convert to the output format',
         mandatory: true,
       )
       ..addOption(
@@ -44,8 +38,7 @@ class ConvertCommand extends Command<void> {
       ..addOption(
         'input-format',
         abbr: 'i',
-        help:
-            'Specify the input backup format type if not detected automatically',
+        help: 'Specify the input backup format type if not detected automatically',
         allowed: BackupType.values.map((e) => e.name).toList(),
       )
       ..addOption(
@@ -103,46 +96,29 @@ class ConvertCommand extends Command<void> {
 
     if (results.wasParsed('input-format')) {
       final inputFormatArg = results.option('input-format');
-      inputFormat =
-          inputFormatArg != null
-              ? BackupType.values.byName(inputFormatArg)
-              : null;
+      inputFormat = inputFormatArg != null ? BackupType.values.byName(inputFormatArg) : null;
     }
-    if (inputFormat == null &&
-        !BackupType.validExtensions.contains(backupFileExtension)) {
-      print(
-        'Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.',
-      );
+    if (inputFormat == null && !BackupType.validExtensions.contains(backupFileExtension)) {
+      print('Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.');
       return;
     }
 
     TachiFork outputTachiFork = TachiFork.mihon;
     if (results.wasParsed('tachi-fork')) {
-      outputTachiFork = TachiFork.values.byName(
-        results.option('tachi-fork') ?? TachiFork.mihon.name,
-      );
+      outputTachiFork = TachiFork.values.byName(results.option('tachi-fork') ?? TachiFork.mihon.name);
     }
 
     final converter = MangaBackupConverter();
 
     final ConvertableBackup? importedBackup = switch (inputFormat) {
-      BackupType.aidoku => converter.importAidokuBackup(
-        backupFile.readAsBytesSync(),
-      ),
-      BackupType.tachi => converter.importTachibkBackup(
-        backupFile.readAsBytesSync(),
-        fork: outputTachiFork,
-      ),
+      BackupType.aidoku => converter.importAidokuBackup(backupFile.readAsBytesSync()),
+      BackupType.tachi => converter.importTachibkBackup(backupFile.readAsBytesSync(), fork: outputTachiFork),
       BackupType.paperback => converter.importPaperbackPas4Backup(
         backupFile.readAsBytesSync(),
         name: p.basenameWithoutExtension(backupFile.uri.toString()),
       ),
-      BackupType.tachimanga => await converter.importTachimangaBackup(
-        backupFile.readAsBytesSync(),
-      ),
-      BackupType.mangayomi => converter.importMangayomiBackup(
-        backupFile.readAsBytesSync(),
-      ),
+      BackupType.tachimanga => await converter.importTachimangaBackup(backupFile.readAsBytesSync()),
+      BackupType.mangayomi => converter.importMangayomiBackup(backupFile.readAsBytesSync()),
       null => () {
         print('Unsupported imported backup type');
         return null;
@@ -152,9 +128,7 @@ class ConvertCommand extends Command<void> {
       print('Failed to import backup type $backupFileExtension');
       return;
     }
-    final ConvertableBackup convertedBackup = importedBackup.toBackup(
-      outputFormat,
-    );
+    final ConvertableBackup convertedBackup = importedBackup.toBackup(outputFormat);
 
     final io.File outputFile = io.File(
       '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',

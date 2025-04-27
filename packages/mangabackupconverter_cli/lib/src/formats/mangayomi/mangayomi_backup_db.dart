@@ -4,10 +4,7 @@ import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_
 
 part 'mangayomi_backup_db.mapper.dart';
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupDb with MangayomiBackupDbMappable {
   final String? version;
   final List<MangayomiBackupManga>? manga;
@@ -43,10 +40,7 @@ class MangayomiBackupDb with MangayomiBackupDbMappable {
   static const fromJson = MangayomiBackupDbMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupManga with MangayomiBackupMangaMappable {
   final String? author;
   final String? artist;
@@ -103,10 +97,7 @@ class MangayomiBackupManga with MangayomiBackupMangaMappable {
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ItemType { manga, anime, novel }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupCategory with MangayomiBackupCategoryMappable {
   final int? id;
   final String? name;
@@ -114,22 +105,13 @@ class MangayomiBackupCategory with MangayomiBackupCategoryMappable {
   final int? pos;
   final bool? hide;
 
-  const MangayomiBackupCategory({
-    required this.name,
-    required this.forItemType,
-    this.id,
-    this.pos,
-    this.hide,
-  });
+  const MangayomiBackupCategory({required this.name, required this.forItemType, this.id, this.pos, this.hide});
 
   static const fromMap = MangayomiBackupCategoryMapper.fromMap;
   static const fromJson = MangayomiBackupCategoryMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupChapter with MangayomiBackupChapterMappable {
   final int? id;
   final int? mangaId;
@@ -161,10 +143,7 @@ class MangayomiBackupChapter with MangayomiBackupChapterMappable {
   static const fromJson = MangayomiBackupChapterMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupDownload with MangayomiBackupDownloadMappable {
   final int? failed;
   final int? id;
@@ -186,10 +165,7 @@ class MangayomiBackupDownload with MangayomiBackupDownloadMappable {
   static const fromJson = MangayomiBackupDownloadMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupTrack with MangayomiBackupTrackMappable {
   final int? finishedReadingDate;
   final int? id;
@@ -229,34 +205,21 @@ class MangayomiBackupTrack with MangayomiBackupTrackMappable {
   static const fromJson = MangayomiBackupTrackMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
-class MangayomiBackupTrackPreferences
-    with MangayomiBackupTrackPreferencesMappable {
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+class MangayomiBackupTrackPreferences with MangayomiBackupTrackPreferencesMappable {
   final int? chapterId;
   final int? date;
   final int? id;
   final int? itemType;
   final int? mangaId;
 
-  const MangayomiBackupTrackPreferences({
-    this.chapterId,
-    this.date,
-    this.id,
-    this.itemType,
-    this.mangaId,
-  });
+  const MangayomiBackupTrackPreferences({this.chapterId, this.date, this.id, this.itemType, this.mangaId});
 
   static const fromMap = MangayomiBackupTrackPreferencesMapper.fromMap;
   static const fromJson = MangayomiBackupTrackPreferencesMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupHistory with MangayomiBackupHistoryMappable {
   final int? id;
   final int? mangaId;
@@ -278,31 +241,20 @@ class MangayomiBackupHistory with MangayomiBackupHistoryMappable {
   static const fromJson = MangayomiBackupHistoryMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupUpdate with MangayomiBackupUpdateMappable {
   final int? id;
   final int? mangaId;
   final String? chapterName;
   final String? date;
 
-  const MangayomiBackupUpdate({
-    required this.mangaId,
-    required this.chapterName,
-    required this.date,
-    this.id,
-  });
+  const MangayomiBackupUpdate({required this.mangaId, required this.chapterName, required this.date, this.id});
 
   static const fromMap = MangayomiBackupUpdateMapper.fromMap;
   static const fromJson = MangayomiBackupUpdateMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupExtension with MangayomiBackupExtensionMappable {
   final int? id;
   final String? name;
@@ -373,12 +325,8 @@ class MangayomiBackupExtension with MangayomiBackupExtensionMappable {
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum SourceCodeLanguage { dart, javascript }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
-class MangayomiBackupExtensionPreferences
-    with MangayomiBackupExtensionPreferencesMappable {
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+class MangayomiBackupExtensionPreferences with MangayomiBackupExtensionPreferencesMappable {
   final int? id;
   final int? sourceId;
   final String? key;
@@ -401,10 +349,7 @@ class MangayomiBackupExtensionPreferences
   static const fromJson = MangayomiBackupExtensionPreferencesMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class EditTextPreference with EditTextPreferenceMappable {
   final String? title;
   final String? summary;
@@ -413,23 +358,13 @@ class EditTextPreference with EditTextPreferenceMappable {
   final String? dialogMessage;
   final String? text;
 
-  const EditTextPreference({
-    this.title,
-    this.summary,
-    this.value,
-    this.dialogTitle,
-    this.dialogMessage,
-    this.text,
-  });
+  const EditTextPreference({this.title, this.summary, this.value, this.dialogTitle, this.dialogMessage, this.text});
 
   static const fromMap = EditTextPreferenceMapper.fromMap;
   static const fromJson = EditTextPreferenceMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ListPreference with ListPreferenceMappable {
   final String? title;
   final String? summary;
@@ -437,22 +372,13 @@ class ListPreference with ListPreferenceMappable {
   final List<String>? entries;
   final List<String>? entryValues;
 
-  const ListPreference({
-    this.title,
-    this.summary,
-    this.valueIndex,
-    this.entries,
-    this.entryValues,
-  });
+  const ListPreference({this.title, this.summary, this.valueIndex, this.entries, this.entryValues});
 
   static const fromMap = ListPreferenceMapper.fromMap;
   static const fromJson = ListPreferenceMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SwitchPreferenceCompat with SwitchPreferenceCompatMappable {
   final String? title;
   final String? summary;
@@ -464,10 +390,7 @@ class SwitchPreferenceCompat with SwitchPreferenceCompatMappable {
   static const fromJson = SwitchPreferenceCompatMapper.fromJson;
 }
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MultiSelectListPreference with MultiSelectListPreferenceMappable {
   final String? title;
   final String? summary;
@@ -475,13 +398,7 @@ class MultiSelectListPreference with MultiSelectListPreferenceMappable {
   final List<String>? entryValues;
   final List<String>? values;
 
-  const MultiSelectListPreference({
-    this.title,
-    this.summary,
-    this.values,
-    this.entries,
-    this.entryValues,
-  });
+  const MultiSelectListPreference({this.title, this.summary, this.values, this.entries, this.entryValues});
 
   static const fromMap = MultiSelectListPreferenceMapper.fromMap;
   static const fromJson = MultiSelectListPreferenceMapper.fromJson;
