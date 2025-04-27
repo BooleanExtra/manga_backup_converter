@@ -10,7 +10,10 @@ import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(
+  includeCustomMappers: [SecondsEpochDateTimeMapper()],
+  caseStyle: CaseStyle.camelCase,
+)
 class MangayomiBackup with MangayomiBackupMappable {
   final String? name;
   final MangayomiBackupDb db;
@@ -25,7 +28,9 @@ class MangayomiBackup with MangayomiBackupMappable {
     String? overrideName,
   }) async {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
-    final backupJsonFile = backupArchive.files.firstOrNull;
+    final backupJsonFile = backupArchive.files
+        .where((file) => file.name.endsWith('.db'))
+        .firstOrNull;
     if (backupJsonFile == null || backupJsonFile.content == null) {
       throw const MangayomiException(
         'Could not decode Mangayomi backup',
