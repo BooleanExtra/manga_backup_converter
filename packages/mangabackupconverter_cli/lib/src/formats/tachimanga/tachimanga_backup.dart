@@ -144,13 +144,20 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   }
 
   @override
-  TachiBackup toBackup(BackupType type) {
-    return TachiBackup(
-      backupCategories: db.categoryTable.map((c) => c.toType(db)).toList(),
-      backupManga: db.mangaTable.map((c) => c.toType(db)).toList(),
-      backupSources: db.sourceTable.map((c) => c.toType(db)).toList(),
-      backupExtensionRepo: db.repoTable.map((c) => c.toType(db)).toList(),
-    );
+  ConvertableBackup toBackup(BackupType type) {
+    // TODO: implement toBackup
+    return switch (type) {
+      BackupType.tachi => TachiBackup(
+        backupCategories: db.categoryTable.map((c) => c.toType(db)).toList(),
+        backupManga: db.mangaTable.map((c) => c.toType(db)).toList(),
+        backupSources: db.sourceTable.map((c) => c.toType(db)).toList(),
+        backupExtensionRepo: db.repoTable.map((c) => c.toType(db)).toList(),
+      ),
+      BackupType.aidoku => throw const TachimangaException('Tachimanga backup cannot be converted to Aidoku'),
+      BackupType.paperback => throw const TachimangaException('Tachimanga backup cannot be converted to Paperback'),
+      BackupType.mangayomi => throw const TachimangaException('Tachimanga backup cannot be converted to Mangayomi'),
+      BackupType.tachimanga => this,
+    };
   }
 
   static const fromMap = TachimangaBackupMapper.fromMap;
