@@ -39,7 +39,7 @@ class TachimangaBackup
     this.name,
   });
 
-  static Future<TachimangaBackup> fromZip(
+  static Future<TachimangaBackup> fromData(
     Uint8List bytes, {
     String? overrideName,
   }) async {
