@@ -5,8 +5,7 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 part 'paperback_backup_chapter_progress_marker.mapper.dart';
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
-class PaperbackBackupChapterProgressMarker
-    with PaperbackBackupChapterProgressMarkerMappable {
+class PaperbackBackupChapterProgressMarker with PaperbackBackupChapterProgressMarkerMappable {
   final int totalPages;
   final bool completed;
   final PaperbackBackupItemReference chapter;

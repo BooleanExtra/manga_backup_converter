@@ -14,18 +14,15 @@ import 'dart:core' as $core;
 import 'package:protobuf/protobuf.dart' as $pb;
 
 class UpdateStrategy extends $pb.ProtobufEnum {
-  static const UpdateStrategy ALWAYS_UPDATE =
-      UpdateStrategy._(0, _omitEnumNames ? '' : 'ALWAYS_UPDATE');
-  static const UpdateStrategy ONLY_FETCH_ONCE =
-      UpdateStrategy._(1, _omitEnumNames ? '' : 'ONLY_FETCH_ONCE');
+  static const UpdateStrategy ALWAYS_UPDATE = UpdateStrategy._(0, _omitEnumNames ? '' : 'ALWAYS_UPDATE');
+  static const UpdateStrategy ONLY_FETCH_ONCE = UpdateStrategy._(1, _omitEnumNames ? '' : 'ONLY_FETCH_ONCE');
 
   static const $core.List<UpdateStrategy> values = <UpdateStrategy>[
     ALWAYS_UPDATE,
     ONLY_FETCH_ONCE,
   ];
 
-  static final $core.Map<$core.int, UpdateStrategy> _byValue =
-      $pb.ProtobufEnum.initByValue(values);
+  static final $core.Map<$core.int, UpdateStrategy> _byValue = $pb.ProtobufEnum.initByValue(values);
   static UpdateStrategy? valueOf($core.int value) => _byValue[value];
 
   const UpdateStrategy._(super.v, super.n);

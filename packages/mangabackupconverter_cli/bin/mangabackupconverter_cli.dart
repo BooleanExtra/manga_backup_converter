@@ -7,10 +7,7 @@ import 'src/merge_command.dart';
 
 void main(List<String> args) async {
   final runner =
-      CommandRunner<void>(
-          'mangabackuputil',
-          'A utility cli for managing manga backups.',
-        )
+      CommandRunner<void>('mangabackuputil', 'A utility cli for managing manga backups.')
         ..addCommand(ConvertCommand())
         ..addCommand(MergeCommand());
   await runner.run(args);

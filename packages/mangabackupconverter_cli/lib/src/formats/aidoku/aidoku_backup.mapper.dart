@@ -27,44 +27,25 @@ class AidokuBackupMapper extends ClassMapperBase<AidokuBackup> {
   final String id = 'AidokuBackup';
 
   static Set<AidokuBackupLibraryManga>? _$library(AidokuBackup v) => v.library;
-  static const Field<AidokuBackup, Set<AidokuBackupLibraryManga>> _f$library =
-      Field('library', _$library);
+  static const Field<AidokuBackup, Set<AidokuBackupLibraryManga>> _f$library = Field('library', _$library);
   static Set<AidokuBackupHistory>? _$history(AidokuBackup v) => v.history;
-  static const Field<AidokuBackup, Set<AidokuBackupHistory>> _f$history = Field(
-    'history',
-    _$history,
-  );
+  static const Field<AidokuBackup, Set<AidokuBackupHistory>> _f$history = Field('history', _$history);
   static Set<AidokuBackupManga>? _$manga(AidokuBackup v) => v.manga;
-  static const Field<AidokuBackup, Set<AidokuBackupManga>> _f$manga = Field(
-    'manga',
-    _$manga,
-  );
+  static const Field<AidokuBackup, Set<AidokuBackupManga>> _f$manga = Field('manga', _$manga);
   static Set<AidokuBackupChapter>? _$chapters(AidokuBackup v) => v.chapters;
-  static const Field<AidokuBackup, Set<AidokuBackupChapter>> _f$chapters =
-      Field('chapters', _$chapters);
-  static Set<AidokuBackupTrackItem>? _$trackItems(AidokuBackup v) =>
-      v.trackItems;
-  static const Field<AidokuBackup, Set<AidokuBackupTrackItem>> _f$trackItems =
-      Field('trackItems', _$trackItems);
+  static const Field<AidokuBackup, Set<AidokuBackupChapter>> _f$chapters = Field('chapters', _$chapters);
+  static Set<AidokuBackupTrackItem>? _$trackItems(AidokuBackup v) => v.trackItems;
+  static const Field<AidokuBackup, Set<AidokuBackupTrackItem>> _f$trackItems = Field('trackItems', _$trackItems);
   static Set<String>? _$categories(AidokuBackup v) => v.categories;
-  static const Field<AidokuBackup, Set<String>> _f$categories = Field(
-    'categories',
-    _$categories,
-  );
+  static const Field<AidokuBackup, Set<String>> _f$categories = Field('categories', _$categories);
   static Set<String>? _$sources(AidokuBackup v) => v.sources;
-  static const Field<AidokuBackup, Set<String>> _f$sources = Field(
-    'sources',
-    _$sources,
-  );
+  static const Field<AidokuBackup, Set<String>> _f$sources = Field('sources', _$sources);
   static DateTime _$date(AidokuBackup v) => v.date;
   static const Field<AidokuBackup, DateTime> _f$date = Field('date', _$date);
   static String? _$name(AidokuBackup v) => v.name;
   static const Field<AidokuBackup, String> _f$name = Field('name', _$name);
   static String? _$version(AidokuBackup v) => v.version;
-  static const Field<AidokuBackup, String> _f$version = Field(
-    'version',
-    _$version,
-  );
+  static const Field<AidokuBackup, String> _f$version = Field('version', _$version);
 
   @override
   final MappableFields<AidokuBackup> fields = const {
@@ -111,50 +92,37 @@ class AidokuBackupMapper extends ClassMapperBase<AidokuBackup> {
 
 mixin AidokuBackupMappable {
   String toJson() {
-    return AidokuBackupMapper.ensureInitialized().encodeJson<AidokuBackup>(
-      this as AidokuBackup,
-    );
+    return AidokuBackupMapper.ensureInitialized().encodeJson<AidokuBackup>(this as AidokuBackup);
   }
 
   Map<String, dynamic> toMap() {
-    return AidokuBackupMapper.ensureInitialized().encodeMap<AidokuBackup>(
-      this as AidokuBackup,
-    );
+    return AidokuBackupMapper.ensureInitialized().encodeMap<AidokuBackup>(this as AidokuBackup);
   }
 
   AidokuBackupCopyWith<AidokuBackup, AidokuBackup, AidokuBackup> get copyWith =>
       _AidokuBackupCopyWithImpl(this as AidokuBackup, $identity, $identity);
   @override
   String toString() {
-    return AidokuBackupMapper.ensureInitialized().stringifyValue(
-      this as AidokuBackup,
-    );
+    return AidokuBackupMapper.ensureInitialized().stringifyValue(this as AidokuBackup);
   }
 
   @override
   bool operator ==(Object other) {
-    return AidokuBackupMapper.ensureInitialized().equalsValue(
-      this as AidokuBackup,
-      other,
-    );
+    return AidokuBackupMapper.ensureInitialized().equalsValue(this as AidokuBackup, other);
   }
 
   @override
   int get hashCode {
-    return AidokuBackupMapper.ensureInitialized().hashValue(
-      this as AidokuBackup,
-    );
+    return AidokuBackupMapper.ensureInitialized().hashValue(this as AidokuBackup);
   }
 }
 
-extension AidokuBackupValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, AidokuBackup, $Out> {
+extension AidokuBackupValueCopy<$R, $Out> on ObjectCopyWith<$R, AidokuBackup, $Out> {
   AidokuBackupCopyWith<$R, AidokuBackup, $Out> get $asAidokuBackup =>
       $base.as((v, t, t2) => _AidokuBackupCopyWithImpl(v, t, t2));
 }
 
-abstract class AidokuBackupCopyWith<$R, $In extends AidokuBackup, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class AidokuBackupCopyWith<$R, $In extends AidokuBackup, $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     Set<AidokuBackupLibraryManga>? library,
     Set<AidokuBackupHistory>? history,
@@ -170,14 +138,12 @@ abstract class AidokuBackupCopyWith<$R, $In extends AidokuBackup, $Out>
   AidokuBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _AidokuBackupCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, AidokuBackup, $Out>
+class _AidokuBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, AidokuBackup, $Out>
     implements AidokuBackupCopyWith<$R, AidokuBackup, $Out> {
   _AidokuBackupCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<AidokuBackup> $mapper =
-      AidokuBackupMapper.ensureInitialized();
+  late final ClassMapperBase<AidokuBackup> $mapper = AidokuBackupMapper.ensureInitialized();
   @override
   $R call({
     Object? library = $none,
@@ -219,7 +185,6 @@ class _AidokuBackupCopyWithImpl<$R, $Out>
   );
 
   @override
-  AidokuBackupCopyWith<$R2, AidokuBackup, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _AidokuBackupCopyWithImpl($value, $cast, t);
+  AidokuBackupCopyWith<$R2, AidokuBackup, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _AidokuBackupCopyWithImpl($value, $cast, t);
 }

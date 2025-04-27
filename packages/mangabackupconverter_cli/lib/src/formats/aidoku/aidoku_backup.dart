@@ -43,11 +43,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   });
 
   static AidokuBackup fromData(Uint8List bytes, {String? overrideName}) {
-    final asMap =
-        PropertyListSerialization.propertyListWithData(
-              ByteData.sublistView(bytes),
-            )
-            as Map<String, Object>;
+    final asMap = PropertyListSerialization.propertyListWithData(ByteData.sublistView(bytes)) as Map<String, Object>;
     AidokuBackup backup = fromMap(asMap);
     if (overrideName != null) {
       backup = backup.copyWith(name: overrideName);
@@ -58,9 +54,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   @override
   Future<Uint8List> toData() async {
     try {
-      return Uint8List.sublistView(
-        PropertyListSerialization.dataWithPropertyList(toMap()),
-      );
+      return Uint8List.sublistView(PropertyListSerialization.dataWithPropertyList(toMap()));
     } on PropertyListWriteStreamException catch (e) {
       throw AidokuException(e);
     }
@@ -77,10 +71,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         ...libraryItem.categories,
         ...libraryItemDuplicates.fold(
           <String>{},
-          (previousCategories, libraryItemDuplicate) => {
-            ...previousCategories,
-            ...libraryItemDuplicate.categories,
-          },
+          (previousCategories, libraryItemDuplicate) => {...previousCategories, ...libraryItemDuplicate.categories},
         ),
       };
       if (combinedCategories.isEmpty) {
@@ -89,28 +80,19 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
       final latestDateAdded = libraryItemDuplicates.fold(
         libraryItem.dateAdded,
         (previousDateAdded, libraryItem) =>
-            previousDateAdded.isAfter(libraryItem.dateAdded)
-                ? previousDateAdded
-                : libraryItem.dateAdded,
+            previousDateAdded.isAfter(libraryItem.dateAdded) ? previousDateAdded : libraryItem.dateAdded,
       );
       final latestLastOpened = libraryItemDuplicates.fold(
         libraryItem.lastOpened,
         (previousDateOpened, libraryItem) =>
-            previousDateOpened.isAfter(libraryItem.lastOpened)
-                ? previousDateOpened
-                : libraryItem.lastOpened,
+            previousDateOpened.isAfter(libraryItem.lastOpened) ? previousDateOpened : libraryItem.lastOpened,
       );
       final latestLastUpdated = libraryItemDuplicates.fold(
         libraryItem.lastUpdated,
         (previousLastUpdated, libraryItem) =>
-            previousLastUpdated.isAfter(libraryItem.lastUpdated)
-                ? previousLastUpdated
-                : libraryItem.lastUpdated,
+            previousLastUpdated.isAfter(libraryItem.lastUpdated) ? previousLastUpdated : libraryItem.lastUpdated,
       );
-      final latestLastRead = libraryItemDuplicates.fold(libraryItem.lastRead, (
-        previousLastRead,
-        libraryItem,
-      ) {
+      final latestLastRead = libraryItemDuplicates.fold(libraryItem.lastRead, (previousLastRead, libraryItem) {
         final otherLastRead = libraryItem.lastRead;
         if (previousLastRead == null && otherLastRead == null) {
           return null;
@@ -118,19 +100,12 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         if (previousLastRead != null && otherLastRead == null) {
           return previousLastRead;
         }
-        return switch ((
-          previousLastRead: previousLastRead,
-          otherLastRead: otherLastRead,
-        )) {
+        return switch ((previousLastRead: previousLastRead, otherLastRead: otherLastRead)) {
           _ when otherLastRead == null && previousLastRead == null => null,
-          _ when otherLastRead != null && previousLastRead == null =>
-            otherLastRead,
-          _ when otherLastRead == null && previousLastRead != null =>
-            previousLastRead,
+          _ when otherLastRead != null && previousLastRead == null => otherLastRead,
+          _ when otherLastRead == null && previousLastRead != null => previousLastRead,
           _ when otherLastRead != null && previousLastRead != null =>
-            previousLastRead.isAfter(otherLastRead)
-                ? previousLastRead
-                : libraryItem.lastRead,
+            previousLastRead.isAfter(otherLastRead) ? previousLastRead : libraryItem.lastRead,
           (otherLastRead: _, previousLastRead: _) => null,
         };
       });
@@ -144,13 +119,11 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         ),
       );
     }
-    for (final otherLibraryItem
-        in (otherBackup.library ?? <AidokuBackupLibraryManga>{})) {
+    for (final otherLibraryItem in (otherBackup.library ?? <AidokuBackupLibraryManga>{})) {
       if (libraryCombined
           .where(
             (libraryItem) =>
-                libraryItem.mangaId == otherLibraryItem.mangaId &&
-                libraryItem.sourceId == otherLibraryItem.sourceId,
+                libraryItem.mangaId == otherLibraryItem.mangaId && libraryItem.sourceId == otherLibraryItem.sourceId,
           )
           .isEmpty) {
         if (otherLibraryItem.categories.isEmpty) {
@@ -176,9 +149,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
       ...?otherBackup.trackItems?.map((e) => e.copyWith()).toSet(),
     };
     final combinedCategories = {...?categories, ...?otherBackup.categories};
-    if (libraryCombined
-        .where((l) => l.categories.contains('Default'))
-        .isNotEmpty) {
+    if (libraryCombined.where((l) => l.categories.contains('Default')).isNotEmpty) {
       combinedCategories.add('Default');
     }
     return AidokuBackup(
@@ -217,13 +188,9 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   }
 }
 
-Set<AidokuBackupLibraryManga> _findDuplicates(
-  AidokuBackup aidokuBackup,
-  AidokuBackupLibraryManga libraryItem,
-) {
+Set<AidokuBackupLibraryManga> _findDuplicates(AidokuBackup aidokuBackup, AidokuBackupLibraryManga libraryItem) {
   final duplicates = <AidokuBackupLibraryManga>{};
-  for (final otherLibraryItem
-      in (aidokuBackup.library ?? <AidokuBackupLibraryManga>{})) {
+  for (final otherLibraryItem in (aidokuBackup.library ?? <AidokuBackupLibraryManga>{})) {
     if (otherLibraryItem.mangaId == libraryItem.mangaId &&
         otherLibraryItem.sourceId == libraryItem.sourceId &&
         libraryItem != otherLibraryItem) {

@@ -9,8 +9,7 @@ enum BackupType {
 
   final List<String> extensions;
 
-  static List<String> get validExtensions =>
-      values.expand((e) => e.extensions).toList();
+  static List<String> get validExtensions => values.expand((e) => e.extensions).toList();
 
   static BackupType? byExtension(String extension) {
     for (final type in values) {

@@ -16,24 +16,15 @@ class MangaBackupConverter {
     return PaperbackBackup.fromData(bytes, name: name);
   }
 
-  TachiBackup importTachibkBackup(
-    Uint8List bytes, {
-    TachiFork fork = TachiFork.mihon,
-  }) {
+  TachiBackup importTachibkBackup(Uint8List bytes, {TachiFork fork = TachiFork.mihon}) {
     return TachiBackup.fromData(bytes, fork: fork);
   }
 
-  Future<TachimangaBackup> importTachimangaBackup(
-    Uint8List bytes, {
-    String? overrideName,
-  }) async {
+  Future<TachimangaBackup> importTachimangaBackup(Uint8List bytes, {String? overrideName}) async {
     return await TachimangaBackup.fromData(bytes, overrideName: overrideName);
   }
 
-  MangayomiBackup importMangayomiBackup(
-    Uint8List bytes, {
-    String? overrideName,
-  }) {
+  MangayomiBackup importMangayomiBackup(Uint8List bytes, {String? overrideName}) {
     return MangayomiBackup.fromData(bytes, overrideName: overrideName);
   }
 }

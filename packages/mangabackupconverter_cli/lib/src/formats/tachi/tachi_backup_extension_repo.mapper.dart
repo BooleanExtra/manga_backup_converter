@@ -6,16 +6,13 @@
 
 part of 'tachi_backup_extension_repo.dart';
 
-class TachiBackupExtensionRepoMapper
-    extends ClassMapperBase<TachiBackupExtensionRepo> {
+class TachiBackupExtensionRepoMapper extends ClassMapperBase<TachiBackupExtensionRepo> {
   TachiBackupExtensionRepoMapper._();
 
   static TachiBackupExtensionRepoMapper? _instance;
   static TachiBackupExtensionRepoMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(
-        _instance = TachiBackupExtensionRepoMapper._(),
-      );
+      MapperContainer.globals.use(_instance = TachiBackupExtensionRepoMapper._());
     }
     return _instance!;
   }
@@ -24,29 +21,15 @@ class TachiBackupExtensionRepoMapper
   final String id = 'TachiBackupExtensionRepo';
 
   static String _$name(TachiBackupExtensionRepo v) => v.name;
-  static const Field<TachiBackupExtensionRepo, String> _f$name = Field(
-    'name',
-    _$name,
-  );
+  static const Field<TachiBackupExtensionRepo, String> _f$name = Field('name', _$name);
   static String _$baseUrl(TachiBackupExtensionRepo v) => v.baseUrl;
-  static const Field<TachiBackupExtensionRepo, String> _f$baseUrl = Field(
-    'baseUrl',
-    _$baseUrl,
-  );
+  static const Field<TachiBackupExtensionRepo, String> _f$baseUrl = Field('baseUrl', _$baseUrl);
   static String _$shortName(TachiBackupExtensionRepo v) => v.shortName;
-  static const Field<TachiBackupExtensionRepo, String> _f$shortName = Field(
-    'shortName',
-    _$shortName,
-  );
+  static const Field<TachiBackupExtensionRepo, String> _f$shortName = Field('shortName', _$shortName);
   static String _$website(TachiBackupExtensionRepo v) => v.website;
-  static const Field<TachiBackupExtensionRepo, String> _f$website = Field(
-    'website',
-    _$website,
-  );
-  static String _$signingKeyFingerprint(TachiBackupExtensionRepo v) =>
-      v.signingKeyFingerprint;
-  static const Field<TachiBackupExtensionRepo, String>
-  _f$signingKeyFingerprint = Field(
+  static const Field<TachiBackupExtensionRepo, String> _f$website = Field('website', _$website);
+  static String _$signingKeyFingerprint(TachiBackupExtensionRepo v) => v.signingKeyFingerprint;
+  static const Field<TachiBackupExtensionRepo, String> _f$signingKeyFingerprint = Field(
     'signingKeyFingerprint',
     _$signingKeyFingerprint,
   );
@@ -84,97 +67,60 @@ class TachiBackupExtensionRepoMapper
 
 mixin TachiBackupExtensionRepoMappable {
   String toJson() {
-    return TachiBackupExtensionRepoMapper.ensureInitialized()
-        .encodeJson<TachiBackupExtensionRepo>(this as TachiBackupExtensionRepo);
+    return TachiBackupExtensionRepoMapper.ensureInitialized().encodeJson<TachiBackupExtensionRepo>(
+      this as TachiBackupExtensionRepo,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupExtensionRepoMapper.ensureInitialized()
-        .encodeMap<TachiBackupExtensionRepo>(this as TachiBackupExtensionRepo);
-  }
-
-  TachiBackupExtensionRepoCopyWith<
-    TachiBackupExtensionRepo,
-    TachiBackupExtensionRepo,
-    TachiBackupExtensionRepo
-  >
-  get copyWith => _TachiBackupExtensionRepoCopyWithImpl(
-    this as TachiBackupExtensionRepo,
-    $identity,
-    $identity,
-  );
-  @override
-  String toString() {
-    return TachiBackupExtensionRepoMapper.ensureInitialized().stringifyValue(
+    return TachiBackupExtensionRepoMapper.ensureInitialized().encodeMap<TachiBackupExtensionRepo>(
       this as TachiBackupExtensionRepo,
     );
+  }
+
+  TachiBackupExtensionRepoCopyWith<TachiBackupExtensionRepo, TachiBackupExtensionRepo, TachiBackupExtensionRepo>
+  get copyWith => _TachiBackupExtensionRepoCopyWithImpl(this as TachiBackupExtensionRepo, $identity, $identity);
+  @override
+  String toString() {
+    return TachiBackupExtensionRepoMapper.ensureInitialized().stringifyValue(this as TachiBackupExtensionRepo);
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupExtensionRepoMapper.ensureInitialized().equalsValue(
-      this as TachiBackupExtensionRepo,
-      other,
-    );
+    return TachiBackupExtensionRepoMapper.ensureInitialized().equalsValue(this as TachiBackupExtensionRepo, other);
   }
 
   @override
   int get hashCode {
-    return TachiBackupExtensionRepoMapper.ensureInitialized().hashValue(
-      this as TachiBackupExtensionRepo,
-    );
+    return TachiBackupExtensionRepoMapper.ensureInitialized().hashValue(this as TachiBackupExtensionRepo);
   }
 }
 
-extension TachiBackupExtensionRepoValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, TachiBackupExtensionRepo, $Out> {
-  TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, $Out>
-  get $asTachiBackupExtensionRepo =>
+extension TachiBackupExtensionRepoValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackupExtensionRepo, $Out> {
+  TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, $Out> get $asTachiBackupExtensionRepo =>
       $base.as((v, t, t2) => _TachiBackupExtensionRepoCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupExtensionRepoCopyWith<
-  $R,
-  $In extends TachiBackupExtensionRepo,
-  $Out
->
+abstract class TachiBackupExtensionRepoCopyWith<$R, $In extends TachiBackupExtensionRepo, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({
-    String? name,
-    String? baseUrl,
-    String? shortName,
-    String? website,
-    String? signingKeyFingerprint,
-  });
-  TachiBackupExtensionRepoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  $R call({String? name, String? baseUrl, String? shortName, String? website, String? signingKeyFingerprint});
+  TachiBackupExtensionRepoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _TachiBackupExtensionRepoCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, TachiBackupExtensionRepo, $Out>
-    implements
-        TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, $Out> {
+class _TachiBackupExtensionRepoCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachiBackupExtensionRepo, $Out>
+    implements TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, $Out> {
   _TachiBackupExtensionRepoCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachiBackupExtensionRepo> $mapper =
-      TachiBackupExtensionRepoMapper.ensureInitialized();
+  late final ClassMapperBase<TachiBackupExtensionRepo> $mapper = TachiBackupExtensionRepoMapper.ensureInitialized();
   @override
-  $R call({
-    String? name,
-    String? baseUrl,
-    String? shortName,
-    String? website,
-    String? signingKeyFingerprint,
-  }) => $apply(
+  $R call({String? name, String? baseUrl, String? shortName, String? website, String? signingKeyFingerprint}) => $apply(
     FieldCopyWithData({
       if (name != null) #name: name,
       if (baseUrl != null) #baseUrl: baseUrl,
       if (shortName != null) #shortName: shortName,
       if (website != null) #website: website,
-      if (signingKeyFingerprint != null)
-        #signingKeyFingerprint: signingKeyFingerprint,
+      if (signingKeyFingerprint != null) #signingKeyFingerprint: signingKeyFingerprint,
     }),
   );
   @override
@@ -183,14 +129,10 @@ class _TachiBackupExtensionRepoCopyWithImpl<$R, $Out>
     baseUrl: data.get(#baseUrl, or: $value.baseUrl),
     shortName: data.get(#shortName, or: $value.shortName),
     website: data.get(#website, or: $value.website),
-    signingKeyFingerprint: data.get(
-      #signingKeyFingerprint,
-      or: $value.signingKeyFingerprint,
-    ),
+    signingKeyFingerprint: data.get(#signingKeyFingerprint, or: $value.signingKeyFingerprint),
   );
 
   @override
-  TachiBackupExtensionRepoCopyWith<$R2, TachiBackupExtensionRepo, $Out2>
-  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+  TachiBackupExtensionRepoCopyWith<$R2, TachiBackupExtensionRepo, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _TachiBackupExtensionRepoCopyWithImpl($value, $cast, t);
 }

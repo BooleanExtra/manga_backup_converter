@@ -14,13 +14,8 @@ import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
 
-@MappableClass(
-  includeCustomMappers: [SecondsEpochDateTimeMapper()],
-  caseStyle: CaseStyle.camelCase,
-)
-class MangayomiBackup
-    with MangayomiBackupMappable
-    implements ConvertableBackup {
+@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup {
   final String? name;
   final MangayomiBackupDb db;
 
@@ -28,17 +23,12 @@ class MangayomiBackup
 
   factory MangayomiBackup.fromData(Uint8List bytes, {String? overrideName}) {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
-    final backupJsonFile =
-        backupArchive.files
-            .where((file) => file.name.endsWith('.db'))
-            .firstOrNull;
+    final backupJsonFile = backupArchive.files.where((file) => file.name.endsWith('.db')).firstOrNull;
     if (backupJsonFile == null || backupJsonFile.content == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
     final backupName = p.basenameWithoutExtension(backupJsonFile.name);
-    final backupJson = String.fromCharCodes(
-      backupJsonFile.content as Uint8List,
-    );
+    final backupJson = String.fromCharCodes(backupJsonFile.content as Uint8List);
     final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
     if (backupMap == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');

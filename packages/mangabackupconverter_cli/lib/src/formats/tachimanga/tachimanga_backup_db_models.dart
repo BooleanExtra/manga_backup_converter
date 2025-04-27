@@ -15,12 +15,7 @@ class TachimangaBackupCategory
   final int order;
   final bool isDefault;
 
-  const TachimangaBackupCategory({
-    required this.id,
-    required this.name,
-    required this.order,
-    required this.isDefault,
-  });
+  const TachimangaBackupCategory({required this.id, required this.name, required this.order, required this.isDefault});
 
   @override
   TachiBackupCategory toType(TachimangaBackupDb db) {
@@ -37,11 +32,7 @@ class TachimangaBackupCategoryManga with TachimangaBackupCategoryMangaMappable {
   final int category;
   final int manga;
 
-  const TachimangaBackupCategoryManga({
-    required this.id,
-    required this.category,
-    required this.manga,
-  });
+  const TachimangaBackupCategoryManga({required this.id, required this.category, required this.manga});
 
   static const fromMap = TachimangaBackupCategoryMangaMapper.fromMap;
   static const fromJson = TachimangaBackupCategoryMangaMapper.fromJson;
@@ -213,11 +204,7 @@ class TachimangaBackupHistory
   @override
   TachiBackupHistory toType(TachimangaBackupDb db) {
     final manga = db.mangaTable.firstWhere((manga) => manga.id == mangaId);
-    return TachiBackupHistory(
-      url: manga.realUrl ?? manga.url,
-      lastRead: lastChapterId,
-      readDuration: lastReadAt,
-    );
+    return TachiBackupHistory(url: manga.realUrl ?? manga.url, lastRead: lastChapterId, readDuration: lastReadAt);
   }
 
   static const fromMap = TachimangaBackupHistoryMapper.fromMap;
@@ -310,12 +297,7 @@ class TachimangaBackupMangaMeta with TachimangaBackupMangaMetaMappable {
   final String value;
   final int mangaRef;
 
-  const TachimangaBackupMangaMeta({
-    required this.id,
-    required this.key,
-    required this.value,
-    required this.mangaRef,
-  });
+  const TachimangaBackupMangaMeta({required this.id, required this.key, required this.value, required this.mangaRef});
 
   static const fromMap = TachimangaBackupMangaMetaMapper.fromMap;
   static const fromJson = TachimangaBackupMangaMetaMapper.fromJson;
@@ -327,11 +309,7 @@ class TachimangaBackupDbMigrations with TachimangaBackupDbMigrationsMappable {
   final String name;
   final String executedAt;
 
-  const TachimangaBackupDbMigrations({
-    required this.version,
-    required this.name,
-    required this.executedAt,
-  });
+  const TachimangaBackupDbMigrations({required this.version, required this.name, required this.executedAt});
 
   static const fromMap = TachimangaBackupDbMigrationsMapper.fromMap;
   static const fromJson = TachimangaBackupDbMigrationsMapper.fromJson;
@@ -508,8 +486,7 @@ class TachimangaBackupTrackRecord
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
-class TachimangaBackupSqliteSequence
-    with TachimangaBackupSqliteSequenceMappable {
+class TachimangaBackupSqliteSequence with TachimangaBackupSqliteSequenceMappable {
   final String? name;
   final int? seq;
 

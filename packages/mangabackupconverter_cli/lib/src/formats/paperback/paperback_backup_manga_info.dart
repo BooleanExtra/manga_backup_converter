@@ -39,8 +39,7 @@ class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable {
 }
 
 @MappableClass()
-class PaperbackBackupMangaAdditionalInfo
-    with PaperbackBackupMangaAdditionalInfoMappable {
+class PaperbackBackupMangaAdditionalInfo with PaperbackBackupMangaAdditionalInfoMappable {
   final String? langFlag;
   final String? avgRating;
   final String? views;
@@ -67,11 +66,7 @@ class PaperbackBackupMangaTag with PaperbackBackupMangaTagMappable {
   final String label;
   final List<PaperbackBackupMangaTag> tags;
 
-  PaperbackBackupMangaTag({
-    required this.id,
-    required this.label,
-    this.tags = const [],
-  });
+  PaperbackBackupMangaTag({required this.id, required this.label, this.tags = const []});
 
   static const fromMap = PaperbackBackupMangaTagMapper.fromMap;
   static const fromJson = PaperbackBackupMangaTagMapper.fromJson;

@@ -28,61 +28,50 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
   @override
   final String id = 'TachiBackup';
 
-  static List<TachiBackupCategory> _$backupCategories(TachiBackup v) =>
-      v.backupCategories;
-  static const Field<TachiBackup, List<TachiBackupCategory>>
-  _f$backupCategories = Field('backupCategories', _$backupCategories);
+  static List<TachiBackupCategory> _$backupCategories(TachiBackup v) => v.backupCategories;
+  static const Field<TachiBackup, List<TachiBackupCategory>> _f$backupCategories = Field(
+    'backupCategories',
+    _$backupCategories,
+  );
   static List<TachiBackupManga> _$backupManga(TachiBackup v) => v.backupManga;
-  static const Field<TachiBackup, List<TachiBackupManga>> _f$backupManga =
-      Field('backupManga', _$backupManga);
-  static List<TachiBackupSource> _$backupBrokenSources(TachiBackup v) =>
-      v.backupBrokenSources;
-  static const Field<TachiBackup, List<TachiBackupSource>>
-  _f$backupBrokenSources = Field(
+  static const Field<TachiBackup, List<TachiBackupManga>> _f$backupManga = Field('backupManga', _$backupManga);
+  static List<TachiBackupSource> _$backupBrokenSources(TachiBackup v) => v.backupBrokenSources;
+  static const Field<TachiBackup, List<TachiBackupSource>> _f$backupBrokenSources = Field(
     'backupBrokenSources',
     _$backupBrokenSources,
     opt: true,
     def: const [],
   );
-  static List<TachiBackupSource> _$backupSources(TachiBackup v) =>
-      v.backupSources;
-  static const Field<TachiBackup, List<TachiBackupSource>> _f$backupSources =
-      Field('backupSources', _$backupSources, opt: true, def: const []);
-  static List<TachiBackupExtensionRepo> _$backupExtensionRepo(TachiBackup v) =>
-      v.backupExtensionRepo;
-  static const Field<TachiBackup, List<TachiBackupExtensionRepo>>
-  _f$backupExtensionRepo = Field(
+  static List<TachiBackupSource> _$backupSources(TachiBackup v) => v.backupSources;
+  static const Field<TachiBackup, List<TachiBackupSource>> _f$backupSources = Field(
+    'backupSources',
+    _$backupSources,
+    opt: true,
+    def: const [],
+  );
+  static List<TachiBackupExtensionRepo> _$backupExtensionRepo(TachiBackup v) => v.backupExtensionRepo;
+  static const Field<TachiBackup, List<TachiBackupExtensionRepo>> _f$backupExtensionRepo = Field(
     'backupExtensionRepo',
     _$backupExtensionRepo,
     opt: true,
     def: const [],
   );
-  static List<TachiBackupPreference> _$backupPreferences(TachiBackup v) =>
-      v.backupPreferences;
-  static const Field<TachiBackup, List<TachiBackupPreference>>
-  _f$backupPreferences = Field(
+  static List<TachiBackupPreference> _$backupPreferences(TachiBackup v) => v.backupPreferences;
+  static const Field<TachiBackup, List<TachiBackupPreference>> _f$backupPreferences = Field(
     'backupPreferences',
     _$backupPreferences,
     opt: true,
     def: const [],
   );
-  static List<TachiBackupSourcePreferences> _$backupSourcePreferences(
-    TachiBackup v,
-  ) => v.backupSourcePreferences;
-  static const Field<TachiBackup, List<TachiBackupSourcePreferences>>
-  _f$backupSourcePreferences = Field(
+  static List<TachiBackupSourcePreferences> _$backupSourcePreferences(TachiBackup v) => v.backupSourcePreferences;
+  static const Field<TachiBackup, List<TachiBackupSourcePreferences>> _f$backupSourcePreferences = Field(
     'backupSourcePreferences',
     _$backupSourcePreferences,
     opt: true,
     def: const [],
   );
   static TachiFork _$fork(TachiBackup v) => v.fork;
-  static const Field<TachiBackup, TachiFork> _f$fork = Field(
-    'fork',
-    _$fork,
-    opt: true,
-    def: TachiFork.mihon,
-  );
+  static const Field<TachiBackup, TachiFork> _f$fork = Field('fork', _$fork, opt: true, def: TachiFork.mihon);
 
   @override
   final MappableFields<TachiBackup> fields = const {
@@ -123,32 +112,23 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
 
 mixin TachiBackupMappable {
   String toJson() {
-    return TachiBackupMapper.ensureInitialized().encodeJson<TachiBackup>(
-      this as TachiBackup,
-    );
+    return TachiBackupMapper.ensureInitialized().encodeJson<TachiBackup>(this as TachiBackup);
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupMapper.ensureInitialized().encodeMap<TachiBackup>(
-      this as TachiBackup,
-    );
+    return TachiBackupMapper.ensureInitialized().encodeMap<TachiBackup>(this as TachiBackup);
   }
 
   TachiBackupCopyWith<TachiBackup, TachiBackup, TachiBackup> get copyWith =>
       _TachiBackupCopyWithImpl(this as TachiBackup, $identity, $identity);
   @override
   String toString() {
-    return TachiBackupMapper.ensureInitialized().stringifyValue(
-      this as TachiBackup,
-    );
+    return TachiBackupMapper.ensureInitialized().stringifyValue(this as TachiBackup);
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupMapper.ensureInitialized().equalsValue(
-      this as TachiBackup,
-      other,
-    );
+    return TachiBackupMapper.ensureInitialized().equalsValue(this as TachiBackup, other);
   }
 
   @override
@@ -157,66 +137,35 @@ mixin TachiBackupMappable {
   }
 }
 
-extension TachiBackupValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, TachiBackup, $Out> {
+extension TachiBackupValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackup, $Out> {
   TachiBackupCopyWith<$R, TachiBackup, $Out> get $asTachiBackup =>
       $base.as((v, t, t2) => _TachiBackupCopyWithImpl(v, t, t2));
 }
 
-abstract class TachiBackupCopyWith<$R, $In extends TachiBackup, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<
-    $R,
-    TachiBackupCategory,
-    TachiBackupCategoryCopyWith<$R, TachiBackupCategory, TachiBackupCategory>
-  >
+abstract class TachiBackupCopyWith<$R, $In extends TachiBackup, $Out> implements ClassCopyWith<$R, $In, $Out> {
+  ListCopyWith<$R, TachiBackupCategory, TachiBackupCategoryCopyWith<$R, TachiBackupCategory, TachiBackupCategory>>
   get backupCategories;
-  ListCopyWith<
-    $R,
-    TachiBackupManga,
-    TachiBackupMangaCopyWith<$R, TachiBackupManga, TachiBackupManga>
-  >
-  get backupManga;
-  ListCopyWith<
-    $R,
-    TachiBackupSource,
-    TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>
-  >
+  ListCopyWith<$R, TachiBackupManga, TachiBackupMangaCopyWith<$R, TachiBackupManga, TachiBackupManga>> get backupManga;
+  ListCopyWith<$R, TachiBackupSource, TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>>
   get backupBrokenSources;
-  ListCopyWith<
-    $R,
-    TachiBackupSource,
-    TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>
-  >
+  ListCopyWith<$R, TachiBackupSource, TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>>
   get backupSources;
   ListCopyWith<
     $R,
     TachiBackupExtensionRepo,
-    TachiBackupExtensionRepoCopyWith<
-      $R,
-      TachiBackupExtensionRepo,
-      TachiBackupExtensionRepo
-    >
+    TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, TachiBackupExtensionRepo>
   >
   get backupExtensionRepo;
   ListCopyWith<
     $R,
     TachiBackupPreference,
-    TachiBackupPreferenceCopyWith<
-      $R,
-      TachiBackupPreference,
-      TachiBackupPreference
-    >
+    TachiBackupPreferenceCopyWith<$R, TachiBackupPreference, TachiBackupPreference>
   >
   get backupPreferences;
   ListCopyWith<
     $R,
     TachiBackupSourcePreferences,
-    TachiBackupSourcePreferencesCopyWith<
-      $R,
-      TachiBackupSourcePreferences,
-      TachiBackupSourcePreferences
-    >
+    TachiBackupSourcePreferencesCopyWith<$R, TachiBackupSourcePreferences, TachiBackupSourcePreferences>
   >
   get backupSourcePreferences;
   $R call({
@@ -232,97 +181,48 @@ abstract class TachiBackupCopyWith<$R, $In extends TachiBackup, $Out>
   TachiBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _TachiBackupCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, TachiBackup, $Out>
+class _TachiBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachiBackup, $Out>
     implements TachiBackupCopyWith<$R, TachiBackup, $Out> {
   _TachiBackupCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachiBackup> $mapper =
-      TachiBackupMapper.ensureInitialized();
+  late final ClassMapperBase<TachiBackup> $mapper = TachiBackupMapper.ensureInitialized();
   @override
-  ListCopyWith<
-    $R,
-    TachiBackupCategory,
-    TachiBackupCategoryCopyWith<$R, TachiBackupCategory, TachiBackupCategory>
-  >
-  get backupCategories => ListCopyWith(
-    $value.backupCategories,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupCategories: v),
-  );
+  ListCopyWith<$R, TachiBackupCategory, TachiBackupCategoryCopyWith<$R, TachiBackupCategory, TachiBackupCategory>>
+  get backupCategories =>
+      ListCopyWith($value.backupCategories, (v, t) => v.copyWith.$chain(t), (v) => call(backupCategories: v));
   @override
-  ListCopyWith<
-    $R,
-    TachiBackupManga,
-    TachiBackupMangaCopyWith<$R, TachiBackupManga, TachiBackupManga>
-  >
-  get backupManga => ListCopyWith(
-    $value.backupManga,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupManga: v),
-  );
+  ListCopyWith<$R, TachiBackupManga, TachiBackupMangaCopyWith<$R, TachiBackupManga, TachiBackupManga>>
+  get backupManga => ListCopyWith($value.backupManga, (v, t) => v.copyWith.$chain(t), (v) => call(backupManga: v));
   @override
-  ListCopyWith<
-    $R,
-    TachiBackupSource,
-    TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>
-  >
-  get backupBrokenSources => ListCopyWith(
-    $value.backupBrokenSources,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupBrokenSources: v),
-  );
+  ListCopyWith<$R, TachiBackupSource, TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>>
+  get backupBrokenSources =>
+      ListCopyWith($value.backupBrokenSources, (v, t) => v.copyWith.$chain(t), (v) => call(backupBrokenSources: v));
   @override
-  ListCopyWith<
-    $R,
-    TachiBackupSource,
-    TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>
-  >
-  get backupSources => ListCopyWith(
-    $value.backupSources,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupSources: v),
-  );
+  ListCopyWith<$R, TachiBackupSource, TachiBackupSourceCopyWith<$R, TachiBackupSource, TachiBackupSource>>
+  get backupSources =>
+      ListCopyWith($value.backupSources, (v, t) => v.copyWith.$chain(t), (v) => call(backupSources: v));
   @override
   ListCopyWith<
     $R,
     TachiBackupExtensionRepo,
-    TachiBackupExtensionRepoCopyWith<
-      $R,
-      TachiBackupExtensionRepo,
-      TachiBackupExtensionRepo
-    >
+    TachiBackupExtensionRepoCopyWith<$R, TachiBackupExtensionRepo, TachiBackupExtensionRepo>
   >
-  get backupExtensionRepo => ListCopyWith(
-    $value.backupExtensionRepo,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupExtensionRepo: v),
-  );
+  get backupExtensionRepo =>
+      ListCopyWith($value.backupExtensionRepo, (v, t) => v.copyWith.$chain(t), (v) => call(backupExtensionRepo: v));
   @override
   ListCopyWith<
     $R,
     TachiBackupPreference,
-    TachiBackupPreferenceCopyWith<
-      $R,
-      TachiBackupPreference,
-      TachiBackupPreference
-    >
+    TachiBackupPreferenceCopyWith<$R, TachiBackupPreference, TachiBackupPreference>
   >
-  get backupPreferences => ListCopyWith(
-    $value.backupPreferences,
-    (v, t) => v.copyWith.$chain(t),
-    (v) => call(backupPreferences: v),
-  );
+  get backupPreferences =>
+      ListCopyWith($value.backupPreferences, (v, t) => v.copyWith.$chain(t), (v) => call(backupPreferences: v));
   @override
   ListCopyWith<
     $R,
     TachiBackupSourcePreferences,
-    TachiBackupSourcePreferencesCopyWith<
-      $R,
-      TachiBackupSourcePreferences,
-      TachiBackupSourcePreferences
-    >
+    TachiBackupSourcePreferencesCopyWith<$R, TachiBackupSourcePreferences, TachiBackupSourcePreferences>
   >
   get backupSourcePreferences => ListCopyWith(
     $value.backupSourcePreferences,
@@ -343,14 +243,11 @@ class _TachiBackupCopyWithImpl<$R, $Out>
     FieldCopyWithData({
       if (backupCategories != null) #backupCategories: backupCategories,
       if (backupManga != null) #backupManga: backupManga,
-      if (backupBrokenSources != null)
-        #backupBrokenSources: backupBrokenSources,
+      if (backupBrokenSources != null) #backupBrokenSources: backupBrokenSources,
       if (backupSources != null) #backupSources: backupSources,
-      if (backupExtensionRepo != null)
-        #backupExtensionRepo: backupExtensionRepo,
+      if (backupExtensionRepo != null) #backupExtensionRepo: backupExtensionRepo,
       if (backupPreferences != null) #backupPreferences: backupPreferences,
-      if (backupSourcePreferences != null)
-        #backupSourcePreferences: backupSourcePreferences,
+      if (backupSourcePreferences != null) #backupSourcePreferences: backupSourcePreferences,
       if (fork != null) #fork: fork,
     }),
   );
@@ -358,28 +255,15 @@ class _TachiBackupCopyWithImpl<$R, $Out>
   TachiBackup $make(CopyWithData data) => TachiBackup(
     backupCategories: data.get(#backupCategories, or: $value.backupCategories),
     backupManga: data.get(#backupManga, or: $value.backupManga),
-    backupBrokenSources: data.get(
-      #backupBrokenSources,
-      or: $value.backupBrokenSources,
-    ),
+    backupBrokenSources: data.get(#backupBrokenSources, or: $value.backupBrokenSources),
     backupSources: data.get(#backupSources, or: $value.backupSources),
-    backupExtensionRepo: data.get(
-      #backupExtensionRepo,
-      or: $value.backupExtensionRepo,
-    ),
-    backupPreferences: data.get(
-      #backupPreferences,
-      or: $value.backupPreferences,
-    ),
-    backupSourcePreferences: data.get(
-      #backupSourcePreferences,
-      or: $value.backupSourcePreferences,
-    ),
+    backupExtensionRepo: data.get(#backupExtensionRepo, or: $value.backupExtensionRepo),
+    backupPreferences: data.get(#backupPreferences, or: $value.backupPreferences),
+    backupSourcePreferences: data.get(#backupSourcePreferences, or: $value.backupSourcePreferences),
     fork: data.get(#fork, or: $value.fork),
   );
 
   @override
-  TachiBackupCopyWith<$R2, TachiBackup, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _TachiBackupCopyWithImpl($value, $cast, t);
+  TachiBackupCopyWith<$R2, TachiBackup, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _TachiBackupCopyWithImpl($value, $cast, t);
 }

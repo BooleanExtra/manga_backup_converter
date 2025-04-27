@@ -6,8 +6,7 @@
 
 part of 'paperback_backup_chapter.dart';
 
-class PaperbackBackupChapterMapper
-    extends ClassMapperBase<PaperbackBackupChapter> {
+class PaperbackBackupChapterMapper extends ClassMapperBase<PaperbackBackupChapter> {
   PaperbackBackupChapterMapper._();
 
   static PaperbackBackupChapterMapper? _instance;
@@ -24,56 +23,30 @@ class PaperbackBackupChapterMapper
   final String id = 'PaperbackBackupChapter';
 
   static num _$volume(PaperbackBackupChapter v) => v.volume;
-  static const Field<PaperbackBackupChapter, num> _f$volume = Field(
-    'volume',
-    _$volume,
-  );
+  static const Field<PaperbackBackupChapter, num> _f$volume = Field('volume', _$volume);
   static String _$langCode(PaperbackBackupChapter v) => v.langCode;
-  static const Field<PaperbackBackupChapter, String> _f$langCode = Field(
-    'langCode',
-    _$langCode,
-  );
+  static const Field<PaperbackBackupChapter, String> _f$langCode = Field('langCode', _$langCode);
   static String _$group(PaperbackBackupChapter v) => v.group;
-  static const Field<PaperbackBackupChapter, String> _f$group = Field(
-    'group',
-    _$group,
-  );
+  static const Field<PaperbackBackupChapter, String> _f$group = Field('group', _$group);
   static int _$sortingIndex(PaperbackBackupChapter v) => v.sortingIndex;
-  static const Field<PaperbackBackupChapter, int> _f$sortingIndex = Field(
-    'sortingIndex',
-    _$sortingIndex,
-  );
+  static const Field<PaperbackBackupChapter, int> _f$sortingIndex = Field('sortingIndex', _$sortingIndex);
   static String _$id(PaperbackBackupChapter v) => v.id;
   static const Field<PaperbackBackupChapter, String> _f$id = Field('id', _$id);
   static num _$chapNum(PaperbackBackupChapter v) => v.chapNum;
-  static const Field<PaperbackBackupChapter, num> _f$chapNum = Field(
-    'chapNum',
-    _$chapNum,
-  );
+  static const Field<PaperbackBackupChapter, num> _f$chapNum = Field('chapNum', _$chapNum);
   static String _$chapterId(PaperbackBackupChapter v) => v.chapterId;
-  static const Field<PaperbackBackupChapter, String> _f$chapterId = Field(
-    'chapterId',
-    _$chapterId,
-  );
+  static const Field<PaperbackBackupChapter, String> _f$chapterId = Field('chapterId', _$chapterId);
   static DateTime _$time(PaperbackBackupChapter v) => v.time;
-  static const Field<PaperbackBackupChapter, DateTime> _f$time = Field(
-    'time',
-    _$time,
-  );
+  static const Field<PaperbackBackupChapter, DateTime> _f$time = Field('time', _$time);
   static bool _$isNew(PaperbackBackupChapter v) => v.isNew;
-  static const Field<PaperbackBackupChapter, bool> _f$isNew = Field(
-    'isNew',
-    _$isNew,
-  );
+  static const Field<PaperbackBackupChapter, bool> _f$isNew = Field('isNew', _$isNew);
   static String _$name(PaperbackBackupChapter v) => v.name;
-  static const Field<PaperbackBackupChapter, String> _f$name = Field(
-    'name',
-    _$name,
+  static const Field<PaperbackBackupChapter, String> _f$name = Field('name', _$name);
+  static PaperbackBackupItemReference _$sourceManga(PaperbackBackupChapter v) => v.sourceManga;
+  static const Field<PaperbackBackupChapter, PaperbackBackupItemReference> _f$sourceManga = Field(
+    'sourceManga',
+    _$sourceManga,
   );
-  static PaperbackBackupItemReference _$sourceManga(PaperbackBackupChapter v) =>
-      v.sourceManga;
-  static const Field<PaperbackBackupChapter, PaperbackBackupItemReference>
-  _f$sourceManga = Field('sourceManga', _$sourceManga);
 
   @override
   final MappableFields<PaperbackBackupChapter> fields = const {
@@ -120,67 +93,43 @@ class PaperbackBackupChapterMapper
 
 mixin PaperbackBackupChapterMappable {
   String toJson() {
-    return PaperbackBackupChapterMapper.ensureInitialized()
-        .encodeJson<PaperbackBackupChapter>(this as PaperbackBackupChapter);
+    return PaperbackBackupChapterMapper.ensureInitialized().encodeJson<PaperbackBackupChapter>(
+      this as PaperbackBackupChapter,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return PaperbackBackupChapterMapper.ensureInitialized()
-        .encodeMap<PaperbackBackupChapter>(this as PaperbackBackupChapter);
-  }
-
-  PaperbackBackupChapterCopyWith<
-    PaperbackBackupChapter,
-    PaperbackBackupChapter,
-    PaperbackBackupChapter
-  >
-  get copyWith => _PaperbackBackupChapterCopyWithImpl(
-    this as PaperbackBackupChapter,
-    $identity,
-    $identity,
-  );
-  @override
-  String toString() {
-    return PaperbackBackupChapterMapper.ensureInitialized().stringifyValue(
+    return PaperbackBackupChapterMapper.ensureInitialized().encodeMap<PaperbackBackupChapter>(
       this as PaperbackBackupChapter,
     );
+  }
+
+  PaperbackBackupChapterCopyWith<PaperbackBackupChapter, PaperbackBackupChapter, PaperbackBackupChapter> get copyWith =>
+      _PaperbackBackupChapterCopyWithImpl(this as PaperbackBackupChapter, $identity, $identity);
+  @override
+  String toString() {
+    return PaperbackBackupChapterMapper.ensureInitialized().stringifyValue(this as PaperbackBackupChapter);
   }
 
   @override
   bool operator ==(Object other) {
-    return PaperbackBackupChapterMapper.ensureInitialized().equalsValue(
-      this as PaperbackBackupChapter,
-      other,
-    );
+    return PaperbackBackupChapterMapper.ensureInitialized().equalsValue(this as PaperbackBackupChapter, other);
   }
 
   @override
   int get hashCode {
-    return PaperbackBackupChapterMapper.ensureInitialized().hashValue(
-      this as PaperbackBackupChapter,
-    );
+    return PaperbackBackupChapterMapper.ensureInitialized().hashValue(this as PaperbackBackupChapter);
   }
 }
 
-extension PaperbackBackupChapterValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, PaperbackBackupChapter, $Out> {
-  PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, $Out>
-  get $asPaperbackBackupChapter =>
+extension PaperbackBackupChapterValueCopy<$R, $Out> on ObjectCopyWith<$R, PaperbackBackupChapter, $Out> {
+  PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, $Out> get $asPaperbackBackupChapter =>
       $base.as((v, t, t2) => _PaperbackBackupChapterCopyWithImpl(v, t, t2));
 }
 
-abstract class PaperbackBackupChapterCopyWith<
-  $R,
-  $In extends PaperbackBackupChapter,
-  $Out
->
+abstract class PaperbackBackupChapterCopyWith<$R, $In extends PaperbackBackupChapter, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  PaperbackBackupItemReferenceCopyWith<
-    $R,
-    PaperbackBackupItemReference,
-    PaperbackBackupItemReference
-  >
-  get sourceManga;
+  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference> get sourceManga;
   $R call({
     num? volume,
     String? langCode,
@@ -194,28 +143,18 @@ abstract class PaperbackBackupChapterCopyWith<
     String? name,
     PaperbackBackupItemReference? sourceManga,
   });
-  PaperbackBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  );
+  PaperbackBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _PaperbackBackupChapterCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, PaperbackBackupChapter, $Out>
-    implements
-        PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, $Out> {
+class _PaperbackBackupChapterCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, PaperbackBackupChapter, $Out>
+    implements PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, $Out> {
   _PaperbackBackupChapterCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<PaperbackBackupChapter> $mapper =
-      PaperbackBackupChapterMapper.ensureInitialized();
+  late final ClassMapperBase<PaperbackBackupChapter> $mapper = PaperbackBackupChapterMapper.ensureInitialized();
   @override
-  PaperbackBackupItemReferenceCopyWith<
-    $R,
-    PaperbackBackupItemReference,
-    PaperbackBackupItemReference
-  >
-  get sourceManga =>
-      $value.sourceManga.copyWith.$chain((v) => call(sourceManga: v));
+  PaperbackBackupItemReferenceCopyWith<$R, PaperbackBackupItemReference, PaperbackBackupItemReference>
+  get sourceManga => $value.sourceManga.copyWith.$chain((v) => call(sourceManga: v));
   @override
   $R call({
     num? volume,
@@ -260,7 +199,6 @@ class _PaperbackBackupChapterCopyWithImpl<$R, $Out>
   );
 
   @override
-  PaperbackBackupChapterCopyWith<$R2, PaperbackBackupChapter, $Out2>
-  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+  PaperbackBackupChapterCopyWith<$R2, PaperbackBackupChapter, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _PaperbackBackupChapterCopyWithImpl($value, $cast, t);
 }
