@@ -1,6 +1,11 @@
+export 'src/common/backup_type.dart';
 export 'src/common/convertable.dart';
+export 'src/common/extensions.dart';
 export 'src/converter.dart';
 export 'src/exceptions/aidoku_exception.dart';
+export 'src/exceptions/base_exeption.dart';
+export 'src/exceptions/extension_exception.dart';
+export 'src/exceptions/mangayomi_exception.dart';
 export 'src/exceptions/paperback_exception.dart';
 export 'src/exceptions/tachi_exception.dart';
 export 'src/exceptions/tachimanga_exception.dart';
