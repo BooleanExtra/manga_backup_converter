@@ -93,7 +93,13 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
   @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
-    throw UnimplementedError();
+    return switch (type) {
+      BackupType.paperback => this,
+      BackupType.aidoku => throw const PaperbackException('Aidoku backup format not supported yet'),
+      BackupType.mangayomi => throw const PaperbackException('Mangayomi backup format not supported yet'),
+      BackupType.tachi => throw const PaperbackException('Tachi backup format not supported yet'),
+      BackupType.tachimanga => throw const PaperbackException('TachiManga backup format not supported yet'),
+    };
   }
 
   @override

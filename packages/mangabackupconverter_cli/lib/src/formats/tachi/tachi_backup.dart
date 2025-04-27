@@ -123,7 +123,13 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
-    throw UnimplementedError();
+    return switch (type) {
+      BackupType.tachi => this,
+      BackupType.aidoku => throw const TachiException('Tachi backup format not supported yet'),
+      BackupType.paperback => throw const TachiException('Tachi backup format not supported yet'),
+      BackupType.tachimanga => throw const TachiException('TachiManga backup format not supported yet'),
+      BackupType.mangayomi => throw const TachiException('Mangayomi backup format not supported yet'),
+    };
   }
 
   static const fromMap = TachiBackupMapper.fromMap;

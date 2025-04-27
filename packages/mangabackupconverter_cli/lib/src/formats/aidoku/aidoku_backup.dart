@@ -169,7 +169,13 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
-    throw UnimplementedError();
+    return switch (type) {
+      BackupType.aidoku => this,
+      BackupType.paperback => throw const AidokuException('Aidoku backup cannot be converted to Paperback'),
+      BackupType.tachi => throw const AidokuException('Aidoku backup cannot be converted to Tachi'),
+      BackupType.tachimanga => throw const AidokuException('Aidoku backup cannot be converted to TachiManga'),
+      BackupType.mangayomi => throw const AidokuException('Aidoku backup cannot be converted to Mangayomi'),
+    };
   }
 
   @override
