@@ -125,9 +125,7 @@ class ConvertCommand extends Command<void> {
 
     final ConvertableBackup? importedBackup = switch (inputFormat) {
       BackupType.aidoku => converter.importAidokuBackup(
-          ByteData.sublistView(
-            backupFile.readAsBytesSync(),
-          ),
+          backupFile.readAsBytesSync(),
         ),
       BackupType.tachi => converter.importTachibkBackup(
           backupFile.readAsBytesSync(),

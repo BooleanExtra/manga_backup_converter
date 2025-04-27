@@ -8,8 +8,10 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_fork.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 
 class MangaBackupConverter {
-  AidokuBackup importAidokuBackup(ByteData bytes) {
-    return AidokuBackup.fromBinaryPropertyList(bytes);
+  AidokuBackup importAidokuBackup(Uint8List bytes) {
+    return AidokuBackup.fromBinaryPropertyList(
+      ByteData.sublistView(bytes),
+    );
   }
 
   PaperbackBackup importPaperbackPas4Backup(Uint8List bytes, {String? name}) {
