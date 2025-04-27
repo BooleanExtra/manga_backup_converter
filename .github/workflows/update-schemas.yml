@@ -10,7 +10,7 @@ permissions:
 
 env:
   FLUTTER_CHANNEL: "stable"
-  FLUTTER_VERSION: "3.22.3"
+  FLUTTER_VERSION: "3.29.3"
 
 jobs:
   update-schemas:
