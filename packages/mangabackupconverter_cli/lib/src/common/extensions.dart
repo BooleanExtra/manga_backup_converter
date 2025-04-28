@@ -5,7 +5,8 @@ import 'package:mangabackupconverter_cli/src/exceptions/extension_exception.dart
 
 part 'extensions.mapper.dart';
 
-// TODO: Expand supported websites and extensions. Currently only MangaDex is supported.
+// TODO: Expand supported websites and extensions. Currently only MangaDex and Weeb Central are supported.
+// Unsupported sites should be converted to use WeebCentral as a fallback.
 const String _extensionRepoIndexJson = '''
 {
   "repos": {
@@ -133,8 +134,41 @@ const String _extensionRepoIndexJson = '''
         ],
         "tachi": [
           {
-            "name": "Tachiyomi: MangaDex",
-            "id": "eu.kanade.tachiyomi.extension.all.mangadex",
+            "name": "MangaDex (en)",
+            "id": "2499283573021220255",
+            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WeebCentral",
+      "extensions": {
+        "aidoku": [
+          {
+            "name": "WeebCentral",
+            "id": "en.weebcentral",
+            "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages"
+          }
+        ],
+        "paperback": [
+          {
+            "name": "WeebCentral",
+            "id": "WeebCentral",
+            "repo": "https://gabrielcwt.github.io/gabe-extensions/0.8"
+          }
+        ],
+        "mangayomi": [
+          {
+            "name": "WeebCentral",
+            "id": "693275080",
+            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
+          }
+        ],
+        "tachi": [
+          {
+            "name": "WeebCentral",
+            "id": "2131019126180322627",
             "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
           }
         ]
