@@ -170,7 +170,8 @@ const String _extensionRepoIndexJson = '''
           {
             "name": "WeebCentral",
             "id": "2131019126180322627",
-            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
+            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json",
+            "lang": "en"
           }
         ]
       }
