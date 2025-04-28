@@ -134,9 +134,10 @@ const String _extensionRepoIndexJson = '''
         ],
         "tachi": [
           {
-            "name": "MangaDex (en)",
+            "name": "MangaDex",
             "id": "2499283573021220255",
-            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json"
+            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json",
+            "lang": "en"
           }
         ]
       }
@@ -250,8 +251,9 @@ class Extension with ExtensionMappable {
   final String name;
   final String id;
   final String repo;
+  final String? lang;
 
-  const Extension({required this.name, required this.id, required this.repo});
+  const Extension({required this.name, required this.id, required this.repo, this.lang});
 
   static const fromMap = ExtensionMapper.fromMap;
   static const fromJson = ExtensionMapper.fromJson;

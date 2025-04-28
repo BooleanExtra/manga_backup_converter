@@ -378,12 +378,14 @@ class ExtensionMapper extends ClassMapperBase<Extension> {
   static const Field<Extension, String> _f$id = Field('id', _$id);
   static String _$repo(Extension v) => v.repo;
   static const Field<Extension, String> _f$repo = Field('repo', _$repo);
+  static String? _$lang(Extension v) => v.lang;
+  static const Field<Extension, String> _f$lang = Field('lang', _$lang, opt: true);
 
   @override
-  final MappableFields<Extension> fields = const {#name: _f$name, #id: _f$id, #repo: _f$repo};
+  final MappableFields<Extension> fields = const {#name: _f$name, #id: _f$id, #repo: _f$repo, #lang: _f$lang};
 
   static Extension _instantiate(DecodingData data) {
-    return Extension(name: data.dec(_f$name), id: data.dec(_f$id), repo: data.dec(_f$repo));
+    return Extension(name: data.dec(_f$name), id: data.dec(_f$id), repo: data.dec(_f$repo), lang: data.dec(_f$lang));
   }
 
   @override
@@ -430,7 +432,7 @@ extension ExtensionValueCopy<$R, $Out> on ObjectCopyWith<$R, Extension, $Out> {
 }
 
 abstract class ExtensionCopyWith<$R, $In extends Extension, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? name, String? id, String? repo});
+  $R call({String? name, String? id, String? repo, String? lang});
   ExtensionCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -441,14 +443,20 @@ class _ExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Extension, 
   @override
   late final ClassMapperBase<Extension> $mapper = ExtensionMapper.ensureInitialized();
   @override
-  $R call({String? name, String? id, String? repo}) => $apply(
-    FieldCopyWithData({if (name != null) #name: name, if (id != null) #id: id, if (repo != null) #repo: repo}),
+  $R call({String? name, String? id, String? repo, Object? lang = $none}) => $apply(
+    FieldCopyWithData({
+      if (name != null) #name: name,
+      if (id != null) #id: id,
+      if (repo != null) #repo: repo,
+      if (lang != $none) #lang: lang,
+    }),
   );
   @override
   Extension $make(CopyWithData data) => Extension(
     name: data.get(#name, or: $value.name),
     id: data.get(#id, or: $value.id),
     repo: data.get(#repo, or: $value.repo),
+    lang: data.get(#lang, or: $value.lang),
   );
 
   @override
