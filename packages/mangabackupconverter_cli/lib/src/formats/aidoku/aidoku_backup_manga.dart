@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
 
 part 'aidoku_backup_manga.mapper.dart';
 
@@ -38,6 +39,23 @@ class AidokuBackupManga with AidokuBackupMangaMappable {
     this.langFilter,
     this.scanlatorFilter,
   });
+
+  PaperbackBackupMangaInfo toPaperbackMangaInfo() {
+    final mangaCover = cover;
+    return PaperbackBackupMangaInfo(
+      tags: (tags ?? <String>[]).map((tag) => PaperbackBackupMangaTag(label: tag, id: tag)).toList(),
+      desc: desc ?? '',
+      titles: [title],
+      covers: mangaCover == null ? [] : [mangaCover],
+      author: author ?? '',
+      image: cover ?? '',
+      hentai: nsfw == AidokuMangaContentRating.nsfw,
+      additionalInfo: PaperbackBackupMangaAdditionalInfo(),
+      artist: artist ?? '',
+      id: id,
+      status: PaperbackBackupMangaInfo.statusFromAidoku(status),
+    );
+  }
 
   static const fromMap = AidokuBackupMangaMapper.fromMap;
   static const fromJson = AidokuBackupMangaMapper.fromJson;
