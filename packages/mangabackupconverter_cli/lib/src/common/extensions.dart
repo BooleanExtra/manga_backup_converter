@@ -147,7 +147,7 @@ const String _extensionRepoIndexJson = '''
       "extensions": {
         "aidoku": [
           {
-            "name": "WeebCentral",
+            "name": "Weeb Central",
             "id": "en.weebcentral",
             "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages"
           }
@@ -161,14 +161,14 @@ const String _extensionRepoIndexJson = '''
         ],
         "mangayomi": [
           {
-            "name": "WeebCentral",
+            "name": "Weeb Central",
             "id": "693275080",
             "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
           }
         ],
         "tachi": [
           {
-            "name": "WeebCentral",
+            "name": "Weeb Central",
             "id": "2131019126180322627",
             "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json",
             "lang": "en"
