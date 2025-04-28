@@ -6,7 +6,6 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
-import 'package:mangabackupconverter_cli/src/common/extensions.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
@@ -176,7 +175,6 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
-    final repoIndex = ExtensionRepoIndex.parseExtensionRepoIndex();
     return switch (type) {
       BackupType.aidoku => this,
       BackupType.paperback =>
