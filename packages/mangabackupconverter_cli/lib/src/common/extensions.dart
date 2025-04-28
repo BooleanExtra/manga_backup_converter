@@ -141,6 +141,12 @@ const String _extensionRepoIndexJson = '''
             "id": "2499283573021220255",
             "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json",
             "lang": "en"
+          },
+          {
+            "name": "MangaDex",
+            "id": "1411768577036936240",
+            "repo": "https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json",
+            "lang": "ja"
           }
         ]
       }
