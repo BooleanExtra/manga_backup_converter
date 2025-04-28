@@ -200,6 +200,18 @@ class ExtensionRepoIndex with ExtensionRepoIndexMappable {
     return ExtensionRepoIndex.fromJson(_extensionRepoIndexJson);
   }
 
+  List<(Extension, ExtensionRepo)> findExtension(String id, ExtensionType type) {
+    final site = sites.firstWhereOrNull((site) => site.extensions[type]?.any((e) => e.id == id) ?? false);
+    if (site == null) {
+      throw ExtensionException('Could not find site for extension id "$id" of type "$type"');
+    }
+    final siteExtensions = site.extensions[type] ?? [];
+    return siteExtensions.map((eachSiteExtension) {
+      final repo = findRepo(type, eachSiteExtension);
+      return (eachSiteExtension, repo);
+    }).toList();
+  }
+
   List<(Extension, ExtensionRepo)> convertExtension(Extension ext, ExtensionType type, ExtensionType newType) {
     final site = findSite(type, ext);
     final siteExtensions = site.extensions[newType] ?? [];
