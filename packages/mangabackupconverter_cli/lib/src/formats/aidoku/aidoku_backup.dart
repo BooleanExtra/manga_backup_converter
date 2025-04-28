@@ -186,27 +186,23 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
           final List<PaperbackBackupChapter> chapters = [];
           final List<PaperbackBackupLibraryManga> libraryManga = [];
           final List<PaperbackBackupMangaInfo> mangaInfo =
-              manga?.map((eachManga) {
-                final (source, repo) =
-                    repoIndex.findExtension(eachManga.sourceId, ExtensionType.aidoku).firstOrNull ?? (null, null);
-                if (source == null) {
-                  throw AidokuException('Could not find source for manga ${eachManga.id}');
-                }
-                final newSource = repoIndex.convertExtension(source, ExtensionType.aidoku, ExtensionType.paperback);
+              manga?.map((AidokuBackupManga eachManga) {
+                final mangaCover = eachManga.cover;
                 return PaperbackBackupMangaInfo(
-                  tags: [],
-                  desc: '',
-                  titles: [],
-                  covers: [],
+                  tags:
+                      (eachManga.tags ?? <String>[])
+                          .map((tag) => PaperbackBackupMangaTag(label: tag, id: tag))
+                          .toList(),
+                  desc: eachManga.desc ?? '',
+                  titles: [eachManga.title],
+                  covers: mangaCover == null ? [] : [mangaCover],
                   author: eachManga.author ?? '',
                   image: eachManga.cover ?? '',
                   hentai: eachManga.nsfw == AidokuMangaContentRating.nsfw,
                   additionalInfo: PaperbackBackupMangaAdditionalInfo(),
-                  artist: '',
-                  id: '',
-                  status: '',
-                  rating: '',
-                  banner: '',
+                  artist: eachManga.artist ?? '',
+                  id: eachManga.id,
+                  status: PaperbackBackupMangaInfo.statusFromAidoku(eachManga.status),
                 );
               }).toList() ??
               <PaperbackBackupMangaInfo>[];
