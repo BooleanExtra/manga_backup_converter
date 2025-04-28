@@ -5,12 +5,9 @@ import 'package:mangabackupconverter_cli/src/exceptions/extension_exception.dart
 
 part 'extensions.mapper.dart';
 
-// TODO: Write script to help generate this json
+// TODO: Implement manga id format mapping for each supported site
 
-// 1. given these repos, query for extensions of each
-// 2. for each site, manually record the ids of the matching extensions
-// 3. try to identify common sites and group them together using the aliases
-
+// TODO: Expand supported websites and extensions. Currently only MangaDex is supported.
 const String _extensionRepoIndexJson = '''
 {
   "repos": {
@@ -149,32 +146,25 @@ const String _extensionRepoIndexJson = '''
 }
 ''';
 
-class ExtensionConverter {
-  ExtensionRepoIndex parseExtensionRepoIndex() {
-    return ExtensionRepoIndex.fromJson(_extensionRepoIndexJson);
-  }
-
-  List<(Extension, ExtensionRepo)> convertExtension(
-    ExtensionRepoIndex index,
-    Extension ext,
-    ExtensionType type,
-    ExtensionType newType,
-  ) {
-    final site = index.findSite(type, ext);
-    final siteExtensions = site.extensions[newType] ?? [];
-    return siteExtensions.map((eachSiteExtension) {
-      final repo = index.findRepo(newType, eachSiteExtension);
-      return (eachSiteExtension, repo);
-    }).toList();
-  }
-}
-
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   final Map<ExtensionType, List<ExtensionRepo>> repos;
   final List<SiteIndex> sites;
 
   const ExtensionRepoIndex({required this.repos, required this.sites});
+
+  factory ExtensionRepoIndex.parseExtensionRepoIndex() {
+    return ExtensionRepoIndex.fromJson(_extensionRepoIndexJson);
+  }
+
+  List<(Extension, ExtensionRepo)> convertExtension(Extension ext, ExtensionType type, ExtensionType newType) {
+    final site = findSite(type, ext);
+    final siteExtensions = site.extensions[newType] ?? [];
+    return siteExtensions.map((eachSiteExtension) {
+      final repo = findRepo(newType, eachSiteExtension);
+      return (eachSiteExtension, repo);
+    }).toList();
+  }
 
   ExtensionRepo findRepo(ExtensionType type, Extension ext) {
     final repo = repos[type]?.firstWhereOrNull((repo) => repo.url == ext.repo);
