@@ -231,7 +231,7 @@ class ExtensionRepoIndex with ExtensionRepoIndexMappable {
 
   SiteIndex findSite(ExtensionType type, Extension ext) {
     final site = sites.firstWhereOrNull(
-      (site) => site.extensions[type]?.any((e) => e.name == ext.name && e.repo == ext.repo) ?? false,
+      (site) => site.extensions[type]?.any((e) => e.id == ext.id && e.repo == ext.repo) ?? false,
     );
     if (site == null) {
       throw ExtensionException('Could not find site for extension "${ext.name}" of type "$type"');
