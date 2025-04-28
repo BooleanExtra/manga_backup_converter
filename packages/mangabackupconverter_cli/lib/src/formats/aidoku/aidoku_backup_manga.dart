@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
 
 part 'aidoku_backup_manga.mapper.dart';
 
@@ -13,27 +14,29 @@ class AidokuBackupManga with AidokuBackupMangaMappable {
   final List<String>? tags;
   final String? cover;
   final String? url;
-  final int status;
-  final int nsfw;
-  final int viewer;
-  final int? chapterFlags;
+  final AidokuPublishingStatus status;
+  final AidokuMangaContentRating nsfw;
+  final AidokuMangaViewer viewer;
+  final int chapterFlags;
   final String? langFilter;
+  final List<String>? scanlatorFilter;
 
   AidokuBackupManga({
     required this.id,
     required this.sourceId,
     required this.title,
-    required this.author,
-    required this.artist,
-    required this.desc,
-    required this.tags,
-    required this.cover,
-    required this.url,
-    required this.status,
-    required this.nsfw,
-    required this.viewer,
-    required this.chapterFlags,
-    required this.langFilter,
+    this.author,
+    this.artist,
+    this.desc,
+    this.tags,
+    this.cover,
+    this.url,
+    this.status = AidokuPublishingStatus.unknown,
+    this.nsfw = AidokuMangaContentRating.safe,
+    this.viewer = AidokuMangaViewer.defaultViewer,
+    this.chapterFlags = 0,
+    this.langFilter,
+    this.scanlatorFilter,
   });
 
   static const fromMap = AidokuBackupMangaMapper.fromMap;

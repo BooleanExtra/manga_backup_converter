@@ -15,6 +15,7 @@ export 'src/formats/aidoku/aidoku_backup_history.dart';
 export 'src/formats/aidoku/aidoku_backup_library_manga.dart';
 export 'src/formats/aidoku/aidoku_backup_manga.dart';
 export 'src/formats/aidoku/aidoku_backup_track_item.dart';
+export 'src/formats/aidoku/aidoku_enums.dart';
 export 'src/formats/mangayomi/mangayomi_backup.dart';
 export 'src/formats/mangayomi/mangayomi_backup_db.dart';
 export 'src/formats/mangayomi/mangayomi_backup_settings.dart';

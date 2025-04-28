@@ -13,6 +13,7 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_histor
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
+import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
@@ -199,7 +200,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
                   covers: [],
                   author: eachManga.author ?? '',
                   image: eachManga.cover ?? '',
-                  hentai: false,
+                  hentai: eachManga.nsfw == AidokuMangaContentRating.nsfw,
                   additionalInfo: PaperbackBackupMangaAdditionalInfo(),
                   artist: '',
                   id: '',
