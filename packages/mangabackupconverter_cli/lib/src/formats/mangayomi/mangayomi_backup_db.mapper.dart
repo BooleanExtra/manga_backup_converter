@@ -2579,33 +2579,29 @@ class MangayomiBackupTrackPreferencesMapper extends ClassMapperBase<MangayomiBac
   @override
   final String id = 'MangayomiBackupTrackPreferences';
 
-  static int? _$chapterId(MangayomiBackupTrackPreferences v) => v.chapterId;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$chapterId = Field('chapterId', _$chapterId, opt: true);
-  static int? _$date(MangayomiBackupTrackPreferences v) => v.date;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$date = Field('date', _$date, opt: true);
-  static int? _$id(MangayomiBackupTrackPreferences v) => v.id;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$id = Field('id', _$id, opt: true);
-  static int? _$itemType(MangayomiBackupTrackPreferences v) => v.itemType;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$itemType = Field('itemType', _$itemType, opt: true);
-  static int? _$mangaId(MangayomiBackupTrackPreferences v) => v.mangaId;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$mangaId = Field('mangaId', _$mangaId, opt: true);
+  static int? _$syncId(MangayomiBackupTrackPreferences v) => v.syncId;
+  static const Field<MangayomiBackupTrackPreferences, int> _f$syncId = Field('syncId', _$syncId);
+  static String? _$username(MangayomiBackupTrackPreferences v) => v.username;
+  static const Field<MangayomiBackupTrackPreferences, String> _f$username = Field('username', _$username);
+  static String? _$oAuth(MangayomiBackupTrackPreferences v) => v.oAuth;
+  static const Field<MangayomiBackupTrackPreferences, String> _f$oAuth = Field('oAuth', _$oAuth);
+  static String? _$prefs(MangayomiBackupTrackPreferences v) => v.prefs;
+  static const Field<MangayomiBackupTrackPreferences, String> _f$prefs = Field('prefs', _$prefs);
 
   @override
   final MappableFields<MangayomiBackupTrackPreferences> fields = const {
-    #chapterId: _f$chapterId,
-    #date: _f$date,
-    #id: _f$id,
-    #itemType: _f$itemType,
-    #mangaId: _f$mangaId,
+    #syncId: _f$syncId,
+    #username: _f$username,
+    #oAuth: _f$oAuth,
+    #prefs: _f$prefs,
   };
 
   static MangayomiBackupTrackPreferences _instantiate(DecodingData data) {
     return MangayomiBackupTrackPreferences(
-      chapterId: data.dec(_f$chapterId),
-      date: data.dec(_f$date),
-      id: data.dec(_f$id),
-      itemType: data.dec(_f$itemType),
-      mangaId: data.dec(_f$mangaId),
+      syncId: data.dec(_f$syncId),
+      username: data.dec(_f$username),
+      oAuth: data.dec(_f$oAuth),
+      prefs: data.dec(_f$prefs),
     );
   }
 
@@ -2671,7 +2667,7 @@ extension MangayomiBackupTrackPreferencesValueCopy<$R, $Out>
 
 abstract class MangayomiBackupTrackPreferencesCopyWith<$R, $In extends MangayomiBackupTrackPreferences, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({int? chapterId, int? date, int? id, int? itemType, int? mangaId});
+  $R call({int? syncId, String? username, String? oAuth, String? prefs});
   MangayomiBackupTrackPreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -2684,28 +2680,20 @@ class _MangayomiBackupTrackPreferencesCopyWithImpl<$R, $Out>
   late final ClassMapperBase<MangayomiBackupTrackPreferences> $mapper =
       MangayomiBackupTrackPreferencesMapper.ensureInitialized();
   @override
-  $R call({
-    Object? chapterId = $none,
-    Object? date = $none,
-    Object? id = $none,
-    Object? itemType = $none,
-    Object? mangaId = $none,
-  }) => $apply(
+  $R call({Object? syncId = $none, Object? username = $none, Object? oAuth = $none, Object? prefs = $none}) => $apply(
     FieldCopyWithData({
-      if (chapterId != $none) #chapterId: chapterId,
-      if (date != $none) #date: date,
-      if (id != $none) #id: id,
-      if (itemType != $none) #itemType: itemType,
-      if (mangaId != $none) #mangaId: mangaId,
+      if (syncId != $none) #syncId: syncId,
+      if (username != $none) #username: username,
+      if (oAuth != $none) #oAuth: oAuth,
+      if (prefs != $none) #prefs: prefs,
     }),
   );
   @override
   MangayomiBackupTrackPreferences $make(CopyWithData data) => MangayomiBackupTrackPreferences(
-    chapterId: data.get(#chapterId, or: $value.chapterId),
-    date: data.get(#date, or: $value.date),
-    id: data.get(#id, or: $value.id),
-    itemType: data.get(#itemType, or: $value.itemType),
-    mangaId: data.get(#mangaId, or: $value.mangaId),
+    syncId: data.get(#syncId, or: $value.syncId),
+    username: data.get(#username, or: $value.username),
+    oAuth: data.get(#oAuth, or: $value.oAuth),
+    prefs: data.get(#prefs, or: $value.prefs),
   );
 
   @override
