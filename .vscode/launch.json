@@ -85,6 +85,22 @@
             ]
         },
         {
+            "name": "Import Mangayomi (debug mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/mangabackupconverter_cli/bin/mangabackupconverter_cli.dart",
+            "args": [
+                "convert",
+                "-b",
+                ".input_files/mangayomi.backup",
+                "--output-format",
+                "tachi",
+                "--tachi-fork",
+                "mihon",
+                "-v"
+            ]
+        },
+        {
             "name": "Import Mihon (debug mode)",
             "request": "launch",
             "type": "dart",
