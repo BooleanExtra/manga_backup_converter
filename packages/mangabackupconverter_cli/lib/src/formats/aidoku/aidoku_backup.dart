@@ -199,7 +199,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
                   covers: [],
                   author: eachManga.author ?? '',
                   image: eachManga.cover ?? '',
-                  hentai: eachManga.nsfw,
+                  hentai: false,
                   additionalInfo: PaperbackBackupMangaAdditionalInfo(),
                   artist: '',
                   id: '',
