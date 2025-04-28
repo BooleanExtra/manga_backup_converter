@@ -179,6 +179,8 @@ const String _extensionRepoIndexJson = '''
 ''';
 
 // TODO: Implement manga id format mapping for each supported site
+// Alternatively, use wrong but unique ids and require the user to use the app's migration tool to fix them
+
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   final Map<ExtensionType, List<ExtensionRepo>> repos;
