@@ -5,8 +5,6 @@ import 'package:mangabackupconverter_cli/src/exceptions/extension_exception.dart
 
 part 'extensions.mapper.dart';
 
-// TODO: Implement manga id format mapping for each supported site
-
 // TODO: Expand supported websites and extensions. Currently only MangaDex is supported.
 const String _extensionRepoIndexJson = '''
 {
@@ -146,6 +144,7 @@ const String _extensionRepoIndexJson = '''
 }
 ''';
 
+// TODO: Implement manga id format mapping for each supported site
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   final Map<ExtensionType, List<ExtensionRepo>> repos;
