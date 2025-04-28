@@ -115,21 +115,24 @@ const String _extensionRepoIndexJson = '''
           {
             "name": "MangaDex",
             "id": "multi.mangadex",
-            "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages"
+            "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages",
+            "lang": "en"
           }
         ],
         "paperback": [
           {
             "name": "MangaDex",
             "id": "MangaDex",
-            "repo": "https://thenetsky.github.io/community-extensions/0.8"
+            "repo": "https://thenetsky.github.io/community-extensions/0.8",
+            "lang": "en"
           }
         ],
         "mangayomi": [
           {
             "name": "MangaDex",
             "id": "202373705",
-            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
+            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json",
+            "lang": "en"
           }
         ],
         "tachi": [
@@ -149,21 +152,24 @@ const String _extensionRepoIndexJson = '''
           {
             "name": "Weeb Central",
             "id": "en.weebcentral",
-            "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages"
+            "repo": "https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages",
+            "lang": "en"
           }
         ],
         "paperback": [
           {
             "name": "WeebCentral",
             "id": "WeebCentral",
-            "repo": "https://gabrielcwt.github.io/gabe-extensions/0.8"
+            "repo": "https://gabrielcwt.github.io/gabe-extensions/0.8",
+            "lang": "en"
           }
         ],
         "mangayomi": [
           {
             "name": "Weeb Central",
             "id": "693275080",
-            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json"
+            "repo": "https://kodjodevf.github.io/mangayomi-extensions/index.json",
+            "lang": "en"
           }
         ],
         "tachi": [
