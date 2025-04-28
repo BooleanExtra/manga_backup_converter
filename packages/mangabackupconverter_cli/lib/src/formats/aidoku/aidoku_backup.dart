@@ -13,7 +13,6 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_histor
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
-import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
@@ -186,25 +185,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
           final List<PaperbackBackupChapter> chapters = [];
           final List<PaperbackBackupLibraryManga> libraryManga = [];
           final List<PaperbackBackupMangaInfo> mangaInfo =
-              manga?.map((AidokuBackupManga eachManga) {
-                final mangaCover = eachManga.cover;
-                return PaperbackBackupMangaInfo(
-                  tags:
-                      (eachManga.tags ?? <String>[])
-                          .map((tag) => PaperbackBackupMangaTag(label: tag, id: tag))
-                          .toList(),
-                  desc: eachManga.desc ?? '',
-                  titles: [eachManga.title],
-                  covers: mangaCover == null ? [] : [mangaCover],
-                  author: eachManga.author ?? '',
-                  image: eachManga.cover ?? '',
-                  hentai: eachManga.nsfw == AidokuMangaContentRating.nsfw,
-                  additionalInfo: PaperbackBackupMangaAdditionalInfo(),
-                  artist: eachManga.artist ?? '',
-                  id: eachManga.id,
-                  status: PaperbackBackupMangaInfo.statusFromAidoku(eachManga.status),
-                );
-              }).toList() ??
+              manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
               <PaperbackBackupMangaInfo>[];
           final List<PaperbackBackupSourceManga> sourceManga = [];
           return PaperbackBackup(
