@@ -6,12 +6,19 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
+import 'package:mangabackupconverter_cli/src/common/extensions.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_source_manga.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
@@ -169,9 +176,49 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
+    final repoIndex = ExtensionRepoIndex.parseExtensionRepoIndex();
     return switch (type) {
       BackupType.aidoku => this,
-      BackupType.paperback => throw const AidokuException('Aidoku backup cannot be converted to Paperback'),
+      BackupType.paperback =>
+        (() {
+          final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker = [];
+          final List<PaperbackBackupChapter> chapters = [];
+          final List<PaperbackBackupLibraryManga> libraryManga = [];
+          final List<PaperbackBackupMangaInfo> mangaInfo =
+              manga?.map((eachManga) {
+                final (source, repo) =
+                    repoIndex.findExtension(eachManga.sourceId, ExtensionType.aidoku).firstOrNull ?? (null, null);
+                if (source == null) {
+                  throw AidokuException('Could not find source for manga ${eachManga.id}');
+                }
+                final newSource = repoIndex.convertExtension(source, ExtensionType.aidoku, ExtensionType.paperback);
+                return PaperbackBackupMangaInfo(
+                  tags: [],
+                  desc: '',
+                  titles: [],
+                  covers: [],
+                  author: eachManga.author ?? '',
+                  image: eachManga.cover ?? '',
+                  hentai: eachManga.nsfw,
+                  additionalInfo: PaperbackBackupMangaAdditionalInfo(),
+                  artist: '',
+                  id: '',
+                  status: '',
+                  rating: '',
+                  banner: '',
+                );
+              }).toList() ??
+              <PaperbackBackupMangaInfo>[];
+          final List<PaperbackBackupSourceManga> sourceManga = [];
+          return PaperbackBackup(
+            name: name,
+            chapterProgressMarker: chapterProgressMarker,
+            chapters: chapters,
+            libraryManga: libraryManga,
+            mangaInfo: mangaInfo,
+            sourceManga: sourceManga,
+          );
+        })(),
       BackupType.tachi => throw const AidokuException('Aidoku backup cannot be converted to Tachi'),
       BackupType.tachimanga => throw const AidokuException('Aidoku backup cannot be converted to TachiManga'),
       BackupType.mangayomi => throw const AidokuException('Aidoku backup cannot be converted to Mangayomi'),
