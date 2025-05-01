@@ -844,6 +844,10 @@ jobs:
         uses: oNaiPs/secrets-to-env-action@v1
         with:
           secrets: ${{ toJSON(secrets) }}
+      
+      - name: Get Dependencies
+        if: github.actor != 'dependabot[bot]'
+        run: flutter pub get
 
       - name: Activate Melos
         if: github.actor != 'dependabot[bot]'
@@ -855,6 +859,7 @@ jobs:
 
         # https://pub.dev/packages/sqflite_common_ffi_web
       - name: Setup sqflite
+        if: github.actor != 'dependabot[bot]'
         run: |
           cd packages/mangabackupconverter_cli
           dart run sqflite_common_ffi_web:setup --force
@@ -862,7 +867,6 @@ jobs:
       - name: Build Web
         if: github.actor != 'dependabot[bot]'
         run: |
-          flutter pub get
           flutter build web --dart-define FLUTTER_APP_FLAVOR=staging --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
 
       - name: Deploy to GitHub Pages 🚀
