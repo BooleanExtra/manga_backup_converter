@@ -193,8 +193,11 @@ const String _extensionRepoIndexJson = '''
 ''';
 
 // TODO: Implement manga id format mapping for each supported site
+//
+// Use javascript engine to run the Dart/JavaScript extension to query for the id from the website
+// Tachiyomi Extensions would not be supported since they are APK files
+//
 // Alternatively, use wrong but unique ids and require the user to use the app's migration tool to fix them
-// Add to "Needs Migrating" category to make it easier to find
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class ExtensionRepoIndex with ExtensionRepoIndexMappable {
