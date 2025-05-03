@@ -22,20 +22,20 @@ dependencies:
   dart_mappable: ^4.1.0
   env:
     path: packages/env
-  flex_color_picker: ^3.4.1
+  flex_color_picker: ^3.7.1
   flex_color_scheme: ^8.1.1
   flutter:
     sdk: flutter
   flutter_adaptive_scaffold: ^0.3.2
   flutter_flavor: ^3.1.1
-  flutter_hooks: ^0.20.5
+  flutter_hooks: ^0.21.2
   flutter_native_splash: ^2.4.0
   flutter_settings_ui: ^3.0.1
   flutter_web_plugins:
     sdk: flutter
   fpdart: ^1.1.0
   freezed_annotation: ^2.2.0
-  go_router: ^14.2.8
+  go_router: ^15.1.1
   google_fonts: ^6.2.1
   hooks_riverpod: ^2.4.9
   http: ^1.2.0
