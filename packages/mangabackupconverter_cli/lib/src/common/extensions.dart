@@ -279,10 +279,10 @@ class ExtensionRepo with ExtensionRepoMappable {
 class Extension with ExtensionMappable {
   final String name;
   final String id;
-  final String repo;
+  final String? repo;
   final String? lang;
 
-  const Extension({required this.name, required this.id, required this.repo, this.lang});
+  const Extension({required this.name, required this.id, this.repo, this.lang});
 
   static const fromMap = ExtensionMapper.fromMap;
   static const fromJson = ExtensionMapper.fromJson;
