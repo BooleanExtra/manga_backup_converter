@@ -181,7 +181,11 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         (() {
           final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker = [];
           final List<PaperbackBackupChapter> chapters = [];
-          final List<PaperbackBackupLibraryManga> libraryManga = [];
+          final List<PaperbackBackupLibraryManga> libraryManga =
+              library
+                  ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
+                  .toList() ??
+              <PaperbackBackupLibraryManga>[];
           final List<PaperbackBackupMangaInfo> mangaInfo =
               manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
               <PaperbackBackupMangaInfo>[];
