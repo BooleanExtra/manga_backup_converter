@@ -194,13 +194,22 @@ const String _extensionRepoIndexJson = '''
 
 /// TODO: Implement manga id format mapping for each supported site
 ///
+/// ### Plans:
+///
 /// 1. Use javascript engine to run the Dart/JavaScript extension to query for the id from the website.
-/// 2. Tachiyomi Extensions would not be supported since they are APK files.
+/// 2. Tachiyomi Extensions would not be supported since they are APK files (explore package:jni)
 /// 3. This might end up simpler than implementing every a mapper for every backup format to every other backup format.
 /// 4. Add generic property getters to get data needed for the queries (title, author, more as needed).
 ///
 /// Alternatively, use wrong but unique ids and require the user to use the app's migration tool to fix them.
-
+///
+/// ### User Flow:
+///
+/// 1. User imports a backup file
+/// 2. User selects/enters repos and selects preferred target extensions and download them
+/// 3. For each manga in the backup, query the preferred target extensions using the search API (or manga URL if available from source extension)
+/// 4. Show the user the results and let them override results
+/// 5. After confirmation, construct new backup of the target format
 @MappableClass(caseStyle: CaseStyle.camelCase)
 class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   final Map<ExtensionType, List<ExtensionRepo>> repos;
