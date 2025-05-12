@@ -850,6 +850,7 @@ class BackupManga extends $pb.GeneratedMessage {
     $fixnum.Int64? favoriteModifiedAt,
     $core.Iterable<$core.String>? excludedScanlators,
     $fixnum.Int64? version,
+    $core.String? notes,
     $core.Iterable<BackupMergedMangaReference>? mergedMangaReferences,
     BackupFlatMetadata? flatMetadata,
     $core.int? customStatus,
@@ -930,6 +931,9 @@ class BackupManga extends $pb.GeneratedMessage {
     if (version != null) {
       $result.version = version;
     }
+    if (notes != null) {
+      $result.notes = notes;
+    }
     if (mergedMangaReferences != null) {
       $result.mergedMangaReferences.addAll(mergedMangaReferences);
     }
@@ -993,6 +997,7 @@ class BackupManga extends $pb.GeneratedMessage {
     ..aInt64(107, _omitFieldNames ? '' : 'favoriteModifiedAt', protoName: 'favoriteModifiedAt')
     ..pPS(108, _omitFieldNames ? '' : 'excludedScanlators', protoName: 'excludedScanlators')
     ..aInt64(109, _omitFieldNames ? '' : 'version')
+    ..aOS(110, _omitFieldNames ? '' : 'notes')
     ..pc<BackupMergedMangaReference>(600, _omitFieldNames ? '' : 'mergedMangaReferences', $pb.PbFieldType.PM,
         protoName: 'mergedMangaReferences', subBuilder: BackupMergedMangaReference.create)
     ..aOM<BackupFlatMetadata>(601, _omitFieldNames ? '' : 'flatMetadata',
@@ -1247,97 +1252,109 @@ class BackupManga extends $pb.GeneratedMessage {
   @$pb.TagNumber(109)
   void clearVersion() => clearField(109);
 
+  @$pb.TagNumber(110)
+  $core.String get notes => $_getSZ(23);
+  @$pb.TagNumber(110)
+  set notes($core.String v) {
+    $_setString(23, v);
+  }
+
+  @$pb.TagNumber(110)
+  $core.bool hasNotes() => $_has(23);
+  @$pb.TagNumber(110)
+  void clearNotes() => clearField(110);
+
   @$pb.TagNumber(600)
-  $core.List<BackupMergedMangaReference> get mergedMangaReferences => $_getList(23);
+  $core.List<BackupMergedMangaReference> get mergedMangaReferences => $_getList(24);
 
   @$pb.TagNumber(601)
-  BackupFlatMetadata get flatMetadata => $_getN(24);
+  BackupFlatMetadata get flatMetadata => $_getN(25);
   @$pb.TagNumber(601)
   set flatMetadata(BackupFlatMetadata v) {
     setField(601, v);
   }
 
   @$pb.TagNumber(601)
-  $core.bool hasFlatMetadata() => $_has(24);
+  $core.bool hasFlatMetadata() => $_has(25);
   @$pb.TagNumber(601)
   void clearFlatMetadata() => clearField(601);
   @$pb.TagNumber(601)
-  BackupFlatMetadata ensureFlatMetadata() => $_ensure(24);
+  BackupFlatMetadata ensureFlatMetadata() => $_ensure(25);
 
   @$pb.TagNumber(602)
-  $core.int get customStatus => $_getIZ(25);
+  $core.int get customStatus => $_getIZ(26);
   @$pb.TagNumber(602)
   set customStatus($core.int v) {
-    $_setSignedInt32(25, v);
+    $_setSignedInt32(26, v);
   }
 
   @$pb.TagNumber(602)
-  $core.bool hasCustomStatus() => $_has(25);
+  $core.bool hasCustomStatus() => $_has(26);
   @$pb.TagNumber(602)
   void clearCustomStatus() => clearField(602);
 
   @$pb.TagNumber(603)
-  $core.String get customThumbnailUrl => $_getSZ(26);
+  $core.String get customThumbnailUrl => $_getSZ(27);
   @$pb.TagNumber(603)
   set customThumbnailUrl($core.String v) {
-    $_setString(26, v);
+    $_setString(27, v);
   }
 
   @$pb.TagNumber(603)
-  $core.bool hasCustomThumbnailUrl() => $_has(26);
+  $core.bool hasCustomThumbnailUrl() => $_has(27);
   @$pb.TagNumber(603)
   void clearCustomThumbnailUrl() => clearField(603);
 
   @$pb.TagNumber(800)
-  $core.String get customTitle => $_getSZ(27);
+  $core.String get customTitle => $_getSZ(28);
   @$pb.TagNumber(800)
   set customTitle($core.String v) {
-    $_setString(27, v);
+    $_setString(28, v);
   }
 
   @$pb.TagNumber(800)
-  $core.bool hasCustomTitle() => $_has(27);
+  $core.bool hasCustomTitle() => $_has(28);
   @$pb.TagNumber(800)
   void clearCustomTitle() => clearField(800);
 
   @$pb.TagNumber(801)
-  $core.String get customArtist => $_getSZ(28);
+  $core.String get customArtist => $_getSZ(29);
   @$pb.TagNumber(801)
   set customArtist($core.String v) {
-    $_setString(28, v);
+    $_setString(29, v);
   }
 
   @$pb.TagNumber(801)
-  $core.bool hasCustomArtist() => $_has(28);
+  $core.bool hasCustomArtist() => $_has(29);
   @$pb.TagNumber(801)
   void clearCustomArtist() => clearField(801);
 
   @$pb.TagNumber(802)
-  $core.String get customAuthor => $_getSZ(29);
+  $core.String get customAuthor => $_getSZ(30);
   @$pb.TagNumber(802)
   set customAuthor($core.String v) {
-    $_setString(29, v);
+    $_setString(30, v);
   }
 
   @$pb.TagNumber(802)
-  $core.bool hasCustomAuthor() => $_has(29);
+  $core.bool hasCustomAuthor() => $_has(30);
   @$pb.TagNumber(802)
   void clearCustomAuthor() => clearField(802);
 
   @$pb.TagNumber(804)
-  $core.String get customDescription => $_getSZ(30);
+  $core.String get customDescription => $_getSZ(31);
   @$pb.TagNumber(804)
   set customDescription($core.String v) {
-    $_setString(30, v);
+    $_setString(31, v);
   }
 
   @$pb.TagNumber(804)
-  $core.bool hasCustomDescription() => $_has(30);
+  $core.bool hasCustomDescription() => $_has(31);
   @$pb.TagNumber(804)
   void clearCustomDescription() => clearField(804);
 
   @$pb.TagNumber(805)
-  $core.List<$core.String> get customGenre => $_getList(31);
+  $core.List<$core.String> get customGenre => $_getList(32);
 }
 
 /// BackupMergedMangaReference.kt
