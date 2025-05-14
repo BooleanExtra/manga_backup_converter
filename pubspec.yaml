@@ -13,7 +13,7 @@ workspace:
   - packages/*
 
 dependencies:
-  accessibility_tools: ^2.2.2
+  accessibility_tools: ^2.5.0
   assets:
     path: packages/assets
   awesome_flutter_extensions: ^1.2.0
