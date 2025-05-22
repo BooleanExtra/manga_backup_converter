@@ -49,7 +49,7 @@ dependencies:
   riverpod: ^2.3.6
   riverpod_annotation: ^2.3.5
   shared_preferences: ^2.3.3
-  skeletonizer: ^1.1.1
+  skeletonizer: ^2.0.1
   stock: ^1.0.1
   super_clipboard: ^0.8.22
   universal_html: ^2.2.4
@@ -72,7 +72,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mason: ^0.1.0-dev.52
-  melos: ^6.2.0
+  melos: ^7.0.0-dev.8
   mocktail: ^1.0.3
   modddels: ^0.2.0
   msix: ^3.16.7
