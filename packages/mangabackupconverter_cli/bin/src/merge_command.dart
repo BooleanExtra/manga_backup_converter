@@ -56,32 +56,32 @@ class MergeCommand extends Command<void> {
       throw ArgumentError('Backup file format "$otherBackupFileExtension" not supported');
     }
     final AidokuBackup aidokuBackup = AidokuBackup.fromData(backupFile.readAsBytesSync());
-    if (verbose) {
-      print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
-    }
+    // if (verbose) {
+    //   print('[VERBOSE] Imported Aidoku Backup: $aidokuBackup');
+    // }
     print('Backup Library: ${aidokuBackup.library?.length}');
     final AidokuBackup otherAidokuBackup = AidokuBackup.fromData(otherBackupFile.readAsBytesSync());
-    if (verbose) {
-      print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');
-    }
+    // if (verbose) {
+    //   print('[VERBOSE] Imported Other Aidoku Backup: $otherAidokuBackup');
+    // }
     print('Other Backup Library: ${otherAidokuBackup.library?.length}');
-    final AidokuBackup combinedBackup = aidokuBackup.mergeWith(otherAidokuBackup);
+    final AidokuBackup combinedBackup = aidokuBackup.mergeWith(otherAidokuBackup, verbose: verbose);
     if (verbose) {
-      print('[VERBOSE] Combined Aidoku Backup: $combinedBackup');
-      final library = combinedBackup.library!.toList();
-      final Set<String> duplicates = {};
-      for (int i = 0; i < library.length; i++) {
-        for (int j = i + 1; j < library.length; j++) {
-          final libraryManga = library[i];
-          final otherManga = library[j];
-          if (libraryManga.mangaId == otherManga.mangaId && libraryManga != otherManga) {
-            duplicates.add(libraryManga.mangaId);
-            break;
-          }
-        }
-      }
-      print('[VERBOSE] Duplicate Library Manga Ids: $duplicates');
-      print('[VERBOSE] Duplicate Library Manga: ${duplicates.length}');
+      // print('[VERBOSE] Combined Aidoku Backup: $combinedBackup');
+      // final library = combinedBackup.library!.toList();
+      // final Set<String> duplicates = {};
+      // for (int i = 0; i < library.length; i++) {
+      //   for (int j = i + 1; j < library.length; j++) {
+      //     final AidokuBackupLibraryManga libraryManga = library[i];
+      //     final otherManga = library[j];
+      //     if (libraryManga.mangaId == otherManga.mangaId) {
+      //       duplicates.add(libraryManga.mangaId);
+      //       break;
+      //     }
+      //   }
+      // }
+      // print('[VERBOSE] Duplicate Library Manga Ids: $duplicates');
+      // print('[VERBOSE] Duplicate Library Manga: ${duplicates.length}');
     }
     print('Combined Library: ${combinedBackup.manga?.length}');
     final Uint8List combinedBackupData = await combinedBackup.toData();
