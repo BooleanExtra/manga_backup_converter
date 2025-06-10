@@ -69,10 +69,15 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   static const fromMap = AidokuBackupMapper.fromMap;
   static const fromJson = AidokuBackupMapper.fromJson;
 
-  AidokuBackup mergeWith(AidokuBackup otherBackup) {
+  AidokuBackup mergeWith(AidokuBackup otherBackup, {bool verbose = false}) {
     final libraryCombined = <AidokuBackupLibraryManga>{};
+    int itemsWithoutCategories = 0;
+    int itemsWithDuplicates = 0;
     for (final libraryItem in (library ?? <AidokuBackupLibraryManga>{})) {
       final libraryItemDuplicates = _findDuplicates(otherBackup, libraryItem);
+      if (libraryItemDuplicates.isNotEmpty) {
+        itemsWithDuplicates++;
+      }
       final combinedCategories = {
         ...libraryItem.categories,
         ...libraryItemDuplicates.fold(
@@ -81,6 +86,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         ),
       };
       if (combinedCategories.isEmpty) {
+        itemsWithoutCategories++;
         combinedCategories.add('Default');
       }
       final latestDateAdded = libraryItemDuplicates.fold(
@@ -124,6 +130,12 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
           lastRead: latestLastRead,
         ),
       );
+    }
+    if (itemsWithDuplicates > 0 && verbose) {
+      print('Found $itemsWithDuplicates library items with duplicates, merging categories and dates.');
+    }
+    if (itemsWithoutCategories > 0 && verbose) {
+      print('Found $itemsWithoutCategories library items without categories, using "Default" category.');
     }
     for (final otherLibraryItem in (otherBackup.library ?? <AidokuBackupLibraryManga>{})) {
       if (libraryCombined
