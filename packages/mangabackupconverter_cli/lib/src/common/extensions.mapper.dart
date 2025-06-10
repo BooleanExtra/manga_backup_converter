@@ -376,8 +376,8 @@ class ExtensionMapper extends ClassMapperBase<Extension> {
   static const Field<Extension, String> _f$name = Field('name', _$name);
   static String _$id(Extension v) => v.id;
   static const Field<Extension, String> _f$id = Field('id', _$id);
-  static String _$repo(Extension v) => v.repo;
-  static const Field<Extension, String> _f$repo = Field('repo', _$repo);
+  static String? _$repo(Extension v) => v.repo;
+  static const Field<Extension, String> _f$repo = Field('repo', _$repo, opt: true);
   static String? _$lang(Extension v) => v.lang;
   static const Field<Extension, String> _f$lang = Field('lang', _$lang, opt: true);
 
@@ -443,11 +443,11 @@ class _ExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Extension, 
   @override
   late final ClassMapperBase<Extension> $mapper = ExtensionMapper.ensureInitialized();
   @override
-  $R call({String? name, String? id, String? repo, Object? lang = $none}) => $apply(
+  $R call({String? name, String? id, Object? repo = $none, Object? lang = $none}) => $apply(
     FieldCopyWithData({
       if (name != null) #name: name,
       if (id != null) #id: id,
-      if (repo != null) #repo: repo,
+      if (repo != $none) #repo: repo,
       if (lang != $none) #lang: lang,
     }),
   );
