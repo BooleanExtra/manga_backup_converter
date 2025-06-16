@@ -7,3 +7,4 @@
 - [dependabot/pub/window_manager-0.5.0](./dependabot/pub/window_manager-0.5.0/)
 - [feature/extensionMapping](./feature/extensionMapping/)
 - [main](./main/)
+- [update_schemas](./update_schemas/)
