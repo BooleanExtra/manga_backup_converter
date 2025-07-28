@@ -88,6 +88,7 @@ const BackupChapter$json = {
     {'1': 'pagesLeft', '3': 800, '4': 1, '5': 5, '10': 'pagesLeft'},
     {'1': 'uploader', '3': 905, '4': 1, '5': 9, '10': 'uploader'},
     {'1': 'isUnavailable', '3': 906, '4': 1, '5': 8, '10': 'isUnavailable'},
+    {'1': 'smartOrder', '3': 907, '4': 1, '5': 5, '10': 'smartOrder'},
   ],
 };
 
@@ -100,7 +101,7 @@ final $typed_data.Uint8List backupChapterDescriptor =
         'ZVVwbG9hZBIkCg1jaGFwdGVyTnVtYmVyGAkgASgCUg1jaGFwdGVyTnVtYmVyEiAKC3NvdXJjZU'
         '9yZGVyGAogASgFUgtzb3VyY2VPcmRlchIdCglwYWdlc0xlZnQYoAYgASgFUglwYWdlc0xlZnQS'
         'GwoIdXBsb2FkZXIYiQcgASgJUgh1cGxvYWRlchIlCg1pc1VuYXZhaWxhYmxlGIoHIAEoCFINaX'
-        'NVbmF2YWlsYWJsZQ==');
+        'NVbmF2YWlsYWJsZRIfCgpzbWFydE9yZGVyGIsHIAEoBVIKc21hcnRPcmRlcg==');
 
 @$core.Deprecated('Use brokenBackupHistoryDescriptor instead')
 const BrokenBackupHistory$json = {
