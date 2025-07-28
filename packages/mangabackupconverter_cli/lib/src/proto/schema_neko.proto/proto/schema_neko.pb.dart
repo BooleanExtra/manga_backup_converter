@@ -246,6 +246,7 @@ class BackupChapter extends $pb.GeneratedMessage {
     $core.int? pagesLeft,
     $core.String? uploader,
     $core.bool? isUnavailable,
+    $core.int? smartOrder,
   }) {
     final $result = create();
     if (url != null) {
@@ -287,6 +288,9 @@ class BackupChapter extends $pb.GeneratedMessage {
     if (isUnavailable != null) {
       $result.isUnavailable = isUnavailable;
     }
+    if (smartOrder != null) {
+      $result.smartOrder = smartOrder;
+    }
     return $result;
   }
   BackupChapter._() : super();
@@ -309,7 +313,8 @@ class BackupChapter extends $pb.GeneratedMessage {
         ..a<$core.int>(10, _omitFieldNames ? '' : 'sourceOrder', $pb.PbFieldType.O3, protoName: 'sourceOrder')
         ..a<$core.int>(800, _omitFieldNames ? '' : 'pagesLeft', $pb.PbFieldType.O3, protoName: 'pagesLeft')
         ..aOS(905, _omitFieldNames ? '' : 'uploader')
-        ..aOB(906, _omitFieldNames ? '' : 'isUnavailable', protoName: 'isUnavailable');
+        ..aOB(906, _omitFieldNames ? '' : 'isUnavailable', protoName: 'isUnavailable')
+        ..a<$core.int>(907, _omitFieldNames ? '' : 'smartOrder', $pb.PbFieldType.O3, protoName: 'smartOrder');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -486,6 +491,18 @@ class BackupChapter extends $pb.GeneratedMessage {
   $core.bool hasIsUnavailable() => $_has(12);
   @$pb.TagNumber(906)
   void clearIsUnavailable() => clearField(906);
+
+  @$pb.TagNumber(907)
+  $core.int get smartOrder => $_getIZ(13);
+  @$pb.TagNumber(907)
+  set smartOrder($core.int v) {
+    $_setSignedInt32(13, v);
+  }
+
+  @$pb.TagNumber(907)
+  $core.bool hasSmartOrder() => $_has(13);
+  @$pb.TagNumber(907)
+  void clearSmartOrder() => clearField(907);
 }
 
 /// BackupHistory.kt
