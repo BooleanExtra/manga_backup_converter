@@ -765,6 +765,7 @@ class BackupManga extends $pb.GeneratedMessage {
     $core.Iterable<$core.String>? excludedScanlators,
     $fixnum.Int64? version,
     $core.String? notes,
+    $core.bool? initialized,
   }) {
     final $result = create();
     if (source != null) {
@@ -839,6 +840,9 @@ class BackupManga extends $pb.GeneratedMessage {
     if (notes != null) {
       $result.notes = notes;
     }
+    if (initialized != null) {
+      $result.initialized = initialized;
+    }
     return $result;
   }
   BackupManga._() : super();
@@ -875,7 +879,8 @@ class BackupManga extends $pb.GeneratedMessage {
     ..aInt64(107, _omitFieldNames ? '' : 'favoriteModifiedAt', protoName: 'favoriteModifiedAt')
     ..pPS(108, _omitFieldNames ? '' : 'excludedScanlators', protoName: 'excludedScanlators')
     ..aInt64(109, _omitFieldNames ? '' : 'version')
-    ..aOS(110, _omitFieldNames ? '' : 'notes');
+    ..aOS(110, _omitFieldNames ? '' : 'notes')
+    ..aOB(111, _omitFieldNames ? '' : 'initialized');
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1130,6 +1135,18 @@ class BackupManga extends $pb.GeneratedMessage {
   $core.bool hasNotes() => $_has(23);
   @$pb.TagNumber(110)
   void clearNotes() => clearField(110);
+
+  @$pb.TagNumber(111)
+  $core.bool get initialized => $_getBF(24);
+  @$pb.TagNumber(111)
+  set initialized($core.bool v) {
+    $_setBool(24, v);
+  }
+
+  @$pb.TagNumber(111)
+  $core.bool hasInitialized() => $_has(24);
+  @$pb.TagNumber(111)
+  void clearInitialized() => clearField(111);
 }
 
 /// BackupPreference.kt
