@@ -179,6 +179,7 @@ const BackupManga$json = {
     {'1': 'excludedScanlators', '3': 108, '4': 3, '5': 9, '10': 'excludedScanlators'},
     {'1': 'version', '3': 109, '4': 1, '5': 3, '10': 'version'},
     {'1': 'notes', '3': 110, '4': 1, '5': 9, '10': 'notes'},
+    {'1': 'initialized', '3': 111, '4': 1, '5': 8, '10': 'initialized'},
   ],
 };
 
@@ -198,7 +199,8 @@ final $typed_data.Uint8List backupMangaDescriptor =
         'RlZ3kSJgoObGFzdE1vZGlmaWVkQXQYaiABKANSDmxhc3RNb2RpZmllZEF0Ei4KEmZhdm9yaXRl'
         'TW9kaWZpZWRBdBhrIAEoA1ISZmF2b3JpdGVNb2RpZmllZEF0Ei4KEmV4Y2x1ZGVkU2NhbmxhdG'
         '9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3ZlcnNpb24S'
-        'FAoFbm90ZXMYbiABKAlSBW5vdGVz');
+        'FAoFbm90ZXMYbiABKAlSBW5vdGVzEiAKC2luaXRpYWxpemVkGG8gASgIUgtpbml0aWFsaXplZA'
+        '==');
 
 @$core.Deprecated('Use backupPreferenceDescriptor instead')
 const BackupPreference$json = {
