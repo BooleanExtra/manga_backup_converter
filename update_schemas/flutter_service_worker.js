@@ -15,7 +15,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "b1140b912415a86bdccb64db9adf8585
 "assets/packages/flex_color_picker/assets/opacity.png": "49c4f3bcb1b25364bb4c255edcaaf5b2",
 "version.json": "54a3cd9063430781061a50c4006ea200",
 "manifest.json": "2363b3fff2d31d256b06bafa1600506b",
-"flutter_bootstrap.js": "ff81f2b7828b8e20ea1244f4c06afc03",
+"flutter_bootstrap.js": "62fc5bd134e5c59c8a49b88a8e6cac0a",
 "canvaskit/skwasm.wasm": "f0dfd99007f989368db17c9abeed5a49",
 "canvaskit/canvaskit.wasm": "efeeba7dcc952dae57870d4df3111fad",
 "canvaskit/skwasm.js.symbols": "80806576fa1056b43dd6d0b445b4b6f7",
