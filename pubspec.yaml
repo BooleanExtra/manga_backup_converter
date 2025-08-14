@@ -72,11 +72,11 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mason: ^0.1.0-dev.52
-  melos: ^6.2.0
+  melos: ^7.0.0-dev.8
   mocktail: ^1.0.3
   modddels: ^0.2.0
   msix: ^3.16.7
-  patrol: ^3.6.1
+  patrol: ^3.15.2
   riverpod_generator: ^2.4.0
   riverpod_lint: ^2.3.10
   sqflite_common_ffi_web: ^0.4.3+1
