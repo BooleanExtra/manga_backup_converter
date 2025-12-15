@@ -198,6 +198,7 @@ const BackupManga$json = {
     {'1': 'excludedScanlators', '3': 108, '4': 3, '5': 9, '10': 'excludedScanlators'},
     {'1': 'version', '3': 109, '4': 1, '5': 3, '10': 'version'},
     {'1': 'notes', '3': 110, '4': 1, '5': 9, '10': 'notes'},
+    {'1': 'initialized', '3': 111, '4': 1, '5': 8, '10': 'initialized'},
     {
       '1': 'mergedMangaReferences',
       '3': 600,
@@ -233,14 +234,15 @@ final $typed_data.Uint8List backupMangaDescriptor =
         'RlZ3kSJgoObGFzdE1vZGlmaWVkQXQYaiABKANSDmxhc3RNb2RpZmllZEF0Ei4KEmZhdm9yaXRl'
         'TW9kaWZpZWRBdBhrIAEoA1ISZmF2b3JpdGVNb2RpZmllZEF0Ei4KEmV4Y2x1ZGVkU2NhbmxhdG'
         '9ycxhsIAMoCVISZXhjbHVkZWRTY2FubGF0b3JzEhgKB3ZlcnNpb24YbSABKANSB3ZlcnNpb24S'
-        'FAoFbm90ZXMYbiABKAlSBW5vdGVzElIKFW1lcmdlZE1hbmdhUmVmZXJlbmNlcxjYBCADKAsyGy'
-        '5CYWNrdXBNZXJnZWRNYW5nYVJlZmVyZW5jZVIVbWVyZ2VkTWFuZ2FSZWZlcmVuY2VzEjgKDGZs'
-        'YXRNZXRhZGF0YRjZBCABKAsyEy5CYWNrdXBGbGF0TWV0YWRhdGFSDGZsYXRNZXRhZGF0YRIjCg'
-        'xjdXN0b21TdGF0dXMY2gQgASgFUgxjdXN0b21TdGF0dXMSLwoSY3VzdG9tVGh1bWJuYWlsVXJs'
-        'GNsEIAEoCVISY3VzdG9tVGh1bWJuYWlsVXJsEiEKC2N1c3RvbVRpdGxlGKAGIAEoCVILY3VzdG'
-        '9tVGl0bGUSIwoMY3VzdG9tQXJ0aXN0GKEGIAEoCVIMY3VzdG9tQXJ0aXN0EiMKDGN1c3RvbUF1'
-        'dGhvchiiBiABKAlSDGN1c3RvbUF1dGhvchItChFjdXN0b21EZXNjcmlwdGlvbhikBiABKAlSEW'
-        'N1c3RvbURlc2NyaXB0aW9uEiEKC2N1c3RvbUdlbnJlGKUGIAMoCVILY3VzdG9tR2VucmU=');
+        'FAoFbm90ZXMYbiABKAlSBW5vdGVzEiAKC2luaXRpYWxpemVkGG8gASgIUgtpbml0aWFsaXplZB'
+        'JSChVtZXJnZWRNYW5nYVJlZmVyZW5jZXMY2AQgAygLMhsuQmFja3VwTWVyZ2VkTWFuZ2FSZWZl'
+        'cmVuY2VSFW1lcmdlZE1hbmdhUmVmZXJlbmNlcxI4CgxmbGF0TWV0YWRhdGEY2QQgASgLMhMuQm'
+        'Fja3VwRmxhdE1ldGFkYXRhUgxmbGF0TWV0YWRhdGESIwoMY3VzdG9tU3RhdHVzGNoEIAEoBVIM'
+        'Y3VzdG9tU3RhdHVzEi8KEmN1c3RvbVRodW1ibmFpbFVybBjbBCABKAlSEmN1c3RvbVRodW1ibm'
+        'FpbFVybBIhCgtjdXN0b21UaXRsZRigBiABKAlSC2N1c3RvbVRpdGxlEiMKDGN1c3RvbUFydGlz'
+        'dBihBiABKAlSDGN1c3RvbUFydGlzdBIjCgxjdXN0b21BdXRob3IYogYgASgJUgxjdXN0b21BdX'
+        'Rob3ISLQoRY3VzdG9tRGVzY3JpcHRpb24YpAYgASgJUhFjdXN0b21EZXNjcmlwdGlvbhIhCgtj'
+        'dXN0b21HZW5yZRilBiADKAlSC2N1c3RvbUdlbnJl');
 
 @$core.Deprecated('Use backupMergedMangaReferenceDescriptor instead')
 const BackupMergedMangaReference$json = {
