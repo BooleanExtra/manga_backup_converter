@@ -20,6 +20,7 @@ dependencies:
   sqflite_common: ^2.5.4
   sqflite_common_ffi: ^2.3.3
   sqflite_common_ffi_web: ^0.4.4
+  uuid: ^4.5.1
   xcode_parser: ^1.2.1
 
 dev_dependencies:

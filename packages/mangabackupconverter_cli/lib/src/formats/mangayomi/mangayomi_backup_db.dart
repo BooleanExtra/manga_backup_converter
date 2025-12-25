@@ -207,13 +207,17 @@ class MangayomiBackupTrack with MangayomiBackupTrackMappable {
 
 @MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupTrackPreferences with MangayomiBackupTrackPreferencesMappable {
-  final int? chapterId;
-  final int? date;
-  final int? id;
-  final int? itemType;
-  final int? mangaId;
+  final int? syncId;
+  final String? username;
+  final String? oAuth;
+  final String? prefs;
 
-  const MangayomiBackupTrackPreferences({this.chapterId, this.date, this.id, this.itemType, this.mangaId});
+  const MangayomiBackupTrackPreferences({
+    required this.syncId,
+    required this.username,
+    required this.oAuth,
+    required this.prefs,
+  });
 
   static const fromMap = MangayomiBackupTrackPreferencesMapper.fromMap;
   static const fromJson = MangayomiBackupTrackPreferencesMapper.fromJson;

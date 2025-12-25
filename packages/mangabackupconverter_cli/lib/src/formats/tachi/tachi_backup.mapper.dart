@@ -32,9 +32,16 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
   static const Field<TachiBackup, List<TachiBackupCategory>> _f$backupCategories = Field(
     'backupCategories',
     _$backupCategories,
+    opt: true,
+    def: const [],
   );
   static List<TachiBackupManga> _$backupManga(TachiBackup v) => v.backupManga;
-  static const Field<TachiBackup, List<TachiBackupManga>> _f$backupManga = Field('backupManga', _$backupManga);
+  static const Field<TachiBackup, List<TachiBackupManga>> _f$backupManga = Field(
+    'backupManga',
+    _$backupManga,
+    opt: true,
+    def: const [],
+  );
   static List<TachiBackupSource> _$backupBrokenSources(TachiBackup v) => v.backupBrokenSources;
   static const Field<TachiBackup, List<TachiBackupSource>> _f$backupBrokenSources = Field(
     'backupBrokenSources',

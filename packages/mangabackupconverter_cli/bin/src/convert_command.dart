@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:path/path.dart' as p;
 
 class ConvertCommand extends Command<void> {
@@ -128,7 +127,15 @@ class ConvertCommand extends Command<void> {
       print('Failed to import backup type $backupFileExtension');
       return;
     }
+    if (verbose) {
+      print('============ Imported Backup Data ============ ');
+      importedBackup.verbosePrint(verbose);
+    }
     final ConvertableBackup convertedBackup = importedBackup.toBackup(outputFormat);
+    if (verbose) {
+      print('============ Converted Backup Data ============ ');
+      convertedBackup.verbosePrint(verbose);
+    }
 
     final io.File outputFile = io.File(
       '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',

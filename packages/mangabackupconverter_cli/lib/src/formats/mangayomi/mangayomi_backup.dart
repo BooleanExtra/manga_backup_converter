@@ -5,10 +5,13 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart';
+import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_category.dart';
 import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
