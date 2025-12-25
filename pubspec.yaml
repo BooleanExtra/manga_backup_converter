@@ -10,7 +10,7 @@ environment:
   flutter: ">=3.27.0 <4.0.0"
 
 dependencies:
-  accessibility_tools: ^2.5.0
+  accessibility_tools: ^2.6.0
   assets:
     path: packages/assets
   awesome_flutter_extensions: ^1.2.0
@@ -72,7 +72,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mason: ^0.1.0-dev.52
-  melos: ^6.2.0
+  melos: ^7.0.0-dev.8
   mocktail: ^1.0.3
   modddels: ^0.2.0
   msix: ^3.16.7
