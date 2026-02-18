@@ -264,8 +264,8 @@ Code Generation:
 - `melos run generate` - Run `build_runner build` in all packages that depend on `build_runner`.
 - `melos run generate:pkg` - Run `build_runner build` for a specific package
 - `melos run watch:pkg` - Run `build_runner watch` for a specific package  It will not work if you choose "all" in the package selection prompt.
-- `melos run assets` - Run `assets_gen build` in all packages that depend on `assets_gen`.
-- `melos run assets:pkg` - Run `assets_gen build` for a specific package.
+- `melos run assets` - Run `fluttergen pubspec.yaml` in all packages that depend on `flutter_gen`.
+- `melos run assets:pkg` - Run `fluttergen pubspec.yaml` for a specific package.
 
 Tests:
 
