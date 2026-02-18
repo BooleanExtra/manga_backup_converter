@@ -29,7 +29,7 @@ env:
   FLAVOR: ""
   # https://github.com/transferwise/sanitize-branch-name/blob/main/action.yml
   BRANCH_NAME: $(echo -n ${{ github.head_ref || github.ref_name }} | tr "/" "-")
-  MELOS_VERSION: "^6.3.2"
+  MELOS_VERSION: "^7.4.0"
 
 # Needed to deploy to GitHub Pages
 permissions:
