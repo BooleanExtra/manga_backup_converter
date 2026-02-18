@@ -27,11 +27,19 @@ class AixParser {
     if (sourceFile == null) throw const AixParseException('Payload/source.json not found in .aix archive');
     final sourceJson = jsonDecode(utf8.decode(sourceFile.content as List<int>)) as Map<String, dynamic>;
 
+    // Support both flat format { "id": ..., "language": ... }
+    // and nested format { "info": { "id": ..., "languages": [...] } }
+    final infoJson = (sourceJson['info'] as Map<String, dynamic>?) ?? sourceJson;
+    final languagesRaw = infoJson['languages'];
+    final language = languagesRaw is List && languagesRaw.isNotEmpty
+        ? languagesRaw.first as String
+        : infoJson['language'] as String;
+
     final info = SourceInfo(
-      id: sourceJson['id'] as String,
-      name: sourceJson['name'] as String,
-      language: sourceJson['language'] as String,
-      url: sourceJson['url'] as String?,
+      id: infoJson['id'] as String,
+      name: infoJson['name'] as String,
+      language: language,
+      url: infoJson['url'] as String?,
     );
 
     // Find the .wasm file (may be at root or in a subdirectory)
