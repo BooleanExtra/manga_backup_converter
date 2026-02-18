@@ -103,11 +103,6 @@ melos:
       hooks:
         # Activate the coverage package globally so that it can be used in the
         # `test` command.
-        #
-        # Generate environment files which should not be committed to the repository.
-        # Instead, they are generated during the CI process before checking
-        # if the rest of the package's code generation is up to date.
-        pre: cd packages/env && flutter pub get && dart run build_runner build -d
         post: flutter pub global activate coverage ^1.11.1
 
   # See https://github.com/firebase/flutterfire/blob/master/melos.yaml for more examples
@@ -203,7 +198,7 @@ melos:
       description: Verify formatting was applied.
 
     generate:
-      run: melos run assets && melos run env --no-select && melos run generate:pkg --no-select && melos run format
+      run: melos run assets && melos run generate:pkg --no-select && melos run format
       description: Run `build_runner build` in all packages.
 
     generate:pkg:
@@ -214,8 +209,6 @@ melos:
       description: Run `build_runner build` in the selected packages.
       packageFilters:
         dependsOn: build_runner
-        noDependsOn: envied
-        ignore: localization
 
     watch:pkg:
       run: dart run build_runner watch --delete-conflicting-outputs
@@ -225,32 +218,18 @@ melos:
       description: Run `build_runner watch` in the selected package. If all is selected, the command will only run in the first package.
       packageFilters:
         dependsOn: build_runner
-        noDependsOn: envied
-        ignore: localization
-
-    env:
-      run: melos run env:pkg --no-select
-      description: Run `build_runner` in all packages that depends on `envied`.
-
-    env:pkg:
-      run: dart run build_runner clean && dart run build_runner build --delete-conflicting-outputs
-      exec:
-        failFast: true
-      description: Run `build_runner` in a specific package that depends on `envied`.
-      packageFilters:
-        dependsOn: envied
 
     assets:
       run: melos run assets:pkg --no-select
-      description: Run `flutter pub run assets_gen build` all packages with assets gen.
+      description: Run `flutter pub run fluttergen pubspec.yaml` all packages with assets gen.
 
     assets:pkg:
-      run: flutter pub run assets_gen build
+      run: flutter pub run fluttergen pubspec.yaml
       exec:
         failFast: true
-      description: Run `flutter pub run assets_gen build` in the selected package.
+      description: Run `flutter pub run fluttergen pubspec.yaml` in the selected package.
       packageFilters:
-        dependsOn: assets_gen
+        dependsOn: flutter_gen
 
     dart_test:pkg:
       run: dart pub global run coverage:test_with_coverage
@@ -285,12 +264,3 @@ melos:
     dart_test:
       run: melos run dart_test:pkg --no-select
       description: Run all Flutter tests in this project.
-
-    loc:
-      run: flutter gen-l10n
-      exec:
-        failFast: true
-      description: Run `flutter gen-l10n` in the localization package.
-      packageFilters:
-        dirExists: lib/src/translations
-        scope: localization

@@ -32,7 +32,6 @@ separate packages.
   - [Melos](#melos)
     - [Scripts](#scripts)
   - [GoRouter Navigation](#gorouter-navigation)
-  - [ENVied Environment Variables](#envied-environment-variables)
   - [Mason Bricks](#mason-bricks)
   - [JSON Serialization, Unions, Sealed Classes and copyWith](#json-serialization-unions-sealed-classes-and-copywith)
   - [State Management](#state-management)
@@ -93,14 +92,13 @@ void main() {
 1. [ ] Rename App: [Change App/Package Name](#change-apppackage-name)
 1. [ ] [Workflow Permissions](#workflow-permissions)
 1. [ ] Update Description: [pubspec.yaml](pubspec.yaml) and [README.md](README.md).
-1. [ ] Replace [codemagic.io](https://codemagic.io) badge with your own.
-1. [ ] Add Environment Variables: [ENVied Environment Variables](#envied-environment-variables) section for details.
-1. [ ] [Change App Icon: flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons)
-1. [ ] [Change Splash Screen: flutter_native_splash](https://pub.dev/packages/flutter_native_splash)
-1. [ ] Setup the release build configuration, see the [Building](#building) section.
-1. [ ] Setup Codecov for the repository, see the [Codecov documentation](https://docs.codecov.com/docs/quick-start).
-1. [ ] Update contribution guidelines at the [Contributing](#contributing) section.
-1. [ ] (**Important!**) Update the [LICENSE](./LICENSE.md) file. I give permission to relicense any
+2. [ ] Replace [codemagic.io](https://codemagic.io) badge with your own.
+3. [ ] [Change App Icon: flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons)
+4. [ ] [Change Splash Screen: flutter_native_splash](https://pub.dev/packages/flutter_native_splash)
+5. [ ] Setup the release build configuration, see the [Building](#building) section.
+6. [ ] Setup Codecov for the repository, see the [Codecov documentation](https://docs.codecov.com/docs/quick-start).
+7. [ ] Update contribution guidelines at the [Contributing](#contributing) section.
+8. [ ] (**Important!**) Update the [LICENSE](./LICENSE.md) file. I give permission to relicense any
 code provided in this template, but the licenses of the packages must still be followed.
 1. [ ] Delete this `Template: Getting Started` section from the README.
 
@@ -264,14 +262,10 @@ Code Generation:
 
 - `dart run build_runner watch -d` - Watch and generate code for the app, does not work with subpackages
 - `melos run generate` - Run `build_runner build` in all packages that depend on `build_runner`.
-- `melos run generate:pkg` - Run `build_runner build` for a specific package (except `envied` packages).
-- `melos run watch:pkg` - Run `build_runner watch` for a specific package (except `envied` packages). It will not work if you choose "all" in the package selection prompt.
+- `melos run generate:pkg` - Run `build_runner build` for a specific package
+- `melos run watch:pkg` - Run `build_runner watch` for a specific package  It will not work if you choose "all" in the package selection prompt.
 - `melos run assets` - Run `assets_gen build` in all packages that depend on `assets_gen`.
 - `melos run assets:pkg` - Run `assets_gen build` for a specific package.
-- `melos run env` - Run `build_runner` in all packages that depends on `envied`.
-- `melos run env:pkg` - Run `build_runner` in a specific package that depends on `envied`.
-- `melos run loc` - Run `flutter gen-l10n` in the localization package to generate
-  the localized strings from the arb files.
 
 Tests:
 
@@ -291,25 +285,6 @@ Tests:
 
 This project uses [GoRouter](https://pub.dev/packages/go_router) for navigation
 and provides some starter boilerplate for adaptive multitab navigation using `ResponsiveScaffold`.
-
-### ENVied Environment Variables
-
-Environment variables are setup using [ENVied](https://pub.dev/packages/envied)
-in the [env](packages/env/) package. Environment variables need to be
-defined for debug, profile, and release modes.
-
-1. Copy the `*.env.example` files and remove the `.example` extension from them.
-1. Add the values for the environment variables in the respective `.env*` file.
-   - Each key must be added to each `.env*` file, unless a non null default value is added
-     to the `@EnviedField` annotation.
-   - It is recommended to use an empty string for the default and use `Env`'s getter to access the value.
-1. Update [src/env/app_env_fields.dart](packages/env/lib/src/env/app_env_fields.dart)
-with the new environment variables for `AppEnvFieldsGenerated` and `AppEnvFieldsNullable`.
-1. Add the new environment variables to the implementing `*Env` classes in the [src/env](packages/env/src/env/) directory.
-   - It must be done for *all* even if only one `.env` file is planned to be used
-1. Enable `obfuscate` for API keys in the `@EnviedField` annotation. (Note: still assume it is not secure)
-1. Optionally, add a `@EnviedField` `defaultValue` or enable `optional` on the annotation for keys which are
-not required in all modes.
 
 ### Mason Bricks
 
