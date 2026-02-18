@@ -221,6 +221,12 @@ class WasmRunner {
 
   Uint8List readMemory(int offset, int length) {
     if (_memory.address == 0) throw StateError('No memory export');
+    if (length == 0) return Uint8List(0);
+    final size = memorySize;
+    if (offset < 0 || length < 0 || offset + length > size) {
+      throw RangeError(
+          'readMemory($offset, $length): out of WASM memory bounds ($size bytes)');
+    }
     final data = _bindings.memoryData(_memory);
     return Uint8List.fromList(
         List.generate(length, (i) => (data + offset + i).value));
@@ -272,22 +278,40 @@ class WasmRunner {
   /// Create a NativeCallable for a single host import.
   /// All WASM imports share the same C callback type:
   ///   wasm_trap_t* fn(const wasm_val_vec_t* args, wasm_val_vec_t* results)
+  ///
+  /// **Async limitation**: wasmer callbacks are synchronous. If the Dart
+  /// function returns a Future (e.g. net::send), it cannot be awaited here.
+  /// In that case -1 is written as an i32 stub (network-error convention).
   static ffi.NativeCallable<WasmFuncCallbackC> _makeCallable(Function? dartFn) {
     return ffi.NativeCallable<WasmFuncCallbackC>.isolateLocal(
       (ffi.Pointer<WasmValVec> args, ffi.Pointer<WasmValVec> results) {
-        if (dartFn == null) return ffi.nullptr;
         try {
+          if (dartFn == null) {
+            // Unregistered import: write -1 stub for any expected return value.
+            if (results.ref.size > 0) _setVal(results.ref.data, -1);
+            return ffi.nullptr;
+          }
           final dartArgs = <Object?>[
             for (var i = 0; i < args.ref.size; i++)
               _getVal(args.ref.data + i),
           ];
-          // Synchronous only — no await inside a native callback
           final result = Function.apply(dartFn, dartArgs);
-          if (results.ref.size > 0 && result != null) {
-            _setVal(results.ref.data, result);
+          if (results.ref.size > 0) {
+            if (result is int) {
+              _setVal(results.ref.data, result);
+            } else if (result is double) {
+              _setVal(results.ref.data, result);
+            } else {
+              // Future (async not supported) or null: write -1 as i32 stub.
+              // Wasmer pre-initialises results with I64(0); leaving it unwritten
+              // causes a type-mismatch trap for any i32-returning import.
+              _setVal(results.ref.data, -1);
+            }
           }
-        } catch (_) {
-          // Return nullptr (no trap) on error
+        } catch (e, st) {
+          if (results.ref.size > 0) _setVal(results.ref.data, -1);
+          // ignore: avoid_print
+          print('[CB] exception in host import: $e\n$st');
         }
         return ffi.nullptr;
       },
