@@ -37,15 +37,13 @@ mixin _$Email {
     // ignore: unused_local_variable
     final $emailInstance = _$instance();
 
-    final formatFailure =
-        $emailInstance
-            .validateFormat($emailValueHolder.toFormatSubholder())
-            .toNullable();
+    final formatFailure = $emailInstance
+        .validateFormat($emailValueHolder.toFormatSubholder())
+        .toNullable();
 
-    final availableFailure =
-        $emailInstance
-            .validateAvailable($emailValueHolder.toAvailableSubholder())
-            .toNullable();
+    final availableFailure = $emailInstance
+        .validateAvailable($emailValueHolder.toAvailableSubholder())
+        .toNullable();
 
     if (formatFailure == null && availableFailure == null) {
       return right<InvalidEmailValue, ValidEmail>(
@@ -196,13 +194,12 @@ mixin InvalidEmail implements Email, InvalidValueObject {
     required TResult Function() orElse,
   }) {
     return maybeMap(
-      invalidValue:
-          valueFailures != null
-              ? (invalidValue) => valueFailures(
-                invalidValue.formatFailure,
-                invalidValue.availableFailure,
-              )
-              : null,
+      invalidValue: valueFailures != null
+          ? (invalidValue) => valueFailures(
+              invalidValue.formatFailure,
+              invalidValue.availableFailure,
+            )
+          : null,
       orElse: orElse,
     );
   }

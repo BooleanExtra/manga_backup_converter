@@ -15,7 +15,8 @@ enum AidokuPublishingStatus {
   completed,
   cancelled,
   hiatus,
-  notPublished;
+  notPublished
+  ;
 
   const AidokuPublishingStatus();
 }

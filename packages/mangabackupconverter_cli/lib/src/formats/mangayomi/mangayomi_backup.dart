@@ -49,13 +49,11 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
     return switch (type) {
       BackupType.mangayomi => this,
       BackupType.tachi => TachiBackup(
-        backupCategories:
-            (db.categories ?? [])
-                .map(
-                  (category) =>
-                      TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
-                )
-                .toList(),
+        backupCategories: (db.categories ?? [])
+            .map(
+              (category) => TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
+            )
+            .toList(),
         backupManga: [],
         backupBrokenSources: [],
         backupSources: [],

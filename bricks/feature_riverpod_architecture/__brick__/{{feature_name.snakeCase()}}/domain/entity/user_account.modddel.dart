@@ -77,10 +77,9 @@ mixin _$UserAccount {
     // ignore: unused_local_variable
     final $userAccountInstance = _$instance();
 
-    final accountFailure =
-        $userAccountInstance
-            .validateAccount($userAccountValueHolder.toAccountSubholder())
-            .toNullable();
+    final accountFailure = $userAccountInstance
+        .validateAccount($userAccountValueHolder.toAccountSubholder())
+        .toNullable();
 
     if (accountFailure == null) {
       return right<InvalidUserAccountValue, ValidUserAccount>(
@@ -105,12 +104,15 @@ mixin _$UserAccount {
   static Option<ContentFailure> validateContent(
     _$UserAccountMidHolder $userAccountMidHolder,
   ) {
-    final $invalid$id =
-        $userAccountMidHolder.id.toEither.getLeft().toNullable();
-    final $invalid$name =
-        $userAccountMidHolder.name.toEither.getLeft().toNullable();
-    final $invalid$email =
-        $userAccountMidHolder.email.toEither.getLeft().toNullable();
+    final $invalid$id = $userAccountMidHolder.id.toEither
+        .getLeft()
+        .toNullable();
+    final $invalid$name = $userAccountMidHolder.name.toEither
+        .getLeft()
+        .toNullable();
+    final $invalid$email = $userAccountMidHolder.email.toEither
+        .getLeft()
+        .toNullable();
 
     if ($invalid$id == null &&
         $invalid$name == null &&
@@ -320,14 +322,12 @@ mixin InvalidUserAccount implements UserAccount, InvalidEntity {
     required TResult Function() orElse,
   }) {
     return maybeMap(
-      invalidMid:
-          midFailures != null
-              ? (invalidMid) => midFailures(invalidMid.contentFailure)
-              : null,
-      invalidValue:
-          valueFailures != null
-              ? (invalidValue) => valueFailures(invalidValue.accountFailure)
-              : null,
+      invalidMid: midFailures != null
+          ? (invalidMid) => midFailures(invalidMid.contentFailure)
+          : null,
+      invalidValue: valueFailures != null
+          ? (invalidValue) => valueFailures(invalidValue.accountFailure)
+          : null,
       orElse: orElse,
     );
   }

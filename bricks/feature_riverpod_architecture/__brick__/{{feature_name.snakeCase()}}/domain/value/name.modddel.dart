@@ -44,10 +44,9 @@ mixin _$Name {
     // ignore: unused_local_variable
     final $nameInstance = _$instance();
 
-    final allowedFailure =
-        $nameInstance
-            .validateAllowed($nameValueHolder.toAllowedSubholder())
-            .toNullable();
+    final allowedFailure = $nameInstance
+        .validateAllowed($nameValueHolder.toAllowedSubholder())
+        .toNullable();
 
     if (allowedFailure == null) {
       return right<InvalidNameValue, ValidName>(
@@ -137,16 +136,15 @@ mixin _$Name {
       );
 
       return Name(
-        firstName:
-            firstName == _$copyWithDefault
-                ? $copy$firstName
-                : firstName as String,
-        lastName:
-            lastName == _$copyWithDefault ? $copy$lastName : lastName as String,
-        middleName:
-            middleName == _$copyWithDefault
-                ? $copy$middleName
-                : middleName as String,
+        firstName: firstName == _$copyWithDefault
+            ? $copy$firstName
+            : firstName as String,
+        lastName: lastName == _$copyWithDefault
+            ? $copy$lastName
+            : lastName as String,
+        middleName: middleName == _$copyWithDefault
+            ? $copy$middleName
+            : middleName as String,
       );
     };
   }
@@ -229,10 +227,9 @@ mixin InvalidName implements Name, InvalidValueObject {
     required TResult Function() orElse,
   }) {
     return maybeMap(
-      invalidValue:
-          valueFailures != null
-              ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
-              : null,
+      invalidValue: valueFailures != null
+          ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
+          : null,
       orElse: orElse,
     );
   }

@@ -10,7 +10,8 @@ enum ThemeType implements HumanReadableEnum {
 
   dark('Dark'),
 
-  system('System');
+  system('System')
+  ;
 
   const ThemeType(this.humanName);
 

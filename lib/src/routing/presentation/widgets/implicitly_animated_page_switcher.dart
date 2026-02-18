@@ -148,22 +148,21 @@ class ImplicitlyAnimatedPageSwitcher extends StatelessWidget {
     final child = switch ((itemBuilder == null, children == null)) {
       _ when itemBuilder != null => itemBuilder(context, currentIndex),
       _ when children != null => children[currentIndex],
-      _ =>
-        throw ArgumentError(
-          "ImplicitlyAnimatedPageSwitcher's children and itemBuilder cannot both be null",
-        ),
+      _ => throw ArgumentError(
+        "ImplicitlyAnimatedPageSwitcher's children and itemBuilder cannot both be null",
+      ),
     };
 
     return animatePageTransition
         ? AnimatedSwitcher(
-          duration: duration,
-          reverseDuration: reverseDuration,
-          switchInCurve: switchInCurve,
-          switchOutCurve: switchOutCurve,
-          transitionBuilder: transitionBuilder,
-          layoutBuilder: layoutBuilder,
-          child: child,
-        )
+            duration: duration,
+            reverseDuration: reverseDuration,
+            switchInCurve: switchInCurve,
+            switchOutCurve: switchOutCurve,
+            transitionBuilder: transitionBuilder,
+            layoutBuilder: layoutBuilder,
+            child: child,
+          )
         : child;
   }
 }

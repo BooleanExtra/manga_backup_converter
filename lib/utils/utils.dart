@@ -22,7 +22,8 @@ enum DeviceType {
   AppleTV,
 
   /// Only available on web
-  Roku;
+  Roku
+  ;
 
   bool get isMobile => this == DeviceType.iOS || this == DeviceType.Android;
 
@@ -43,7 +44,8 @@ enum DeviceForm {
   medium(Breakpoints.medium),
 
   /// Phones and small tablets in portrait
-  small(Breakpoint(beginWidth: 0, endWidth: 600));
+  small(Breakpoint(beginWidth: 0, endWidth: 600))
+  ;
 
   const DeviceForm(this.breakpoint);
 
