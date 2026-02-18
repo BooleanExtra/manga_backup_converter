@@ -2,7 +2,7 @@
 // ignore_for_file: avoid_dynamic_calls
 import 'dart:ffi' as ffi;
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:typed_data' show Uint8List;
 
 import 'package:ffi/ffi.dart' show calloc;
 
@@ -321,28 +321,23 @@ class WasmRunner {
   static void _setVal(ffi.Pointer<WasmVal> val, Object? v) {
     if (v is int) {
       val.ref.kind = 0; // WASM_I32
-      val.ref.rawValue = v;
+      val.ref.of.i32 = v;
     } else if (v is double) {
       val.ref.kind = 3; // WASM_F64
-      final bd = ByteData(8)..setFloat64(0, v, Endian.little);
-      val.ref.rawValue = bd.buffer.asByteData().getInt64(0, Endian.little);
+      val.ref.of.f64 = v;
     }
   }
 
   static Object? _getVal(ffi.Pointer<WasmVal> val) {
     switch (val.ref.kind) {
-      case 0: // i32 — return as unsigned 32-bit
-        return val.ref.rawValue & 0xFFFFFFFF;
+      case 0: // i32 — signed 32-bit
+        return val.ref.of.i32;
       case 1: // i64
-        return val.ref.rawValue;
+        return val.ref.of.i64;
       case 2: // f32
-        final bd = ByteData(4)
-          ..setInt32(0, val.ref.rawValue & 0xFFFFFFFF, Endian.little);
-        return bd.getFloat32(0, Endian.little);
+        return val.ref.of.f32;
       case 3: // f64
-        final bd = ByteData(8)
-          ..setInt64(0, val.ref.rawValue, Endian.little);
-        return bd.getFloat64(0, Endian.little);
+        return val.ref.of.f64;
       default:
         return null;
     }
