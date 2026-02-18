@@ -40,56 +40,53 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   static Future<TachimangaBackup> fromData(Uint8List bytes, {String? overrideName}) async {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
     final metaFile = backupArchive.findFile('meta.json');
-    if (metaFile == null || metaFile.content == null) {
+    if (metaFile == null) {
       throw const TachimangaException('Could not decode Tachimanga backup');
     }
 
-    final meta = TachimangaBackupMeta.fromJson(String.fromCharCodes(metaFile.content as Uint8List));
+    final meta = TachimangaBackupMeta.fromJson(String.fromCharCodes(metaFile.content));
     final archiveName = overrideName ?? meta.name;
 
     final contentZipFile = backupArchive.findFile('contents.zip');
-    if (contentZipFile == null || contentZipFile.content == null) {
+    if (contentZipFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", contents.zip not found');
     }
-    final contentArchive = ZipDecoder().decodeBytes(contentZipFile.content as Uint8List);
+    final contentArchive = ZipDecoder().decodeBytes(contentZipFile.content);
     final prefFile = contentArchive.findFile('pref.json');
-    if (prefFile == null || prefFile.content == null) {
+    if (prefFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref.json not found');
     }
-    final pref = jsonDecode(String.fromCharCodes(prefFile.content as Uint8List)) as Map<String, Object?>;
+    final pref = jsonDecode(String.fromCharCodes(prefFile.content)) as Map<String, Object?>;
 
     // This json file is actually a pbxproj file
     final prefAllFile = contentArchive.findFile('pref-all.json');
-    if (prefAllFile == null || prefAllFile.content == null) {
+    if (prefAllFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref-all.json not found');
     }
-    final prefAllContent = String.fromCharCodes(prefAllFile.content as Uint8List);
+    final prefAllContent = String.fromCharCodes(prefAllFile.content);
     final prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
 
-    final prefsFiles =
-        contentArchive.files.where((file) {
-          return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
-        }).toList();
+    final prefsFiles = contentArchive.files.where((file) {
+      return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
+    }).toList();
     final prefs = prefsFiles.fold(<String, Map<String, Object?>>{}, (map, file) {
-      final content = file.content as Uint8List;
       map[file.name] =
-          PropertyListSerialization.propertyListWithData(ByteData.sublistView(content)) as Map<String, Object?>;
+          PropertyListSerialization.propertyListWithData(ByteData.sublistView(file.content)) as Map<String, Object?>;
       return map;
     });
-    final extensionFiles =
-        contentArchive.files.where((file) {
-          return file.name.startsWith('extensions/') && file.name.endsWith('.jar');
-        }).toList();
+    final extensionFiles = contentArchive.files.where((file) {
+      return file.name.startsWith('extensions/') && file.name.endsWith('.jar');
+    }).toList();
     final extensions = extensionFiles.fold(
       <String, Uint8List>{},
-      (map, file) => map..addAll({file.name: file.content as Uint8List}),
+      (map, file) => map..addAll({file.name: file.content}),
     );
 
     final dbFile = contentArchive.findFile('tachimanga.db');
-    if (dbFile == null || dbFile.content == null) {
+    if (dbFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", tachimanga.db not found');
     }
-    final dbContent = dbFile.content as Uint8List;
+    final dbContent = dbFile.content;
     final db = await TachimangaBackupDb.fromDatabase(dbContent);
 
     return TachimangaBackup(
@@ -129,18 +126,11 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
     final dbContent = await db.exportDatabase();
     contentsArchive.addFile(ArchiveFile.noCompress('tachimanga.db', dbContent.lengthInBytes, dbContent));
     final contentsEncoded = ZipEncoder().encode(contentsArchive);
-    if (contentsEncoded == null) {
-      throw const TachimangaException('Could not encode Tachimanga backup');
-    }
 
     final backupArchive = Archive();
     backupArchive.addFile(ArchiveFile.string('meta.json', meta.toJson()));
     backupArchive.addFile(ArchiveFile.noCompress('contents.zip', contentsEncoded.length, contentsEncoded));
-    final backupEncoded = ZipEncoder().encode(backupArchive);
-    if (backupEncoded == null) {
-      throw const TachimangaException('Could not encode Tachimanga backup');
-    }
-    return Uint8List.fromList(backupEncoded);
+    return ZipEncoder().encodeBytes(backupArchive);
   }
 
   @override
