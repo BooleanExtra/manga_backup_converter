@@ -13,8 +13,6 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
-- `packages/env/` — Environment variables via ENVied (local/dev/beta/staging/prod flavors)
-- `packages/localization/` — i18n with ARB files + `flutter gen-l10n`
 
 ## Common Commands
 
