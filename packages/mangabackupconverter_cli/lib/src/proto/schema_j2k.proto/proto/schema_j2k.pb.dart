@@ -1246,15 +1246,7 @@ class BackupSourcePreferences extends $pb.GeneratedMessage {
 }
 
 class IntPreferenceValue extends $pb.GeneratedMessage {
-  factory IntPreferenceValue({
-    $core.int? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value = value;
-    }
-    return $result;
-  }
+  factory IntPreferenceValue() => create();
   IntPreferenceValue._() : super();
   factory IntPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1264,7 +1256,7 @@ class IntPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'IntPreferenceValue', createEmptyInstance: create)
-        ..a<$core.int>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q3);
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1286,30 +1278,10 @@ class IntPreferenceValue extends $pb.GeneratedMessage {
   static IntPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IntPreferenceValue>(create);
   static IntPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.int get value => $_getIZ(0);
-  @$pb.TagNumber(1)
-  set value($core.int v) {
-    $_setSignedInt32(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
 }
 
 class LongPreferenceValue extends $pb.GeneratedMessage {
-  factory LongPreferenceValue({
-    $fixnum.Int64? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value = value;
-    }
-    return $result;
-  }
+  factory LongPreferenceValue() => create();
   LongPreferenceValue._() : super();
   factory LongPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1319,7 +1291,7 @@ class LongPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'LongPreferenceValue', createEmptyInstance: create)
-        ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.Q6, defaultOrMaker: $fixnum.Int64.ZERO);
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1341,30 +1313,10 @@ class LongPreferenceValue extends $pb.GeneratedMessage {
   static LongPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LongPreferenceValue>(create);
   static LongPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $fixnum.Int64 get value => $_getI64(0);
-  @$pb.TagNumber(1)
-  set value($fixnum.Int64 v) {
-    $_setInt64(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
 }
 
 class FloatPreferenceValue extends $pb.GeneratedMessage {
-  factory FloatPreferenceValue({
-    $core.double? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value = value;
-    }
-    return $result;
-  }
+  factory FloatPreferenceValue() => create();
   FloatPreferenceValue._() : super();
   factory FloatPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1374,7 +1326,7 @@ class FloatPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'FloatPreferenceValue', createEmptyInstance: create)
-        ..a<$core.double>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QF);
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1396,30 +1348,10 @@ class FloatPreferenceValue extends $pb.GeneratedMessage {
   static FloatPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FloatPreferenceValue>(create);
   static FloatPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.double get value => $_getN(0);
-  @$pb.TagNumber(1)
-  set value($core.double v) {
-    $_setFloat(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
 }
 
 class StringPreferenceValue extends $pb.GeneratedMessage {
-  factory StringPreferenceValue({
-    $core.String? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value = value;
-    }
-    return $result;
-  }
+  factory StringPreferenceValue() => create();
   StringPreferenceValue._() : super();
   factory StringPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1429,7 +1361,7 @@ class StringPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'StringPreferenceValue', createEmptyInstance: create)
-        ..aQS(1, _omitFieldNames ? '' : 'value');
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1451,30 +1383,10 @@ class StringPreferenceValue extends $pb.GeneratedMessage {
   static StringPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StringPreferenceValue>(create);
   static StringPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get value => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set value($core.String v) {
-    $_setString(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
 }
 
 class BooleanPreferenceValue extends $pb.GeneratedMessage {
-  factory BooleanPreferenceValue({
-    $core.bool? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value = value;
-    }
-    return $result;
-  }
+  factory BooleanPreferenceValue() => create();
   BooleanPreferenceValue._() : super();
   factory BooleanPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1484,7 +1396,7 @@ class BooleanPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'BooleanPreferenceValue', createEmptyInstance: create)
-        ..a<$core.bool>(1, _omitFieldNames ? '' : 'value', $pb.PbFieldType.QB);
+        ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
       'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
@@ -1506,30 +1418,10 @@ class BooleanPreferenceValue extends $pb.GeneratedMessage {
   static BooleanPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BooleanPreferenceValue>(create);
   static BooleanPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.bool get value => $_getBF(0);
-  @$pb.TagNumber(1)
-  set value($core.bool v) {
-    $_setBool(0, v);
-  }
-
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => clearField(1);
 }
 
 class StringSetPreferenceValue extends $pb.GeneratedMessage {
-  factory StringSetPreferenceValue({
-    $core.Iterable<$core.String>? value,
-  }) {
-    final $result = create();
-    if (value != null) {
-      $result.value.addAll(value);
-    }
-    return $result;
-  }
+  factory StringSetPreferenceValue() => create();
   StringSetPreferenceValue._() : super();
   factory StringSetPreferenceValue.fromBuffer($core.List<$core.int> i,
           [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) =>
@@ -1539,7 +1431,6 @@ class StringSetPreferenceValue extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i =
       $pb.BuilderInfo(_omitMessageNames ? '' : 'StringSetPreferenceValue', createEmptyInstance: create)
-        ..pPS(1, _omitFieldNames ? '' : 'value')
         ..hasRequiredFields = false;
 
   @$core.Deprecated('Using this can add significant overhead to your binary. '
@@ -1562,9 +1453,6 @@ class StringSetPreferenceValue extends $pb.GeneratedMessage {
   static StringSetPreferenceValue getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StringSetPreferenceValue>(create);
   static StringSetPreferenceValue? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.List<$core.String> get value => $_getList(0);
 }
 
 /// BackupSerializer.kt

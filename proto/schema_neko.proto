@@ -38,6 +38,8 @@ message BackupChapter {
   optional int32 sourceOrder = 10;
   optional int32 pagesLeft = 800;
   optional string uploader = 905;
+  optional bool isUnavailable = 906;
+  optional int32 smartOrder = 907;
 }
 
 // BackupHistory.kt

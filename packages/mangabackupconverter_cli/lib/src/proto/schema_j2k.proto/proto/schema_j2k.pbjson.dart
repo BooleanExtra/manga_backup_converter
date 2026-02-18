@@ -229,74 +229,52 @@ final $typed_data.Uint8List backupSourcePreferencesDescriptor =
 @$core.Deprecated('Use intPreferenceValueDescriptor instead')
 const IntPreferenceValue$json = {
   '1': 'IntPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 2, '5': 5, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `IntPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List intPreferenceValueDescriptor =
-    $convert.base64Decode('ChJJbnRQcmVmZXJlbmNlVmFsdWUSFAoFdmFsdWUYASACKAVSBXZhbHVl');
+final $typed_data.Uint8List intPreferenceValueDescriptor = $convert.base64Decode('ChJJbnRQcmVmZXJlbmNlVmFsdWU=');
 
 @$core.Deprecated('Use longPreferenceValueDescriptor instead')
 const LongPreferenceValue$json = {
   '1': 'LongPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 2, '5': 3, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `LongPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List longPreferenceValueDescriptor =
-    $convert.base64Decode('ChNMb25nUHJlZmVyZW5jZVZhbHVlEhQKBXZhbHVlGAEgAigDUgV2YWx1ZQ==');
+final $typed_data.Uint8List longPreferenceValueDescriptor = $convert.base64Decode('ChNMb25nUHJlZmVyZW5jZVZhbHVl');
 
 @$core.Deprecated('Use floatPreferenceValueDescriptor instead')
 const FloatPreferenceValue$json = {
   '1': 'FloatPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 2, '5': 2, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `FloatPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List floatPreferenceValueDescriptor =
-    $convert.base64Decode('ChRGbG9hdFByZWZlcmVuY2VWYWx1ZRIUCgV2YWx1ZRgBIAIoAlIFdmFsdWU=');
+final $typed_data.Uint8List floatPreferenceValueDescriptor = $convert.base64Decode('ChRGbG9hdFByZWZlcmVuY2VWYWx1ZQ==');
 
 @$core.Deprecated('Use stringPreferenceValueDescriptor instead')
 const StringPreferenceValue$json = {
   '1': 'StringPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 2, '5': 9, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `StringPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List stringPreferenceValueDescriptor =
-    $convert.base64Decode('ChVTdHJpbmdQcmVmZXJlbmNlVmFsdWUSFAoFdmFsdWUYASACKAlSBXZhbHVl');
+final $typed_data.Uint8List stringPreferenceValueDescriptor = $convert.base64Decode('ChVTdHJpbmdQcmVmZXJlbmNlVmFsdWU=');
 
 @$core.Deprecated('Use booleanPreferenceValueDescriptor instead')
 const BooleanPreferenceValue$json = {
   '1': 'BooleanPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 2, '5': 8, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `BooleanPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List booleanPreferenceValueDescriptor =
-    $convert.base64Decode('ChZCb29sZWFuUHJlZmVyZW5jZVZhbHVlEhQKBXZhbHVlGAEgAigIUgV2YWx1ZQ==');
+    $convert.base64Decode('ChZCb29sZWFuUHJlZmVyZW5jZVZhbHVl');
 
 @$core.Deprecated('Use stringSetPreferenceValueDescriptor instead')
 const StringSetPreferenceValue$json = {
   '1': 'StringSetPreferenceValue',
-  '2': [
-    {'1': 'value', '3': 1, '4': 3, '5': 9, '10': 'value'},
-  ],
 };
 
 /// Descriptor for `StringSetPreferenceValue`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List stringSetPreferenceValueDescriptor =
-    $convert.base64Decode('ChhTdHJpbmdTZXRQcmVmZXJlbmNlVmFsdWUSFAoFdmFsdWUYASADKAlSBXZhbHVl');
+    $convert.base64Decode('ChhTdHJpbmdTZXRQcmVmZXJlbmNlVmFsdWU=');
 
 @$core.Deprecated('Use brokenBackupSourceDescriptor instead')
 const BrokenBackupSource$json = {
