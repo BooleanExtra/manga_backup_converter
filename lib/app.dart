@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:localization/localization.dart';
 import 'package:mangabackupconverter/src/features/settings/application/settings_service.dart';
 import 'package:mangabackupconverter/src/features/settings/data/dto/settings.dart';
 import 'package:mangabackupconverter/src/features/settings/presentation/widgets/app_settings.dart';
@@ -42,11 +41,9 @@ class App extends ConsumerWidget {
           settings: settings,
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            onGenerateTitle: (context) => context.loc.appTitle,
+            title: 'Manga Backup Converter',
             routerConfig: router,
             restorationScopeId: 'app',
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
             // Theme config for FlexColorScheme version 7.3.x. Make sure you use
             // same or higher package version, but still same major version. If
             // you use a lower package version, some properties may not be

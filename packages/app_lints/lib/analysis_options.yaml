@@ -79,5 +79,4 @@ linter:
     public_member_api_docs: false
     lines_longer_than_80_chars: false
     unnecessary_library_name: true
-    avoid_null_checks_in_equality_operators: true
     invalid_runtime_check_with_js_interop_types: true
