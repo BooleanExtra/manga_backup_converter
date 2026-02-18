@@ -63,6 +63,10 @@ class AidokuPlugin {
 
       final data = _readResult(ptr);
       return _decodeMangaPageResult(PostcardReader(data));
+    } on Object {
+      // Network is stubbed on native (async HTTP not supported in sync WASM
+      // callbacks). WASM may return an invalid pointer; treat as empty.
+      return const MangaPageResult(manga: [], hasNextPage: false);
     } finally {
       _store.remove(queryRid);
       _store.remove(filtersRid);
@@ -81,6 +85,8 @@ class AidokuPlugin {
 
       final data = _readResult(ptr);
       return _decodeManga(PostcardReader(data));
+    } on Object {
+      return null;
     } finally {
       _store.remove(mangaRid);
     }

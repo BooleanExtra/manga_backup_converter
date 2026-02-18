@@ -10,6 +10,7 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 
 - Root: Flutter app (iOS, Android, macOS, Windows, Linux, Web)
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
+- `packages/wasm_plugin_loader/` — Aidoku WASM plugin loader (native wasmer FFI + web WebAssembly)
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
@@ -24,6 +25,8 @@ melos run watch:pkg              # Watch mode for build_runner in a specific pac
 melos run test                   # Run all tests (flutter + dart) with coverage
 melos run flutter_test:pkg       # Flutter tests for a specific package
 melos run dart_test:pkg          # Dart tests for a specific package
+# For dart test directly: use --reporter expanded (not -v, which is invalid)
+# Native WASM tests skip automatically if wasmer or test fixture is absent
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues

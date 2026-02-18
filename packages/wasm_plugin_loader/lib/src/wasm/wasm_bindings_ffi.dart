@@ -44,6 +44,10 @@ final class WasmByteVec extends ffi.Struct {
 // wasm_val_t layout on 64-bit: kind(1) + padding(7) + union_value(8) = 16 bytes
 // kind: 0=i32, 1=i64, 2=f32, 3=f64
 // The union is represented as a single Int64 (rawValue) covering all variants.
+//
+// IMPORTANT: wasmer reads/writes this layout for wasm_func_call args/results and
+// callback args (kind at byte 0). However, wasmer reads callback *results* with the
+// value union at byte 0 and kind at byte 8 — see _setCallbackResult in wasm_runner_native.dart.
 final class WasmVal extends ffi.Struct {
   @ffi.Uint8()
   external int kind;

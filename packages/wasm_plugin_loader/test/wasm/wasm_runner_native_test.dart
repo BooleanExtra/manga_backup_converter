@@ -33,8 +33,10 @@ void main() {
         final aixBytes = fixture.readAsBytesSync();
         final loader = WasmPluginLoader();
         final plugin = await loader.load(aixBytes);
-        expect(plugin.sourceInfo.id, isNotEmpty);
-        expect(plugin.sourceInfo.language, isNotEmpty);
+        expect(plugin.sourceInfo.id, 'multi.mangadex');
+        expect(plugin.sourceInfo.name, 'MangaDex');
+        expect(plugin.sourceInfo.language, 'en');
+        expect(plugin.sourceInfo.url, 'https://mangadex.org');
         // ignore: avoid_print
         print('Loaded: ${plugin.sourceInfo.id} (${plugin.sourceInfo.name})');
       });
