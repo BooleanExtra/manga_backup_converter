@@ -10,7 +10,7 @@ permissions:
 
 env:
   FLUTTER_CHANNEL: "stable"
-  FLUTTER_VERSION: "3.29.3"
+  FLUTTER_VERSION: "3.41.1"
   PROTOC_PLUGGIN_VERSION: "^21.1.2"
 
 jobs:
@@ -91,7 +91,7 @@ jobs:
           body: Automated changes by [update-schemas](https://github.com/getBoolean/manga_backup_converter/blob/main/.github/workflows/update-schemas.yml) GitHub action
 
       - name: Enable auto-merge
-        if: ${{ steps.cpr.outputs.pull-request-operation }} == 'created'
+        if: steps.cpr.outputs.pull-request-operation == 'created'
         continue-on-error: true
         run: gh pr merge --auto --merge "$PR_URL"
         env:
