@@ -1,103 +1,126 @@
+// ignore_for_file: avoid_dynamic_calls
+import 'dart:js_interop';
 import 'dart:typed_data';
-import 'package:wasm_ffi/ffi.dart';
 
-/// A [ModuleLoader] that serves WASM bytes directly from memory.
-///
-/// Passed to [DynamicLibrary.open] to avoid a network/file round-trip.
-class _BytesModuleLoader extends ModuleLoader {
-  const _BytesModuleLoader(this._bytes);
+// ---------------------------------------------------------------------------
+// Browser WebAssembly API bindings via dart:js_interop
+// ---------------------------------------------------------------------------
 
-  final Uint8List _bytes;
+@JS('WebAssembly.compile')
+external JSPromise<JSObject> _wasmCompile(JSAny bytes);
 
-  @override
-  Future<bool> exists(String modulePath) async => true;
+@JS('WebAssembly.instantiate')
+external JSPromise<JSObject> _wasmInstantiateModule(JSObject module, JSObject imports);
 
-  @override
-  Future<Uint8List> load(String modulePath) async => _bytes;
+@JS()
+extension type _WasmInstance._(JSObject _) implements JSObject {
+  external JSObject get exports;
 }
 
-/// Web implementation of [WasmRunner] backed by [wasm_ffi].
-///
-/// NOTE: Import binding (host functions the WASM module calls into Dart)
-/// requires adjustment after Task 6 ABI discovery. The [imports] map is
-/// captured but the mechanism to forward them into [DynamicLibrary.open]
-/// depends on the wasm_ffi 2.2.0 API — verify against actual package source.
+@JS()
+extension type _WasmMemory._(JSObject _) implements JSObject {
+  external JSArrayBuffer get buffer;
+}
+
+// ---------------------------------------------------------------------------
+// Helper: convert nested Dart import map to JS object tree
+// ---------------------------------------------------------------------------
+
+JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
+  final outer = JSObject();
+  for (final moduleEntry in imports.entries) {
+    final inner = JSObject();
+    for (final fnEntry in moduleEntry.value.entries) {
+      final dartFn = fnEntry.value;
+      // 4-arg JS wrapper; extra args beyond the function's arity are ignored
+      final jsFn = (JSAny? a, JSAny? b, JSAny? c, JSAny? d) {
+        final dartArgs = [a, b, c, d].where((x) => x != null).map(_jsToValue).toList();
+        final result = Function.apply(dartFn, dartArgs);
+        return _valueToJs(result is Future ? null : result);
+      }.toJS;
+      inner[fnEntry.key] = jsFn;
+    }
+    outer[moduleEntry.key] = inner;
+  }
+  return outer;
+}
+
+Object? _jsToValue(JSAny? v) {
+  if (v == null) return null;
+  return v.dartify();
+}
+
+JSAny? _valueToJs(Object? v) {
+  if (v == null) return null;
+  if (v is int) return v.toJS;
+  if (v is double) return v.toJS;
+  if (v is bool) return v.toJS;
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// WasmRunner implementation
+// ---------------------------------------------------------------------------
+
 class WasmRunner {
-  WasmRunner._(this._library, this._imports);
+  WasmRunner._(this._exports, this._memBytes);
 
-  final DynamicLibrary _library;
+  final JSObject _exports;
+  Uint8List _memBytes;
 
-  /// Host imports captured for reference; actual binding TBD post-ABI-discovery.
-  // ignore: unused_field
-  final Map<String, Function> _imports;
-
-  /// Load a WASM module from raw bytes with optional host import functions.
-  ///
-  /// [imports] keys are `'module::name'` matching WASM import declarations.
   static Future<WasmRunner> fromBytes(
     Uint8List wasmBytes, {
-    Map<String, Function> imports = const {},
+    Map<String, Map<String, Function>> imports = const {},
   }) async {
-    Memory.init();
+    final jsBytes = wasmBytes.buffer.toJS;
+    final module = await _wasmCompile(jsBytes).toDart;
+    final importObj = _buildImportObject(imports);
+    final result = await _wasmInstantiateModule(module, importObj).toDart;
 
-    // Use a custom loader to serve raw bytes rather than fetching from URL.
-    // 'wasm_module' is an arbitrary name; the loader ignores the path.
-    final library = await DynamicLibrary.open(
-      'wasm_module',
-      moduleLoader: _BytesModuleLoader(wasmBytes),
-      wasmType: WasmType.wasm32Standalone,
+    final instance = result as _WasmInstance;
+    final exports = instance.exports;
+    final memView = _readMemoryView(exports);
+
+    return WasmRunner._(exports, memView);
+  }
+
+  static Uint8List _readMemoryView(JSObject exports) {
+    final memJs = exports['memory'];
+    if (memJs == null) return Uint8List(0);
+    return Uint8List.view((memJs as _WasmMemory).buffer.toDart);
+  }
+
+  void _refreshMemory() {
+    _memBytes = _readMemoryView(_exports);
+  }
+
+  @override
+  dynamic call(String name, List<Object?> args) {
+    final fn = _exports[name];
+    if (fn == null) throw ArgumentError('WASM export not found: $name');
+    final jsArgs = args.map(_valueToJs).toList();
+    final result = (fn as JSFunction).callAsFunction(
+      null,
+      jsArgs.jsify() as JSArray,
     );
-
-    // TODO(task7): Forward [imports] as host functions once the WASM ABI is
-    // known (see WASM_ABI.md). wasm_ffi may require imports to be JS functions
-    // injected before instantiation — revisit after Task 6.
-
-    return WasmRunner._(library, imports);
+    return _jsToValue(result);
   }
 
-  /// Call an exported WASM function [name] with [args].
-  ///
-  /// Signature lookup is based on the ABI discovered in Task 6.
-  /// This initial implementation handles the common case of a single i32
-  /// return; update after WASM_ABI.md is written.
-  dynamic callFunction(String name, List<Object?> args) {
-    if (!_library.providesSymbol(name)) {
-      throw ArgumentError('WASM export "$name" not found');
-    }
-    // TODO(task8): Use proper typed lookup based on discovered signatures.
-    // For now, call as a zero-arg i32-returning function as a placeholder.
-    final fn = _library.lookupFunction<Int32 Function(), int Function()>(name);
-    return fn();
-  }
-
-  /// Read [length] bytes from WASM linear memory at [offset].
+  @override
   Uint8List readMemory(int offset, int length) {
-    final buffer = _library.allocator.allocate<Uint8>(0);
-    final mem = buffer.boundMemory;
-    return Uint8List.fromList(
-      List.generate(length, (i) => mem.buffer.asByteData().getUint8(offset + i)),
-    );
+    _refreshMemory();
+    return Uint8List.fromList(_memBytes.sublist(offset, offset + length));
   }
 
-  /// Write [bytes] into WASM linear memory at [offset].
+  @override
   void writeMemory(int offset, Uint8List bytes) {
-    final buffer = _library.allocator.allocate<Uint8>(0);
-    final mem = buffer.boundMemory;
-    final bd = mem.buffer.asByteData();
-    for (var i = 0; i < bytes.length; i++) {
-      bd.setUint8(offset + i, bytes[i]);
-    }
+    _refreshMemory();
+    _memBytes.setRange(offset, offset + bytes.length, bytes);
   }
 
-  /// Allocate [size] bytes via the WASM module's own `malloc` export.
-  int malloc(int size) {
-    final fn = _library.lookupFunction<Int32 Function(Int32), int Function(int)>('malloc');
-    return fn(size);
-  }
-
-  /// Free WASM memory at [ptr] via the module's `free` export.
-  void free(int ptr) {
-    final fn = _library.lookupFunction<Void Function(Int32), void Function(int)>('free');
-    fn(ptr);
+  @override
+  int get memorySize {
+    _refreshMemory();
+    return _memBytes.length;
   }
 }
