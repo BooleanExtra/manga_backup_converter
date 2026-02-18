@@ -172,9 +172,9 @@
             "args": [
                 "merge",
                 "-f",
-                ".input_files/aidoku_2024-08-23_20-25-49.aib",
+                ".input_files/aidoku_2026-02-15_16-54-23.aib",
                 "-m",
-                ".input_files/aidoku_2024-12-16_00-39-21.aib",
+                ".input_files/aidoku_2026-02-17_22-37-22.aib",
                 "-o",
                 ".output_files/",
                 "-v"
