@@ -9,8 +9,6 @@ environment:
 resolution: workspace
 
 dependencies:
-  env:
-    path: ../env
   flutter:
     sdk: flutter
   flutter_flavor: ^3.1.1

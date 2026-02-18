@@ -1,4 +1,3 @@
-import 'package:constants/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
@@ -121,7 +120,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
     required Settings settings,
   }) {
     return <AbstractSettingsTile>[
-      if (AppFlavor.isBannerEnabled)
+      if (settings.bannerEnabled)
         CustomSettingsTile(child: _ToggleBannerButton(context: context)),
     ];
   }
