@@ -60,7 +60,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 ## Code Generation
 
 This project relies heavily on code generation. Generated files use these suffixes:
-- `*.mapper.dart` (dart_mappable), `*.freezed.dart` (freezed), `*.modddel.dart` (modddels)
+- `*.mapper.dart` (dart_mappable), `*.freezed.dart` (freezed)
 - `*.g.dart` (riverpod_generator, json_serializable), `*.pb.dart` / `*.pbenum.dart` (protobuf)
 
 Always run `melos run generate` after modifying annotated model classes. The env package generates separately during bootstrap.
