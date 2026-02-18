@@ -75,19 +75,12 @@ Always run `melos run generate` after modifying annotated model classes. The env
 ## Key Libraries
 
 - **State**: Riverpod + riverpod_generator + hooks_riverpod
-- **Models**: freezed (immutable), dart_mappable (serialization), modddels (validation)
+- **Models**: freezed (immutable), dart_mappable (serialization)
 - **Navigation**: go_router
 - **Data caching**: stock (Fetcher + SourceOfTruth pattern)
 - **Theme**: flex_color_scheme
 - **Testing**: mocktail, patrol (integration tests)
 - **CLI formats**: protobuf, archive, sqflite_common
-
-## Environment Setup
-
-1. Copy `packages/env/*.env.example` files, remove `.example` suffix
-2. Fill in values for each environment
-3. `melos bootstrap` will generate the env Dart files automatically
-4. New env variables: add to `app_env_fields.dart`, then to each `*Env` class in `packages/env/lib/src/env/`
 
 ## CI
 
