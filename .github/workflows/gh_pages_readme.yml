@@ -8,6 +8,9 @@ on:
     branches:
       - "gh-pages"
 
+permissions:
+  contents: write
+
 jobs:
   gh_pages_readme:
     runs-on: ubuntu-latest
