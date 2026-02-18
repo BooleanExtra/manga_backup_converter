@@ -29,7 +29,7 @@ env:
   FLAVOR: ""
   # https://github.com/transferwise/sanitize-branch-name/blob/main/action.yml
   BRANCH_NAME: $(echo -n ${{ github.head_ref || github.ref_name }} | tr "/" "-")
-  MELOS_VERSION: "^7.4.0"
+  MELOS_VERSION: $(grep -E '^\s+melos:' pubspec.yaml | awk '{print $2}')
 
 # Needed to deploy to GitHub Pages
 permissions:
@@ -100,7 +100,7 @@ jobs:
 
       - name: Activate Melos
         if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
@@ -197,7 +197,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -384,7 +384,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -514,7 +514,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -601,7 +601,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -688,7 +688,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -776,7 +776,7 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         run: melos bootstrap
@@ -844,14 +844,14 @@ jobs:
         uses: oNaiPs/secrets-to-env-action@v1
         with:
           secrets: ${{ toJSON(secrets) }}
-      
+
       - name: Get Dependencies
         if: github.actor != 'dependabot[bot]'
         run: flutter pub get
 
       - name: Activate Melos
         if: github.actor != 'dependabot[bot]'
-        run: dart pub global activate melos ${{env.MELOS_VERSION}}
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
         if: github.actor != 'dependabot[bot]'
