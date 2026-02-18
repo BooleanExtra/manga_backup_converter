@@ -23,8 +23,6 @@ dependencies:
     path: packages/constants
   cupertino_icons: ^1.0.6
   dart_mappable: ^4.1.0
-  env:
-    path: packages/env
   flex_color_picker: ^3.7.1
   flex_color_scheme: ^8.1.1
   flutter:

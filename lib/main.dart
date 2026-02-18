@@ -1,5 +1,3 @@
-import 'package:constants/constants.dart';
-import 'package:env/env.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -15,9 +13,8 @@ void main() async {
   // * https://docs.flutter.dev/testing/errors
   registerErrorHandlers();
   initLogger();
-  AppFlavor.initConfig();
-  final env = EnvFlavor.instance;
-  if (env.usePathUrlStrategy) {
+  // ignore: do_not_use_environment
+  if (const String.fromEnvironment('USE_PATH_URL_STRATEGY') == 'true') {
     usePathUrlStrategy();
   }
 

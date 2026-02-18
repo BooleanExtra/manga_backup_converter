@@ -1,4 +1,3 @@
-import 'package:constants/constants.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:mangabackupconverter/src/features/settings/data/dto/flex_scheme_data.dart';
@@ -33,8 +32,4 @@ class Settings with SettingsMappable {
 
   static const fromMap = SettingsMapper.fromMap;
   static const fromJson = SettingsMapper.fromJson;
-}
-
-extension SettingsExtension on Settings {
-  bool get isBannerShowing => AppFlavor.isBannerEnabled && bannerEnabled;
 }
