@@ -1692,6 +1692,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.2"
+  wasm_ffi:
+    dependency: transitive
+    description:
+      name: wasm_ffi
+      sha256: "3d66b8da3d69be07dc44b0027ac49c7ce9b9dde16e2d13eb2031e24288c136e1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   watcher:
     dependency: transitive
     description:
