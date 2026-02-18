@@ -81,12 +81,13 @@ void main() {
       archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
       final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
       archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
-      final filters = utf8.encode(jsonEncode({'filters': <Object>[]}));
+      // filters.json is a top-level JSON array (list of filter descriptor objects)
+      final filters = utf8.encode(jsonEncode(<Object>[]));
       archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
 
       final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
       expect(bundle.filtersJson, isNotNull);
-      expect(bundle.filtersJson!['filters'], isEmpty);
+      expect(bundle.filtersJson, isEmpty);
     });
   });
 }
