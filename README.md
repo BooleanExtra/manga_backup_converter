@@ -20,7 +20,6 @@ separate packages.
 - [Testing](#testing)
   - [Integration Tests](#integration-tests)
 - [Building](#building)
-  - [Flavors](#flavors)
   - [Build for Windows Release](#build-for-windows-release)
   - [Build for other platforms](#build-for-other-platforms)
 - [Architecture](#architecture)
@@ -45,8 +44,7 @@ separate packages.
 ## Motivation
 
 This is an opinionated template I use for my personal projects. It uses `melos` monorepo
-to separate the code generation into separate packages for [assets/](./packages/assets/), [env/](./packages/env/),
-and [localization/](./packages/localization/)
+to separate the code generation into separate packages for [assets/](./packages/assets/)
 
 This repository also follows [Riverpod App Architecture](https://codewithandrea.com/articles/flutter-app-architecture-riverpod-introduction/),
 I highly recommend reading the article. Each `layer` has its own folder per feature in the [lib/src/features/](./lib/src/features/) folder.
@@ -160,18 +158,6 @@ To run the tests, see the instructions in the [Patrol documentation](https://pub
 This project automatically builds for all platforms without code signing using GitHub Actions.
 To build the project locally, follow the instructions in the
 [Flutter docs](https://flutter.dev/docs).
-
-### Flavors
-
-Flavors are used to provide different environment variables based on the current flavor. By default,
-the app uses the "local" flavor. Run/build the app with `--dart-define FLAVOR=<flavorname>`
-to change the flavor. The following flavors are supported:
-
-- `local` - Local development. The text banner changes to "Debug" when in debug mode, "Local" in profile mode, and hidden in release mode.
-- `dev` - Development build not intended for release.
-- `beta` - Beta build intended for release to testers.
-- `staging` - Staging build intended for device integration testing.
-- `prod` - Production build intended for release to stores.
 
 ### Build for Windows Release
 
