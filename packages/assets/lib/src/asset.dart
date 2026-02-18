@@ -1,4 +1,4 @@
-import 'package:assets/assets.dart';
+import 'package:assets/gen/assets.gen.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 

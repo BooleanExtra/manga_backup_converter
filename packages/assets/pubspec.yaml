@@ -17,7 +17,8 @@ dependencies:
 dev_dependencies:
   app_lints:
     path: ../app_lints
-  assets_gen: ^1.5.0
+  build_runner: ^2.4.0
+  flutter_gen_runner: ^5.12.0
   flutter_test:
     sdk: flutter
 
@@ -27,10 +28,13 @@ flutter:
   #
   # Run the generator with `melos run assets`
   assets:
-    - packages/assets/images/flutter_logo.png
+    - lib/images/flutter_logo.png
 
-assets_gen:
-  code_style: lowerCamelCase
-  format_dart_code: true
-  gen_package_path: false
-  output: src/assets.dart
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
+  assets:
+    enabled: true
+    outputs:
+      package_parameter_enabled: false
+      style: camel-case
