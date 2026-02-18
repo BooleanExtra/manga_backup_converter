@@ -35,20 +35,18 @@ class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
   PaperbackBackupLibraryManga toPaperbackBackupLibraryManga() {
     final extensionRepo = ExtensionRepoIndex.parseExtensionRepoIndex();
     final categoriesSorted = categories.sorted();
-    final libraryTabs =
-        categoriesSorted
-            .mapIndexed(
-              (index, category) => PaperbackBackupLibraryTab(id: index.toString(), name: category, sortOrder: index),
-            )
-            .toList();
+    final libraryTabs = categoriesSorted
+        .mapIndexed(
+          (index, category) => PaperbackBackupLibraryTab(id: index.toString(), name: category, sortOrder: index),
+        )
+        .toList();
 
     final primarySource = PaperbackBackupItemReference(
-      id:
-          extensionRepo
-              .convertExtension(Extension(name: sourceId, id: sourceId), ExtensionType.aidoku, ExtensionType.paperback)
-              .first
-              .$1
-              .id,
+      id: extensionRepo
+          .convertExtension(Extension(name: sourceId, id: sourceId), ExtensionType.aidoku, ExtensionType.paperback)
+          .first
+          .$1
+          .id,
       type: PaperbackBackupItemType.sourceMangaV4,
     );
 

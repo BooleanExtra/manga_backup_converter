@@ -17,21 +17,18 @@ class AppStartupWidget extends ConsumerWidget {
       switchOutCurve: Curves.easeOut,
       child: appStartupState.when(
         // use an external widget builder to decide what to return
-        data:
-            (_) =>
-                Container(key: const ValueKey('appStartupData'), child: widget),
-        loading:
-            () => const AppStartupLoadingWidget(
-              key: ValueKey('appStartupLoading'),
-            ),
-        error:
-            (e, st) => AppStartupErrorWidget(
-              key: const ValueKey('appStartupError'),
-              message: e.toString(),
-              onRetry: () {
-                ref.invalidate(appStartupProvider);
-              },
-            ),
+        data: (_) =>
+            Container(key: const ValueKey('appStartupData'), child: widget),
+        loading: () => const AppStartupLoadingWidget(
+          key: ValueKey('appStartupLoading'),
+        ),
+        error: (e, st) => AppStartupErrorWidget(
+          key: const ValueKey('appStartupError'),
+          message: e.toString(),
+          onRetry: () {
+            ref.invalidate(appStartupProvider);
+          },
+        ),
       ),
     );
   }
@@ -48,8 +45,9 @@ class AppStartupLoadingWidget extends StatelessWidget {
           builder: (context) {
             final brightness = MediaQuery.platformBrightnessOf(context);
             return ColoredBox(
-              color:
-                  brightness == Brightness.dark ? Colors.black87 : Colors.white,
+              color: brightness == Brightness.dark
+                  ? Colors.black87
+                  : Colors.white,
               child: const SizedBox.expand(),
             );
           },

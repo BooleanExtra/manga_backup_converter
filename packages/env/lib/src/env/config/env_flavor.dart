@@ -9,17 +9,17 @@ import 'package:env/src/env/staging_env.dart';
 abstract class EnvFlavor implements EnvFields {
   static const String rawFlavor =
       String.fromEnvironment('FLUTTER_APP_FLAVOR') != ''
-          ? String.fromEnvironment('FLUTTER_APP_FLAVOR')
-          : 'local';
+      ? String.fromEnvironment('FLUTTER_APP_FLAVOR')
+      : 'local';
 
   static final EnvFlavor instance =
       EnvFlavor.rawFlavor == 'prod' || EnvFlavor.rawFlavor == 'beta'
-          ? ProdEnv()
-          : EnvFlavor.rawFlavor == 'staging'
-          ? StagingEnv()
-          : EnvFlavor.rawFlavor == 'local'
-          ? LocalEnv()
-          : DevEnv();
+      ? ProdEnv()
+      : EnvFlavor.rawFlavor == 'staging'
+      ? StagingEnv()
+      : EnvFlavor.rawFlavor == 'local'
+      ? LocalEnv()
+      : DevEnv();
 
   static const bool isProd = flavor == Flavor.prod;
   static const bool isStaging = flavor == Flavor.staging;
@@ -28,12 +28,12 @@ abstract class EnvFlavor implements EnvFields {
 
   static const Flavor flavor =
       EnvFlavor.rawFlavor == 'prod' || EnvFlavor.rawFlavor == 'beta'
-          ? Flavor.prod
-          : EnvFlavor.rawFlavor == 'staging'
-          ? Flavor.staging
-          : EnvFlavor.rawFlavor == 'local'
-          ? Flavor.local
-          : Flavor.dev;
+      ? Flavor.prod
+      : EnvFlavor.rawFlavor == 'staging'
+      ? Flavor.staging
+      : EnvFlavor.rawFlavor == 'local'
+      ? Flavor.local
+      : Flavor.dev;
 
   const EnvFlavor._();
 }
@@ -52,7 +52,8 @@ enum Flavor {
   dev('dev'),
 
   /// Locally built, usually for debugging or testing changes.
-  local('local');
+  local('local')
+  ;
 
   const Flavor(this.value);
 

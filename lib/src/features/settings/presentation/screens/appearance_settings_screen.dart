@@ -39,11 +39,11 @@ class AppearanceSettingsScreen extends ConsumerWidget {
               onTap: (scheme) {
                 isLight
                     ? ref
-                        .read(settingsServiceProvider.notifier)
-                        .setLightTheme(scheme)
+                          .read(settingsServiceProvider.notifier)
+                          .setLightTheme(scheme)
                     : ref
-                        .read(settingsServiceProvider.notifier)
-                        .setDarkTheme(scheme);
+                          .read(settingsServiceProvider.notifier)
+                          .setDarkTheme(scheme);
               },
             ),
           ],

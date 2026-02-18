@@ -189,28 +189,27 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
     // TODO: implement toBackup
     return switch (type) {
       BackupType.aidoku => this,
-      BackupType.paperback =>
-        (() {
-          final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker = [];
-          final List<PaperbackBackupChapter> chapters = [];
-          final List<PaperbackBackupLibraryManga> libraryManga =
-              library
-                  ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
-                  .toList() ??
-              <PaperbackBackupLibraryManga>[];
-          final List<PaperbackBackupMangaInfo> mangaInfo =
-              manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
-              <PaperbackBackupMangaInfo>[];
-          final List<PaperbackBackupSourceManga> sourceManga = [];
-          return PaperbackBackup(
-            name: name,
-            chapterProgressMarker: chapterProgressMarker,
-            chapters: chapters,
-            libraryManga: libraryManga,
-            mangaInfo: mangaInfo,
-            sourceManga: sourceManga,
-          );
-        })(),
+      BackupType.paperback => (() {
+        final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker = [];
+        final List<PaperbackBackupChapter> chapters = [];
+        final List<PaperbackBackupLibraryManga> libraryManga =
+            library
+                ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
+                .toList() ??
+            <PaperbackBackupLibraryManga>[];
+        final List<PaperbackBackupMangaInfo> mangaInfo =
+            manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
+            <PaperbackBackupMangaInfo>[];
+        final List<PaperbackBackupSourceManga> sourceManga = [];
+        return PaperbackBackup(
+          name: name,
+          chapterProgressMarker: chapterProgressMarker,
+          chapters: chapters,
+          libraryManga: libraryManga,
+          mangaInfo: mangaInfo,
+          sourceManga: sourceManga,
+        );
+      })(),
       BackupType.tachi => throw const AidokuException('Aidoku backup cannot be converted to Tachi'),
       BackupType.tachimanga => throw const AidokuException('Aidoku backup cannot be converted to TachiManga'),
       BackupType.mangayomi => throw const AidokuException('Aidoku backup cannot be converted to Mangayomi'),

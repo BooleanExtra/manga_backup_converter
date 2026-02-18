@@ -154,8 +154,9 @@ class _ToggleBannerButton extends ConsumerWidget {
   }
 
   void _toggleButton(WidgetRef ref, BuildContext context) {
-    final bannerEnabled =
-        ref.read(settingsServiceProvider.notifier).toggleBanner();
+    final bannerEnabled = ref
+        .read(settingsServiceProvider.notifier)
+        .toggleBanner();
     context.showAccessibilitySnackBar(
       'Debug banner has been ${bannerEnabled ? 'enabled' : 'disabled'}',
     );

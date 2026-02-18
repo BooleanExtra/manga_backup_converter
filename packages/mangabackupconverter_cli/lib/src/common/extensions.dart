@@ -304,7 +304,8 @@ enum ExtensionType {
   aidoku,
   paperback,
   tachi,
-  mangayomi;
+  mangayomi
+  ;
 
   const ExtensionType();
 

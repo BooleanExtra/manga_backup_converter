@@ -36,10 +36,9 @@ mixin _$Id {
     // ignore: unused_local_variable
     final $idInstance = _$instance();
 
-    final allowedFailure =
-        $idInstance
-            .validateAllowed($idValueHolder.toAllowedSubholder())
-            .toNullable();
+    final allowedFailure = $idInstance
+        .validateAllowed($idValueHolder.toAllowedSubholder())
+        .toNullable();
 
     if (allowedFailure == null) {
       return right<InvalidIdValue, ValidId>(
@@ -178,10 +177,9 @@ mixin InvalidId implements Id, InvalidValueObject {
     required TResult Function() orElse,
   }) {
     return maybeMap(
-      invalidValue:
-          valueFailures != null
-              ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
-              : null,
+      invalidValue: valueFailures != null
+          ? (invalidValue) => valueFailures(invalidValue.allowedFailure)
+          : null,
       orElse: orElse,
     );
   }

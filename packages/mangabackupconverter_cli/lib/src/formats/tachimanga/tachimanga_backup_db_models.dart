@@ -515,7 +515,8 @@ enum TachimangaBackupTable<T> {
   trackRecord(TachimangaBackupTrackRecord.fromMap),
 
   // ignore: constant_identifier_names
-  sqlite_sequence(TachimangaBackupSqliteSequence.fromMap);
+  sqlite_sequence(TachimangaBackupSqliteSequence.fromMap)
+  ;
 
   const TachimangaBackupTable(this.fromMap);
 
