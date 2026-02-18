@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_dynamic_calls
 import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:typed_data';
 
 // ---------------------------------------------------------------------------
@@ -38,9 +39,9 @@ JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
         final result = Function.apply(dartFn, dartArgs);
         return _valueToJs(result is Future ? null : result);
       }.toJS;
-      inner[fnEntry.key] = jsFn;
+      inner.setProperty(fnEntry.key.toJS, jsFn);
     }
-    outer[moduleEntry.key] = inner;
+    outer.setProperty(moduleEntry.key.toJS, inner);
   }
   return outer;
 }
@@ -85,7 +86,7 @@ class WasmRunner {
   }
 
   static Uint8List _readMemoryView(JSObject exports) {
-    final memJs = exports['memory'];
+    final memJs = exports.getProperty('memory'.toJS);
     if (memJs == null) return Uint8List(0);
     return Uint8List.view((memJs as _WasmMemory).buffer.toDart);
   }
@@ -94,31 +95,27 @@ class WasmRunner {
     _memBytes = _readMemoryView(_exports);
   }
 
-  @override
   dynamic call(String name, List<Object?> args) {
-    final fn = _exports[name];
+    final fn = _exports.getProperty(name.toJS);
     if (fn == null) throw ArgumentError('WASM export not found: $name');
     final jsArgs = args.map(_valueToJs).toList();
     final result = (fn as JSFunction).callAsFunction(
       null,
-      jsArgs.jsify() as JSArray,
+      jsArgs.jsify()! as JSArray,
     );
     return _jsToValue(result);
   }
 
-  @override
   Uint8List readMemory(int offset, int length) {
     _refreshMemory();
     return Uint8List.fromList(_memBytes.sublist(offset, offset + length));
   }
 
-  @override
   void writeMemory(int offset, Uint8List bytes) {
     _refreshMemory();
     _memBytes.setRange(offset, offset + bytes.length, bytes);
   }
 
-  @override
   int get memorySize {
     _refreshMemory();
     return _memBytes.length;

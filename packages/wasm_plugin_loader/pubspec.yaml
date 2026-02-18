@@ -10,8 +10,8 @@ resolution: workspace
 dependencies:
   archive: ^4.0.0
   collection: ^1.19.0
-  http: ^1.2.0
   html: ^0.15.4
+  http: ^1.2.0
   meta: ^1.12.0
   wasm_ffi: ^2.2.0
 

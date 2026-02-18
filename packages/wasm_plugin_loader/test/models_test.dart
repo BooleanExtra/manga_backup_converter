@@ -1,5 +1,5 @@
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 import 'package:test/test.dart';
+import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 void main() {
   group('SourceInfo', () {

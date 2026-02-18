@@ -5,9 +5,9 @@ import 'package:html/dom.dart' as html_dom;
 import 'package:html/parser.dart' as html_parser;
 import 'package:http/http.dart' as http;
 
-import '../codec/postcard_writer.dart';
-import '../wasm/wasm_runner.dart';
-import 'host_store.dart';
+import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
+import 'package:wasm_plugin_loader/src/codec/postcard_writer.dart';
+import 'package:wasm_plugin_loader/src/wasm/wasm_runner.dart';
 
 /// Builds the complete map of host import functions for an Aidoku WASM plugin.
 ///

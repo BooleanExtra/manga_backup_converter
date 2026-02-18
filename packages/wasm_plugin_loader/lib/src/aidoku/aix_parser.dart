@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
-import '../models/source_info.dart';
+import 'package:wasm_plugin_loader/src/models/source_info.dart';
 
 class AixBundle {
   const AixBundle({

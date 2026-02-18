@@ -1,15 +1,15 @@
 import 'dart:typed_data';
 
-import '../codec/postcard_reader.dart';
-import '../codec/postcard_writer.dart';
-import '../models/chapter.dart';
-import '../models/filter.dart';
-import '../models/manga.dart';
-import '../models/source_info.dart';
-import '../wasm/wasm_runner.dart';
-import 'aidoku_host.dart';
-import 'aix_parser.dart';
-import 'host_store.dart';
+import 'package:wasm_plugin_loader/src/aidoku/aidoku_host.dart';
+import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
+import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
+import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
+import 'package:wasm_plugin_loader/src/codec/postcard_writer.dart';
+import 'package:wasm_plugin_loader/src/models/chapter.dart';
+import 'package:wasm_plugin_loader/src/models/filter.dart';
+import 'package:wasm_plugin_loader/src/models/manga.dart';
+import 'package:wasm_plugin_loader/src/models/source_info.dart';
+import 'package:wasm_plugin_loader/src/wasm/wasm_runner.dart';
 
 /// A loaded Aidoku WASM source plugin.
 ///
@@ -175,8 +175,8 @@ class AidokuPlugin {
     return Chapter(
       key: key,
       title: title,
-      chapterNumber: chapterNum?.toDouble(),
-      volumeNumber: volumeNum?.toDouble(),
+      chapterNumber: chapterNum,
+      volumeNumber: volumeNum,
       dateUploaded: dateMs != null ? DateTime.fromMillisecondsSinceEpoch(dateMs.toInt()) : null,
       scanlators: scanlator != null ? [scanlator] : [],
       language: lang,

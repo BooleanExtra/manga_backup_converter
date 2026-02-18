@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:archive/archive.dart';
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 import 'package:test/test.dart';
+import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 /// Tests that invoke [WasmPluginLoader.load] require actual WASM instantiation,
 /// which is only supported on web. Skip them on native platforms.
@@ -20,7 +21,7 @@ Uint8List _buildFakeAix(String id) {
   archive.addFile(ArchiveFile('res/source.json', meta.length, meta));
   final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
   archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));
-  return Uint8List.fromList(ZipEncoder().encode(archive)!);
+  return Uint8List.fromList(ZipEncoder().encode(archive));
 }
 
 void main() {
