@@ -214,3 +214,4 @@ windows/flutter/generated_plugins.cmake
 /packages/mangabackupconverter_cli/.output_files
 packages/mangabackupconverter_cli/web/sqflite_sw.js
 packages/mangabackupconverter_cli/web/sqlite3.wasm
+.claude/settings.local.json
