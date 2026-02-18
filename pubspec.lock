@@ -1572,6 +1572,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  universal_ffi:
+    dependency: transitive
+    description:
+      name: universal_ffi
+      sha256: "7f6ebdeb1e64b92d9d0ea182b74f95d5cf0f6c92c54e0e9280fa7ac3c6abeb83"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   universal_html:
     dependency: "direct main"
     description:
