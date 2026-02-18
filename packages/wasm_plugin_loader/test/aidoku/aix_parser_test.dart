@@ -23,7 +23,7 @@ Uint8List buildFakeAix({
       'language': language,
       if (url != null) 'url': url,
     }));
-    archive.addFile(ArchiveFile('res/source.json', meta.length, meta));
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
   }
 
   if (includeWasm) {
@@ -78,11 +78,11 @@ void main() {
     test('parses filtersJson when present', () {
       final archive = Archive();
       final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
-      archive.addFile(ArchiveFile('res/source.json', meta.length, meta));
+      archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
       final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
       archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
       final filters = utf8.encode(jsonEncode({'filters': <Object>[]}));
-      archive.addFile(ArchiveFile('res/filters.json', filters.length, filters));
+      archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
 
       final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
       expect(bundle.filtersJson, isNotNull);

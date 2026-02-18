@@ -18,7 +18,7 @@ Uint8List _buildFakeAix(String id) {
     'language': 'en',
     'url': 'https://example.com',
   }));
-  archive.addFile(ArchiveFile('res/source.json', meta.length, meta));
+  archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
   final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
   archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));
   return Uint8List.fromList(ZipEncoder().encode(archive));
