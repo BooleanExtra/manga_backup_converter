@@ -1,4 +1,3 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:mangabackupconverter/src/features/example_feature/data/data_source/weather_api.dart';
 import 'package:mangabackupconverter/src/features/example_feature/data/repository/weather_repository.dart';

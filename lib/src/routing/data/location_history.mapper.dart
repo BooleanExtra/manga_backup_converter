@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -73,11 +75,12 @@ mixin LocationHistoryMappable {
   }
 
   LocationHistoryCopyWith<LocationHistory, LocationHistory, LocationHistory>
-  get copyWith => _LocationHistoryCopyWithImpl(
-    this as LocationHistory,
-    $identity,
-    $identity,
-  );
+  get copyWith =>
+      _LocationHistoryCopyWithImpl<LocationHistory, LocationHistory>(
+        this as LocationHistory,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return LocationHistoryMapper.ensureInitialized().stringifyValue(
@@ -104,7 +107,7 @@ mixin LocationHistoryMappable {
 extension LocationHistoryValueCopy<$R, $Out>
     on ObjectCopyWith<$R, LocationHistory, $Out> {
   LocationHistoryCopyWith<$R, LocationHistory, $Out> get $asLocationHistory =>
-      $base.as((v, t, t2) => _LocationHistoryCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _LocationHistoryCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class LocationHistoryCopyWith<$R, $In extends LocationHistory, $Out>
@@ -155,5 +158,6 @@ class _LocationHistoryCopyWithImpl<$R, $Out>
   @override
   LocationHistoryCopyWith<$R2, LocationHistory, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
-  ) => _LocationHistoryCopyWithImpl($value, $cast, t);
+  ) => _LocationHistoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

@@ -6,21 +6,52 @@ part of 'themes.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$themesHash() => r'7e6d99d7f799b4167616cc7aa1bca779f7869d7b';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [themes].
 @ProviderFor(themes)
-final themesProvider = AutoDisposeProvider<List<FlexSchemeData>>.internal(
-  themes,
-  name: r'themesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$themesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const themesProvider = ThemesProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ThemesRef = AutoDisposeProviderRef<List<FlexSchemeData>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class ThemesProvider
+    extends
+        $FunctionalProvider<
+          List<FlexSchemeData>,
+          List<FlexSchemeData>,
+          List<FlexSchemeData>
+        >
+    with $Provider<List<FlexSchemeData>> {
+  const ThemesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'themesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$themesHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<FlexSchemeData>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  List<FlexSchemeData> create(Ref ref) {
+    return themes(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<FlexSchemeData> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<FlexSchemeData>>(value),
+    );
+  }
+}
+
+String _$themesHash() => r'7e6d99d7f799b4167616cc7aa1bca779f7869d7b';

@@ -13,7 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   fpdart: ^1.1.0
-  hooks_riverpod: ^2.3.6
+  hooks_riverpod: ^3.0.0
   intl: any
 
 dev_dependencies:

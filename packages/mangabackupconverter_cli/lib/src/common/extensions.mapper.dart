@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -25,13 +27,13 @@ class ExtensionTypeMapper extends EnumMapper<ExtensionType> {
   @override
   ExtensionType decode(dynamic value) {
     switch (value) {
-      case 'aidoku':
+      case r'aidoku':
         return ExtensionType.aidoku;
-      case 'paperback':
+      case r'paperback':
         return ExtensionType.paperback;
-      case 'tachi':
+      case r'tachi':
         return ExtensionType.tachi;
-      case 'mangayomi':
+      case r'mangayomi':
         return ExtensionType.mangayomi;
       default:
         throw MapperException.unknownEnumValue(value);
@@ -42,13 +44,13 @@ class ExtensionTypeMapper extends EnumMapper<ExtensionType> {
   dynamic encode(ExtensionType self) {
     switch (self) {
       case ExtensionType.aidoku:
-        return 'aidoku';
+        return r'aidoku';
       case ExtensionType.paperback:
-        return 'paperback';
+        return r'paperback';
       case ExtensionType.tachi:
-        return 'tachi';
+        return r'tachi';
       case ExtensionType.mangayomi:
-        return 'mangayomi';
+        return r'mangayomi';
     }
   }
 }
@@ -77,16 +79,31 @@ class ExtensionRepoIndexMapper extends ClassMapperBase<ExtensionRepoIndex> {
   @override
   final String id = 'ExtensionRepoIndex';
 
-  static Map<ExtensionType, List<ExtensionRepo>> _$repos(ExtensionRepoIndex v) => v.repos;
-  static const Field<ExtensionRepoIndex, Map<ExtensionType, List<ExtensionRepo>>> _f$repos = Field('repos', _$repos);
+  static Map<ExtensionType, List<ExtensionRepo>> _$repos(
+    ExtensionRepoIndex v,
+  ) => v.repos;
+  static const Field<
+    ExtensionRepoIndex,
+    Map<ExtensionType, List<ExtensionRepo>>
+  >
+  _f$repos = Field('repos', _$repos);
   static List<SiteIndex> _$sites(ExtensionRepoIndex v) => v.sites;
-  static const Field<ExtensionRepoIndex, List<SiteIndex>> _f$sites = Field('sites', _$sites);
+  static const Field<ExtensionRepoIndex, List<SiteIndex>> _f$sites = Field(
+    'sites',
+    _$sites,
+  );
 
   @override
-  final MappableFields<ExtensionRepoIndex> fields = const {#repos: _f$repos, #sites: _f$sites};
+  final MappableFields<ExtensionRepoIndex> fields = const {
+    #repos: _f$repos,
+    #sites: _f$sites,
+  };
 
   static ExtensionRepoIndex _instantiate(DecodingData data) {
-    return ExtensionRepoIndex(repos: data.dec(_f$repos), sites: data.dec(_f$sites));
+    return ExtensionRepoIndex(
+      repos: data.dec(_f$repos),
+      sites: data.dec(_f$sites),
+    );
   }
 
   @override
@@ -103,67 +120,128 @@ class ExtensionRepoIndexMapper extends ClassMapperBase<ExtensionRepoIndex> {
 
 mixin ExtensionRepoIndexMappable {
   String toJson() {
-    return ExtensionRepoIndexMapper.ensureInitialized().encodeJson<ExtensionRepoIndex>(this as ExtensionRepoIndex);
+    return ExtensionRepoIndexMapper.ensureInitialized()
+        .encodeJson<ExtensionRepoIndex>(this as ExtensionRepoIndex);
   }
 
   Map<String, dynamic> toMap() {
-    return ExtensionRepoIndexMapper.ensureInitialized().encodeMap<ExtensionRepoIndex>(this as ExtensionRepoIndex);
+    return ExtensionRepoIndexMapper.ensureInitialized()
+        .encodeMap<ExtensionRepoIndex>(this as ExtensionRepoIndex);
   }
 
-  ExtensionRepoIndexCopyWith<ExtensionRepoIndex, ExtensionRepoIndex, ExtensionRepoIndex> get copyWith =>
-      _ExtensionRepoIndexCopyWithImpl(this as ExtensionRepoIndex, $identity, $identity);
+  ExtensionRepoIndexCopyWith<
+    ExtensionRepoIndex,
+    ExtensionRepoIndex,
+    ExtensionRepoIndex
+  >
+  get copyWith =>
+      _ExtensionRepoIndexCopyWithImpl<ExtensionRepoIndex, ExtensionRepoIndex>(
+        this as ExtensionRepoIndex,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ExtensionRepoIndexMapper.ensureInitialized().stringifyValue(this as ExtensionRepoIndex);
+    return ExtensionRepoIndexMapper.ensureInitialized().stringifyValue(
+      this as ExtensionRepoIndex,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ExtensionRepoIndexMapper.ensureInitialized().equalsValue(this as ExtensionRepoIndex, other);
+    return ExtensionRepoIndexMapper.ensureInitialized().equalsValue(
+      this as ExtensionRepoIndex,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ExtensionRepoIndexMapper.ensureInitialized().hashValue(this as ExtensionRepoIndex);
+    return ExtensionRepoIndexMapper.ensureInitialized().hashValue(
+      this as ExtensionRepoIndex,
+    );
   }
 }
 
-extension ExtensionRepoIndexValueCopy<$R, $Out> on ObjectCopyWith<$R, ExtensionRepoIndex, $Out> {
-  ExtensionRepoIndexCopyWith<$R, ExtensionRepoIndex, $Out> get $asExtensionRepoIndex =>
-      $base.as((v, t, t2) => _ExtensionRepoIndexCopyWithImpl(v, t, t2));
+extension ExtensionRepoIndexValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ExtensionRepoIndex, $Out> {
+  ExtensionRepoIndexCopyWith<$R, ExtensionRepoIndex, $Out>
+  get $asExtensionRepoIndex => $base.as(
+    (v, t, t2) => _ExtensionRepoIndexCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class ExtensionRepoIndexCopyWith<$R, $In extends ExtensionRepoIndex, $Out>
+abstract class ExtensionRepoIndexCopyWith<
+  $R,
+  $In extends ExtensionRepoIndex,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  MapCopyWith<$R, ExtensionType, List<ExtensionRepo>, ObjectCopyWith<$R, List<ExtensionRepo>, List<ExtensionRepo>>>
+  MapCopyWith<
+    $R,
+    ExtensionType,
+    List<ExtensionRepo>,
+    ObjectCopyWith<$R, List<ExtensionRepo>, List<ExtensionRepo>>
+  >
   get repos;
-  ListCopyWith<$R, SiteIndex, SiteIndexCopyWith<$R, SiteIndex, SiteIndex>> get sites;
-  $R call({Map<ExtensionType, List<ExtensionRepo>>? repos, List<SiteIndex>? sites});
-  ExtensionRepoIndexCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  ListCopyWith<$R, SiteIndex, SiteIndexCopyWith<$R, SiteIndex, SiteIndex>>
+  get sites;
+  $R call({
+    Map<ExtensionType, List<ExtensionRepo>>? repos,
+    List<SiteIndex>? sites,
+  });
+  ExtensionRepoIndexCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _ExtensionRepoIndexCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, ExtensionRepoIndex, $Out>
+class _ExtensionRepoIndexCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ExtensionRepoIndex, $Out>
     implements ExtensionRepoIndexCopyWith<$R, ExtensionRepoIndex, $Out> {
   _ExtensionRepoIndexCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<ExtensionRepoIndex> $mapper = ExtensionRepoIndexMapper.ensureInitialized();
+  late final ClassMapperBase<ExtensionRepoIndex> $mapper =
+      ExtensionRepoIndexMapper.ensureInitialized();
   @override
-  MapCopyWith<$R, ExtensionType, List<ExtensionRepo>, ObjectCopyWith<$R, List<ExtensionRepo>, List<ExtensionRepo>>>
-  get repos => MapCopyWith($value.repos, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(repos: v));
+  MapCopyWith<
+    $R,
+    ExtensionType,
+    List<ExtensionRepo>,
+    ObjectCopyWith<$R, List<ExtensionRepo>, List<ExtensionRepo>>
+  >
+  get repos => MapCopyWith(
+    $value.repos,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(repos: v),
+  );
   @override
-  ListCopyWith<$R, SiteIndex, SiteIndexCopyWith<$R, SiteIndex, SiteIndex>> get sites =>
-      ListCopyWith($value.sites, (v, t) => v.copyWith.$chain(t), (v) => call(sites: v));
+  ListCopyWith<$R, SiteIndex, SiteIndexCopyWith<$R, SiteIndex, SiteIndex>>
+  get sites => ListCopyWith(
+    $value.sites,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(sites: v),
+  );
   @override
-  $R call({Map<ExtensionType, List<ExtensionRepo>>? repos, List<SiteIndex>? sites}) =>
-      $apply(FieldCopyWithData({if (repos != null) #repos: repos, if (sites != null) #sites: sites}));
+  $R call({
+    Map<ExtensionType, List<ExtensionRepo>>? repos,
+    List<SiteIndex>? sites,
+  }) => $apply(
+    FieldCopyWithData({
+      if (repos != null) #repos: repos,
+      if (sites != null) #sites: sites,
+    }),
+  );
   @override
-  ExtensionRepoIndex $make(CopyWithData data) =>
-      ExtensionRepoIndex(repos: data.get(#repos, or: $value.repos), sites: data.get(#sites, or: $value.sites));
+  ExtensionRepoIndex $make(CopyWithData data) => ExtensionRepoIndex(
+    repos: data.get(#repos, or: $value.repos),
+    sites: data.get(#sites, or: $value.sites),
+  );
 
   @override
-  ExtensionRepoIndexCopyWith<$R2, ExtensionRepoIndex, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _ExtensionRepoIndexCopyWithImpl($value, $cast, t);
+  ExtensionRepoIndexCopyWith<$R2, ExtensionRepoIndex, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _ExtensionRepoIndexCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class ExtensionRepoMapper extends ClassMapperBase<ExtensionRepo> {
@@ -186,7 +264,10 @@ class ExtensionRepoMapper extends ClassMapperBase<ExtensionRepo> {
   static const Field<ExtensionRepo, String> _f$url = Field('url', _$url);
 
   @override
-  final MappableFields<ExtensionRepo> fields = const {#name: _f$name, #url: _f$url};
+  final MappableFields<ExtensionRepo> fields = const {
+    #name: _f$name,
+    #url: _f$url,
+  };
 
   static ExtensionRepo _instantiate(DecodingData data) {
     return ExtensionRepo(name: data.dec(_f$name), url: data.dec(_f$url));
@@ -206,57 +287,83 @@ class ExtensionRepoMapper extends ClassMapperBase<ExtensionRepo> {
 
 mixin ExtensionRepoMappable {
   String toJson() {
-    return ExtensionRepoMapper.ensureInitialized().encodeJson<ExtensionRepo>(this as ExtensionRepo);
+    return ExtensionRepoMapper.ensureInitialized().encodeJson<ExtensionRepo>(
+      this as ExtensionRepo,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ExtensionRepoMapper.ensureInitialized().encodeMap<ExtensionRepo>(this as ExtensionRepo);
+    return ExtensionRepoMapper.ensureInitialized().encodeMap<ExtensionRepo>(
+      this as ExtensionRepo,
+    );
   }
 
-  ExtensionRepoCopyWith<ExtensionRepo, ExtensionRepo, ExtensionRepo> get copyWith =>
-      _ExtensionRepoCopyWithImpl(this as ExtensionRepo, $identity, $identity);
+  ExtensionRepoCopyWith<ExtensionRepo, ExtensionRepo, ExtensionRepo>
+  get copyWith => _ExtensionRepoCopyWithImpl<ExtensionRepo, ExtensionRepo>(
+    this as ExtensionRepo,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return ExtensionRepoMapper.ensureInitialized().stringifyValue(this as ExtensionRepo);
+    return ExtensionRepoMapper.ensureInitialized().stringifyValue(
+      this as ExtensionRepo,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ExtensionRepoMapper.ensureInitialized().equalsValue(this as ExtensionRepo, other);
+    return ExtensionRepoMapper.ensureInitialized().equalsValue(
+      this as ExtensionRepo,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ExtensionRepoMapper.ensureInitialized().hashValue(this as ExtensionRepo);
+    return ExtensionRepoMapper.ensureInitialized().hashValue(
+      this as ExtensionRepo,
+    );
   }
 }
 
-extension ExtensionRepoValueCopy<$R, $Out> on ObjectCopyWith<$R, ExtensionRepo, $Out> {
+extension ExtensionRepoValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ExtensionRepo, $Out> {
   ExtensionRepoCopyWith<$R, ExtensionRepo, $Out> get $asExtensionRepo =>
-      $base.as((v, t, t2) => _ExtensionRepoCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _ExtensionRepoCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class ExtensionRepoCopyWith<$R, $In extends ExtensionRepo, $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class ExtensionRepoCopyWith<$R, $In extends ExtensionRepo, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? name, String? url});
   ExtensionRepoCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _ExtensionRepoCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, ExtensionRepo, $Out>
+class _ExtensionRepoCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ExtensionRepo, $Out>
     implements ExtensionRepoCopyWith<$R, ExtensionRepo, $Out> {
   _ExtensionRepoCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<ExtensionRepo> $mapper = ExtensionRepoMapper.ensureInitialized();
+  late final ClassMapperBase<ExtensionRepo> $mapper =
+      ExtensionRepoMapper.ensureInitialized();
   @override
-  $R call({String? name, String? url}) =>
-      $apply(FieldCopyWithData({if (name != null) #name: name, if (url != null) #url: url}));
+  $R call({String? name, String? url}) => $apply(
+    FieldCopyWithData({
+      if (name != null) #name: name,
+      if (url != null) #url: url,
+    }),
+  );
   @override
-  ExtensionRepo $make(CopyWithData data) =>
-      ExtensionRepo(name: data.get(#name, or: $value.name), url: data.get(#url, or: $value.url));
+  ExtensionRepo $make(CopyWithData data) => ExtensionRepo(
+    name: data.get(#name, or: $value.name),
+    url: data.get(#url, or: $value.url),
+  );
 
   @override
-  ExtensionRepoCopyWith<$R2, ExtensionRepo, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _ExtensionRepoCopyWithImpl($value, $cast, t);
+  ExtensionRepoCopyWith<$R2, ExtensionRepo, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _ExtensionRepoCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class SiteIndexMapper extends ClassMapperBase<SiteIndex> {
@@ -277,14 +384,22 @@ class SiteIndexMapper extends ClassMapperBase<SiteIndex> {
 
   static String _$name(SiteIndex v) => v.name;
   static const Field<SiteIndex, String> _f$name = Field('name', _$name);
-  static Map<ExtensionType, List<Extension>> _$extensions(SiteIndex v) => v.extensions;
-  static const Field<SiteIndex, Map<ExtensionType, List<Extension>>> _f$extensions = Field('extensions', _$extensions);
+  static Map<ExtensionType, List<Extension>> _$extensions(SiteIndex v) =>
+      v.extensions;
+  static const Field<SiteIndex, Map<ExtensionType, List<Extension>>>
+  _f$extensions = Field('extensions', _$extensions);
 
   @override
-  final MappableFields<SiteIndex> fields = const {#name: _f$name, #extensions: _f$extensions};
+  final MappableFields<SiteIndex> fields = const {
+    #name: _f$name,
+    #extensions: _f$extensions,
+  };
 
   static SiteIndex _instantiate(DecodingData data) {
-    return SiteIndex(name: data.dec(_f$name), extensions: data.dec(_f$extensions));
+    return SiteIndex(
+      name: data.dec(_f$name),
+      extensions: data.dec(_f$extensions),
+    );
   }
 
   @override
@@ -301,23 +416,36 @@ class SiteIndexMapper extends ClassMapperBase<SiteIndex> {
 
 mixin SiteIndexMappable {
   String toJson() {
-    return SiteIndexMapper.ensureInitialized().encodeJson<SiteIndex>(this as SiteIndex);
+    return SiteIndexMapper.ensureInitialized().encodeJson<SiteIndex>(
+      this as SiteIndex,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return SiteIndexMapper.ensureInitialized().encodeMap<SiteIndex>(this as SiteIndex);
+    return SiteIndexMapper.ensureInitialized().encodeMap<SiteIndex>(
+      this as SiteIndex,
+    );
   }
 
   SiteIndexCopyWith<SiteIndex, SiteIndex, SiteIndex> get copyWith =>
-      _SiteIndexCopyWithImpl(this as SiteIndex, $identity, $identity);
+      _SiteIndexCopyWithImpl<SiteIndex, SiteIndex>(
+        this as SiteIndex,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return SiteIndexMapper.ensureInitialized().stringifyValue(this as SiteIndex);
+    return SiteIndexMapper.ensureInitialized().stringifyValue(
+      this as SiteIndex,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return SiteIndexMapper.ensureInitialized().equalsValue(this as SiteIndex, other);
+    return SiteIndexMapper.ensureInitialized().equalsValue(
+      this as SiteIndex,
+      other,
+    );
   }
 
   @override
@@ -327,35 +455,61 @@ mixin SiteIndexMappable {
 }
 
 extension SiteIndexValueCopy<$R, $Out> on ObjectCopyWith<$R, SiteIndex, $Out> {
-  SiteIndexCopyWith<$R, SiteIndex, $Out> get $asSiteIndex => $base.as((v, t, t2) => _SiteIndexCopyWithImpl(v, t, t2));
+  SiteIndexCopyWith<$R, SiteIndex, $Out> get $asSiteIndex =>
+      $base.as((v, t, t2) => _SiteIndexCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class SiteIndexCopyWith<$R, $In extends SiteIndex, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  MapCopyWith<$R, ExtensionType, List<Extension>, ObjectCopyWith<$R, List<Extension>, List<Extension>>> get extensions;
+abstract class SiteIndexCopyWith<$R, $In extends SiteIndex, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  MapCopyWith<
+    $R,
+    ExtensionType,
+    List<Extension>,
+    ObjectCopyWith<$R, List<Extension>, List<Extension>>
+  >
+  get extensions;
   $R call({String? name, Map<ExtensionType, List<Extension>>? extensions});
   SiteIndexCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _SiteIndexCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, SiteIndex, $Out>
+class _SiteIndexCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, SiteIndex, $Out>
     implements SiteIndexCopyWith<$R, SiteIndex, $Out> {
   _SiteIndexCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<SiteIndex> $mapper = SiteIndexMapper.ensureInitialized();
+  late final ClassMapperBase<SiteIndex> $mapper =
+      SiteIndexMapper.ensureInitialized();
   @override
-  MapCopyWith<$R, ExtensionType, List<Extension>, ObjectCopyWith<$R, List<Extension>, List<Extension>>>
-  get extensions =>
-      MapCopyWith($value.extensions, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(extensions: v));
+  MapCopyWith<
+    $R,
+    ExtensionType,
+    List<Extension>,
+    ObjectCopyWith<$R, List<Extension>, List<Extension>>
+  >
+  get extensions => MapCopyWith(
+    $value.extensions,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(extensions: v),
+  );
   @override
   $R call({String? name, Map<ExtensionType, List<Extension>>? extensions}) =>
-      $apply(FieldCopyWithData({if (name != null) #name: name, if (extensions != null) #extensions: extensions}));
+      $apply(
+        FieldCopyWithData({
+          if (name != null) #name: name,
+          if (extensions != null) #extensions: extensions,
+        }),
+      );
   @override
-  SiteIndex $make(CopyWithData data) =>
-      SiteIndex(name: data.get(#name, or: $value.name), extensions: data.get(#extensions, or: $value.extensions));
+  SiteIndex $make(CopyWithData data) => SiteIndex(
+    name: data.get(#name, or: $value.name),
+    extensions: data.get(#extensions, or: $value.extensions),
+  );
 
   @override
-  SiteIndexCopyWith<$R2, SiteIndex, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _SiteIndexCopyWithImpl($value, $cast, t);
+  SiteIndexCopyWith<$R2, SiteIndex, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _SiteIndexCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class ExtensionMapper extends ClassMapperBase<Extension> {
@@ -377,15 +531,33 @@ class ExtensionMapper extends ClassMapperBase<Extension> {
   static String _$id(Extension v) => v.id;
   static const Field<Extension, String> _f$id = Field('id', _$id);
   static String? _$repo(Extension v) => v.repo;
-  static const Field<Extension, String> _f$repo = Field('repo', _$repo, opt: true);
+  static const Field<Extension, String> _f$repo = Field(
+    'repo',
+    _$repo,
+    opt: true,
+  );
   static String? _$lang(Extension v) => v.lang;
-  static const Field<Extension, String> _f$lang = Field('lang', _$lang, opt: true);
+  static const Field<Extension, String> _f$lang = Field(
+    'lang',
+    _$lang,
+    opt: true,
+  );
 
   @override
-  final MappableFields<Extension> fields = const {#name: _f$name, #id: _f$id, #repo: _f$repo, #lang: _f$lang};
+  final MappableFields<Extension> fields = const {
+    #name: _f$name,
+    #id: _f$id,
+    #repo: _f$repo,
+    #lang: _f$lang,
+  };
 
   static Extension _instantiate(DecodingData data) {
-    return Extension(name: data.dec(_f$name), id: data.dec(_f$id), repo: data.dec(_f$repo), lang: data.dec(_f$lang));
+    return Extension(
+      name: data.dec(_f$name),
+      id: data.dec(_f$id),
+      repo: data.dec(_f$repo),
+      lang: data.dec(_f$lang),
+    );
   }
 
   @override
@@ -402,23 +574,36 @@ class ExtensionMapper extends ClassMapperBase<Extension> {
 
 mixin ExtensionMappable {
   String toJson() {
-    return ExtensionMapper.ensureInitialized().encodeJson<Extension>(this as Extension);
+    return ExtensionMapper.ensureInitialized().encodeJson<Extension>(
+      this as Extension,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ExtensionMapper.ensureInitialized().encodeMap<Extension>(this as Extension);
+    return ExtensionMapper.ensureInitialized().encodeMap<Extension>(
+      this as Extension,
+    );
   }
 
   ExtensionCopyWith<Extension, Extension, Extension> get copyWith =>
-      _ExtensionCopyWithImpl(this as Extension, $identity, $identity);
+      _ExtensionCopyWithImpl<Extension, Extension>(
+        this as Extension,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return ExtensionMapper.ensureInitialized().stringifyValue(this as Extension);
+    return ExtensionMapper.ensureInitialized().stringifyValue(
+      this as Extension,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ExtensionMapper.ensureInitialized().equalsValue(this as Extension, other);
+    return ExtensionMapper.ensureInitialized().equalsValue(
+      this as Extension,
+      other,
+    );
   }
 
   @override
@@ -428,22 +613,31 @@ mixin ExtensionMappable {
 }
 
 extension ExtensionValueCopy<$R, $Out> on ObjectCopyWith<$R, Extension, $Out> {
-  ExtensionCopyWith<$R, Extension, $Out> get $asExtension => $base.as((v, t, t2) => _ExtensionCopyWithImpl(v, t, t2));
+  ExtensionCopyWith<$R, Extension, $Out> get $asExtension =>
+      $base.as((v, t, t2) => _ExtensionCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class ExtensionCopyWith<$R, $In extends Extension, $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class ExtensionCopyWith<$R, $In extends Extension, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? name, String? id, String? repo, String? lang});
   ExtensionCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _ExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Extension, $Out>
+class _ExtensionCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, Extension, $Out>
     implements ExtensionCopyWith<$R, Extension, $Out> {
   _ExtensionCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<Extension> $mapper = ExtensionMapper.ensureInitialized();
+  late final ClassMapperBase<Extension> $mapper =
+      ExtensionMapper.ensureInitialized();
   @override
-  $R call({String? name, String? id, Object? repo = $none, Object? lang = $none}) => $apply(
+  $R call({
+    String? name,
+    String? id,
+    Object? repo = $none,
+    Object? lang = $none,
+  }) => $apply(
     FieldCopyWithData({
       if (name != null) #name: name,
       if (id != null) #id: id,
@@ -460,6 +654,8 @@ class _ExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Extension, 
   );
 
   @override
-  ExtensionCopyWith<$R2, Extension, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _ExtensionCopyWithImpl($value, $cast, t);
+  ExtensionCopyWith<$R2, Extension, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _ExtensionCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+
