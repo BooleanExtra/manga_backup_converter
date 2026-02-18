@@ -1,6 +1,9 @@
 name: gh-pages-cleanup
 on: delete
 
+permissions:
+  contents: write
+
 jobs:
   cleanup:
     name: Cleanup gh-pages
