@@ -26,11 +26,11 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
   factory MangayomiBackup.fromData(Uint8List bytes, {String? overrideName}) {
     final backupArchive = ZipDecoder().decodeBytes(bytes);
     final backupJsonFile = backupArchive.files.where((file) => file.name.endsWith('.db')).firstOrNull;
-    if (backupJsonFile == null || backupJsonFile.content == null) {
+    if (backupJsonFile == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
     final backupName = p.basenameWithoutExtension(backupJsonFile.name);
-    final backupJson = String.fromCharCodes(backupJsonFile.content as Uint8List);
+    final backupJson = String.fromCharCodes(backupJsonFile.content);
     final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
     if (backupMap == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
@@ -74,7 +74,7 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
     final archive = Archive();
     final dbJson = jsonEncode(db.toMap()).codeUnits;
     archive.addFile(ArchiveFile('$name.db', dbJson.length, dbJson));
-    return Uint8List.fromList(ZipEncoder().encode(archive) ?? []);
+    return ZipEncoder().encodeBytes(archive);
   }
 
   @override
