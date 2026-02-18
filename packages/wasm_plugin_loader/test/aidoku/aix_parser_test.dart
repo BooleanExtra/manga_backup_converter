@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:archive/archive.dart';
-import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:test/test.dart';
+import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 
 Uint8List buildFakeAix({
   String id = 'en.test',
@@ -31,7 +32,7 @@ Uint8List buildFakeAix({
     archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));
   }
 
-  return Uint8List.fromList(ZipEncoder().encode(archive)!);
+  return Uint8List.fromList(ZipEncoder().encode(archive));
 }
 
 void main() {
@@ -80,10 +81,10 @@ void main() {
       archive.addFile(ArchiveFile('res/source.json', meta.length, meta));
       final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
       archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
-      final filters = utf8.encode(jsonEncode({'filters': []}));
+      final filters = utf8.encode(jsonEncode({'filters': <Object>[]}));
       archive.addFile(ArchiveFile('res/filters.json', filters.length, filters));
 
-      final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)!));
+      final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
       expect(bundle.filtersJson, isNotNull);
       expect(bundle.filtersJson!['filters'], isEmpty);
     });

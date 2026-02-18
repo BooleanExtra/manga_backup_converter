@@ -1,4 +1,4 @@
-import 'chapter.dart';
+import 'package:wasm_plugin_loader/src/models/chapter.dart';
 
 enum MangaStatus { unknown, ongoing, completed, cancelled, hiatus }
 

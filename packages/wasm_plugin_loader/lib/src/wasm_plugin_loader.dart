@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'aidoku/aidoku_plugin.dart';
-import 'models/source_info.dart';
+import 'package:wasm_plugin_loader/src/aidoku/aidoku_plugin.dart';
+import 'package:wasm_plugin_loader/src/models/source_info.dart';
 
 /// Registry for loaded Aidoku WASM source plugins.
 /// Plugins are keyed by their source ID (e.g. 'multi.mangadex').

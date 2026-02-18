@@ -8,15 +8,17 @@ class PostcardWriter {
 
   void writeU8(int v) => _buf.add(v & 0xFF);
 
+  // ignore: avoid_positional_boolean_parameters
   void writeBool(bool v) => writeU8(v ? 1 : 0);
 
   /// Encode an unsigned integer as a variable-length LEB128 value.
   void writeVarInt(int v) {
-    while (v >= 0x80) {
-      _buf.add((v & 0x7F) | 0x80);
-      v >>= 7;
+    var temp = v;
+    while (temp >= 0x80) {
+      _buf.add((temp & 0x7F) | 0x80);
+      temp >>= 7;
     }
-    _buf.add(v & 0x7F);
+    _buf.add(temp & 0x7F);
   }
 
   /// Encode a signed integer using zigzag encoding then LEB128.

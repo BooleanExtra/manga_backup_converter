@@ -1,7 +1,8 @@
 import 'dart:typed_data';
+
+import 'package:test/test.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_writer.dart';
-import 'package:test/test.dart';
 
 void main() {
   group('PostcardWriter / PostcardReader roundtrip', () {
