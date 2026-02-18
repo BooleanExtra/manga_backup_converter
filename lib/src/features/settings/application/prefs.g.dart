@@ -6,21 +6,46 @@ part of 'prefs.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$prefsHash() => r'6aaf4ca695e6d0fa1b4e6ba0224d15116a6b3ab9';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [prefs].
 @ProviderFor(prefs)
-final prefsProvider = FutureProvider<SharedPreferences>.internal(
-  prefs,
-  name: r'prefsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$prefsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const prefsProvider = PrefsProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PrefsRef = FutureProviderRef<SharedPreferences>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class PrefsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SharedPreferences>,
+          SharedPreferences,
+          FutureOr<SharedPreferences>
+        >
+    with
+        $FutureModifier<SharedPreferences>,
+        $FutureProvider<SharedPreferences> {
+  const PrefsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'prefsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$prefsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SharedPreferences> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SharedPreferences> create(Ref ref) {
+    return prefs(ref);
+  }
+}
+
+String _$prefsHash() => r'6aaf4ca695e6d0fa1b4e6ba0224d15116a6b3ab9';

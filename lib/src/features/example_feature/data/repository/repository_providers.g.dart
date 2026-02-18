@@ -6,24 +6,52 @@ part of 'repository_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$weatherRepositoryHash() => r'61cf2b4c513d2c41baad1b3e281909f5a6e8b816';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [weatherRepository].
 @ProviderFor(weatherRepository)
-final weatherRepositoryProvider =
-    AutoDisposeProvider<HttpWeatherRepository>.internal(
-      weatherRepository,
-      name: r'weatherRepositoryProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$weatherRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const weatherRepositoryProvider = WeatherRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef WeatherRepositoryRef = AutoDisposeProviderRef<HttpWeatherRepository>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class WeatherRepositoryProvider
+    extends
+        $FunctionalProvider<
+          HttpWeatherRepository,
+          HttpWeatherRepository,
+          HttpWeatherRepository
+        >
+    with $Provider<HttpWeatherRepository> {
+  const WeatherRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'weatherRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$weatherRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<HttpWeatherRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  HttpWeatherRepository create(Ref ref) {
+    return weatherRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(HttpWeatherRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<HttpWeatherRepository>(value),
+    );
+  }
+}
+
+String _$weatherRepositoryHash() => r'61cf2b4c513d2c41baad1b3e281909f5a6e8b816';

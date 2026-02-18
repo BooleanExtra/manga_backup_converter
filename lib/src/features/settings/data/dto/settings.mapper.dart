@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -103,7 +105,11 @@ mixin SettingsMappable {
   }
 
   SettingsCopyWith<Settings, Settings, Settings> get copyWith =>
-      _SettingsCopyWithImpl(this as Settings, $identity, $identity);
+      _SettingsCopyWithImpl<Settings, Settings>(
+        this as Settings,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return SettingsMapper.ensureInitialized().stringifyValue(this as Settings);
@@ -125,7 +131,7 @@ mixin SettingsMappable {
 
 extension SettingsValueCopy<$R, $Out> on ObjectCopyWith<$R, Settings, $Out> {
   SettingsCopyWith<$R, Settings, $Out> get $asSettings =>
-      $base.as((v, t, t2) => _SettingsCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _SettingsCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class SettingsCopyWith<$R, $In extends Settings, $Out>
@@ -193,5 +199,6 @@ class _SettingsCopyWithImpl<$R, $Out>
   @override
   SettingsCopyWith<$R2, Settings, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
-  ) => _SettingsCopyWithImpl($value, $cast, t);
+  ) => _SettingsCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

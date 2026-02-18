@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -129,67 +131,68 @@ class MangayomiBackupDbMapper extends ClassMapperBase<MangayomiBackupDb> {
   final String id = 'MangayomiBackupDb';
 
   static String? _$version(MangayomiBackupDb v) => v.version;
-  static const Field<MangayomiBackupDb, String> _f$version = Field('version', _$version, opt: true, def: '2');
+  static const Field<MangayomiBackupDb, String> _f$version = Field(
+    'version',
+    _$version,
+    opt: true,
+    def: '2',
+  );
   static List<MangayomiBackupManga>? _$manga(MangayomiBackupDb v) => v.manga;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupManga>> _f$manga = Field('manga', _$manga, opt: true);
-  static List<MangayomiBackupCategory>? _$categories(MangayomiBackupDb v) => v.categories;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupCategory>> _f$categories = Field(
-    'categories',
-    _$categories,
-    opt: true,
-  );
-  static List<MangayomiBackupChapter>? _$chapters(MangayomiBackupDb v) => v.chapters;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupChapter>> _f$chapters = Field(
-    'chapters',
-    _$chapters,
-    opt: true,
-  );
-  static List<MangayomiBackupDownload>? _$downloads(MangayomiBackupDb v) => v.downloads;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupDownload>> _f$downloads = Field(
-    'downloads',
-    _$downloads,
-    opt: true,
-  );
+  static const Field<MangayomiBackupDb, List<MangayomiBackupManga>> _f$manga =
+      Field('manga', _$manga, opt: true);
+  static List<MangayomiBackupCategory>? _$categories(MangayomiBackupDb v) =>
+      v.categories;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupCategory>>
+  _f$categories = Field('categories', _$categories, opt: true);
+  static List<MangayomiBackupChapter>? _$chapters(MangayomiBackupDb v) =>
+      v.chapters;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupChapter>>
+  _f$chapters = Field('chapters', _$chapters, opt: true);
+  static List<MangayomiBackupDownload>? _$downloads(MangayomiBackupDb v) =>
+      v.downloads;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupDownload>>
+  _f$downloads = Field('downloads', _$downloads, opt: true);
   static List<MangayomiBackupTrack>? _$tracks(MangayomiBackupDb v) => v.tracks;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupTrack>> _f$tracks = Field('tracks', _$tracks, opt: true);
-  static List<MangayomiBackupHistory>? _$history(MangayomiBackupDb v) => v.history;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupHistory>> _f$history = Field(
-    'history',
-    _$history,
-    opt: true,
-  );
-  static List<MangayomiBackupUpdate>? _$updates(MangayomiBackupDb v) => v.updates;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupUpdate>> _f$updates = Field(
-    'updates',
-    _$updates,
-    opt: true,
-  );
-  static List<MangayomiBackupSettings>? _$settings(MangayomiBackupDb v) => v.settings;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupSettings>> _f$settings = Field(
-    'settings',
-    _$settings,
-    opt: true,
-  );
-  static List<MangayomiBackupExtensionPreferences>? _$extensionPreferences(MangayomiBackupDb v) =>
-      v.extensionPreferences;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupExtensionPreferences>> _f$extensionPreferences = Field(
+  static const Field<MangayomiBackupDb, List<MangayomiBackupTrack>> _f$tracks =
+      Field('tracks', _$tracks, opt: true);
+  static List<MangayomiBackupHistory>? _$history(MangayomiBackupDb v) =>
+      v.history;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupHistory>>
+  _f$history = Field('history', _$history, opt: true);
+  static List<MangayomiBackupUpdate>? _$updates(MangayomiBackupDb v) =>
+      v.updates;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupUpdate>>
+  _f$updates = Field('updates', _$updates, opt: true);
+  static List<MangayomiBackupSettings>? _$settings(MangayomiBackupDb v) =>
+      v.settings;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupSettings>>
+  _f$settings = Field('settings', _$settings, opt: true);
+  static List<MangayomiBackupExtensionPreferences>? _$extensionPreferences(
+    MangayomiBackupDb v,
+  ) => v.extensionPreferences;
+  static const Field<
+    MangayomiBackupDb,
+    List<MangayomiBackupExtensionPreferences>
+  >
+  _f$extensionPreferences = Field(
     'extensionPreferences',
     _$extensionPreferences,
     key: r'extension_preferences',
     opt: true,
   );
-  static List<MangayomiBackupTrackPreferences>? _$trackPreferences(MangayomiBackupDb v) => v.trackPreferences;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupTrackPreferences>> _f$trackPreferences = Field(
+  static List<MangayomiBackupTrackPreferences>? _$trackPreferences(
+    MangayomiBackupDb v,
+  ) => v.trackPreferences;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupTrackPreferences>>
+  _f$trackPreferences = Field(
     'trackPreferences',
     _$trackPreferences,
     opt: true,
   );
-  static List<MangayomiBackupExtension>? _$extensions(MangayomiBackupDb v) => v.extensions;
-  static const Field<MangayomiBackupDb, List<MangayomiBackupExtension>> _f$extensions = Field(
-    'extensions',
-    _$extensions,
-    opt: true,
-  );
+  static List<MangayomiBackupExtension>? _$extensions(MangayomiBackupDb v) =>
+      v.extensions;
+  static const Field<MangayomiBackupDb, List<MangayomiBackupExtension>>
+  _f$extensions = Field('extensions', _$extensions, opt: true);
 
   @override
   final MappableFields<MangayomiBackupDb> fields = const {
@@ -238,76 +241,133 @@ class MangayomiBackupDbMapper extends ClassMapperBase<MangayomiBackupDb> {
 
 mixin MangayomiBackupDbMappable {
   String toJson() {
-    return MangayomiBackupDbMapper.ensureInitialized().encodeJson<MangayomiBackupDb>(this as MangayomiBackupDb);
+    return MangayomiBackupDbMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupDb>(this as MangayomiBackupDb);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupDbMapper.ensureInitialized().encodeMap<MangayomiBackupDb>(this as MangayomiBackupDb);
+    return MangayomiBackupDbMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupDb>(this as MangayomiBackupDb);
   }
 
-  MangayomiBackupDbCopyWith<MangayomiBackupDb, MangayomiBackupDb, MangayomiBackupDb> get copyWith =>
-      _MangayomiBackupDbCopyWithImpl(this as MangayomiBackupDb, $identity, $identity);
+  MangayomiBackupDbCopyWith<
+    MangayomiBackupDb,
+    MangayomiBackupDb,
+    MangayomiBackupDb
+  >
+  get copyWith =>
+      _MangayomiBackupDbCopyWithImpl<MangayomiBackupDb, MangayomiBackupDb>(
+        this as MangayomiBackupDb,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return MangayomiBackupDbMapper.ensureInitialized().stringifyValue(this as MangayomiBackupDb);
+    return MangayomiBackupDbMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupDb,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupDbMapper.ensureInitialized().equalsValue(this as MangayomiBackupDb, other);
+    return MangayomiBackupDbMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupDb,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupDbMapper.ensureInitialized().hashValue(this as MangayomiBackupDb);
+    return MangayomiBackupDbMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupDb,
+    );
   }
 }
 
-extension MangayomiBackupDbValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupDb, $Out> {
-  MangayomiBackupDbCopyWith<$R, MangayomiBackupDb, $Out> get $asMangayomiBackupDb =>
-      $base.as((v, t, t2) => _MangayomiBackupDbCopyWithImpl(v, t, t2));
+extension MangayomiBackupDbValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupDb, $Out> {
+  MangayomiBackupDbCopyWith<$R, MangayomiBackupDb, $Out>
+  get $asMangayomiBackupDb => $base.as(
+    (v, t, t2) => _MangayomiBackupDbCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupDbCopyWith<$R, $In extends MangayomiBackupDb, $Out>
+abstract class MangayomiBackupDbCopyWith<
+  $R,
+  $In extends MangayomiBackupDb,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<$R, MangayomiBackupManga, MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, MangayomiBackupManga>>?
+  ListCopyWith<
+    $R,
+    MangayomiBackupManga,
+    MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, MangayomiBackupManga>
+  >?
   get manga;
   ListCopyWith<
     $R,
     MangayomiBackupCategory,
-    MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, MangayomiBackupCategory>
+    MangayomiBackupCategoryCopyWith<
+      $R,
+      MangayomiBackupCategory,
+      MangayomiBackupCategory
+    >
   >?
   get categories;
   ListCopyWith<
     $R,
     MangayomiBackupChapter,
-    MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, MangayomiBackupChapter>
+    MangayomiBackupChapterCopyWith<
+      $R,
+      MangayomiBackupChapter,
+      MangayomiBackupChapter
+    >
   >?
   get chapters;
   ListCopyWith<
     $R,
     MangayomiBackupDownload,
-    MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, MangayomiBackupDownload>
+    MangayomiBackupDownloadCopyWith<
+      $R,
+      MangayomiBackupDownload,
+      MangayomiBackupDownload
+    >
   >?
   get downloads;
-  ListCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrack>>?
+  ListCopyWith<
+    $R,
+    MangayomiBackupTrack,
+    MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrack>
+  >?
   get tracks;
   ListCopyWith<
     $R,
     MangayomiBackupHistory,
-    MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, MangayomiBackupHistory>
+    MangayomiBackupHistoryCopyWith<
+      $R,
+      MangayomiBackupHistory,
+      MangayomiBackupHistory
+    >
   >?
   get history;
   ListCopyWith<
     $R,
     MangayomiBackupUpdate,
-    MangayomiBackupUpdateCopyWith<$R, MangayomiBackupUpdate, MangayomiBackupUpdate>
+    MangayomiBackupUpdateCopyWith<
+      $R,
+      MangayomiBackupUpdate,
+      MangayomiBackupUpdate
+    >
   >?
   get updates;
   ListCopyWith<
     $R,
     MangayomiBackupSettings,
-    MangayomiBackupSettingsCopyWith<$R, MangayomiBackupSettings, MangayomiBackupSettings>
+    MangayomiBackupSettingsCopyWith<
+      $R,
+      MangayomiBackupSettings,
+      MangayomiBackupSettings
+    >
   >?
   get settings;
   ListCopyWith<
@@ -323,13 +383,21 @@ abstract class MangayomiBackupDbCopyWith<$R, $In extends MangayomiBackupDb, $Out
   ListCopyWith<
     $R,
     MangayomiBackupTrackPreferences,
-    MangayomiBackupTrackPreferencesCopyWith<$R, MangayomiBackupTrackPreferences, MangayomiBackupTrackPreferences>
+    MangayomiBackupTrackPreferencesCopyWith<
+      $R,
+      MangayomiBackupTrackPreferences,
+      MangayomiBackupTrackPreferences
+    >
   >?
   get trackPreferences;
   ListCopyWith<
     $R,
     MangayomiBackupExtension,
-    MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, MangayomiBackupExtension>
+    MangayomiBackupExtensionCopyWith<
+      $R,
+      MangayomiBackupExtension,
+      MangayomiBackupExtension
+    >
   >?
   get extensions;
   $R call({
@@ -346,85 +414,147 @@ abstract class MangayomiBackupDbCopyWith<$R, $In extends MangayomiBackupDb, $Out
     List<MangayomiBackupTrackPreferences>? trackPreferences,
     List<MangayomiBackupExtension>? extensions,
   });
-  MangayomiBackupDbCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupDbCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupDb, $Out>
+class _MangayomiBackupDbCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupDb, $Out>
     implements MangayomiBackupDbCopyWith<$R, MangayomiBackupDb, $Out> {
   _MangayomiBackupDbCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupDb> $mapper = MangayomiBackupDbMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupDb> $mapper =
+      MangayomiBackupDbMapper.ensureInitialized();
   @override
-  ListCopyWith<$R, MangayomiBackupManga, MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, MangayomiBackupManga>>?
-  get manga =>
-      $value.manga != null ? ListCopyWith($value.manga!, (v, t) => v.copyWith.$chain(t), (v) => call(manga: v)) : null;
+  ListCopyWith<
+    $R,
+    MangayomiBackupManga,
+    MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, MangayomiBackupManga>
+  >?
+  get manga => $value.manga != null
+      ? ListCopyWith(
+          $value.manga!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(manga: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupCategory,
-    MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, MangayomiBackupCategory>
+    MangayomiBackupCategoryCopyWith<
+      $R,
+      MangayomiBackupCategory,
+      MangayomiBackupCategory
+    >
   >?
-  get categories =>
-      $value.categories != null
-          ? ListCopyWith($value.categories!, (v, t) => v.copyWith.$chain(t), (v) => call(categories: v))
-          : null;
+  get categories => $value.categories != null
+      ? ListCopyWith(
+          $value.categories!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(categories: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupChapter,
-    MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, MangayomiBackupChapter>
+    MangayomiBackupChapterCopyWith<
+      $R,
+      MangayomiBackupChapter,
+      MangayomiBackupChapter
+    >
   >?
-  get chapters =>
-      $value.chapters != null
-          ? ListCopyWith($value.chapters!, (v, t) => v.copyWith.$chain(t), (v) => call(chapters: v))
-          : null;
+  get chapters => $value.chapters != null
+      ? ListCopyWith(
+          $value.chapters!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(chapters: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupDownload,
-    MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, MangayomiBackupDownload>
+    MangayomiBackupDownloadCopyWith<
+      $R,
+      MangayomiBackupDownload,
+      MangayomiBackupDownload
+    >
   >?
-  get downloads =>
-      $value.downloads != null
-          ? ListCopyWith($value.downloads!, (v, t) => v.copyWith.$chain(t), (v) => call(downloads: v))
-          : null;
+  get downloads => $value.downloads != null
+      ? ListCopyWith(
+          $value.downloads!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(downloads: v),
+        )
+      : null;
   @override
-  ListCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrack>>?
-  get tracks =>
-      $value.tracks != null
-          ? ListCopyWith($value.tracks!, (v, t) => v.copyWith.$chain(t), (v) => call(tracks: v))
-          : null;
+  ListCopyWith<
+    $R,
+    MangayomiBackupTrack,
+    MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, MangayomiBackupTrack>
+  >?
+  get tracks => $value.tracks != null
+      ? ListCopyWith(
+          $value.tracks!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(tracks: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupHistory,
-    MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, MangayomiBackupHistory>
+    MangayomiBackupHistoryCopyWith<
+      $R,
+      MangayomiBackupHistory,
+      MangayomiBackupHistory
+    >
   >?
-  get history =>
-      $value.history != null
-          ? ListCopyWith($value.history!, (v, t) => v.copyWith.$chain(t), (v) => call(history: v))
-          : null;
+  get history => $value.history != null
+      ? ListCopyWith(
+          $value.history!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(history: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupUpdate,
-    MangayomiBackupUpdateCopyWith<$R, MangayomiBackupUpdate, MangayomiBackupUpdate>
+    MangayomiBackupUpdateCopyWith<
+      $R,
+      MangayomiBackupUpdate,
+      MangayomiBackupUpdate
+    >
   >?
-  get updates =>
-      $value.updates != null
-          ? ListCopyWith($value.updates!, (v, t) => v.copyWith.$chain(t), (v) => call(updates: v))
-          : null;
+  get updates => $value.updates != null
+      ? ListCopyWith(
+          $value.updates!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(updates: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupSettings,
-    MangayomiBackupSettingsCopyWith<$R, MangayomiBackupSettings, MangayomiBackupSettings>
+    MangayomiBackupSettingsCopyWith<
+      $R,
+      MangayomiBackupSettings,
+      MangayomiBackupSettings
+    >
   >?
-  get settings =>
-      $value.settings != null
-          ? ListCopyWith($value.settings!, (v, t) => v.copyWith.$chain(t), (v) => call(settings: v))
-          : null;
+  get settings => $value.settings != null
+      ? ListCopyWith(
+          $value.settings!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(settings: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
@@ -435,34 +565,47 @@ class _MangayomiBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Man
       MangayomiBackupExtensionPreferences
     >
   >?
-  get extensionPreferences =>
-      $value.extensionPreferences != null
-          ? ListCopyWith(
-            $value.extensionPreferences!,
-            (v, t) => v.copyWith.$chain(t),
-            (v) => call(extensionPreferences: v),
-          )
-          : null;
+  get extensionPreferences => $value.extensionPreferences != null
+      ? ListCopyWith(
+          $value.extensionPreferences!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(extensionPreferences: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupTrackPreferences,
-    MangayomiBackupTrackPreferencesCopyWith<$R, MangayomiBackupTrackPreferences, MangayomiBackupTrackPreferences>
+    MangayomiBackupTrackPreferencesCopyWith<
+      $R,
+      MangayomiBackupTrackPreferences,
+      MangayomiBackupTrackPreferences
+    >
   >?
-  get trackPreferences =>
-      $value.trackPreferences != null
-          ? ListCopyWith($value.trackPreferences!, (v, t) => v.copyWith.$chain(t), (v) => call(trackPreferences: v))
-          : null;
+  get trackPreferences => $value.trackPreferences != null
+      ? ListCopyWith(
+          $value.trackPreferences!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(trackPreferences: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     MangayomiBackupExtension,
-    MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, MangayomiBackupExtension>
+    MangayomiBackupExtensionCopyWith<
+      $R,
+      MangayomiBackupExtension,
+      MangayomiBackupExtension
+    >
   >?
-  get extensions =>
-      $value.extensions != null
-          ? ListCopyWith($value.extensions!, (v, t) => v.copyWith.$chain(t), (v) => call(extensions: v))
-          : null;
+  get extensions => $value.extensions != null
+      ? ListCopyWith(
+          $value.extensions!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(extensions: v),
+        )
+      : null;
   @override
   $R call({
     Object? version = $none,
@@ -488,7 +631,8 @@ class _MangayomiBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Man
       if (history != $none) #history: history,
       if (updates != $none) #updates: updates,
       if (settings != $none) #settings: settings,
-      if (extensionPreferences != $none) #extensionPreferences: extensionPreferences,
+      if (extensionPreferences != $none)
+        #extensionPreferences: extensionPreferences,
       if (trackPreferences != $none) #trackPreferences: trackPreferences,
       if (extensions != $none) #extensions: extensions,
     }),
@@ -504,14 +648,18 @@ class _MangayomiBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Man
     history: data.get(#history, or: $value.history),
     updates: data.get(#updates, or: $value.updates),
     settings: data.get(#settings, or: $value.settings),
-    extensionPreferences: data.get(#extensionPreferences, or: $value.extensionPreferences),
+    extensionPreferences: data.get(
+      #extensionPreferences,
+      or: $value.extensionPreferences,
+    ),
     trackPreferences: data.get(#trackPreferences, or: $value.trackPreferences),
     extensions: data.get(#extensions, or: $value.extensions),
   );
 
   @override
-  MangayomiBackupDbCopyWith<$R2, MangayomiBackupDb, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupDbCopyWithImpl($value, $cast, t);
+  MangayomiBackupDbCopyWith<$R2, MangayomiBackupDb, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _MangayomiBackupDbCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
@@ -531,31 +679,74 @@ class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
   final String id = 'MangayomiBackupManga';
 
   static String? _$source(MangayomiBackupManga v) => v.source;
-  static const Field<MangayomiBackupManga, String> _f$source = Field('source', _$source);
+  static const Field<MangayomiBackupManga, String> _f$source = Field(
+    'source',
+    _$source,
+  );
   static String? _$author(MangayomiBackupManga v) => v.author;
-  static const Field<MangayomiBackupManga, String> _f$author = Field('author', _$author);
+  static const Field<MangayomiBackupManga, String> _f$author = Field(
+    'author',
+    _$author,
+  );
   static String? _$artist(MangayomiBackupManga v) => v.artist;
-  static const Field<MangayomiBackupManga, String> _f$artist = Field('artist', _$artist);
+  static const Field<MangayomiBackupManga, String> _f$artist = Field(
+    'artist',
+    _$artist,
+  );
   static List<String>? _$genre(MangayomiBackupManga v) => v.genre;
-  static const Field<MangayomiBackupManga, List<String>> _f$genre = Field('genre', _$genre);
+  static const Field<MangayomiBackupManga, List<String>> _f$genre = Field(
+    'genre',
+    _$genre,
+  );
   static String? _$imageUrl(MangayomiBackupManga v) => v.imageUrl;
-  static const Field<MangayomiBackupManga, String> _f$imageUrl = Field('imageUrl', _$imageUrl);
+  static const Field<MangayomiBackupManga, String> _f$imageUrl = Field(
+    'imageUrl',
+    _$imageUrl,
+  );
   static String? _$lang(MangayomiBackupManga v) => v.lang;
-  static const Field<MangayomiBackupManga, String> _f$lang = Field('lang', _$lang);
+  static const Field<MangayomiBackupManga, String> _f$lang = Field(
+    'lang',
+    _$lang,
+  );
   static String? _$link(MangayomiBackupManga v) => v.link;
-  static const Field<MangayomiBackupManga, String> _f$link = Field('link', _$link);
+  static const Field<MangayomiBackupManga, String> _f$link = Field(
+    'link',
+    _$link,
+  );
   static String? _$name(MangayomiBackupManga v) => v.name;
-  static const Field<MangayomiBackupManga, String> _f$name = Field('name', _$name);
+  static const Field<MangayomiBackupManga, String> _f$name = Field(
+    'name',
+    _$name,
+  );
   static int? _$status(MangayomiBackupManga v) => v.status;
-  static const Field<MangayomiBackupManga, int> _f$status = Field('status', _$status);
+  static const Field<MangayomiBackupManga, int> _f$status = Field(
+    'status',
+    _$status,
+  );
   static String? _$description(MangayomiBackupManga v) => v.description;
-  static const Field<MangayomiBackupManga, String> _f$description = Field('description', _$description);
+  static const Field<MangayomiBackupManga, String> _f$description = Field(
+    'description',
+    _$description,
+  );
   static int? _$id(MangayomiBackupManga v) => v.id;
-  static const Field<MangayomiBackupManga, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupManga, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static bool? _$favorite(MangayomiBackupManga v) => v.favorite;
-  static const Field<MangayomiBackupManga, bool> _f$favorite = Field('favorite', _$favorite, opt: true, def: false);
+  static const Field<MangayomiBackupManga, bool> _f$favorite = Field(
+    'favorite',
+    _$favorite,
+    opt: true,
+    def: false,
+  );
   static bool? _$isManga(MangayomiBackupManga v) => v.isManga;
-  static const Field<MangayomiBackupManga, bool> _f$isManga = Field('isManga', _$isManga, opt: true);
+  static const Field<MangayomiBackupManga, bool> _f$isManga = Field(
+    'isManga',
+    _$isManga,
+    opt: true,
+  );
   static ItemType? _$itemType(MangayomiBackupManga v) => v.itemType;
   static const Field<MangayomiBackupManga, ItemType> _f$itemType = Field(
     'itemType',
@@ -564,15 +755,36 @@ class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
     def: ItemType.manga,
   );
   static List<String>? _$genres(MangayomiBackupManga v) => v.genres;
-  static const Field<MangayomiBackupManga, List<String>> _f$genres = Field('genres', _$genres, opt: true);
+  static const Field<MangayomiBackupManga, List<String>> _f$genres = Field(
+    'genres',
+    _$genres,
+    opt: true,
+  );
   static int? _$dateAdded(MangayomiBackupManga v) => v.dateAdded;
-  static const Field<MangayomiBackupManga, int> _f$dateAdded = Field('dateAdded', _$dateAdded, opt: true);
+  static const Field<MangayomiBackupManga, int> _f$dateAdded = Field(
+    'dateAdded',
+    _$dateAdded,
+    opt: true,
+  );
   static int? _$lastUpdate(MangayomiBackupManga v) => v.lastUpdate;
-  static const Field<MangayomiBackupManga, int> _f$lastUpdate = Field('lastUpdate', _$lastUpdate, opt: true);
+  static const Field<MangayomiBackupManga, int> _f$lastUpdate = Field(
+    'lastUpdate',
+    _$lastUpdate,
+    opt: true,
+  );
   static String? _$categories(MangayomiBackupManga v) => v.categories;
-  static const Field<MangayomiBackupManga, String> _f$categories = Field('categories', _$categories, opt: true);
+  static const Field<MangayomiBackupManga, String> _f$categories = Field(
+    'categories',
+    _$categories,
+    opt: true,
+  );
   static int? _$lastRead(MangayomiBackupManga v) => v.lastRead;
-  static const Field<MangayomiBackupManga, int> _f$lastRead = Field('lastRead', _$lastRead, opt: true, def: 0);
+  static const Field<MangayomiBackupManga, int> _f$lastRead = Field(
+    'lastRead',
+    _$lastRead,
+    opt: true,
+    def: 0,
+  );
   static bool? _$isLocalArchive(MangayomiBackupManga v) => v.isLocalArchive;
   static const Field<MangayomiBackupManga, bool> _f$isLocalArchive = Field(
     'isLocalArchive',
@@ -580,18 +792,17 @@ class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
     opt: true,
     def: false,
   );
-  static String? _$customCoverImage(MangayomiBackupManga v) => v.customCoverImage;
+  static String? _$customCoverImage(MangayomiBackupManga v) =>
+      v.customCoverImage;
   static const Field<MangayomiBackupManga, String> _f$customCoverImage = Field(
     'customCoverImage',
     _$customCoverImage,
     opt: true,
   );
-  static String? _$customCoverFromTracker(MangayomiBackupManga v) => v.customCoverFromTracker;
-  static const Field<MangayomiBackupManga, String> _f$customCoverFromTracker = Field(
-    'customCoverFromTracker',
-    _$customCoverFromTracker,
-    opt: true,
-  );
+  static String? _$customCoverFromTracker(MangayomiBackupManga v) =>
+      v.customCoverFromTracker;
+  static const Field<MangayomiBackupManga, String> _f$customCoverFromTracker =
+      Field('customCoverFromTracker', _$customCoverFromTracker, opt: true);
 
   @override
   final MappableFields<MangayomiBackupManga> fields = const {
@@ -660,39 +871,61 @@ class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
 
 mixin MangayomiBackupMangaMappable {
   String toJson() {
-    return MangayomiBackupMangaMapper.ensureInitialized().encodeJson<MangayomiBackupManga>(
+    return MangayomiBackupMangaMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupManga>(this as MangayomiBackupManga);
+  }
+
+  Map<String, dynamic> toMap() {
+    return MangayomiBackupMangaMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupManga>(this as MangayomiBackupManga);
+  }
+
+  MangayomiBackupMangaCopyWith<
+    MangayomiBackupManga,
+    MangayomiBackupManga,
+    MangayomiBackupManga
+  >
+  get copyWith =>
+      _MangayomiBackupMangaCopyWithImpl<
+        MangayomiBackupManga,
+        MangayomiBackupManga
+      >(this as MangayomiBackupManga, $identity, $identity);
+  @override
+  String toString() {
+    return MangayomiBackupMangaMapper.ensureInitialized().stringifyValue(
       this as MangayomiBackupManga,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return MangayomiBackupMangaMapper.ensureInitialized().encodeMap<MangayomiBackupManga>(this as MangayomiBackupManga);
-  }
-
-  MangayomiBackupMangaCopyWith<MangayomiBackupManga, MangayomiBackupManga, MangayomiBackupManga> get copyWith =>
-      _MangayomiBackupMangaCopyWithImpl(this as MangayomiBackupManga, $identity, $identity);
-  @override
-  String toString() {
-    return MangayomiBackupMangaMapper.ensureInitialized().stringifyValue(this as MangayomiBackupManga);
-  }
-
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupMangaMapper.ensureInitialized().equalsValue(this as MangayomiBackupManga, other);
+    return MangayomiBackupMangaMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupManga,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupMangaMapper.ensureInitialized().hashValue(this as MangayomiBackupManga);
+    return MangayomiBackupMangaMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupManga,
+    );
   }
 }
 
-extension MangayomiBackupMangaValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupManga, $Out> {
-  MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, $Out> get $asMangayomiBackupManga =>
-      $base.as((v, t, t2) => _MangayomiBackupMangaCopyWithImpl(v, t, t2));
+extension MangayomiBackupMangaValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupManga, $Out> {
+  MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, $Out>
+  get $asMangayomiBackupManga => $base.as(
+    (v, t, t2) => _MangayomiBackupMangaCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupMangaCopyWith<$R, $In extends MangayomiBackupManga, $Out>
+abstract class MangayomiBackupMangaCopyWith<
+  $R,
+  $In extends MangayomiBackupManga,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get genre;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get genres;
@@ -720,25 +953,37 @@ abstract class MangayomiBackupMangaCopyWith<$R, $In extends MangayomiBackupManga
     String? customCoverImage,
     String? customCoverFromTracker,
   });
-  MangayomiBackupMangaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupMangaCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupMangaCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupManga, $Out>
+class _MangayomiBackupMangaCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupManga, $Out>
     implements MangayomiBackupMangaCopyWith<$R, MangayomiBackupManga, $Out> {
   _MangayomiBackupMangaCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupManga> $mapper = MangayomiBackupMangaMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupManga> $mapper =
+      MangayomiBackupMangaMapper.ensureInitialized();
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get genre =>
       $value.genre != null
-          ? ListCopyWith($value.genre!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(genre: v))
-          : null;
+      ? ListCopyWith(
+          $value.genre!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(genre: v),
+        )
+      : null;
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get genres =>
       $value.genres != null
-          ? ListCopyWith($value.genres!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(genres: v))
-          : null;
+      ? ListCopyWith(
+          $value.genres!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(genres: v),
+        )
+      : null;
   @override
   $R call({
     Object? source = $none,
@@ -786,7 +1031,8 @@ class _MangayomiBackupMangaCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, 
       if (lastRead != $none) #lastRead: lastRead,
       if (isLocalArchive != $none) #isLocalArchive: isLocalArchive,
       if (customCoverImage != $none) #customCoverImage: customCoverImage,
-      if (customCoverFromTracker != $none) #customCoverFromTracker: customCoverFromTracker,
+      if (customCoverFromTracker != $none)
+        #customCoverFromTracker: customCoverFromTracker,
     }),
   );
   @override
@@ -812,21 +1058,28 @@ class _MangayomiBackupMangaCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, 
     lastRead: data.get(#lastRead, or: $value.lastRead),
     isLocalArchive: data.get(#isLocalArchive, or: $value.isLocalArchive),
     customCoverImage: data.get(#customCoverImage, or: $value.customCoverImage),
-    customCoverFromTracker: data.get(#customCoverFromTracker, or: $value.customCoverFromTracker),
+    customCoverFromTracker: data.get(
+      #customCoverFromTracker,
+      or: $value.customCoverFromTracker,
+    ),
   );
 
   @override
-  MangayomiBackupMangaCopyWith<$R2, MangayomiBackupManga, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupMangaCopyWithImpl($value, $cast, t);
+  MangayomiBackupMangaCopyWith<$R2, MangayomiBackupManga, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupMangaCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupCategoryMapper extends ClassMapperBase<MangayomiBackupCategory> {
+class MangayomiBackupCategoryMapper
+    extends ClassMapperBase<MangayomiBackupCategory> {
   MangayomiBackupCategoryMapper._();
 
   static MangayomiBackupCategoryMapper? _instance;
   static MangayomiBackupCategoryMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MangayomiBackupCategoryMapper._());
+      MapperContainer.globals.use(
+        _instance = MangayomiBackupCategoryMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
     }
     return _instance!;
@@ -836,15 +1089,33 @@ class MangayomiBackupCategoryMapper extends ClassMapperBase<MangayomiBackupCateg
   final String id = 'MangayomiBackupCategory';
 
   static String? _$name(MangayomiBackupCategory v) => v.name;
-  static const Field<MangayomiBackupCategory, String> _f$name = Field('name', _$name);
+  static const Field<MangayomiBackupCategory, String> _f$name = Field(
+    'name',
+    _$name,
+  );
   static int? _$forItemType(MangayomiBackupCategory v) => v.forItemType;
-  static const Field<MangayomiBackupCategory, int> _f$forItemType = Field('forItemType', _$forItemType);
+  static const Field<MangayomiBackupCategory, int> _f$forItemType = Field(
+    'forItemType',
+    _$forItemType,
+  );
   static int? _$id(MangayomiBackupCategory v) => v.id;
-  static const Field<MangayomiBackupCategory, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupCategory, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static int? _$pos(MangayomiBackupCategory v) => v.pos;
-  static const Field<MangayomiBackupCategory, int> _f$pos = Field('pos', _$pos, opt: true);
+  static const Field<MangayomiBackupCategory, int> _f$pos = Field(
+    'pos',
+    _$pos,
+    opt: true,
+  );
   static bool? _$hide(MangayomiBackupCategory v) => v.hide;
-  static const Field<MangayomiBackupCategory, bool> _f$hide = Field('hide', _$hide, opt: true);
+  static const Field<MangayomiBackupCategory, bool> _f$hide = Field(
+    'hide',
+    _$hide,
+    opt: true,
+  );
 
   @override
   final MappableFields<MangayomiBackupCategory> fields = const {
@@ -879,52 +1150,77 @@ class MangayomiBackupCategoryMapper extends ClassMapperBase<MangayomiBackupCateg
 
 mixin MangayomiBackupCategoryMappable {
   String toJson() {
-    return MangayomiBackupCategoryMapper.ensureInitialized().encodeJson<MangayomiBackupCategory>(
-      this as MangayomiBackupCategory,
-    );
+    return MangayomiBackupCategoryMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupCategory>(this as MangayomiBackupCategory);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupCategoryMapper.ensureInitialized().encodeMap<MangayomiBackupCategory>(
-      this as MangayomiBackupCategory,
-    );
+    return MangayomiBackupCategoryMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupCategory>(this as MangayomiBackupCategory);
   }
 
-  MangayomiBackupCategoryCopyWith<MangayomiBackupCategory, MangayomiBackupCategory, MangayomiBackupCategory>
-  get copyWith => _MangayomiBackupCategoryCopyWithImpl(this as MangayomiBackupCategory, $identity, $identity);
+  MangayomiBackupCategoryCopyWith<
+    MangayomiBackupCategory,
+    MangayomiBackupCategory,
+    MangayomiBackupCategory
+  >
+  get copyWith =>
+      _MangayomiBackupCategoryCopyWithImpl<
+        MangayomiBackupCategory,
+        MangayomiBackupCategory
+      >(this as MangayomiBackupCategory, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupCategoryMapper.ensureInitialized().stringifyValue(this as MangayomiBackupCategory);
+    return MangayomiBackupCategoryMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupCategory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupCategoryMapper.ensureInitialized().equalsValue(this as MangayomiBackupCategory, other);
+    return MangayomiBackupCategoryMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupCategory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupCategoryMapper.ensureInitialized().hashValue(this as MangayomiBackupCategory);
+    return MangayomiBackupCategoryMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupCategory,
+    );
   }
 }
 
-extension MangayomiBackupCategoryValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupCategory, $Out> {
-  MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, $Out> get $asMangayomiBackupCategory =>
-      $base.as((v, t, t2) => _MangayomiBackupCategoryCopyWithImpl(v, t, t2));
+extension MangayomiBackupCategoryValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupCategory, $Out> {
+  MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, $Out>
+  get $asMangayomiBackupCategory => $base.as(
+    (v, t, t2) => _MangayomiBackupCategoryCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupCategoryCopyWith<$R, $In extends MangayomiBackupCategory, $Out>
+abstract class MangayomiBackupCategoryCopyWith<
+  $R,
+  $In extends MangayomiBackupCategory,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? name, int? forItemType, int? id, int? pos, bool? hide});
-  MangayomiBackupCategoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupCategoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupCategoryCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupCategory, $Out>
-    implements MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, $Out> {
+class _MangayomiBackupCategoryCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupCategory, $Out>
+    implements
+        MangayomiBackupCategoryCopyWith<$R, MangayomiBackupCategory, $Out> {
   _MangayomiBackupCategoryCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupCategory> $mapper = MangayomiBackupCategoryMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupCategory> $mapper =
+      MangayomiBackupCategoryMapper.ensureInitialized();
   @override
   $R call({
     Object? name = $none,
@@ -951,11 +1247,13 @@ class _MangayomiBackupCategoryCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$
   );
 
   @override
-  MangayomiBackupCategoryCopyWith<$R2, MangayomiBackupCategory, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupCategoryCopyWithImpl($value, $cast, t);
+  MangayomiBackupCategoryCopyWith<$R2, MangayomiBackupCategory, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupCategoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupChapterMapper extends ClassMapperBase<MangayomiBackupChapter> {
+class MangayomiBackupChapterMapper
+    extends ClassMapperBase<MangayomiBackupChapter> {
   MangayomiBackupChapterMapper._();
 
   static MangayomiBackupChapterMapper? _instance;
@@ -971,13 +1269,28 @@ class MangayomiBackupChapterMapper extends ClassMapperBase<MangayomiBackupChapte
   final String id = 'MangayomiBackupChapter';
 
   static int? _$mangaId(MangayomiBackupChapter v) => v.mangaId;
-  static const Field<MangayomiBackupChapter, int> _f$mangaId = Field('mangaId', _$mangaId);
+  static const Field<MangayomiBackupChapter, int> _f$mangaId = Field(
+    'mangaId',
+    _$mangaId,
+  );
   static String? _$name(MangayomiBackupChapter v) => v.name;
-  static const Field<MangayomiBackupChapter, String> _f$name = Field('name', _$name);
+  static const Field<MangayomiBackupChapter, String> _f$name = Field(
+    'name',
+    _$name,
+  );
   static int? _$id(MangayomiBackupChapter v) => v.id;
-  static const Field<MangayomiBackupChapter, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupChapter, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static String? _$url(MangayomiBackupChapter v) => v.url;
-  static const Field<MangayomiBackupChapter, String> _f$url = Field('url', _$url, opt: true, def: '');
+  static const Field<MangayomiBackupChapter, String> _f$url = Field(
+    'url',
+    _$url,
+    opt: true,
+    def: '',
+  );
   static String? _$dateUpload(MangayomiBackupChapter v) => v.dateUpload;
   static const Field<MangayomiBackupChapter, String> _f$dateUpload = Field(
     'dateUpload',
@@ -993,9 +1306,19 @@ class MangayomiBackupChapterMapper extends ClassMapperBase<MangayomiBackupChapte
     def: false,
   );
   static String? _$scanlator(MangayomiBackupChapter v) => v.scanlator;
-  static const Field<MangayomiBackupChapter, String> _f$scanlator = Field('scanlator', _$scanlator, opt: true, def: '');
+  static const Field<MangayomiBackupChapter, String> _f$scanlator = Field(
+    'scanlator',
+    _$scanlator,
+    opt: true,
+    def: '',
+  );
   static bool? _$isRead(MangayomiBackupChapter v) => v.isRead;
-  static const Field<MangayomiBackupChapter, bool> _f$isRead = Field('isRead', _$isRead, opt: true, def: false);
+  static const Field<MangayomiBackupChapter, bool> _f$isRead = Field(
+    'isRead',
+    _$isRead,
+    opt: true,
+    def: false,
+  );
   static String? _$lastPageRead(MangayomiBackupChapter v) => v.lastPageRead;
   static const Field<MangayomiBackupChapter, String> _f$lastPageRead = Field(
     'lastPageRead',
@@ -1054,41 +1377,61 @@ class MangayomiBackupChapterMapper extends ClassMapperBase<MangayomiBackupChapte
 
 mixin MangayomiBackupChapterMappable {
   String toJson() {
-    return MangayomiBackupChapterMapper.ensureInitialized().encodeJson<MangayomiBackupChapter>(
-      this as MangayomiBackupChapter,
-    );
+    return MangayomiBackupChapterMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupChapter>(this as MangayomiBackupChapter);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupChapterMapper.ensureInitialized().encodeMap<MangayomiBackupChapter>(
-      this as MangayomiBackupChapter,
-    );
+    return MangayomiBackupChapterMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupChapter>(this as MangayomiBackupChapter);
   }
 
-  MangayomiBackupChapterCopyWith<MangayomiBackupChapter, MangayomiBackupChapter, MangayomiBackupChapter> get copyWith =>
-      _MangayomiBackupChapterCopyWithImpl(this as MangayomiBackupChapter, $identity, $identity);
+  MangayomiBackupChapterCopyWith<
+    MangayomiBackupChapter,
+    MangayomiBackupChapter,
+    MangayomiBackupChapter
+  >
+  get copyWith =>
+      _MangayomiBackupChapterCopyWithImpl<
+        MangayomiBackupChapter,
+        MangayomiBackupChapter
+      >(this as MangayomiBackupChapter, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupChapterMapper.ensureInitialized().stringifyValue(this as MangayomiBackupChapter);
+    return MangayomiBackupChapterMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupChapter,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupChapterMapper.ensureInitialized().equalsValue(this as MangayomiBackupChapter, other);
+    return MangayomiBackupChapterMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupChapter,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupChapterMapper.ensureInitialized().hashValue(this as MangayomiBackupChapter);
+    return MangayomiBackupChapterMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupChapter,
+    );
   }
 }
 
-extension MangayomiBackupChapterValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupChapter, $Out> {
-  MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, $Out> get $asMangayomiBackupChapter =>
-      $base.as((v, t, t2) => _MangayomiBackupChapterCopyWithImpl(v, t, t2));
+extension MangayomiBackupChapterValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupChapter, $Out> {
+  MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, $Out>
+  get $asMangayomiBackupChapter => $base.as(
+    (v, t, t2) => _MangayomiBackupChapterCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupChapterCopyWith<$R, $In extends MangayomiBackupChapter, $Out>
+abstract class MangayomiBackupChapterCopyWith<
+  $R,
+  $In extends MangayomiBackupChapter,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     int? mangaId,
@@ -1102,15 +1445,20 @@ abstract class MangayomiBackupChapterCopyWith<$R, $In extends MangayomiBackupCha
     String? lastPageRead,
     String? archivePath,
   });
-  MangayomiBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupChapterCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupChapter, $Out>
-    implements MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, $Out> {
+class _MangayomiBackupChapterCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupChapter, $Out>
+    implements
+        MangayomiBackupChapterCopyWith<$R, MangayomiBackupChapter, $Out> {
   _MangayomiBackupChapterCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupChapter> $mapper = MangayomiBackupChapterMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupChapter> $mapper =
+      MangayomiBackupChapterMapper.ensureInitialized();
   @override
   $R call({
     Object? mangaId = $none,
@@ -1152,17 +1500,21 @@ class _MangayomiBackupChapterCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R
   );
 
   @override
-  MangayomiBackupChapterCopyWith<$R2, MangayomiBackupChapter, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupChapterCopyWithImpl($value, $cast, t);
+  MangayomiBackupChapterCopyWith<$R2, MangayomiBackupChapter, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupChapterCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupDownloadMapper extends ClassMapperBase<MangayomiBackupDownload> {
+class MangayomiBackupDownloadMapper
+    extends ClassMapperBase<MangayomiBackupDownload> {
   MangayomiBackupDownloadMapper._();
 
   static MangayomiBackupDownloadMapper? _instance;
   static MangayomiBackupDownloadMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MangayomiBackupDownloadMapper._());
+      MapperContainer.globals.use(
+        _instance = MangayomiBackupDownloadMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
     }
     return _instance!;
@@ -1172,17 +1524,38 @@ class MangayomiBackupDownloadMapper extends ClassMapperBase<MangayomiBackupDownl
   final String id = 'MangayomiBackupDownload';
 
   static int? _$succeeded(MangayomiBackupDownload v) => v.succeeded;
-  static const Field<MangayomiBackupDownload, int> _f$succeeded = Field('succeeded', _$succeeded);
+  static const Field<MangayomiBackupDownload, int> _f$succeeded = Field(
+    'succeeded',
+    _$succeeded,
+  );
   static int? _$failed(MangayomiBackupDownload v) => v.failed;
-  static const Field<MangayomiBackupDownload, int> _f$failed = Field('failed', _$failed);
+  static const Field<MangayomiBackupDownload, int> _f$failed = Field(
+    'failed',
+    _$failed,
+  );
   static int? _$total(MangayomiBackupDownload v) => v.total;
-  static const Field<MangayomiBackupDownload, int> _f$total = Field('total', _$total);
+  static const Field<MangayomiBackupDownload, int> _f$total = Field(
+    'total',
+    _$total,
+  );
   static bool? _$isDownload(MangayomiBackupDownload v) => v.isDownload;
-  static const Field<MangayomiBackupDownload, bool> _f$isDownload = Field('isDownload', _$isDownload);
-  static bool? _$isStartDownload(MangayomiBackupDownload v) => v.isStartDownload;
-  static const Field<MangayomiBackupDownload, bool> _f$isStartDownload = Field('isStartDownload', _$isStartDownload);
+  static const Field<MangayomiBackupDownload, bool> _f$isDownload = Field(
+    'isDownload',
+    _$isDownload,
+  );
+  static bool? _$isStartDownload(MangayomiBackupDownload v) =>
+      v.isStartDownload;
+  static const Field<MangayomiBackupDownload, bool> _f$isStartDownload = Field(
+    'isStartDownload',
+    _$isStartDownload,
+  );
   static int? _$id(MangayomiBackupDownload v) => v.id;
-  static const Field<MangayomiBackupDownload, int> _f$id = Field('id', _$id, opt: true, def: 0);
+  static const Field<MangayomiBackupDownload, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+    def: 0,
+  );
 
   @override
   final MappableFields<MangayomiBackupDownload> fields = const {
@@ -1219,52 +1592,84 @@ class MangayomiBackupDownloadMapper extends ClassMapperBase<MangayomiBackupDownl
 
 mixin MangayomiBackupDownloadMappable {
   String toJson() {
-    return MangayomiBackupDownloadMapper.ensureInitialized().encodeJson<MangayomiBackupDownload>(
-      this as MangayomiBackupDownload,
-    );
+    return MangayomiBackupDownloadMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupDownload>(this as MangayomiBackupDownload);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupDownloadMapper.ensureInitialized().encodeMap<MangayomiBackupDownload>(
-      this as MangayomiBackupDownload,
-    );
+    return MangayomiBackupDownloadMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupDownload>(this as MangayomiBackupDownload);
   }
 
-  MangayomiBackupDownloadCopyWith<MangayomiBackupDownload, MangayomiBackupDownload, MangayomiBackupDownload>
-  get copyWith => _MangayomiBackupDownloadCopyWithImpl(this as MangayomiBackupDownload, $identity, $identity);
+  MangayomiBackupDownloadCopyWith<
+    MangayomiBackupDownload,
+    MangayomiBackupDownload,
+    MangayomiBackupDownload
+  >
+  get copyWith =>
+      _MangayomiBackupDownloadCopyWithImpl<
+        MangayomiBackupDownload,
+        MangayomiBackupDownload
+      >(this as MangayomiBackupDownload, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupDownloadMapper.ensureInitialized().stringifyValue(this as MangayomiBackupDownload);
+    return MangayomiBackupDownloadMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupDownload,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupDownloadMapper.ensureInitialized().equalsValue(this as MangayomiBackupDownload, other);
+    return MangayomiBackupDownloadMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupDownload,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupDownloadMapper.ensureInitialized().hashValue(this as MangayomiBackupDownload);
+    return MangayomiBackupDownloadMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupDownload,
+    );
   }
 }
 
-extension MangayomiBackupDownloadValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupDownload, $Out> {
-  MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, $Out> get $asMangayomiBackupDownload =>
-      $base.as((v, t, t2) => _MangayomiBackupDownloadCopyWithImpl(v, t, t2));
+extension MangayomiBackupDownloadValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupDownload, $Out> {
+  MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, $Out>
+  get $asMangayomiBackupDownload => $base.as(
+    (v, t, t2) => _MangayomiBackupDownloadCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupDownloadCopyWith<$R, $In extends MangayomiBackupDownload, $Out>
+abstract class MangayomiBackupDownloadCopyWith<
+  $R,
+  $In extends MangayomiBackupDownload,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({int? succeeded, int? failed, int? total, bool? isDownload, bool? isStartDownload, int? id});
-  MangayomiBackupDownloadCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $R call({
+    int? succeeded,
+    int? failed,
+    int? total,
+    bool? isDownload,
+    bool? isStartDownload,
+    int? id,
+  });
+  MangayomiBackupDownloadCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupDownloadCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupDownload, $Out>
-    implements MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, $Out> {
+class _MangayomiBackupDownloadCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupDownload, $Out>
+    implements
+        MangayomiBackupDownloadCopyWith<$R, MangayomiBackupDownload, $Out> {
   _MangayomiBackupDownloadCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupDownload> $mapper = MangayomiBackupDownloadMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupDownload> $mapper =
+      MangayomiBackupDownloadMapper.ensureInitialized();
   @override
   $R call({
     Object? succeeded = $none,
@@ -1294,8 +1699,9 @@ class _MangayomiBackupDownloadCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$
   );
 
   @override
-  MangayomiBackupDownloadCopyWith<$R2, MangayomiBackupDownload, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupDownloadCopyWithImpl($value, $cast, t);
+  MangayomiBackupDownloadCopyWith<$R2, MangayomiBackupDownload, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupDownloadCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class MangayomiBackupTrackMapper extends ClassMapperBase<MangayomiBackupTrack> {
@@ -1315,19 +1721,46 @@ class MangayomiBackupTrackMapper extends ClassMapperBase<MangayomiBackupTrack> {
   final String id = 'MangayomiBackupTrack';
 
   static int? _$status(MangayomiBackupTrack v) => v.status;
-  static const Field<MangayomiBackupTrack, int> _f$status = Field('status', _$status);
+  static const Field<MangayomiBackupTrack, int> _f$status = Field(
+    'status',
+    _$status,
+  );
   static int? _$id(MangayomiBackupTrack v) => v.id;
-  static const Field<MangayomiBackupTrack, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static int? _$libraryId(MangayomiBackupTrack v) => v.libraryId;
-  static const Field<MangayomiBackupTrack, int> _f$libraryId = Field('libraryId', _$libraryId, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$libraryId = Field(
+    'libraryId',
+    _$libraryId,
+    opt: true,
+  );
   static int? _$mediaId(MangayomiBackupTrack v) => v.mediaId;
-  static const Field<MangayomiBackupTrack, int> _f$mediaId = Field('mediaId', _$mediaId, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$mediaId = Field(
+    'mediaId',
+    _$mediaId,
+    opt: true,
+  );
   static int? _$mangaId(MangayomiBackupTrack v) => v.mangaId;
-  static const Field<MangayomiBackupTrack, int> _f$mangaId = Field('mangaId', _$mangaId, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$mangaId = Field(
+    'mangaId',
+    _$mangaId,
+    opt: true,
+  );
   static int? _$syncId(MangayomiBackupTrack v) => v.syncId;
-  static const Field<MangayomiBackupTrack, int> _f$syncId = Field('syncId', _$syncId, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$syncId = Field(
+    'syncId',
+    _$syncId,
+    opt: true,
+  );
   static String? _$title(MangayomiBackupTrack v) => v.title;
-  static const Field<MangayomiBackupTrack, String> _f$title = Field('title', _$title, opt: true);
+  static const Field<MangayomiBackupTrack, String> _f$title = Field(
+    'title',
+    _$title,
+    opt: true,
+  );
   static int? _$lastChapterRead(MangayomiBackupTrack v) => v.lastChapterRead;
   static const Field<MangayomiBackupTrack, int> _f$lastChapterRead = Field(
     'lastChapterRead',
@@ -1335,25 +1768,43 @@ class MangayomiBackupTrackMapper extends ClassMapperBase<MangayomiBackupTrack> {
     opt: true,
   );
   static int? _$totalChapter(MangayomiBackupTrack v) => v.totalChapter;
-  static const Field<MangayomiBackupTrack, int> _f$totalChapter = Field('totalChapter', _$totalChapter, opt: true);
+  static const Field<MangayomiBackupTrack, int> _f$totalChapter = Field(
+    'totalChapter',
+    _$totalChapter,
+    opt: true,
+  );
   static int? _$score(MangayomiBackupTrack v) => v.score;
-  static const Field<MangayomiBackupTrack, int> _f$score = Field('score', _$score, opt: true);
-  static int? _$startedReadingDate(MangayomiBackupTrack v) => v.startedReadingDate;
+  static const Field<MangayomiBackupTrack, int> _f$score = Field(
+    'score',
+    _$score,
+    opt: true,
+  );
+  static int? _$startedReadingDate(MangayomiBackupTrack v) =>
+      v.startedReadingDate;
   static const Field<MangayomiBackupTrack, int> _f$startedReadingDate = Field(
     'startedReadingDate',
     _$startedReadingDate,
     opt: true,
   );
-  static int? _$finishedReadingDate(MangayomiBackupTrack v) => v.finishedReadingDate;
+  static int? _$finishedReadingDate(MangayomiBackupTrack v) =>
+      v.finishedReadingDate;
   static const Field<MangayomiBackupTrack, int> _f$finishedReadingDate = Field(
     'finishedReadingDate',
     _$finishedReadingDate,
     opt: true,
   );
   static String? _$trackingUrl(MangayomiBackupTrack v) => v.trackingUrl;
-  static const Field<MangayomiBackupTrack, String> _f$trackingUrl = Field('trackingUrl', _$trackingUrl, opt: true);
+  static const Field<MangayomiBackupTrack, String> _f$trackingUrl = Field(
+    'trackingUrl',
+    _$trackingUrl,
+    opt: true,
+  );
   static bool? _$isManga(MangayomiBackupTrack v) => v.isManga;
-  static const Field<MangayomiBackupTrack, bool> _f$isManga = Field('isManga', _$isManga, opt: true);
+  static const Field<MangayomiBackupTrack, bool> _f$isManga = Field(
+    'isManga',
+    _$isManga,
+    opt: true,
+  );
   static ItemType _$itemType(MangayomiBackupTrack v) => v.itemType;
   static const Field<MangayomiBackupTrack, ItemType> _f$itemType = Field(
     'itemType',
@@ -1415,39 +1866,61 @@ class MangayomiBackupTrackMapper extends ClassMapperBase<MangayomiBackupTrack> {
 
 mixin MangayomiBackupTrackMappable {
   String toJson() {
-    return MangayomiBackupTrackMapper.ensureInitialized().encodeJson<MangayomiBackupTrack>(
+    return MangayomiBackupTrackMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupTrack>(this as MangayomiBackupTrack);
+  }
+
+  Map<String, dynamic> toMap() {
+    return MangayomiBackupTrackMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupTrack>(this as MangayomiBackupTrack);
+  }
+
+  MangayomiBackupTrackCopyWith<
+    MangayomiBackupTrack,
+    MangayomiBackupTrack,
+    MangayomiBackupTrack
+  >
+  get copyWith =>
+      _MangayomiBackupTrackCopyWithImpl<
+        MangayomiBackupTrack,
+        MangayomiBackupTrack
+      >(this as MangayomiBackupTrack, $identity, $identity);
+  @override
+  String toString() {
+    return MangayomiBackupTrackMapper.ensureInitialized().stringifyValue(
       this as MangayomiBackupTrack,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return MangayomiBackupTrackMapper.ensureInitialized().encodeMap<MangayomiBackupTrack>(this as MangayomiBackupTrack);
-  }
-
-  MangayomiBackupTrackCopyWith<MangayomiBackupTrack, MangayomiBackupTrack, MangayomiBackupTrack> get copyWith =>
-      _MangayomiBackupTrackCopyWithImpl(this as MangayomiBackupTrack, $identity, $identity);
-  @override
-  String toString() {
-    return MangayomiBackupTrackMapper.ensureInitialized().stringifyValue(this as MangayomiBackupTrack);
-  }
-
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupTrackMapper.ensureInitialized().equalsValue(this as MangayomiBackupTrack, other);
+    return MangayomiBackupTrackMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupTrack,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupTrackMapper.ensureInitialized().hashValue(this as MangayomiBackupTrack);
+    return MangayomiBackupTrackMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupTrack,
+    );
   }
 }
 
-extension MangayomiBackupTrackValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupTrack, $Out> {
-  MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, $Out> get $asMangayomiBackupTrack =>
-      $base.as((v, t, t2) => _MangayomiBackupTrackCopyWithImpl(v, t, t2));
+extension MangayomiBackupTrackValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupTrack, $Out> {
+  MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, $Out>
+  get $asMangayomiBackupTrack => $base.as(
+    (v, t, t2) => _MangayomiBackupTrackCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupTrackCopyWith<$R, $In extends MangayomiBackupTrack, $Out>
+abstract class MangayomiBackupTrackCopyWith<
+  $R,
+  $In extends MangayomiBackupTrack,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     int? status,
@@ -1466,15 +1939,19 @@ abstract class MangayomiBackupTrackCopyWith<$R, $In extends MangayomiBackupTrack
     bool? isManga,
     ItemType? itemType,
   });
-  MangayomiBackupTrackCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupTrackCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupTrackCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupTrack, $Out>
+class _MangayomiBackupTrackCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupTrack, $Out>
     implements MangayomiBackupTrackCopyWith<$R, MangayomiBackupTrack, $Out> {
   _MangayomiBackupTrackCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupTrack> $mapper = MangayomiBackupTrackMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupTrack> $mapper =
+      MangayomiBackupTrackMapper.ensureInitialized();
   @override
   $R call({
     Object? status = $none,
@@ -1505,7 +1982,8 @@ class _MangayomiBackupTrackCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, 
       if (totalChapter != $none) #totalChapter: totalChapter,
       if (score != $none) #score: score,
       if (startedReadingDate != $none) #startedReadingDate: startedReadingDate,
-      if (finishedReadingDate != $none) #finishedReadingDate: finishedReadingDate,
+      if (finishedReadingDate != $none)
+        #finishedReadingDate: finishedReadingDate,
       if (trackingUrl != $none) #trackingUrl: trackingUrl,
       if (isManga != $none) #isManga: isManga,
       if (itemType != null) #itemType: itemType,
@@ -1523,19 +2001,27 @@ class _MangayomiBackupTrackCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, 
     lastChapterRead: data.get(#lastChapterRead, or: $value.lastChapterRead),
     totalChapter: data.get(#totalChapter, or: $value.totalChapter),
     score: data.get(#score, or: $value.score),
-    startedReadingDate: data.get(#startedReadingDate, or: $value.startedReadingDate),
-    finishedReadingDate: data.get(#finishedReadingDate, or: $value.finishedReadingDate),
+    startedReadingDate: data.get(
+      #startedReadingDate,
+      or: $value.startedReadingDate,
+    ),
+    finishedReadingDate: data.get(
+      #finishedReadingDate,
+      or: $value.finishedReadingDate,
+    ),
     trackingUrl: data.get(#trackingUrl, or: $value.trackingUrl),
     isManga: data.get(#isManga, or: $value.isManga),
     itemType: data.get(#itemType, or: $value.itemType),
   );
 
   @override
-  MangayomiBackupTrackCopyWith<$R2, MangayomiBackupTrack, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupTrackCopyWithImpl($value, $cast, t);
+  MangayomiBackupTrackCopyWith<$R2, MangayomiBackupTrack, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupTrackCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupHistoryMapper extends ClassMapperBase<MangayomiBackupHistory> {
+class MangayomiBackupHistoryMapper
+    extends ClassMapperBase<MangayomiBackupHistory> {
   MangayomiBackupHistoryMapper._();
 
   static MangayomiBackupHistoryMapper? _instance;
@@ -1552,17 +2038,37 @@ class MangayomiBackupHistoryMapper extends ClassMapperBase<MangayomiBackupHistor
   final String id = 'MangayomiBackupHistory';
 
   static ItemType _$itemType(MangayomiBackupHistory v) => v.itemType;
-  static const Field<MangayomiBackupHistory, ItemType> _f$itemType = Field('itemType', _$itemType);
+  static const Field<MangayomiBackupHistory, ItemType> _f$itemType = Field(
+    'itemType',
+    _$itemType,
+  );
   static int? _$chapterId(MangayomiBackupHistory v) => v.chapterId;
-  static const Field<MangayomiBackupHistory, int> _f$chapterId = Field('chapterId', _$chapterId);
+  static const Field<MangayomiBackupHistory, int> _f$chapterId = Field(
+    'chapterId',
+    _$chapterId,
+  );
   static int? _$mangaId(MangayomiBackupHistory v) => v.mangaId;
-  static const Field<MangayomiBackupHistory, int> _f$mangaId = Field('mangaId', _$mangaId);
+  static const Field<MangayomiBackupHistory, int> _f$mangaId = Field(
+    'mangaId',
+    _$mangaId,
+  );
   static String? _$date(MangayomiBackupHistory v) => v.date;
-  static const Field<MangayomiBackupHistory, String> _f$date = Field('date', _$date);
+  static const Field<MangayomiBackupHistory, String> _f$date = Field(
+    'date',
+    _$date,
+  );
   static int? _$id(MangayomiBackupHistory v) => v.id;
-  static const Field<MangayomiBackupHistory, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupHistory, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static bool? _$isManga(MangayomiBackupHistory v) => v.isManga;
-  static const Field<MangayomiBackupHistory, bool> _f$isManga = Field('isManga', _$isManga, opt: true);
+  static const Field<MangayomiBackupHistory, bool> _f$isManga = Field(
+    'isManga',
+    _$isManga,
+    opt: true,
+  );
 
   @override
   final MappableFields<MangayomiBackupHistory> fields = const {
@@ -1599,52 +2105,84 @@ class MangayomiBackupHistoryMapper extends ClassMapperBase<MangayomiBackupHistor
 
 mixin MangayomiBackupHistoryMappable {
   String toJson() {
-    return MangayomiBackupHistoryMapper.ensureInitialized().encodeJson<MangayomiBackupHistory>(
-      this as MangayomiBackupHistory,
-    );
+    return MangayomiBackupHistoryMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupHistory>(this as MangayomiBackupHistory);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupHistoryMapper.ensureInitialized().encodeMap<MangayomiBackupHistory>(
-      this as MangayomiBackupHistory,
-    );
+    return MangayomiBackupHistoryMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupHistory>(this as MangayomiBackupHistory);
   }
 
-  MangayomiBackupHistoryCopyWith<MangayomiBackupHistory, MangayomiBackupHistory, MangayomiBackupHistory> get copyWith =>
-      _MangayomiBackupHistoryCopyWithImpl(this as MangayomiBackupHistory, $identity, $identity);
+  MangayomiBackupHistoryCopyWith<
+    MangayomiBackupHistory,
+    MangayomiBackupHistory,
+    MangayomiBackupHistory
+  >
+  get copyWith =>
+      _MangayomiBackupHistoryCopyWithImpl<
+        MangayomiBackupHistory,
+        MangayomiBackupHistory
+      >(this as MangayomiBackupHistory, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupHistoryMapper.ensureInitialized().stringifyValue(this as MangayomiBackupHistory);
+    return MangayomiBackupHistoryMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupHistory,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupHistoryMapper.ensureInitialized().equalsValue(this as MangayomiBackupHistory, other);
+    return MangayomiBackupHistoryMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupHistory,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupHistoryMapper.ensureInitialized().hashValue(this as MangayomiBackupHistory);
+    return MangayomiBackupHistoryMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupHistory,
+    );
   }
 }
 
-extension MangayomiBackupHistoryValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupHistory, $Out> {
-  MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, $Out> get $asMangayomiBackupHistory =>
-      $base.as((v, t, t2) => _MangayomiBackupHistoryCopyWithImpl(v, t, t2));
+extension MangayomiBackupHistoryValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupHistory, $Out> {
+  MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, $Out>
+  get $asMangayomiBackupHistory => $base.as(
+    (v, t, t2) => _MangayomiBackupHistoryCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupHistoryCopyWith<$R, $In extends MangayomiBackupHistory, $Out>
+abstract class MangayomiBackupHistoryCopyWith<
+  $R,
+  $In extends MangayomiBackupHistory,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({ItemType? itemType, int? chapterId, int? mangaId, String? date, int? id, bool? isManga});
-  MangayomiBackupHistoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $R call({
+    ItemType? itemType,
+    int? chapterId,
+    int? mangaId,
+    String? date,
+    int? id,
+    bool? isManga,
+  });
+  MangayomiBackupHistoryCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupHistoryCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupHistory, $Out>
-    implements MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, $Out> {
+class _MangayomiBackupHistoryCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupHistory, $Out>
+    implements
+        MangayomiBackupHistoryCopyWith<$R, MangayomiBackupHistory, $Out> {
   _MangayomiBackupHistoryCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupHistory> $mapper = MangayomiBackupHistoryMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupHistory> $mapper =
+      MangayomiBackupHistoryMapper.ensureInitialized();
   @override
   $R call({
     ItemType? itemType,
@@ -1674,11 +2212,13 @@ class _MangayomiBackupHistoryCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R
   );
 
   @override
-  MangayomiBackupHistoryCopyWith<$R2, MangayomiBackupHistory, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupHistoryCopyWithImpl($value, $cast, t);
+  MangayomiBackupHistoryCopyWith<$R2, MangayomiBackupHistory, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupHistoryCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupUpdateMapper extends ClassMapperBase<MangayomiBackupUpdate> {
+class MangayomiBackupUpdateMapper
+    extends ClassMapperBase<MangayomiBackupUpdate> {
   MangayomiBackupUpdateMapper._();
 
   static MangayomiBackupUpdateMapper? _instance;
@@ -1694,13 +2234,26 @@ class MangayomiBackupUpdateMapper extends ClassMapperBase<MangayomiBackupUpdate>
   final String id = 'MangayomiBackupUpdate';
 
   static int? _$mangaId(MangayomiBackupUpdate v) => v.mangaId;
-  static const Field<MangayomiBackupUpdate, int> _f$mangaId = Field('mangaId', _$mangaId);
+  static const Field<MangayomiBackupUpdate, int> _f$mangaId = Field(
+    'mangaId',
+    _$mangaId,
+  );
   static String? _$chapterName(MangayomiBackupUpdate v) => v.chapterName;
-  static const Field<MangayomiBackupUpdate, String> _f$chapterName = Field('chapterName', _$chapterName);
+  static const Field<MangayomiBackupUpdate, String> _f$chapterName = Field(
+    'chapterName',
+    _$chapterName,
+  );
   static String? _$date(MangayomiBackupUpdate v) => v.date;
-  static const Field<MangayomiBackupUpdate, String> _f$date = Field('date', _$date);
+  static const Field<MangayomiBackupUpdate, String> _f$date = Field(
+    'date',
+    _$date,
+  );
   static int? _$id(MangayomiBackupUpdate v) => v.id;
-  static const Field<MangayomiBackupUpdate, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupUpdate, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
 
   @override
   final MappableFields<MangayomiBackupUpdate> fields = const {
@@ -1733,54 +2286,83 @@ class MangayomiBackupUpdateMapper extends ClassMapperBase<MangayomiBackupUpdate>
 
 mixin MangayomiBackupUpdateMappable {
   String toJson() {
-    return MangayomiBackupUpdateMapper.ensureInitialized().encodeJson<MangayomiBackupUpdate>(
-      this as MangayomiBackupUpdate,
-    );
+    return MangayomiBackupUpdateMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupUpdate>(this as MangayomiBackupUpdate);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupUpdateMapper.ensureInitialized().encodeMap<MangayomiBackupUpdate>(
-      this as MangayomiBackupUpdate,
-    );
+    return MangayomiBackupUpdateMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupUpdate>(this as MangayomiBackupUpdate);
   }
 
-  MangayomiBackupUpdateCopyWith<MangayomiBackupUpdate, MangayomiBackupUpdate, MangayomiBackupUpdate> get copyWith =>
-      _MangayomiBackupUpdateCopyWithImpl(this as MangayomiBackupUpdate, $identity, $identity);
+  MangayomiBackupUpdateCopyWith<
+    MangayomiBackupUpdate,
+    MangayomiBackupUpdate,
+    MangayomiBackupUpdate
+  >
+  get copyWith =>
+      _MangayomiBackupUpdateCopyWithImpl<
+        MangayomiBackupUpdate,
+        MangayomiBackupUpdate
+      >(this as MangayomiBackupUpdate, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupUpdateMapper.ensureInitialized().stringifyValue(this as MangayomiBackupUpdate);
+    return MangayomiBackupUpdateMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupUpdate,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupUpdateMapper.ensureInitialized().equalsValue(this as MangayomiBackupUpdate, other);
+    return MangayomiBackupUpdateMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupUpdate,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupUpdateMapper.ensureInitialized().hashValue(this as MangayomiBackupUpdate);
+    return MangayomiBackupUpdateMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupUpdate,
+    );
   }
 }
 
-extension MangayomiBackupUpdateValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupUpdate, $Out> {
-  MangayomiBackupUpdateCopyWith<$R, MangayomiBackupUpdate, $Out> get $asMangayomiBackupUpdate =>
-      $base.as((v, t, t2) => _MangayomiBackupUpdateCopyWithImpl(v, t, t2));
+extension MangayomiBackupUpdateValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupUpdate, $Out> {
+  MangayomiBackupUpdateCopyWith<$R, MangayomiBackupUpdate, $Out>
+  get $asMangayomiBackupUpdate => $base.as(
+    (v, t, t2) => _MangayomiBackupUpdateCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupUpdateCopyWith<$R, $In extends MangayomiBackupUpdate, $Out>
+abstract class MangayomiBackupUpdateCopyWith<
+  $R,
+  $In extends MangayomiBackupUpdate,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({int? mangaId, String? chapterName, String? date, int? id});
-  MangayomiBackupUpdateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupUpdateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupUpdateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupUpdate, $Out>
+class _MangayomiBackupUpdateCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupUpdate, $Out>
     implements MangayomiBackupUpdateCopyWith<$R, MangayomiBackupUpdate, $Out> {
   _MangayomiBackupUpdateCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupUpdate> $mapper = MangayomiBackupUpdateMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupUpdate> $mapper =
+      MangayomiBackupUpdateMapper.ensureInitialized();
   @override
-  $R call({Object? mangaId = $none, Object? chapterName = $none, Object? date = $none, Object? id = $none}) => $apply(
+  $R call({
+    Object? mangaId = $none,
+    Object? chapterName = $none,
+    Object? date = $none,
+    Object? id = $none,
+  }) => $apply(
     FieldCopyWithData({
       if (mangaId != $none) #mangaId: mangaId,
       if (chapterName != $none) #chapterName: chapterName,
@@ -1797,17 +2379,21 @@ class _MangayomiBackupUpdateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R,
   );
 
   @override
-  MangayomiBackupUpdateCopyWith<$R2, MangayomiBackupUpdate, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupUpdateCopyWithImpl($value, $cast, t);
+  MangayomiBackupUpdateCopyWith<$R2, MangayomiBackupUpdate, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupUpdateCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupExtensionPreferencesMapper extends ClassMapperBase<MangayomiBackupExtensionPreferences> {
+class MangayomiBackupExtensionPreferencesMapper
+    extends ClassMapperBase<MangayomiBackupExtensionPreferences> {
   MangayomiBackupExtensionPreferencesMapper._();
 
   static MangayomiBackupExtensionPreferencesMapper? _instance;
   static MangayomiBackupExtensionPreferencesMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MangayomiBackupExtensionPreferencesMapper._());
+      MapperContainer.globals.use(
+        _instance = MangayomiBackupExtensionPreferencesMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
       EditTextPreferenceMapper.ensureInitialized();
       ListPreferenceMapper.ensureInitialized();
@@ -1821,34 +2407,55 @@ class MangayomiBackupExtensionPreferencesMapper extends ClassMapperBase<Mangayom
   final String id = 'MangayomiBackupExtensionPreferences';
 
   static int? _$id(MangayomiBackupExtensionPreferences v) => v.id;
-  static const Field<MangayomiBackupExtensionPreferences, int> _f$id = Field('id', _$id, opt: true);
+  static const Field<MangayomiBackupExtensionPreferences, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+  );
   static int? _$sourceId(MangayomiBackupExtensionPreferences v) => v.sourceId;
-  static const Field<MangayomiBackupExtensionPreferences, int> _f$sourceId = Field('sourceId', _$sourceId, opt: true);
+  static const Field<MangayomiBackupExtensionPreferences, int> _f$sourceId =
+      Field('sourceId', _$sourceId, opt: true);
   static String? _$key(MangayomiBackupExtensionPreferences v) => v.key;
-  static const Field<MangayomiBackupExtensionPreferences, String> _f$key = Field('key', _$key, opt: true);
-  static EditTextPreference? _$editTextPreference(MangayomiBackupExtensionPreferences v) => v.editTextPreference;
-  static const Field<MangayomiBackupExtensionPreferences, EditTextPreference> _f$editTextPreference = Field(
+  static const Field<MangayomiBackupExtensionPreferences, String> _f$key =
+      Field('key', _$key, opt: true);
+  static EditTextPreference? _$editTextPreference(
+    MangayomiBackupExtensionPreferences v,
+  ) => v.editTextPreference;
+  static const Field<MangayomiBackupExtensionPreferences, EditTextPreference>
+  _f$editTextPreference = Field(
     'editTextPreference',
     _$editTextPreference,
     opt: true,
   );
-  static ListPreference? _$listPreference(MangayomiBackupExtensionPreferences v) => v.listPreference;
-  static const Field<MangayomiBackupExtensionPreferences, ListPreference> _f$listPreference = Field(
-    'listPreference',
-    _$listPreference,
-    opt: true,
-  );
-  static SwitchPreferenceCompat? _$switchPreferenceCompat(MangayomiBackupExtensionPreferences v) =>
-      v.switchPreferenceCompat;
-  static const Field<MangayomiBackupExtensionPreferences, SwitchPreferenceCompat> _f$switchPreferenceCompat = Field(
+  static ListPreference? _$listPreference(
+    MangayomiBackupExtensionPreferences v,
+  ) => v.listPreference;
+  static const Field<MangayomiBackupExtensionPreferences, ListPreference>
+  _f$listPreference = Field('listPreference', _$listPreference, opt: true);
+  static SwitchPreferenceCompat? _$switchPreferenceCompat(
+    MangayomiBackupExtensionPreferences v,
+  ) => v.switchPreferenceCompat;
+  static const Field<
+    MangayomiBackupExtensionPreferences,
+    SwitchPreferenceCompat
+  >
+  _f$switchPreferenceCompat = Field(
     'switchPreferenceCompat',
     _$switchPreferenceCompat,
     opt: true,
   );
-  static MultiSelectListPreference? _$multiSelectListPreference(MangayomiBackupExtensionPreferences v) =>
-      v.multiSelectListPreference;
-  static const Field<MangayomiBackupExtensionPreferences, MultiSelectListPreference> _f$multiSelectListPreference =
-      Field('multiSelectListPreference', _$multiSelectListPreference, opt: true);
+  static MultiSelectListPreference? _$multiSelectListPreference(
+    MangayomiBackupExtensionPreferences v,
+  ) => v.multiSelectListPreference;
+  static const Field<
+    MangayomiBackupExtensionPreferences,
+    MultiSelectListPreference
+  >
+  _f$multiSelectListPreference = Field(
+    'multiSelectListPreference',
+    _$multiSelectListPreference,
+    opt: true,
+  );
 
   @override
   final MappableFields<MangayomiBackupExtensionPreferences> fields = const {
@@ -1877,24 +2484,31 @@ class MangayomiBackupExtensionPreferencesMapper extends ClassMapperBase<Mangayom
   final Function instantiate = _instantiate;
 
   static MangayomiBackupExtensionPreferences fromMap(Map<String, dynamic> map) {
-    return ensureInitialized().decodeMap<MangayomiBackupExtensionPreferences>(map);
+    return ensureInitialized().decodeMap<MangayomiBackupExtensionPreferences>(
+      map,
+    );
   }
 
   static MangayomiBackupExtensionPreferences fromJson(String json) {
-    return ensureInitialized().decodeJson<MangayomiBackupExtensionPreferences>(json);
+    return ensureInitialized().decodeJson<MangayomiBackupExtensionPreferences>(
+      json,
+    );
   }
 }
 
 mixin MangayomiBackupExtensionPreferencesMappable {
   String toJson() {
     return MangayomiBackupExtensionPreferencesMapper.ensureInitialized()
-        .encodeJson<MangayomiBackupExtensionPreferences>(this as MangayomiBackupExtensionPreferences);
+        .encodeJson<MangayomiBackupExtensionPreferences>(
+          this as MangayomiBackupExtensionPreferences,
+        );
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized().encodeMap<MangayomiBackupExtensionPreferences>(
-      this as MangayomiBackupExtensionPreferences,
-    );
+    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupExtensionPreferences>(
+          this as MangayomiBackupExtensionPreferences,
+        );
   }
 
   MangayomiBackupExtensionPreferencesCopyWith<
@@ -1902,47 +2516,64 @@ mixin MangayomiBackupExtensionPreferencesMappable {
     MangayomiBackupExtensionPreferences,
     MangayomiBackupExtensionPreferences
   >
-  get copyWith => _MangayomiBackupExtensionPreferencesCopyWithImpl(
-    this as MangayomiBackupExtensionPreferences,
-    $identity,
-    $identity,
-  );
+  get copyWith =>
+      _MangayomiBackupExtensionPreferencesCopyWithImpl<
+        MangayomiBackupExtensionPreferences,
+        MangayomiBackupExtensionPreferences
+      >(this as MangayomiBackupExtensionPreferences, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized().stringifyValue(
-      this as MangayomiBackupExtensionPreferences,
-    );
+    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized()
+        .stringifyValue(this as MangayomiBackupExtensionPreferences);
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized().equalsValue(
-      this as MangayomiBackupExtensionPreferences,
-      other,
-    );
+    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized()
+        .equalsValue(this as MangayomiBackupExtensionPreferences, other);
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized().hashValue(
-      this as MangayomiBackupExtensionPreferences,
-    );
+    return MangayomiBackupExtensionPreferencesMapper.ensureInitialized()
+        .hashValue(this as MangayomiBackupExtensionPreferences);
   }
 }
 
 extension MangayomiBackupExtensionPreferencesValueCopy<$R, $Out>
     on ObjectCopyWith<$R, MangayomiBackupExtensionPreferences, $Out> {
-  MangayomiBackupExtensionPreferencesCopyWith<$R, MangayomiBackupExtensionPreferences, $Out>
-  get $asMangayomiBackupExtensionPreferences =>
-      $base.as((v, t, t2) => _MangayomiBackupExtensionPreferencesCopyWithImpl(v, t, t2));
+  MangayomiBackupExtensionPreferencesCopyWith<
+    $R,
+    MangayomiBackupExtensionPreferences,
+    $Out
+  >
+  get $asMangayomiBackupExtensionPreferences => $base.as(
+    (v, t, t2) =>
+        _MangayomiBackupExtensionPreferencesCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupExtensionPreferencesCopyWith<$R, $In extends MangayomiBackupExtensionPreferences, $Out>
+abstract class MangayomiBackupExtensionPreferencesCopyWith<
+  $R,
+  $In extends MangayomiBackupExtensionPreferences,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  EditTextPreferenceCopyWith<$R, EditTextPreference, EditTextPreference>? get editTextPreference;
-  ListPreferenceCopyWith<$R, ListPreference, ListPreference>? get listPreference;
-  SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, SwitchPreferenceCompat>? get switchPreferenceCompat;
-  MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, MultiSelectListPreference>?
+  EditTextPreferenceCopyWith<$R, EditTextPreference, EditTextPreference>?
+  get editTextPreference;
+  ListPreferenceCopyWith<$R, ListPreference, ListPreference>?
+  get listPreference;
+  SwitchPreferenceCompatCopyWith<
+    $R,
+    SwitchPreferenceCompat,
+    SwitchPreferenceCompat
+  >?
+  get switchPreferenceCompat;
+  MultiSelectListPreferenceCopyWith<
+    $R,
+    MultiSelectListPreference,
+    MultiSelectListPreference
+  >?
   get multiSelectListPreference;
   $R call({
     int? id,
@@ -1953,30 +2584,53 @@ abstract class MangayomiBackupExtensionPreferencesCopyWith<$R, $In extends Manga
     SwitchPreferenceCompat? switchPreferenceCompat,
     MultiSelectListPreference? multiSelectListPreference,
   });
-  MangayomiBackupExtensionPreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupExtensionPreferencesCopyWith<$R2, $In, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
 class _MangayomiBackupExtensionPreferencesCopyWithImpl<$R, $Out>
     extends ClassCopyWithBase<$R, MangayomiBackupExtensionPreferences, $Out>
-    implements MangayomiBackupExtensionPreferencesCopyWith<$R, MangayomiBackupExtensionPreferences, $Out> {
-  _MangayomiBackupExtensionPreferencesCopyWithImpl(super.value, super.then, super.then2);
+    implements
+        MangayomiBackupExtensionPreferencesCopyWith<
+          $R,
+          MangayomiBackupExtensionPreferences,
+          $Out
+        > {
+  _MangayomiBackupExtensionPreferencesCopyWithImpl(
+    super.value,
+    super.then,
+    super.then2,
+  );
 
   @override
   late final ClassMapperBase<MangayomiBackupExtensionPreferences> $mapper =
       MangayomiBackupExtensionPreferencesMapper.ensureInitialized();
   @override
-  EditTextPreferenceCopyWith<$R, EditTextPreference, EditTextPreference>? get editTextPreference =>
-      $value.editTextPreference?.copyWith.$chain((v) => call(editTextPreference: v));
+  EditTextPreferenceCopyWith<$R, EditTextPreference, EditTextPreference>?
+  get editTextPreference => $value.editTextPreference?.copyWith.$chain(
+    (v) => call(editTextPreference: v),
+  );
   @override
-  ListPreferenceCopyWith<$R, ListPreference, ListPreference>? get listPreference =>
+  ListPreferenceCopyWith<$R, ListPreference, ListPreference>?
+  get listPreference =>
       $value.listPreference?.copyWith.$chain((v) => call(listPreference: v));
   @override
-  SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, SwitchPreferenceCompat>? get switchPreferenceCompat =>
-      $value.switchPreferenceCompat?.copyWith.$chain((v) => call(switchPreferenceCompat: v));
+  SwitchPreferenceCompatCopyWith<
+    $R,
+    SwitchPreferenceCompat,
+    SwitchPreferenceCompat
+  >?
+  get switchPreferenceCompat => $value.switchPreferenceCompat?.copyWith.$chain(
+    (v) => call(switchPreferenceCompat: v),
+  );
   @override
-  MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, MultiSelectListPreference>?
-  get multiSelectListPreference =>
-      $value.multiSelectListPreference?.copyWith.$chain((v) => call(multiSelectListPreference: v));
+  MultiSelectListPreferenceCopyWith<
+    $R,
+    MultiSelectListPreference,
+    MultiSelectListPreference
+  >?
+  get multiSelectListPreference => $value.multiSelectListPreference?.copyWith
+      .$chain((v) => call(multiSelectListPreference: v));
   @override
   $R call({
     Object? id = $none,
@@ -1993,25 +2647,45 @@ class _MangayomiBackupExtensionPreferencesCopyWithImpl<$R, $Out>
       if (key != $none) #key: key,
       if (editTextPreference != $none) #editTextPreference: editTextPreference,
       if (listPreference != $none) #listPreference: listPreference,
-      if (switchPreferenceCompat != $none) #switchPreferenceCompat: switchPreferenceCompat,
-      if (multiSelectListPreference != $none) #multiSelectListPreference: multiSelectListPreference,
+      if (switchPreferenceCompat != $none)
+        #switchPreferenceCompat: switchPreferenceCompat,
+      if (multiSelectListPreference != $none)
+        #multiSelectListPreference: multiSelectListPreference,
     }),
   );
   @override
-  MangayomiBackupExtensionPreferences $make(CopyWithData data) => MangayomiBackupExtensionPreferences(
-    id: data.get(#id, or: $value.id),
-    sourceId: data.get(#sourceId, or: $value.sourceId),
-    key: data.get(#key, or: $value.key),
-    editTextPreference: data.get(#editTextPreference, or: $value.editTextPreference),
-    listPreference: data.get(#listPreference, or: $value.listPreference),
-    switchPreferenceCompat: data.get(#switchPreferenceCompat, or: $value.switchPreferenceCompat),
-    multiSelectListPreference: data.get(#multiSelectListPreference, or: $value.multiSelectListPreference),
-  );
+  MangayomiBackupExtensionPreferences $make(CopyWithData data) =>
+      MangayomiBackupExtensionPreferences(
+        id: data.get(#id, or: $value.id),
+        sourceId: data.get(#sourceId, or: $value.sourceId),
+        key: data.get(#key, or: $value.key),
+        editTextPreference: data.get(
+          #editTextPreference,
+          or: $value.editTextPreference,
+        ),
+        listPreference: data.get(#listPreference, or: $value.listPreference),
+        switchPreferenceCompat: data.get(
+          #switchPreferenceCompat,
+          or: $value.switchPreferenceCompat,
+        ),
+        multiSelectListPreference: data.get(
+          #multiSelectListPreference,
+          or: $value.multiSelectListPreference,
+        ),
+      );
 
   @override
-  MangayomiBackupExtensionPreferencesCopyWith<$R2, MangayomiBackupExtensionPreferences, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _MangayomiBackupExtensionPreferencesCopyWithImpl($value, $cast, t);
+  MangayomiBackupExtensionPreferencesCopyWith<
+    $R2,
+    MangayomiBackupExtensionPreferences,
+    $Out2
+  >
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupExtensionPreferencesCopyWithImpl<$R2, $Out2>(
+        $value,
+        $cast,
+        t,
+      );
 }
 
 class EditTextPreferenceMapper extends ClassMapperBase<EditTextPreference> {
@@ -2030,17 +2704,41 @@ class EditTextPreferenceMapper extends ClassMapperBase<EditTextPreference> {
   final String id = 'EditTextPreference';
 
   static String? _$title(EditTextPreference v) => v.title;
-  static const Field<EditTextPreference, String> _f$title = Field('title', _$title, opt: true);
+  static const Field<EditTextPreference, String> _f$title = Field(
+    'title',
+    _$title,
+    opt: true,
+  );
   static String? _$summary(EditTextPreference v) => v.summary;
-  static const Field<EditTextPreference, String> _f$summary = Field('summary', _$summary, opt: true);
+  static const Field<EditTextPreference, String> _f$summary = Field(
+    'summary',
+    _$summary,
+    opt: true,
+  );
   static String? _$value(EditTextPreference v) => v.value;
-  static const Field<EditTextPreference, String> _f$value = Field('value', _$value, opt: true);
+  static const Field<EditTextPreference, String> _f$value = Field(
+    'value',
+    _$value,
+    opt: true,
+  );
   static String? _$dialogTitle(EditTextPreference v) => v.dialogTitle;
-  static const Field<EditTextPreference, String> _f$dialogTitle = Field('dialogTitle', _$dialogTitle, opt: true);
+  static const Field<EditTextPreference, String> _f$dialogTitle = Field(
+    'dialogTitle',
+    _$dialogTitle,
+    opt: true,
+  );
   static String? _$dialogMessage(EditTextPreference v) => v.dialogMessage;
-  static const Field<EditTextPreference, String> _f$dialogMessage = Field('dialogMessage', _$dialogMessage, opt: true);
+  static const Field<EditTextPreference, String> _f$dialogMessage = Field(
+    'dialogMessage',
+    _$dialogMessage,
+    opt: true,
+  );
   static String? _$text(EditTextPreference v) => v.text;
-  static const Field<EditTextPreference, String> _f$text = Field('text', _$text, opt: true);
+  static const Field<EditTextPreference, String> _f$text = Field(
+    'text',
+    _$text,
+    opt: true,
+  );
 
   @override
   final MappableFields<EditTextPreference> fields = const {
@@ -2077,48 +2775,84 @@ class EditTextPreferenceMapper extends ClassMapperBase<EditTextPreference> {
 
 mixin EditTextPreferenceMappable {
   String toJson() {
-    return EditTextPreferenceMapper.ensureInitialized().encodeJson<EditTextPreference>(this as EditTextPreference);
+    return EditTextPreferenceMapper.ensureInitialized()
+        .encodeJson<EditTextPreference>(this as EditTextPreference);
   }
 
   Map<String, dynamic> toMap() {
-    return EditTextPreferenceMapper.ensureInitialized().encodeMap<EditTextPreference>(this as EditTextPreference);
+    return EditTextPreferenceMapper.ensureInitialized()
+        .encodeMap<EditTextPreference>(this as EditTextPreference);
   }
 
-  EditTextPreferenceCopyWith<EditTextPreference, EditTextPreference, EditTextPreference> get copyWith =>
-      _EditTextPreferenceCopyWithImpl(this as EditTextPreference, $identity, $identity);
+  EditTextPreferenceCopyWith<
+    EditTextPreference,
+    EditTextPreference,
+    EditTextPreference
+  >
+  get copyWith =>
+      _EditTextPreferenceCopyWithImpl<EditTextPreference, EditTextPreference>(
+        this as EditTextPreference,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return EditTextPreferenceMapper.ensureInitialized().stringifyValue(this as EditTextPreference);
+    return EditTextPreferenceMapper.ensureInitialized().stringifyValue(
+      this as EditTextPreference,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return EditTextPreferenceMapper.ensureInitialized().equalsValue(this as EditTextPreference, other);
+    return EditTextPreferenceMapper.ensureInitialized().equalsValue(
+      this as EditTextPreference,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return EditTextPreferenceMapper.ensureInitialized().hashValue(this as EditTextPreference);
+    return EditTextPreferenceMapper.ensureInitialized().hashValue(
+      this as EditTextPreference,
+    );
   }
 }
 
-extension EditTextPreferenceValueCopy<$R, $Out> on ObjectCopyWith<$R, EditTextPreference, $Out> {
-  EditTextPreferenceCopyWith<$R, EditTextPreference, $Out> get $asEditTextPreference =>
-      $base.as((v, t, t2) => _EditTextPreferenceCopyWithImpl(v, t, t2));
+extension EditTextPreferenceValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, EditTextPreference, $Out> {
+  EditTextPreferenceCopyWith<$R, EditTextPreference, $Out>
+  get $asEditTextPreference => $base.as(
+    (v, t, t2) => _EditTextPreferenceCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class EditTextPreferenceCopyWith<$R, $In extends EditTextPreference, $Out>
+abstract class EditTextPreferenceCopyWith<
+  $R,
+  $In extends EditTextPreference,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? title, String? summary, String? value, String? dialogTitle, String? dialogMessage, String? text});
-  EditTextPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $R call({
+    String? title,
+    String? summary,
+    String? value,
+    String? dialogTitle,
+    String? dialogMessage,
+    String? text,
+  });
+  EditTextPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _EditTextPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, EditTextPreference, $Out>
+class _EditTextPreferenceCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, EditTextPreference, $Out>
     implements EditTextPreferenceCopyWith<$R, EditTextPreference, $Out> {
   _EditTextPreferenceCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<EditTextPreference> $mapper = EditTextPreferenceMapper.ensureInitialized();
+  late final ClassMapperBase<EditTextPreference> $mapper =
+      EditTextPreferenceMapper.ensureInitialized();
   @override
   $R call({
     Object? title = $none,
@@ -2148,8 +2882,9 @@ class _EditTextPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Ed
   );
 
   @override
-  EditTextPreferenceCopyWith<$R2, EditTextPreference, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _EditTextPreferenceCopyWithImpl($value, $cast, t);
+  EditTextPreferenceCopyWith<$R2, EditTextPreference, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _EditTextPreferenceCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class ListPreferenceMapper extends ClassMapperBase<ListPreference> {
@@ -2168,15 +2903,35 @@ class ListPreferenceMapper extends ClassMapperBase<ListPreference> {
   final String id = 'ListPreference';
 
   static String? _$title(ListPreference v) => v.title;
-  static const Field<ListPreference, String> _f$title = Field('title', _$title, opt: true);
+  static const Field<ListPreference, String> _f$title = Field(
+    'title',
+    _$title,
+    opt: true,
+  );
   static String? _$summary(ListPreference v) => v.summary;
-  static const Field<ListPreference, String> _f$summary = Field('summary', _$summary, opt: true);
+  static const Field<ListPreference, String> _f$summary = Field(
+    'summary',
+    _$summary,
+    opt: true,
+  );
   static int? _$valueIndex(ListPreference v) => v.valueIndex;
-  static const Field<ListPreference, int> _f$valueIndex = Field('valueIndex', _$valueIndex, opt: true);
+  static const Field<ListPreference, int> _f$valueIndex = Field(
+    'valueIndex',
+    _$valueIndex,
+    opt: true,
+  );
   static List<String>? _$entries(ListPreference v) => v.entries;
-  static const Field<ListPreference, List<String>> _f$entries = Field('entries', _$entries, opt: true);
+  static const Field<ListPreference, List<String>> _f$entries = Field(
+    'entries',
+    _$entries,
+    opt: true,
+  );
   static List<String>? _$entryValues(ListPreference v) => v.entryValues;
-  static const Field<ListPreference, List<String>> _f$entryValues = Field('entryValues', _$entryValues, opt: true);
+  static const Field<ListPreference, List<String>> _f$entryValues = Field(
+    'entryValues',
+    _$entryValues,
+    opt: true,
+  );
 
   @override
   final MappableFields<ListPreference> fields = const {
@@ -2211,59 +2966,94 @@ class ListPreferenceMapper extends ClassMapperBase<ListPreference> {
 
 mixin ListPreferenceMappable {
   String toJson() {
-    return ListPreferenceMapper.ensureInitialized().encodeJson<ListPreference>(this as ListPreference);
+    return ListPreferenceMapper.ensureInitialized().encodeJson<ListPreference>(
+      this as ListPreference,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return ListPreferenceMapper.ensureInitialized().encodeMap<ListPreference>(this as ListPreference);
+    return ListPreferenceMapper.ensureInitialized().encodeMap<ListPreference>(
+      this as ListPreference,
+    );
   }
 
-  ListPreferenceCopyWith<ListPreference, ListPreference, ListPreference> get copyWith =>
-      _ListPreferenceCopyWithImpl(this as ListPreference, $identity, $identity);
+  ListPreferenceCopyWith<ListPreference, ListPreference, ListPreference>
+  get copyWith => _ListPreferenceCopyWithImpl<ListPreference, ListPreference>(
+    this as ListPreference,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
-    return ListPreferenceMapper.ensureInitialized().stringifyValue(this as ListPreference);
+    return ListPreferenceMapper.ensureInitialized().stringifyValue(
+      this as ListPreference,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ListPreferenceMapper.ensureInitialized().equalsValue(this as ListPreference, other);
+    return ListPreferenceMapper.ensureInitialized().equalsValue(
+      this as ListPreference,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ListPreferenceMapper.ensureInitialized().hashValue(this as ListPreference);
+    return ListPreferenceMapper.ensureInitialized().hashValue(
+      this as ListPreference,
+    );
   }
 }
 
-extension ListPreferenceValueCopy<$R, $Out> on ObjectCopyWith<$R, ListPreference, $Out> {
+extension ListPreferenceValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, ListPreference, $Out> {
   ListPreferenceCopyWith<$R, ListPreference, $Out> get $asListPreference =>
-      $base.as((v, t, t2) => _ListPreferenceCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _ListPreferenceCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class ListPreferenceCopyWith<$R, $In extends ListPreference, $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class ListPreferenceCopyWith<$R, $In extends ListPreference, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entries;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entryValues;
-  $R call({String? title, String? summary, int? valueIndex, List<String>? entries, List<String>? entryValues});
-  ListPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $R call({
+    String? title,
+    String? summary,
+    int? valueIndex,
+    List<String>? entries,
+    List<String>? entryValues,
+  });
+  ListPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _ListPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, ListPreference, $Out>
+class _ListPreferenceCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, ListPreference, $Out>
     implements ListPreferenceCopyWith<$R, ListPreference, $Out> {
   _ListPreferenceCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<ListPreference> $mapper = ListPreferenceMapper.ensureInitialized();
+  late final ClassMapperBase<ListPreference> $mapper =
+      ListPreferenceMapper.ensureInitialized();
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entries =>
       $value.entries != null
-          ? ListCopyWith($value.entries!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(entries: v))
-          : null;
+      ? ListCopyWith(
+          $value.entries!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(entries: v),
+        )
+      : null;
   @override
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entryValues =>
-      $value.entryValues != null
-          ? ListCopyWith($value.entryValues!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(entryValues: v))
-          : null;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>?
+  get entryValues => $value.entryValues != null
+      ? ListCopyWith(
+          $value.entryValues!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(entryValues: v),
+        )
+      : null;
   @override
   $R call({
     Object? title = $none,
@@ -2290,11 +3080,13 @@ class _ListPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, ListPr
   );
 
   @override
-  ListPreferenceCopyWith<$R2, ListPreference, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _ListPreferenceCopyWithImpl($value, $cast, t);
+  ListPreferenceCopyWith<$R2, ListPreference, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _ListPreferenceCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class SwitchPreferenceCompatMapper extends ClassMapperBase<SwitchPreferenceCompat> {
+class SwitchPreferenceCompatMapper
+    extends ClassMapperBase<SwitchPreferenceCompat> {
   SwitchPreferenceCompatMapper._();
 
   static SwitchPreferenceCompatMapper? _instance;
@@ -2310,11 +3102,23 @@ class SwitchPreferenceCompatMapper extends ClassMapperBase<SwitchPreferenceCompa
   final String id = 'SwitchPreferenceCompat';
 
   static String? _$title(SwitchPreferenceCompat v) => v.title;
-  static const Field<SwitchPreferenceCompat, String> _f$title = Field('title', _$title, opt: true);
+  static const Field<SwitchPreferenceCompat, String> _f$title = Field(
+    'title',
+    _$title,
+    opt: true,
+  );
   static String? _$summary(SwitchPreferenceCompat v) => v.summary;
-  static const Field<SwitchPreferenceCompat, String> _f$summary = Field('summary', _$summary, opt: true);
+  static const Field<SwitchPreferenceCompat, String> _f$summary = Field(
+    'summary',
+    _$summary,
+    opt: true,
+  );
   static bool? _$value(SwitchPreferenceCompat v) => v.value;
-  static const Field<SwitchPreferenceCompat, bool> _f$value = Field('value', _$value, opt: true);
+  static const Field<SwitchPreferenceCompat, bool> _f$value = Field(
+    'value',
+    _$value,
+    opt: true,
+  );
 
   @override
   final MappableFields<SwitchPreferenceCompat> fields = const {
@@ -2324,7 +3128,11 @@ class SwitchPreferenceCompatMapper extends ClassMapperBase<SwitchPreferenceCompa
   };
 
   static SwitchPreferenceCompat _instantiate(DecodingData data) {
-    return SwitchPreferenceCompat(title: data.dec(_f$title), summary: data.dec(_f$summary), value: data.dec(_f$value));
+    return SwitchPreferenceCompat(
+      title: data.dec(_f$title),
+      summary: data.dec(_f$summary),
+      value: data.dec(_f$value),
+    );
   }
 
   @override
@@ -2341,54 +3149,83 @@ class SwitchPreferenceCompatMapper extends ClassMapperBase<SwitchPreferenceCompa
 
 mixin SwitchPreferenceCompatMappable {
   String toJson() {
-    return SwitchPreferenceCompatMapper.ensureInitialized().encodeJson<SwitchPreferenceCompat>(
-      this as SwitchPreferenceCompat,
-    );
+    return SwitchPreferenceCompatMapper.ensureInitialized()
+        .encodeJson<SwitchPreferenceCompat>(this as SwitchPreferenceCompat);
   }
 
   Map<String, dynamic> toMap() {
-    return SwitchPreferenceCompatMapper.ensureInitialized().encodeMap<SwitchPreferenceCompat>(
-      this as SwitchPreferenceCompat,
-    );
+    return SwitchPreferenceCompatMapper.ensureInitialized()
+        .encodeMap<SwitchPreferenceCompat>(this as SwitchPreferenceCompat);
   }
 
-  SwitchPreferenceCompatCopyWith<SwitchPreferenceCompat, SwitchPreferenceCompat, SwitchPreferenceCompat> get copyWith =>
-      _SwitchPreferenceCompatCopyWithImpl(this as SwitchPreferenceCompat, $identity, $identity);
+  SwitchPreferenceCompatCopyWith<
+    SwitchPreferenceCompat,
+    SwitchPreferenceCompat,
+    SwitchPreferenceCompat
+  >
+  get copyWith =>
+      _SwitchPreferenceCompatCopyWithImpl<
+        SwitchPreferenceCompat,
+        SwitchPreferenceCompat
+      >(this as SwitchPreferenceCompat, $identity, $identity);
   @override
   String toString() {
-    return SwitchPreferenceCompatMapper.ensureInitialized().stringifyValue(this as SwitchPreferenceCompat);
+    return SwitchPreferenceCompatMapper.ensureInitialized().stringifyValue(
+      this as SwitchPreferenceCompat,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return SwitchPreferenceCompatMapper.ensureInitialized().equalsValue(this as SwitchPreferenceCompat, other);
+    return SwitchPreferenceCompatMapper.ensureInitialized().equalsValue(
+      this as SwitchPreferenceCompat,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return SwitchPreferenceCompatMapper.ensureInitialized().hashValue(this as SwitchPreferenceCompat);
+    return SwitchPreferenceCompatMapper.ensureInitialized().hashValue(
+      this as SwitchPreferenceCompat,
+    );
   }
 }
 
-extension SwitchPreferenceCompatValueCopy<$R, $Out> on ObjectCopyWith<$R, SwitchPreferenceCompat, $Out> {
-  SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, $Out> get $asSwitchPreferenceCompat =>
-      $base.as((v, t, t2) => _SwitchPreferenceCompatCopyWithImpl(v, t, t2));
+extension SwitchPreferenceCompatValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, SwitchPreferenceCompat, $Out> {
+  SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, $Out>
+  get $asSwitchPreferenceCompat => $base.as(
+    (v, t, t2) => _SwitchPreferenceCompatCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class SwitchPreferenceCompatCopyWith<$R, $In extends SwitchPreferenceCompat, $Out>
+abstract class SwitchPreferenceCompatCopyWith<
+  $R,
+  $In extends SwitchPreferenceCompat,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({String? title, String? summary, bool? value});
-  SwitchPreferenceCompatCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  SwitchPreferenceCompatCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _SwitchPreferenceCompatCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, SwitchPreferenceCompat, $Out>
-    implements SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, $Out> {
+class _SwitchPreferenceCompatCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, SwitchPreferenceCompat, $Out>
+    implements
+        SwitchPreferenceCompatCopyWith<$R, SwitchPreferenceCompat, $Out> {
   _SwitchPreferenceCompatCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<SwitchPreferenceCompat> $mapper = SwitchPreferenceCompatMapper.ensureInitialized();
+  late final ClassMapperBase<SwitchPreferenceCompat> $mapper =
+      SwitchPreferenceCompatMapper.ensureInitialized();
   @override
-  $R call({Object? title = $none, Object? summary = $none, Object? value = $none}) => $apply(
+  $R call({
+    Object? title = $none,
+    Object? summary = $none,
+    Object? value = $none,
+  }) => $apply(
     FieldCopyWithData({
       if (title != $none) #title: title,
       if (summary != $none) #summary: summary,
@@ -2403,17 +3240,21 @@ class _SwitchPreferenceCompatCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R
   );
 
   @override
-  SwitchPreferenceCompatCopyWith<$R2, SwitchPreferenceCompat, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _SwitchPreferenceCompatCopyWithImpl($value, $cast, t);
+  SwitchPreferenceCompatCopyWith<$R2, SwitchPreferenceCompat, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _SwitchPreferenceCompatCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MultiSelectListPreferenceMapper extends ClassMapperBase<MultiSelectListPreference> {
+class MultiSelectListPreferenceMapper
+    extends ClassMapperBase<MultiSelectListPreference> {
   MultiSelectListPreferenceMapper._();
 
   static MultiSelectListPreferenceMapper? _instance;
   static MultiSelectListPreferenceMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MultiSelectListPreferenceMapper._());
+      MapperContainer.globals.use(
+        _instance = MultiSelectListPreferenceMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
     }
     return _instance!;
@@ -2423,19 +3264,30 @@ class MultiSelectListPreferenceMapper extends ClassMapperBase<MultiSelectListPre
   final String id = 'MultiSelectListPreference';
 
   static String? _$title(MultiSelectListPreference v) => v.title;
-  static const Field<MultiSelectListPreference, String> _f$title = Field('title', _$title, opt: true);
-  static String? _$summary(MultiSelectListPreference v) => v.summary;
-  static const Field<MultiSelectListPreference, String> _f$summary = Field('summary', _$summary, opt: true);
-  static List<String>? _$values(MultiSelectListPreference v) => v.values;
-  static const Field<MultiSelectListPreference, List<String>> _f$values = Field('values', _$values, opt: true);
-  static List<String>? _$entries(MultiSelectListPreference v) => v.entries;
-  static const Field<MultiSelectListPreference, List<String>> _f$entries = Field('entries', _$entries, opt: true);
-  static List<String>? _$entryValues(MultiSelectListPreference v) => v.entryValues;
-  static const Field<MultiSelectListPreference, List<String>> _f$entryValues = Field(
-    'entryValues',
-    _$entryValues,
+  static const Field<MultiSelectListPreference, String> _f$title = Field(
+    'title',
+    _$title,
     opt: true,
   );
+  static String? _$summary(MultiSelectListPreference v) => v.summary;
+  static const Field<MultiSelectListPreference, String> _f$summary = Field(
+    'summary',
+    _$summary,
+    opt: true,
+  );
+  static List<String>? _$values(MultiSelectListPreference v) => v.values;
+  static const Field<MultiSelectListPreference, List<String>> _f$values = Field(
+    'values',
+    _$values,
+    opt: true,
+  );
+  static List<String>? _$entries(MultiSelectListPreference v) => v.entries;
+  static const Field<MultiSelectListPreference, List<String>> _f$entries =
+      Field('entries', _$entries, opt: true);
+  static List<String>? _$entryValues(MultiSelectListPreference v) =>
+      v.entryValues;
+  static const Field<MultiSelectListPreference, List<String>> _f$entryValues =
+      Field('entryValues', _$entryValues, opt: true);
 
   @override
   final MappableFields<MultiSelectListPreference> fields = const {
@@ -2470,70 +3322,117 @@ class MultiSelectListPreferenceMapper extends ClassMapperBase<MultiSelectListPre
 
 mixin MultiSelectListPreferenceMappable {
   String toJson() {
-    return MultiSelectListPreferenceMapper.ensureInitialized().encodeJson<MultiSelectListPreference>(
-      this as MultiSelectListPreference,
-    );
+    return MultiSelectListPreferenceMapper.ensureInitialized()
+        .encodeJson<MultiSelectListPreference>(
+          this as MultiSelectListPreference,
+        );
   }
 
   Map<String, dynamic> toMap() {
-    return MultiSelectListPreferenceMapper.ensureInitialized().encodeMap<MultiSelectListPreference>(
-      this as MultiSelectListPreference,
-    );
+    return MultiSelectListPreferenceMapper.ensureInitialized()
+        .encodeMap<MultiSelectListPreference>(
+          this as MultiSelectListPreference,
+        );
   }
 
-  MultiSelectListPreferenceCopyWith<MultiSelectListPreference, MultiSelectListPreference, MultiSelectListPreference>
-  get copyWith => _MultiSelectListPreferenceCopyWithImpl(this as MultiSelectListPreference, $identity, $identity);
+  MultiSelectListPreferenceCopyWith<
+    MultiSelectListPreference,
+    MultiSelectListPreference,
+    MultiSelectListPreference
+  >
+  get copyWith =>
+      _MultiSelectListPreferenceCopyWithImpl<
+        MultiSelectListPreference,
+        MultiSelectListPreference
+      >(this as MultiSelectListPreference, $identity, $identity);
   @override
   String toString() {
-    return MultiSelectListPreferenceMapper.ensureInitialized().stringifyValue(this as MultiSelectListPreference);
+    return MultiSelectListPreferenceMapper.ensureInitialized().stringifyValue(
+      this as MultiSelectListPreference,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MultiSelectListPreferenceMapper.ensureInitialized().equalsValue(this as MultiSelectListPreference, other);
+    return MultiSelectListPreferenceMapper.ensureInitialized().equalsValue(
+      this as MultiSelectListPreference,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MultiSelectListPreferenceMapper.ensureInitialized().hashValue(this as MultiSelectListPreference);
+    return MultiSelectListPreferenceMapper.ensureInitialized().hashValue(
+      this as MultiSelectListPreference,
+    );
   }
 }
 
-extension MultiSelectListPreferenceValueCopy<$R, $Out> on ObjectCopyWith<$R, MultiSelectListPreference, $Out> {
-  MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, $Out> get $asMultiSelectListPreference =>
-      $base.as((v, t, t2) => _MultiSelectListPreferenceCopyWithImpl(v, t, t2));
+extension MultiSelectListPreferenceValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MultiSelectListPreference, $Out> {
+  MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, $Out>
+  get $asMultiSelectListPreference => $base.as(
+    (v, t, t2) => _MultiSelectListPreferenceCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MultiSelectListPreferenceCopyWith<$R, $In extends MultiSelectListPreference, $Out>
+abstract class MultiSelectListPreferenceCopyWith<
+  $R,
+  $In extends MultiSelectListPreference,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get values;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entries;
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entryValues;
-  $R call({String? title, String? summary, List<String>? values, List<String>? entries, List<String>? entryValues});
-  MultiSelectListPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  $R call({
+    String? title,
+    String? summary,
+    List<String>? values,
+    List<String>? entries,
+    List<String>? entryValues,
+  });
+  MultiSelectListPreferenceCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MultiSelectListPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MultiSelectListPreference, $Out>
-    implements MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, $Out> {
+class _MultiSelectListPreferenceCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MultiSelectListPreference, $Out>
+    implements
+        MultiSelectListPreferenceCopyWith<$R, MultiSelectListPreference, $Out> {
   _MultiSelectListPreferenceCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MultiSelectListPreference> $mapper = MultiSelectListPreferenceMapper.ensureInitialized();
+  late final ClassMapperBase<MultiSelectListPreference> $mapper =
+      MultiSelectListPreferenceMapper.ensureInitialized();
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get values =>
       $value.values != null
-          ? ListCopyWith($value.values!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(values: v))
-          : null;
+      ? ListCopyWith(
+          $value.values!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(values: v),
+        )
+      : null;
   @override
   ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entries =>
       $value.entries != null
-          ? ListCopyWith($value.entries!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(entries: v))
-          : null;
+      ? ListCopyWith(
+          $value.entries!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(entries: v),
+        )
+      : null;
   @override
-  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>? get entryValues =>
-      $value.entryValues != null
-          ? ListCopyWith($value.entryValues!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(entryValues: v))
-          : null;
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>?
+  get entryValues => $value.entryValues != null
+      ? ListCopyWith(
+          $value.entryValues!,
+          (v, t) => ObjectCopyWith(v, $identity, t),
+          (v) => call(entryValues: v),
+        )
+      : null;
   @override
   $R call({
     Object? title = $none,
@@ -2551,26 +3450,31 @@ class _MultiSelectListPreferenceCopyWithImpl<$R, $Out> extends ClassCopyWithBase
     }),
   );
   @override
-  MultiSelectListPreference $make(CopyWithData data) => MultiSelectListPreference(
-    title: data.get(#title, or: $value.title),
-    summary: data.get(#summary, or: $value.summary),
-    values: data.get(#values, or: $value.values),
-    entries: data.get(#entries, or: $value.entries),
-    entryValues: data.get(#entryValues, or: $value.entryValues),
-  );
+  MultiSelectListPreference $make(CopyWithData data) =>
+      MultiSelectListPreference(
+        title: data.get(#title, or: $value.title),
+        summary: data.get(#summary, or: $value.summary),
+        values: data.get(#values, or: $value.values),
+        entries: data.get(#entries, or: $value.entries),
+        entryValues: data.get(#entryValues, or: $value.entryValues),
+      );
 
   @override
-  MultiSelectListPreferenceCopyWith<$R2, MultiSelectListPreference, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MultiSelectListPreferenceCopyWithImpl($value, $cast, t);
+  MultiSelectListPreferenceCopyWith<$R2, MultiSelectListPreference, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MultiSelectListPreferenceCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
-class MangayomiBackupTrackPreferencesMapper extends ClassMapperBase<MangayomiBackupTrackPreferences> {
+class MangayomiBackupTrackPreferencesMapper
+    extends ClassMapperBase<MangayomiBackupTrackPreferences> {
   MangayomiBackupTrackPreferencesMapper._();
 
   static MangayomiBackupTrackPreferencesMapper? _instance;
   static MangayomiBackupTrackPreferencesMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MangayomiBackupTrackPreferencesMapper._());
+      MapperContainer.globals.use(
+        _instance = MangayomiBackupTrackPreferencesMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
     }
     return _instance!;
@@ -2580,13 +3484,23 @@ class MangayomiBackupTrackPreferencesMapper extends ClassMapperBase<MangayomiBac
   final String id = 'MangayomiBackupTrackPreferences';
 
   static int? _$syncId(MangayomiBackupTrackPreferences v) => v.syncId;
-  static const Field<MangayomiBackupTrackPreferences, int> _f$syncId = Field('syncId', _$syncId);
+  static const Field<MangayomiBackupTrackPreferences, int> _f$syncId = Field(
+    'syncId',
+    _$syncId,
+  );
   static String? _$username(MangayomiBackupTrackPreferences v) => v.username;
-  static const Field<MangayomiBackupTrackPreferences, String> _f$username = Field('username', _$username);
+  static const Field<MangayomiBackupTrackPreferences, String> _f$username =
+      Field('username', _$username);
   static String? _$oAuth(MangayomiBackupTrackPreferences v) => v.oAuth;
-  static const Field<MangayomiBackupTrackPreferences, String> _f$oAuth = Field('oAuth', _$oAuth);
+  static const Field<MangayomiBackupTrackPreferences, String> _f$oAuth = Field(
+    'oAuth',
+    _$oAuth,
+  );
   static String? _$prefs(MangayomiBackupTrackPreferences v) => v.prefs;
-  static const Field<MangayomiBackupTrackPreferences, String> _f$prefs = Field('prefs', _$prefs);
+  static const Field<MangayomiBackupTrackPreferences, String> _f$prefs = Field(
+    'prefs',
+    _$prefs,
+  );
 
   @override
   final MappableFields<MangayomiBackupTrackPreferences> fields = const {
@@ -2613,21 +3527,25 @@ class MangayomiBackupTrackPreferencesMapper extends ClassMapperBase<MangayomiBac
   }
 
   static MangayomiBackupTrackPreferences fromJson(String json) {
-    return ensureInitialized().decodeJson<MangayomiBackupTrackPreferences>(json);
+    return ensureInitialized().decodeJson<MangayomiBackupTrackPreferences>(
+      json,
+    );
   }
 }
 
 mixin MangayomiBackupTrackPreferencesMappable {
   String toJson() {
-    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().encodeJson<MangayomiBackupTrackPreferences>(
-      this as MangayomiBackupTrackPreferences,
-    );
+    return MangayomiBackupTrackPreferencesMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupTrackPreferences>(
+          this as MangayomiBackupTrackPreferences,
+        );
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().encodeMap<MangayomiBackupTrackPreferences>(
-      this as MangayomiBackupTrackPreferences,
-    );
+    return MangayomiBackupTrackPreferencesMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupTrackPreferences>(
+          this as MangayomiBackupTrackPreferences,
+        );
   }
 
   MangayomiBackupTrackPreferencesCopyWith<
@@ -2636,51 +3554,79 @@ mixin MangayomiBackupTrackPreferencesMappable {
     MangayomiBackupTrackPreferences
   >
   get copyWith =>
-      _MangayomiBackupTrackPreferencesCopyWithImpl(this as MangayomiBackupTrackPreferences, $identity, $identity);
+      _MangayomiBackupTrackPreferencesCopyWithImpl<
+        MangayomiBackupTrackPreferences,
+        MangayomiBackupTrackPreferences
+      >(this as MangayomiBackupTrackPreferences, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().stringifyValue(
-      this as MangayomiBackupTrackPreferences,
-    );
+    return MangayomiBackupTrackPreferencesMapper.ensureInitialized()
+        .stringifyValue(this as MangayomiBackupTrackPreferences);
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().equalsValue(
-      this as MangayomiBackupTrackPreferences,
-      other,
-    );
+    return MangayomiBackupTrackPreferencesMapper.ensureInitialized()
+        .equalsValue(this as MangayomiBackupTrackPreferences, other);
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().hashValue(this as MangayomiBackupTrackPreferences);
+    return MangayomiBackupTrackPreferencesMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupTrackPreferences,
+    );
   }
 }
 
 extension MangayomiBackupTrackPreferencesValueCopy<$R, $Out>
     on ObjectCopyWith<$R, MangayomiBackupTrackPreferences, $Out> {
-  MangayomiBackupTrackPreferencesCopyWith<$R, MangayomiBackupTrackPreferences, $Out>
-  get $asMangayomiBackupTrackPreferences =>
-      $base.as((v, t, t2) => _MangayomiBackupTrackPreferencesCopyWithImpl(v, t, t2));
+  MangayomiBackupTrackPreferencesCopyWith<
+    $R,
+    MangayomiBackupTrackPreferences,
+    $Out
+  >
+  get $asMangayomiBackupTrackPreferences => $base.as(
+    (v, t, t2) =>
+        _MangayomiBackupTrackPreferencesCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupTrackPreferencesCopyWith<$R, $In extends MangayomiBackupTrackPreferences, $Out>
+abstract class MangayomiBackupTrackPreferencesCopyWith<
+  $R,
+  $In extends MangayomiBackupTrackPreferences,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({int? syncId, String? username, String? oAuth, String? prefs});
-  MangayomiBackupTrackPreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupTrackPreferencesCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _MangayomiBackupTrackPreferencesCopyWithImpl<$R, $Out>
     extends ClassCopyWithBase<$R, MangayomiBackupTrackPreferences, $Out>
-    implements MangayomiBackupTrackPreferencesCopyWith<$R, MangayomiBackupTrackPreferences, $Out> {
-  _MangayomiBackupTrackPreferencesCopyWithImpl(super.value, super.then, super.then2);
+    implements
+        MangayomiBackupTrackPreferencesCopyWith<
+          $R,
+          MangayomiBackupTrackPreferences,
+          $Out
+        > {
+  _MangayomiBackupTrackPreferencesCopyWithImpl(
+    super.value,
+    super.then,
+    super.then2,
+  );
 
   @override
   late final ClassMapperBase<MangayomiBackupTrackPreferences> $mapper =
       MangayomiBackupTrackPreferencesMapper.ensureInitialized();
   @override
-  $R call({Object? syncId = $none, Object? username = $none, Object? oAuth = $none, Object? prefs = $none}) => $apply(
+  $R call({
+    Object? syncId = $none,
+    Object? username = $none,
+    Object? oAuth = $none,
+    Object? prefs = $none,
+  }) => $apply(
     FieldCopyWithData({
       if (syncId != $none) #syncId: syncId,
       if (username != $none) #username: username,
@@ -2689,26 +3635,38 @@ class _MangayomiBackupTrackPreferencesCopyWithImpl<$R, $Out>
     }),
   );
   @override
-  MangayomiBackupTrackPreferences $make(CopyWithData data) => MangayomiBackupTrackPreferences(
-    syncId: data.get(#syncId, or: $value.syncId),
-    username: data.get(#username, or: $value.username),
-    oAuth: data.get(#oAuth, or: $value.oAuth),
-    prefs: data.get(#prefs, or: $value.prefs),
-  );
+  MangayomiBackupTrackPreferences $make(CopyWithData data) =>
+      MangayomiBackupTrackPreferences(
+        syncId: data.get(#syncId, or: $value.syncId),
+        username: data.get(#username, or: $value.username),
+        oAuth: data.get(#oAuth, or: $value.oAuth),
+        prefs: data.get(#prefs, or: $value.prefs),
+      );
 
   @override
-  MangayomiBackupTrackPreferencesCopyWith<$R2, MangayomiBackupTrackPreferences, $Out2> $chain<$R2, $Out2>(
-    Then<$Out2, $R2> t,
-  ) => _MangayomiBackupTrackPreferencesCopyWithImpl($value, $cast, t);
+  MangayomiBackupTrackPreferencesCopyWith<
+    $R2,
+    MangayomiBackupTrackPreferences,
+    $Out2
+  >
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupTrackPreferencesCopyWithImpl<$R2, $Out2>(
+        $value,
+        $cast,
+        t,
+      );
 }
 
-class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExtension> {
+class MangayomiBackupExtensionMapper
+    extends ClassMapperBase<MangayomiBackupExtension> {
   MangayomiBackupExtensionMapper._();
 
   static MangayomiBackupExtensionMapper? _instance;
   static MangayomiBackupExtensionMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = MangayomiBackupExtensionMapper._());
+      MapperContainer.globals.use(
+        _instance = MangayomiBackupExtensionMapper._(),
+      );
       MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
       ItemTypeMapper.ensureInitialized();
       RepoMapper.ensureInitialized();
@@ -2721,13 +3679,33 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
   final String id = 'MangayomiBackupExtension';
 
   static int? _$id(MangayomiBackupExtension v) => v.id;
-  static const Field<MangayomiBackupExtension, int> _f$id = Field('id', _$id, opt: true, def: 0);
+  static const Field<MangayomiBackupExtension, int> _f$id = Field(
+    'id',
+    _$id,
+    opt: true,
+    def: 0,
+  );
   static String? _$name(MangayomiBackupExtension v) => v.name;
-  static const Field<MangayomiBackupExtension, String> _f$name = Field('name', _$name, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$name = Field(
+    'name',
+    _$name,
+    opt: true,
+    def: '',
+  );
   static String? _$baseUrl(MangayomiBackupExtension v) => v.baseUrl;
-  static const Field<MangayomiBackupExtension, String> _f$baseUrl = Field('baseUrl', _$baseUrl, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$baseUrl = Field(
+    'baseUrl',
+    _$baseUrl,
+    opt: true,
+    def: '',
+  );
   static String? _$lang(MangayomiBackupExtension v) => v.lang;
-  static const Field<MangayomiBackupExtension, String> _f$lang = Field('lang', _$lang, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$lang = Field(
+    'lang',
+    _$lang,
+    opt: true,
+    def: '',
+  );
   static String? _$typeSource(MangayomiBackupExtension v) => v.typeSource;
   static const Field<MangayomiBackupExtension, String> _f$typeSource = Field(
     'typeSource',
@@ -2736,7 +3714,12 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     def: '',
   );
   static String? _$iconUrl(MangayomiBackupExtension v) => v.iconUrl;
-  static const Field<MangayomiBackupExtension, String> _f$iconUrl = Field('iconUrl', _$iconUrl, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$iconUrl = Field(
+    'iconUrl',
+    _$iconUrl,
+    opt: true,
+    def: '',
+  );
   static String? _$dateFormat(MangayomiBackupExtension v) => v.dateFormat;
   static const Field<MangayomiBackupExtension, String> _f$dateFormat = Field(
     'dateFormat',
@@ -2744,19 +3727,31 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     opt: true,
     def: '',
   );
-  static String? _$dateFormatLocale(MangayomiBackupExtension v) => v.dateFormatLocale;
-  static const Field<MangayomiBackupExtension, String> _f$dateFormatLocale = Field(
-    'dateFormatLocale',
-    _$dateFormatLocale,
-    opt: true,
-    def: '',
-  );
+  static String? _$dateFormatLocale(MangayomiBackupExtension v) =>
+      v.dateFormatLocale;
+  static const Field<MangayomiBackupExtension, String> _f$dateFormatLocale =
+      Field('dateFormatLocale', _$dateFormatLocale, opt: true, def: '');
   static bool? _$isActive(MangayomiBackupExtension v) => v.isActive;
-  static const Field<MangayomiBackupExtension, bool> _f$isActive = Field('isActive', _$isActive, opt: true, def: true);
+  static const Field<MangayomiBackupExtension, bool> _f$isActive = Field(
+    'isActive',
+    _$isActive,
+    opt: true,
+    def: true,
+  );
   static bool? _$isAdded(MangayomiBackupExtension v) => v.isAdded;
-  static const Field<MangayomiBackupExtension, bool> _f$isAdded = Field('isAdded', _$isAdded, opt: true, def: false);
+  static const Field<MangayomiBackupExtension, bool> _f$isAdded = Field(
+    'isAdded',
+    _$isAdded,
+    opt: true,
+    def: false,
+  );
   static bool? _$isNsfw(MangayomiBackupExtension v) => v.isNsfw;
-  static const Field<MangayomiBackupExtension, bool> _f$isNsfw = Field('isNsfw', _$isNsfw, opt: true, def: false);
+  static const Field<MangayomiBackupExtension, bool> _f$isNsfw = Field(
+    'isNsfw',
+    _$isNsfw,
+    opt: true,
+    def: false,
+  );
   static bool? _$isFullData(MangayomiBackupExtension v) => v.isFullData;
   static const Field<MangayomiBackupExtension, bool> _f$isFullData = Field(
     'isFullData',
@@ -2772,11 +3767,26 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     def: false,
   );
   static bool? _$isPinned(MangayomiBackupExtension v) => v.isPinned;
-  static const Field<MangayomiBackupExtension, bool> _f$isPinned = Field('isPinned', _$isPinned, opt: true, def: false);
+  static const Field<MangayomiBackupExtension, bool> _f$isPinned = Field(
+    'isPinned',
+    _$isPinned,
+    opt: true,
+    def: false,
+  );
   static bool? _$lastUsed(MangayomiBackupExtension v) => v.lastUsed;
-  static const Field<MangayomiBackupExtension, bool> _f$lastUsed = Field('lastUsed', _$lastUsed, opt: true, def: false);
+  static const Field<MangayomiBackupExtension, bool> _f$lastUsed = Field(
+    'lastUsed',
+    _$lastUsed,
+    opt: true,
+    def: false,
+  );
   static String? _$apiUrl(MangayomiBackupExtension v) => v.apiUrl;
-  static const Field<MangayomiBackupExtension, String> _f$apiUrl = Field('apiUrl', _$apiUrl, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$apiUrl = Field(
+    'apiUrl',
+    _$apiUrl,
+    opt: true,
+    def: '',
+  );
   static String? _$sourceCodeUrl(MangayomiBackupExtension v) => v.sourceCodeUrl;
   static const Field<MangayomiBackupExtension, String> _f$sourceCodeUrl = Field(
     'sourceCodeUrl',
@@ -2806,9 +3816,18 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     def: '',
   );
   static String? _$headers(MangayomiBackupExtension v) => v.headers;
-  static const Field<MangayomiBackupExtension, String> _f$headers = Field('headers', _$headers, opt: true, def: '');
+  static const Field<MangayomiBackupExtension, String> _f$headers = Field(
+    'headers',
+    _$headers,
+    opt: true,
+    def: '',
+  );
   static bool? _$isManga(MangayomiBackupExtension v) => v.isManga;
-  static const Field<MangayomiBackupExtension, bool> _f$isManga = Field('isManga', _$isManga, opt: true);
+  static const Field<MangayomiBackupExtension, bool> _f$isManga = Field(
+    'isManga',
+    _$isManga,
+    opt: true,
+  );
   static ItemType _$itemType(MangayomiBackupExtension v) => v.itemType;
   static const Field<MangayomiBackupExtension, ItemType> _f$itemType = Field(
     'itemType',
@@ -2823,15 +3842,17 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     opt: true,
     def: '',
   );
-  static String? _$additionalParams(MangayomiBackupExtension v) => v.additionalParams;
-  static const Field<MangayomiBackupExtension, String> _f$additionalParams = Field(
-    'additionalParams',
-    _$additionalParams,
-    opt: true,
-    def: '',
-  );
+  static String? _$additionalParams(MangayomiBackupExtension v) =>
+      v.additionalParams;
+  static const Field<MangayomiBackupExtension, String> _f$additionalParams =
+      Field('additionalParams', _$additionalParams, opt: true, def: '');
   static bool? _$isLocal(MangayomiBackupExtension v) => v.isLocal;
-  static const Field<MangayomiBackupExtension, bool> _f$isLocal = Field('isLocal', _$isLocal, opt: true, def: false);
+  static const Field<MangayomiBackupExtension, bool> _f$isLocal = Field(
+    'isLocal',
+    _$isLocal,
+    opt: true,
+    def: false,
+  );
   static bool? _$isObsolete(MangayomiBackupExtension v) => v.isObsolete;
   static const Field<MangayomiBackupExtension, bool> _f$isObsolete = Field(
     'isObsolete',
@@ -2840,9 +3861,15 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
     def: false,
   );
   static Repo? _$repo(MangayomiBackupExtension v) => v.repo;
-  static const Field<MangayomiBackupExtension, Repo> _f$repo = Field('repo', _$repo, opt: true);
-  static SourceCodeLanguage _$sourceCodeLanguage(MangayomiBackupExtension v) => v.sourceCodeLanguage;
-  static const Field<MangayomiBackupExtension, SourceCodeLanguage> _f$sourceCodeLanguage = Field(
+  static const Field<MangayomiBackupExtension, Repo> _f$repo = Field(
+    'repo',
+    _$repo,
+    opt: true,
+  );
+  static SourceCodeLanguage _$sourceCodeLanguage(MangayomiBackupExtension v) =>
+      v.sourceCodeLanguage;
+  static const Field<MangayomiBackupExtension, SourceCodeLanguage>
+  _f$sourceCodeLanguage = Field(
     'sourceCodeLanguage',
     _$sourceCodeLanguage,
     opt: true,
@@ -2930,41 +3957,61 @@ class MangayomiBackupExtensionMapper extends ClassMapperBase<MangayomiBackupExte
 
 mixin MangayomiBackupExtensionMappable {
   String toJson() {
-    return MangayomiBackupExtensionMapper.ensureInitialized().encodeJson<MangayomiBackupExtension>(
-      this as MangayomiBackupExtension,
-    );
+    return MangayomiBackupExtensionMapper.ensureInitialized()
+        .encodeJson<MangayomiBackupExtension>(this as MangayomiBackupExtension);
   }
 
   Map<String, dynamic> toMap() {
-    return MangayomiBackupExtensionMapper.ensureInitialized().encodeMap<MangayomiBackupExtension>(
-      this as MangayomiBackupExtension,
-    );
+    return MangayomiBackupExtensionMapper.ensureInitialized()
+        .encodeMap<MangayomiBackupExtension>(this as MangayomiBackupExtension);
   }
 
-  MangayomiBackupExtensionCopyWith<MangayomiBackupExtension, MangayomiBackupExtension, MangayomiBackupExtension>
-  get copyWith => _MangayomiBackupExtensionCopyWithImpl(this as MangayomiBackupExtension, $identity, $identity);
+  MangayomiBackupExtensionCopyWith<
+    MangayomiBackupExtension,
+    MangayomiBackupExtension,
+    MangayomiBackupExtension
+  >
+  get copyWith =>
+      _MangayomiBackupExtensionCopyWithImpl<
+        MangayomiBackupExtension,
+        MangayomiBackupExtension
+      >(this as MangayomiBackupExtension, $identity, $identity);
   @override
   String toString() {
-    return MangayomiBackupExtensionMapper.ensureInitialized().stringifyValue(this as MangayomiBackupExtension);
+    return MangayomiBackupExtensionMapper.ensureInitialized().stringifyValue(
+      this as MangayomiBackupExtension,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return MangayomiBackupExtensionMapper.ensureInitialized().equalsValue(this as MangayomiBackupExtension, other);
+    return MangayomiBackupExtensionMapper.ensureInitialized().equalsValue(
+      this as MangayomiBackupExtension,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return MangayomiBackupExtensionMapper.ensureInitialized().hashValue(this as MangayomiBackupExtension);
+    return MangayomiBackupExtensionMapper.ensureInitialized().hashValue(
+      this as MangayomiBackupExtension,
+    );
   }
 }
 
-extension MangayomiBackupExtensionValueCopy<$R, $Out> on ObjectCopyWith<$R, MangayomiBackupExtension, $Out> {
-  MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, $Out> get $asMangayomiBackupExtension =>
-      $base.as((v, t, t2) => _MangayomiBackupExtensionCopyWithImpl(v, t, t2));
+extension MangayomiBackupExtensionValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, MangayomiBackupExtension, $Out> {
+  MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, $Out>
+  get $asMangayomiBackupExtension => $base.as(
+    (v, t, t2) => _MangayomiBackupExtensionCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class MangayomiBackupExtensionCopyWith<$R, $In extends MangayomiBackupExtension, $Out>
+abstract class MangayomiBackupExtensionCopyWith<
+  $R,
+  $In extends MangayomiBackupExtension,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   RepoCopyWith<$R, Repo, Repo>? get repo;
   $R call({
@@ -2998,17 +4045,23 @@ abstract class MangayomiBackupExtensionCopyWith<$R, $In extends MangayomiBackupE
     Repo? repo,
     SourceCodeLanguage? sourceCodeLanguage,
   });
-  MangayomiBackupExtensionCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  MangayomiBackupExtensionCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _MangayomiBackupExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, MangayomiBackupExtension, $Out>
-    implements MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, $Out> {
+class _MangayomiBackupExtensionCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, MangayomiBackupExtension, $Out>
+    implements
+        MangayomiBackupExtensionCopyWith<$R, MangayomiBackupExtension, $Out> {
   _MangayomiBackupExtensionCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<MangayomiBackupExtension> $mapper = MangayomiBackupExtensionMapper.ensureInitialized();
+  late final ClassMapperBase<MangayomiBackupExtension> $mapper =
+      MangayomiBackupExtensionMapper.ensureInitialized();
   @override
-  RepoCopyWith<$R, Repo, Repo>? get repo => $value.repo?.copyWith.$chain((v) => call(repo: v));
+  RepoCopyWith<$R, Repo, Repo>? get repo =>
+      $value.repo?.copyWith.$chain((v) => call(repo: v));
   @override
   $R call({
     Object? id = $none,
@@ -3103,10 +4156,15 @@ class _MangayomiBackupExtensionCopyWithImpl<$R, $Out> extends ClassCopyWithBase<
     isLocal: data.get(#isLocal, or: $value.isLocal),
     isObsolete: data.get(#isObsolete, or: $value.isObsolete),
     repo: data.get(#repo, or: $value.repo),
-    sourceCodeLanguage: data.get(#sourceCodeLanguage, or: $value.sourceCodeLanguage),
+    sourceCodeLanguage: data.get(
+      #sourceCodeLanguage,
+      or: $value.sourceCodeLanguage,
+    ),
   );
 
   @override
-  MangayomiBackupExtensionCopyWith<$R2, MangayomiBackupExtension, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _MangayomiBackupExtensionCopyWithImpl($value, $cast, t);
+  MangayomiBackupExtensionCopyWith<$R2, MangayomiBackupExtension, $Out2>
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _MangayomiBackupExtensionCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

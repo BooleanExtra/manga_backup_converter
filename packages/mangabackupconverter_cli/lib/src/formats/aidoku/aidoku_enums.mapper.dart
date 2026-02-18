@@ -1,18 +1,23 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
 part of 'aidoku_enums.dart';
 
-class AidokuMangaContentRatingMapper extends EnumMapper<AidokuMangaContentRating> {
+class AidokuMangaContentRatingMapper
+    extends EnumMapper<AidokuMangaContentRating> {
   AidokuMangaContentRatingMapper._();
 
   static AidokuMangaContentRatingMapper? _instance;
   static AidokuMangaContentRatingMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = AidokuMangaContentRatingMapper._());
+      MapperContainer.globals.use(
+        _instance = AidokuMangaContentRatingMapper._(),
+      );
     }
     return _instance!;
   }
@@ -175,3 +180,4 @@ extension AidokuPublishingStatusMapperExtension on AidokuPublishingStatus {
     return MapperContainer.globals.toValue<AidokuPublishingStatus>(this);
   }
 }
+

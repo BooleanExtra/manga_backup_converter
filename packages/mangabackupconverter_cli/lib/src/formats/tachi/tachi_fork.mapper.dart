@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -25,15 +27,15 @@ class TachiForkMapper extends EnumMapper<TachiFork> {
   @override
   TachiFork decode(dynamic value) {
     switch (value) {
-      case 'mihon':
+      case r'mihon':
         return TachiFork.mihon;
-      case 'sy':
+      case r'sy':
         return TachiFork.sy;
-      case 'j2k':
+      case r'j2k':
         return TachiFork.j2k;
-      case 'yokai':
+      case r'yokai':
         return TachiFork.yokai;
-      case 'neko':
+      case r'neko':
         return TachiFork.neko;
       default:
         throw MapperException.unknownEnumValue(value);
@@ -44,15 +46,15 @@ class TachiForkMapper extends EnumMapper<TachiFork> {
   dynamic encode(TachiFork self) {
     switch (self) {
       case TachiFork.mihon:
-        return 'mihon';
+        return r'mihon';
       case TachiFork.sy:
-        return 'sy';
+        return r'sy';
       case TachiFork.j2k:
-        return 'j2k';
+        return r'j2k';
       case TachiFork.yokai:
-        return 'yokai';
+        return r'yokai';
       case TachiFork.neko:
-        return 'neko';
+        return r'neko';
     }
   }
 }
@@ -63,3 +65,4 @@ extension TachiForkMapperExtension on TachiFork {
     return MapperContainer.globals.toValue<TachiFork>(this) as String;
   }
 }
+
