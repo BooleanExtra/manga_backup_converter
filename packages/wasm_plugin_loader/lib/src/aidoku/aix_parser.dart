@@ -13,8 +13,8 @@ class AixBundle {
 
   final SourceInfo sourceInfo;
   final Uint8List wasmBytes;
-  final Map<String, dynamic>? filtersJson;
-  final Map<String, dynamic>? settingsJson;
+  final List<dynamic>? filtersJson;
+  final List<dynamic>? settingsJson;
 }
 
 class AixParser {
@@ -53,10 +53,10 @@ class AixParser {
       sourceInfo: info,
       wasmBytes: Uint8List.fromList(wasmFile.content as List<int>),
       filtersJson: filtersFile != null
-          ? jsonDecode(utf8.decode(filtersFile.content as List<int>)) as Map<String, dynamic>
+          ? jsonDecode(utf8.decode(filtersFile.content as List<int>)) as List<dynamic>
           : null,
       settingsJson: settingsFile != null
-          ? jsonDecode(utf8.decode(settingsFile.content as List<int>)) as Map<String, dynamic>
+          ? jsonDecode(utf8.decode(settingsFile.content as List<int>)) as List<dynamic>
           : null,
     );
   }
