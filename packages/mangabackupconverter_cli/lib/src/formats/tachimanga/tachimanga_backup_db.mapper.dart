@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -36,77 +38,78 @@ class TachimangaBackupDbMapper extends ClassMapperBase<TachimangaBackupDb> {
   @override
   final String id = 'TachimangaBackupDb';
 
-  static List<TachimangaBackupCategory> _$categoryTable(TachimangaBackupDb v) => v.categoryTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupCategory>> _f$categoryTable = Field(
-    'categoryTable',
-    _$categoryTable,
-  );
-  static List<TachimangaBackupCategoryManga> _$categoryMangaTable(TachimangaBackupDb v) => v.categoryMangaTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupCategoryManga>> _f$categoryMangaTable = Field(
-    'categoryMangaTable',
-    _$categoryMangaTable,
-  );
-  static List<TachimangaBackupCategoryMeta> _$categoryMetaTable(TachimangaBackupDb v) => v.categoryMetaTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupCategoryMeta>> _f$categoryMetaTable = Field(
-    'categoryMetaTable',
-    _$categoryMetaTable,
-  );
-  static List<TachimangaBackupChapter> _$chapterTable(TachimangaBackupDb v) => v.chapterTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupChapter>> _f$chapterTable = Field(
-    'chapterTable',
-    _$chapterTable,
-  );
-  static List<TachimangaBackupChapterMeta> _$chapterMetaTable(TachimangaBackupDb v) => v.chapterMetaTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupChapterMeta>> _f$chapterMetaTable = Field(
-    'chapterMetaTable',
-    _$chapterMetaTable,
-  );
-  static List<TachimangaBackupExtension> _$extensionTable(TachimangaBackupDb v) => v.extensionTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupExtension>> _f$extensionTable = Field(
-    'extensionTable',
-    _$extensionTable,
-  );
-  static List<TachimangaBackupHistory> _$historyTable(TachimangaBackupDb v) => v.historyTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupHistory>> _f$historyTable = Field(
-    'historyTable',
-    _$historyTable,
-  );
-  static List<TachimangaBackupManga> _$mangaTable(TachimangaBackupDb v) => v.mangaTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupManga>> _f$mangaTable = Field('mangaTable', _$mangaTable);
-  static List<TachimangaBackupMangaMeta> _$mangaMetaTable(TachimangaBackupDb v) => v.mangaMetaTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupMangaMeta>> _f$mangaMetaTable = Field(
-    'mangaMetaTable',
-    _$mangaMetaTable,
-  );
-  static List<TachimangaBackupDbMigrations> _$migrationsTable(TachimangaBackupDb v) => v.migrationsTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupDbMigrations>> _f$migrationsTable = Field(
-    'migrationsTable',
-    _$migrationsTable,
-  );
-  static List<TachimangaBackupPage> _$pageTable(TachimangaBackupDb v) => v.pageTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupPage>> _f$pageTable = Field('pageTable', _$pageTable);
-  static List<TachimangaBackupRepo> _$repoTable(TachimangaBackupDb v) => v.repoTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupRepo>> _f$repoTable = Field('repoTable', _$repoTable);
-  static List<TachimangaBackupSetting> _$settingTable(TachimangaBackupDb v) => v.settingTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupSetting>> _f$settingTable = Field(
-    'settingTable',
-    _$settingTable,
-  );
-  static List<TachimangaBackupSource> _$sourceTable(TachimangaBackupDb v) => v.sourceTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupSource>> _f$sourceTable = Field(
-    'sourceTable',
-    _$sourceTable,
-  );
-  static List<TachimangaBackupTrackRecord> _$trackRecordTable(TachimangaBackupDb v) => v.trackRecordTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupTrackRecord>> _f$trackRecordTable = Field(
-    'trackRecordTable',
-    _$trackRecordTable,
-  );
-  static List<TachimangaBackupSqliteSequence> _$sqliteSequenceTable(TachimangaBackupDb v) => v.sqliteSequenceTable;
-  static const Field<TachimangaBackupDb, List<TachimangaBackupSqliteSequence>> _f$sqliteSequenceTable = Field(
-    'sqliteSequenceTable',
-    _$sqliteSequenceTable,
-  );
+  static List<TachimangaBackupCategory> _$categoryTable(TachimangaBackupDb v) =>
+      v.categoryTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupCategory>>
+  _f$categoryTable = Field('categoryTable', _$categoryTable);
+  static List<TachimangaBackupCategoryManga> _$categoryMangaTable(
+    TachimangaBackupDb v,
+  ) => v.categoryMangaTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupCategoryManga>>
+  _f$categoryMangaTable = Field('categoryMangaTable', _$categoryMangaTable);
+  static List<TachimangaBackupCategoryMeta> _$categoryMetaTable(
+    TachimangaBackupDb v,
+  ) => v.categoryMetaTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupCategoryMeta>>
+  _f$categoryMetaTable = Field('categoryMetaTable', _$categoryMetaTable);
+  static List<TachimangaBackupChapter> _$chapterTable(TachimangaBackupDb v) =>
+      v.chapterTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupChapter>>
+  _f$chapterTable = Field('chapterTable', _$chapterTable);
+  static List<TachimangaBackupChapterMeta> _$chapterMetaTable(
+    TachimangaBackupDb v,
+  ) => v.chapterMetaTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupChapterMeta>>
+  _f$chapterMetaTable = Field('chapterMetaTable', _$chapterMetaTable);
+  static List<TachimangaBackupExtension> _$extensionTable(
+    TachimangaBackupDb v,
+  ) => v.extensionTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupExtension>>
+  _f$extensionTable = Field('extensionTable', _$extensionTable);
+  static List<TachimangaBackupHistory> _$historyTable(TachimangaBackupDb v) =>
+      v.historyTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupHistory>>
+  _f$historyTable = Field('historyTable', _$historyTable);
+  static List<TachimangaBackupManga> _$mangaTable(TachimangaBackupDb v) =>
+      v.mangaTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupManga>>
+  _f$mangaTable = Field('mangaTable', _$mangaTable);
+  static List<TachimangaBackupMangaMeta> _$mangaMetaTable(
+    TachimangaBackupDb v,
+  ) => v.mangaMetaTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupMangaMeta>>
+  _f$mangaMetaTable = Field('mangaMetaTable', _$mangaMetaTable);
+  static List<TachimangaBackupDbMigrations> _$migrationsTable(
+    TachimangaBackupDb v,
+  ) => v.migrationsTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupDbMigrations>>
+  _f$migrationsTable = Field('migrationsTable', _$migrationsTable);
+  static List<TachimangaBackupPage> _$pageTable(TachimangaBackupDb v) =>
+      v.pageTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupPage>>
+  _f$pageTable = Field('pageTable', _$pageTable);
+  static List<TachimangaBackupRepo> _$repoTable(TachimangaBackupDb v) =>
+      v.repoTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupRepo>>
+  _f$repoTable = Field('repoTable', _$repoTable);
+  static List<TachimangaBackupSetting> _$settingTable(TachimangaBackupDb v) =>
+      v.settingTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupSetting>>
+  _f$settingTable = Field('settingTable', _$settingTable);
+  static List<TachimangaBackupSource> _$sourceTable(TachimangaBackupDb v) =>
+      v.sourceTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupSource>>
+  _f$sourceTable = Field('sourceTable', _$sourceTable);
+  static List<TachimangaBackupTrackRecord> _$trackRecordTable(
+    TachimangaBackupDb v,
+  ) => v.trackRecordTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupTrackRecord>>
+  _f$trackRecordTable = Field('trackRecordTable', _$trackRecordTable);
+  static List<TachimangaBackupSqliteSequence> _$sqliteSequenceTable(
+    TachimangaBackupDb v,
+  ) => v.sqliteSequenceTable;
+  static const Field<TachimangaBackupDb, List<TachimangaBackupSqliteSequence>>
+  _f$sqliteSequenceTable = Field('sqliteSequenceTable', _$sqliteSequenceTable);
 
   @override
   final MappableFields<TachimangaBackupDb> fields = const {
@@ -154,117 +157,204 @@ class TachimangaBackupDbMapper extends ClassMapperBase<TachimangaBackupDb> {
 }
 
 mixin TachimangaBackupDbMappable {
-  TachimangaBackupDbCopyWith<TachimangaBackupDb, TachimangaBackupDb, TachimangaBackupDb> get copyWith =>
-      _TachimangaBackupDbCopyWithImpl(this as TachimangaBackupDb, $identity, $identity);
+  TachimangaBackupDbCopyWith<
+    TachimangaBackupDb,
+    TachimangaBackupDb,
+    TachimangaBackupDb
+  >
+  get copyWith =>
+      _TachimangaBackupDbCopyWithImpl<TachimangaBackupDb, TachimangaBackupDb>(
+        this as TachimangaBackupDb,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return TachimangaBackupDbMapper.ensureInitialized().stringifyValue(this as TachimangaBackupDb);
+    return TachimangaBackupDbMapper.ensureInitialized().stringifyValue(
+      this as TachimangaBackupDb,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TachimangaBackupDbMapper.ensureInitialized().equalsValue(this as TachimangaBackupDb, other);
+    return TachimangaBackupDbMapper.ensureInitialized().equalsValue(
+      this as TachimangaBackupDb,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TachimangaBackupDbMapper.ensureInitialized().hashValue(this as TachimangaBackupDb);
+    return TachimangaBackupDbMapper.ensureInitialized().hashValue(
+      this as TachimangaBackupDb,
+    );
   }
 }
 
-extension TachimangaBackupDbValueCopy<$R, $Out> on ObjectCopyWith<$R, TachimangaBackupDb, $Out> {
-  TachimangaBackupDbCopyWith<$R, TachimangaBackupDb, $Out> get $asTachimangaBackupDb =>
-      $base.as((v, t, t2) => _TachimangaBackupDbCopyWithImpl(v, t, t2));
+extension TachimangaBackupDbValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, TachimangaBackupDb, $Out> {
+  TachimangaBackupDbCopyWith<$R, TachimangaBackupDb, $Out>
+  get $asTachimangaBackupDb => $base.as(
+    (v, t, t2) => _TachimangaBackupDbCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class TachimangaBackupDbCopyWith<$R, $In extends TachimangaBackupDb, $Out>
+abstract class TachimangaBackupDbCopyWith<
+  $R,
+  $In extends TachimangaBackupDb,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<
     $R,
     TachimangaBackupCategory,
-    TachimangaBackupCategoryCopyWith<$R, TachimangaBackupCategory, TachimangaBackupCategory>
+    TachimangaBackupCategoryCopyWith<
+      $R,
+      TachimangaBackupCategory,
+      TachimangaBackupCategory
+    >
   >
   get categoryTable;
   ListCopyWith<
     $R,
     TachimangaBackupCategoryManga,
-    TachimangaBackupCategoryMangaCopyWith<$R, TachimangaBackupCategoryManga, TachimangaBackupCategoryManga>
+    TachimangaBackupCategoryMangaCopyWith<
+      $R,
+      TachimangaBackupCategoryManga,
+      TachimangaBackupCategoryManga
+    >
   >
   get categoryMangaTable;
   ListCopyWith<
     $R,
     TachimangaBackupCategoryMeta,
-    TachimangaBackupCategoryMetaCopyWith<$R, TachimangaBackupCategoryMeta, TachimangaBackupCategoryMeta>
+    TachimangaBackupCategoryMetaCopyWith<
+      $R,
+      TachimangaBackupCategoryMeta,
+      TachimangaBackupCategoryMeta
+    >
   >
   get categoryMetaTable;
   ListCopyWith<
     $R,
     TachimangaBackupChapter,
-    TachimangaBackupChapterCopyWith<$R, TachimangaBackupChapter, TachimangaBackupChapter>
+    TachimangaBackupChapterCopyWith<
+      $R,
+      TachimangaBackupChapter,
+      TachimangaBackupChapter
+    >
   >
   get chapterTable;
   ListCopyWith<
     $R,
     TachimangaBackupChapterMeta,
-    TachimangaBackupChapterMetaCopyWith<$R, TachimangaBackupChapterMeta, TachimangaBackupChapterMeta>
+    TachimangaBackupChapterMetaCopyWith<
+      $R,
+      TachimangaBackupChapterMeta,
+      TachimangaBackupChapterMeta
+    >
   >
   get chapterMetaTable;
   ListCopyWith<
     $R,
     TachimangaBackupExtension,
-    TachimangaBackupExtensionCopyWith<$R, TachimangaBackupExtension, TachimangaBackupExtension>
+    TachimangaBackupExtensionCopyWith<
+      $R,
+      TachimangaBackupExtension,
+      TachimangaBackupExtension
+    >
   >
   get extensionTable;
   ListCopyWith<
     $R,
     TachimangaBackupHistory,
-    TachimangaBackupHistoryCopyWith<$R, TachimangaBackupHistory, TachimangaBackupHistory>
+    TachimangaBackupHistoryCopyWith<
+      $R,
+      TachimangaBackupHistory,
+      TachimangaBackupHistory
+    >
   >
   get historyTable;
   ListCopyWith<
     $R,
     TachimangaBackupManga,
-    TachimangaBackupMangaCopyWith<$R, TachimangaBackupManga, TachimangaBackupManga>
+    TachimangaBackupMangaCopyWith<
+      $R,
+      TachimangaBackupManga,
+      TachimangaBackupManga
+    >
   >
   get mangaTable;
   ListCopyWith<
     $R,
     TachimangaBackupMangaMeta,
-    TachimangaBackupMangaMetaCopyWith<$R, TachimangaBackupMangaMeta, TachimangaBackupMangaMeta>
+    TachimangaBackupMangaMetaCopyWith<
+      $R,
+      TachimangaBackupMangaMeta,
+      TachimangaBackupMangaMeta
+    >
   >
   get mangaMetaTable;
   ListCopyWith<
     $R,
     TachimangaBackupDbMigrations,
-    TachimangaBackupDbMigrationsCopyWith<$R, TachimangaBackupDbMigrations, TachimangaBackupDbMigrations>
+    TachimangaBackupDbMigrationsCopyWith<
+      $R,
+      TachimangaBackupDbMigrations,
+      TachimangaBackupDbMigrations
+    >
   >
   get migrationsTable;
-  ListCopyWith<$R, TachimangaBackupPage, TachimangaBackupPageCopyWith<$R, TachimangaBackupPage, TachimangaBackupPage>>
+  ListCopyWith<
+    $R,
+    TachimangaBackupPage,
+    TachimangaBackupPageCopyWith<$R, TachimangaBackupPage, TachimangaBackupPage>
+  >
   get pageTable;
-  ListCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepoCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepo>>
+  ListCopyWith<
+    $R,
+    TachimangaBackupRepo,
+    TachimangaBackupRepoCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepo>
+  >
   get repoTable;
   ListCopyWith<
     $R,
     TachimangaBackupSetting,
-    TachimangaBackupSettingCopyWith<$R, TachimangaBackupSetting, TachimangaBackupSetting>
+    TachimangaBackupSettingCopyWith<
+      $R,
+      TachimangaBackupSetting,
+      TachimangaBackupSetting
+    >
   >
   get settingTable;
   ListCopyWith<
     $R,
     TachimangaBackupSource,
-    TachimangaBackupSourceCopyWith<$R, TachimangaBackupSource, TachimangaBackupSource>
+    TachimangaBackupSourceCopyWith<
+      $R,
+      TachimangaBackupSource,
+      TachimangaBackupSource
+    >
   >
   get sourceTable;
   ListCopyWith<
     $R,
     TachimangaBackupTrackRecord,
-    TachimangaBackupTrackRecordCopyWith<$R, TachimangaBackupTrackRecord, TachimangaBackupTrackRecord>
+    TachimangaBackupTrackRecordCopyWith<
+      $R,
+      TachimangaBackupTrackRecord,
+      TachimangaBackupTrackRecord
+    >
   >
   get trackRecordTable;
   ListCopyWith<
     $R,
     TachimangaBackupSqliteSequence,
-    TachimangaBackupSqliteSequenceCopyWith<$R, TachimangaBackupSqliteSequence, TachimangaBackupSqliteSequence>
+    TachimangaBackupSqliteSequenceCopyWith<
+      $R,
+      TachimangaBackupSqliteSequence,
+      TachimangaBackupSqliteSequence
+    >
   >
   get sqliteSequenceTable;
   $R call({
@@ -285,128 +375,251 @@ abstract class TachimangaBackupDbCopyWith<$R, $In extends TachimangaBackupDb, $O
     List<TachimangaBackupTrackRecord>? trackRecordTable,
     List<TachimangaBackupSqliteSequence>? sqliteSequenceTable,
   });
-  TachimangaBackupDbCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  TachimangaBackupDbCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _TachimangaBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachimangaBackupDb, $Out>
+class _TachimangaBackupDbCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, TachimangaBackupDb, $Out>
     implements TachimangaBackupDbCopyWith<$R, TachimangaBackupDb, $Out> {
   _TachimangaBackupDbCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachimangaBackupDb> $mapper = TachimangaBackupDbMapper.ensureInitialized();
+  late final ClassMapperBase<TachimangaBackupDb> $mapper =
+      TachimangaBackupDbMapper.ensureInitialized();
   @override
   ListCopyWith<
     $R,
     TachimangaBackupCategory,
-    TachimangaBackupCategoryCopyWith<$R, TachimangaBackupCategory, TachimangaBackupCategory>
+    TachimangaBackupCategoryCopyWith<
+      $R,
+      TachimangaBackupCategory,
+      TachimangaBackupCategory
+    >
   >
-  get categoryTable =>
-      ListCopyWith($value.categoryTable, (v, t) => v.copyWith.$chain(t), (v) => call(categoryTable: v));
+  get categoryTable => ListCopyWith(
+    $value.categoryTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(categoryTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupCategoryManga,
-    TachimangaBackupCategoryMangaCopyWith<$R, TachimangaBackupCategoryManga, TachimangaBackupCategoryManga>
+    TachimangaBackupCategoryMangaCopyWith<
+      $R,
+      TachimangaBackupCategoryManga,
+      TachimangaBackupCategoryManga
+    >
   >
-  get categoryMangaTable =>
-      ListCopyWith($value.categoryMangaTable, (v, t) => v.copyWith.$chain(t), (v) => call(categoryMangaTable: v));
+  get categoryMangaTable => ListCopyWith(
+    $value.categoryMangaTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(categoryMangaTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupCategoryMeta,
-    TachimangaBackupCategoryMetaCopyWith<$R, TachimangaBackupCategoryMeta, TachimangaBackupCategoryMeta>
+    TachimangaBackupCategoryMetaCopyWith<
+      $R,
+      TachimangaBackupCategoryMeta,
+      TachimangaBackupCategoryMeta
+    >
   >
-  get categoryMetaTable =>
-      ListCopyWith($value.categoryMetaTable, (v, t) => v.copyWith.$chain(t), (v) => call(categoryMetaTable: v));
+  get categoryMetaTable => ListCopyWith(
+    $value.categoryMetaTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(categoryMetaTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupChapter,
-    TachimangaBackupChapterCopyWith<$R, TachimangaBackupChapter, TachimangaBackupChapter>
+    TachimangaBackupChapterCopyWith<
+      $R,
+      TachimangaBackupChapter,
+      TachimangaBackupChapter
+    >
   >
-  get chapterTable => ListCopyWith($value.chapterTable, (v, t) => v.copyWith.$chain(t), (v) => call(chapterTable: v));
+  get chapterTable => ListCopyWith(
+    $value.chapterTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(chapterTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupChapterMeta,
-    TachimangaBackupChapterMetaCopyWith<$R, TachimangaBackupChapterMeta, TachimangaBackupChapterMeta>
+    TachimangaBackupChapterMetaCopyWith<
+      $R,
+      TachimangaBackupChapterMeta,
+      TachimangaBackupChapterMeta
+    >
   >
-  get chapterMetaTable =>
-      ListCopyWith($value.chapterMetaTable, (v, t) => v.copyWith.$chain(t), (v) => call(chapterMetaTable: v));
+  get chapterMetaTable => ListCopyWith(
+    $value.chapterMetaTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(chapterMetaTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupExtension,
-    TachimangaBackupExtensionCopyWith<$R, TachimangaBackupExtension, TachimangaBackupExtension>
+    TachimangaBackupExtensionCopyWith<
+      $R,
+      TachimangaBackupExtension,
+      TachimangaBackupExtension
+    >
   >
-  get extensionTable =>
-      ListCopyWith($value.extensionTable, (v, t) => v.copyWith.$chain(t), (v) => call(extensionTable: v));
+  get extensionTable => ListCopyWith(
+    $value.extensionTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(extensionTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupHistory,
-    TachimangaBackupHistoryCopyWith<$R, TachimangaBackupHistory, TachimangaBackupHistory>
+    TachimangaBackupHistoryCopyWith<
+      $R,
+      TachimangaBackupHistory,
+      TachimangaBackupHistory
+    >
   >
-  get historyTable => ListCopyWith($value.historyTable, (v, t) => v.copyWith.$chain(t), (v) => call(historyTable: v));
+  get historyTable => ListCopyWith(
+    $value.historyTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(historyTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupManga,
-    TachimangaBackupMangaCopyWith<$R, TachimangaBackupManga, TachimangaBackupManga>
+    TachimangaBackupMangaCopyWith<
+      $R,
+      TachimangaBackupManga,
+      TachimangaBackupManga
+    >
   >
-  get mangaTable => ListCopyWith($value.mangaTable, (v, t) => v.copyWith.$chain(t), (v) => call(mangaTable: v));
+  get mangaTable => ListCopyWith(
+    $value.mangaTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(mangaTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupMangaMeta,
-    TachimangaBackupMangaMetaCopyWith<$R, TachimangaBackupMangaMeta, TachimangaBackupMangaMeta>
+    TachimangaBackupMangaMetaCopyWith<
+      $R,
+      TachimangaBackupMangaMeta,
+      TachimangaBackupMangaMeta
+    >
   >
-  get mangaMetaTable =>
-      ListCopyWith($value.mangaMetaTable, (v, t) => v.copyWith.$chain(t), (v) => call(mangaMetaTable: v));
+  get mangaMetaTable => ListCopyWith(
+    $value.mangaMetaTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(mangaMetaTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupDbMigrations,
-    TachimangaBackupDbMigrationsCopyWith<$R, TachimangaBackupDbMigrations, TachimangaBackupDbMigrations>
+    TachimangaBackupDbMigrationsCopyWith<
+      $R,
+      TachimangaBackupDbMigrations,
+      TachimangaBackupDbMigrations
+    >
   >
-  get migrationsTable =>
-      ListCopyWith($value.migrationsTable, (v, t) => v.copyWith.$chain(t), (v) => call(migrationsTable: v));
+  get migrationsTable => ListCopyWith(
+    $value.migrationsTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(migrationsTable: v),
+  );
   @override
-  ListCopyWith<$R, TachimangaBackupPage, TachimangaBackupPageCopyWith<$R, TachimangaBackupPage, TachimangaBackupPage>>
-  get pageTable => ListCopyWith($value.pageTable, (v, t) => v.copyWith.$chain(t), (v) => call(pageTable: v));
+  ListCopyWith<
+    $R,
+    TachimangaBackupPage,
+    TachimangaBackupPageCopyWith<$R, TachimangaBackupPage, TachimangaBackupPage>
+  >
+  get pageTable => ListCopyWith(
+    $value.pageTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(pageTable: v),
+  );
   @override
-  ListCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepoCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepo>>
-  get repoTable => ListCopyWith($value.repoTable, (v, t) => v.copyWith.$chain(t), (v) => call(repoTable: v));
+  ListCopyWith<
+    $R,
+    TachimangaBackupRepo,
+    TachimangaBackupRepoCopyWith<$R, TachimangaBackupRepo, TachimangaBackupRepo>
+  >
+  get repoTable => ListCopyWith(
+    $value.repoTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(repoTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupSetting,
-    TachimangaBackupSettingCopyWith<$R, TachimangaBackupSetting, TachimangaBackupSetting>
+    TachimangaBackupSettingCopyWith<
+      $R,
+      TachimangaBackupSetting,
+      TachimangaBackupSetting
+    >
   >
-  get settingTable => ListCopyWith($value.settingTable, (v, t) => v.copyWith.$chain(t), (v) => call(settingTable: v));
+  get settingTable => ListCopyWith(
+    $value.settingTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(settingTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupSource,
-    TachimangaBackupSourceCopyWith<$R, TachimangaBackupSource, TachimangaBackupSource>
+    TachimangaBackupSourceCopyWith<
+      $R,
+      TachimangaBackupSource,
+      TachimangaBackupSource
+    >
   >
-  get sourceTable => ListCopyWith($value.sourceTable, (v, t) => v.copyWith.$chain(t), (v) => call(sourceTable: v));
+  get sourceTable => ListCopyWith(
+    $value.sourceTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(sourceTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupTrackRecord,
-    TachimangaBackupTrackRecordCopyWith<$R, TachimangaBackupTrackRecord, TachimangaBackupTrackRecord>
+    TachimangaBackupTrackRecordCopyWith<
+      $R,
+      TachimangaBackupTrackRecord,
+      TachimangaBackupTrackRecord
+    >
   >
-  get trackRecordTable =>
-      ListCopyWith($value.trackRecordTable, (v, t) => v.copyWith.$chain(t), (v) => call(trackRecordTable: v));
+  get trackRecordTable => ListCopyWith(
+    $value.trackRecordTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(trackRecordTable: v),
+  );
   @override
   ListCopyWith<
     $R,
     TachimangaBackupSqliteSequence,
-    TachimangaBackupSqliteSequenceCopyWith<$R, TachimangaBackupSqliteSequence, TachimangaBackupSqliteSequence>
+    TachimangaBackupSqliteSequenceCopyWith<
+      $R,
+      TachimangaBackupSqliteSequence,
+      TachimangaBackupSqliteSequence
+    >
   >
-  get sqliteSequenceTable =>
-      ListCopyWith($value.sqliteSequenceTable, (v, t) => v.copyWith.$chain(t), (v) => call(sqliteSequenceTable: v));
+  get sqliteSequenceTable => ListCopyWith(
+    $value.sqliteSequenceTable,
+    (v, t) => v.copyWith.$chain(t),
+    (v) => call(sqliteSequenceTable: v),
+  );
   @override
   $R call({
     List<TachimangaBackupCategory>? categoryTable,
@@ -442,14 +655,21 @@ class _TachimangaBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Ta
       if (settingTable != null) #settingTable: settingTable,
       if (sourceTable != null) #sourceTable: sourceTable,
       if (trackRecordTable != null) #trackRecordTable: trackRecordTable,
-      if (sqliteSequenceTable != null) #sqliteSequenceTable: sqliteSequenceTable,
+      if (sqliteSequenceTable != null)
+        #sqliteSequenceTable: sqliteSequenceTable,
     }),
   );
   @override
   TachimangaBackupDb $make(CopyWithData data) => TachimangaBackupDb(
     categoryTable: data.get(#categoryTable, or: $value.categoryTable),
-    categoryMangaTable: data.get(#categoryMangaTable, or: $value.categoryMangaTable),
-    categoryMetaTable: data.get(#categoryMetaTable, or: $value.categoryMetaTable),
+    categoryMangaTable: data.get(
+      #categoryMangaTable,
+      or: $value.categoryMangaTable,
+    ),
+    categoryMetaTable: data.get(
+      #categoryMetaTable,
+      or: $value.categoryMetaTable,
+    ),
     chapterTable: data.get(#chapterTable, or: $value.chapterTable),
     chapterMetaTable: data.get(#chapterMetaTable, or: $value.chapterMetaTable),
     extensionTable: data.get(#extensionTable, or: $value.extensionTable),
@@ -462,10 +682,15 @@ class _TachimangaBackupDbCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Ta
     settingTable: data.get(#settingTable, or: $value.settingTable),
     sourceTable: data.get(#sourceTable, or: $value.sourceTable),
     trackRecordTable: data.get(#trackRecordTable, or: $value.trackRecordTable),
-    sqliteSequenceTable: data.get(#sqliteSequenceTable, or: $value.sqliteSequenceTable),
+    sqliteSequenceTable: data.get(
+      #sqliteSequenceTable,
+      or: $value.sqliteSequenceTable,
+    ),
   );
 
   @override
-  TachimangaBackupDbCopyWith<$R2, TachimangaBackupDb, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _TachimangaBackupDbCopyWithImpl($value, $cast, t);
+  TachimangaBackupDbCopyWith<$R2, TachimangaBackupDb, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _TachimangaBackupDbCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

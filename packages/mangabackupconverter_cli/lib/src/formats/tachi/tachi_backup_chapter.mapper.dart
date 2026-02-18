@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -23,29 +25,65 @@ class TachiBackupChapterMapper extends ClassMapperBase<TachiBackupChapter> {
   static String _$url(TachiBackupChapter v) => v.url;
   static const Field<TachiBackupChapter, String> _f$url = Field('url', _$url);
   static String _$name(TachiBackupChapter v) => v.name;
-  static const Field<TachiBackupChapter, String> _f$name = Field('name', _$name);
+  static const Field<TachiBackupChapter, String> _f$name = Field(
+    'name',
+    _$name,
+  );
   static String _$scanlator(TachiBackupChapter v) => v.scanlator;
-  static const Field<TachiBackupChapter, String> _f$scanlator = Field('scanlator', _$scanlator);
+  static const Field<TachiBackupChapter, String> _f$scanlator = Field(
+    'scanlator',
+    _$scanlator,
+  );
   static bool _$read(TachiBackupChapter v) => v.read;
   static const Field<TachiBackupChapter, bool> _f$read = Field('read', _$read);
   static bool _$bookmark(TachiBackupChapter v) => v.bookmark;
-  static const Field<TachiBackupChapter, bool> _f$bookmark = Field('bookmark', _$bookmark);
+  static const Field<TachiBackupChapter, bool> _f$bookmark = Field(
+    'bookmark',
+    _$bookmark,
+  );
   static int _$lastPageRead(TachiBackupChapter v) => v.lastPageRead;
-  static const Field<TachiBackupChapter, int> _f$lastPageRead = Field('lastPageRead', _$lastPageRead);
+  static const Field<TachiBackupChapter, int> _f$lastPageRead = Field(
+    'lastPageRead',
+    _$lastPageRead,
+  );
   static int _$dateFetch(TachiBackupChapter v) => v.dateFetch;
-  static const Field<TachiBackupChapter, int> _f$dateFetch = Field('dateFetch', _$dateFetch);
+  static const Field<TachiBackupChapter, int> _f$dateFetch = Field(
+    'dateFetch',
+    _$dateFetch,
+  );
   static int _$dateUpload(TachiBackupChapter v) => v.dateUpload;
-  static const Field<TachiBackupChapter, int> _f$dateUpload = Field('dateUpload', _$dateUpload);
+  static const Field<TachiBackupChapter, int> _f$dateUpload = Field(
+    'dateUpload',
+    _$dateUpload,
+  );
   static double _$chapterNumber(TachiBackupChapter v) => v.chapterNumber;
-  static const Field<TachiBackupChapter, double> _f$chapterNumber = Field('chapterNumber', _$chapterNumber);
+  static const Field<TachiBackupChapter, double> _f$chapterNumber = Field(
+    'chapterNumber',
+    _$chapterNumber,
+  );
   static int _$sourceOrder(TachiBackupChapter v) => v.sourceOrder;
-  static const Field<TachiBackupChapter, int> _f$sourceOrder = Field('sourceOrder', _$sourceOrder);
+  static const Field<TachiBackupChapter, int> _f$sourceOrder = Field(
+    'sourceOrder',
+    _$sourceOrder,
+  );
   static int? _$lastModifiedAt(TachiBackupChapter v) => v.lastModifiedAt;
-  static const Field<TachiBackupChapter, int> _f$lastModifiedAt = Field('lastModifiedAt', _$lastModifiedAt, opt: true);
+  static const Field<TachiBackupChapter, int> _f$lastModifiedAt = Field(
+    'lastModifiedAt',
+    _$lastModifiedAt,
+    opt: true,
+  );
   static int? _$version(TachiBackupChapter v) => v.version;
-  static const Field<TachiBackupChapter, int> _f$version = Field('version', _$version, opt: true);
+  static const Field<TachiBackupChapter, int> _f$version = Field(
+    'version',
+    _$version,
+    opt: true,
+  );
   static int? _$pagesLeft(TachiBackupChapter v) => v.pagesLeft;
-  static const Field<TachiBackupChapter, int> _f$pagesLeft = Field('pagesLeft', _$pagesLeft, opt: true);
+  static const Field<TachiBackupChapter, int> _f$pagesLeft = Field(
+    'pagesLeft',
+    _$pagesLeft,
+    opt: true,
+  );
 
   @override
   final MappableFields<TachiBackupChapter> fields = const {
@@ -96,37 +134,62 @@ class TachiBackupChapterMapper extends ClassMapperBase<TachiBackupChapter> {
 
 mixin TachiBackupChapterMappable {
   String toJson() {
-    return TachiBackupChapterMapper.ensureInitialized().encodeJson<TachiBackupChapter>(this as TachiBackupChapter);
+    return TachiBackupChapterMapper.ensureInitialized()
+        .encodeJson<TachiBackupChapter>(this as TachiBackupChapter);
   }
 
   Map<String, dynamic> toMap() {
-    return TachiBackupChapterMapper.ensureInitialized().encodeMap<TachiBackupChapter>(this as TachiBackupChapter);
+    return TachiBackupChapterMapper.ensureInitialized()
+        .encodeMap<TachiBackupChapter>(this as TachiBackupChapter);
   }
 
-  TachiBackupChapterCopyWith<TachiBackupChapter, TachiBackupChapter, TachiBackupChapter> get copyWith =>
-      _TachiBackupChapterCopyWithImpl(this as TachiBackupChapter, $identity, $identity);
+  TachiBackupChapterCopyWith<
+    TachiBackupChapter,
+    TachiBackupChapter,
+    TachiBackupChapter
+  >
+  get copyWith =>
+      _TachiBackupChapterCopyWithImpl<TachiBackupChapter, TachiBackupChapter>(
+        this as TachiBackupChapter,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return TachiBackupChapterMapper.ensureInitialized().stringifyValue(this as TachiBackupChapter);
+    return TachiBackupChapterMapper.ensureInitialized().stringifyValue(
+      this as TachiBackupChapter,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TachiBackupChapterMapper.ensureInitialized().equalsValue(this as TachiBackupChapter, other);
+    return TachiBackupChapterMapper.ensureInitialized().equalsValue(
+      this as TachiBackupChapter,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TachiBackupChapterMapper.ensureInitialized().hashValue(this as TachiBackupChapter);
+    return TachiBackupChapterMapper.ensureInitialized().hashValue(
+      this as TachiBackupChapter,
+    );
   }
 }
 
-extension TachiBackupChapterValueCopy<$R, $Out> on ObjectCopyWith<$R, TachiBackupChapter, $Out> {
-  TachiBackupChapterCopyWith<$R, TachiBackupChapter, $Out> get $asTachiBackupChapter =>
-      $base.as((v, t, t2) => _TachiBackupChapterCopyWithImpl(v, t, t2));
+extension TachiBackupChapterValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, TachiBackupChapter, $Out> {
+  TachiBackupChapterCopyWith<$R, TachiBackupChapter, $Out>
+  get $asTachiBackupChapter => $base.as(
+    (v, t, t2) => _TachiBackupChapterCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
-abstract class TachiBackupChapterCopyWith<$R, $In extends TachiBackupChapter, $Out>
+abstract class TachiBackupChapterCopyWith<
+  $R,
+  $In extends TachiBackupChapter,
+  $Out
+>
     implements ClassCopyWith<$R, $In, $Out> {
   $R call({
     String? url,
@@ -143,15 +206,19 @@ abstract class TachiBackupChapterCopyWith<$R, $In extends TachiBackupChapter, $O
     int? version,
     int? pagesLeft,
   });
-  TachiBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  TachiBackupChapterCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _TachiBackupChapterCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, TachiBackupChapter, $Out>
+class _TachiBackupChapterCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, TachiBackupChapter, $Out>
     implements TachiBackupChapterCopyWith<$R, TachiBackupChapter, $Out> {
   _TachiBackupChapterCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<TachiBackupChapter> $mapper = TachiBackupChapterMapper.ensureInitialized();
+  late final ClassMapperBase<TachiBackupChapter> $mapper =
+      TachiBackupChapterMapper.ensureInitialized();
   @override
   $R call({
     String? url,
@@ -202,6 +269,8 @@ class _TachiBackupChapterCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Ta
   );
 
   @override
-  TachiBackupChapterCopyWith<$R2, TachiBackupChapter, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _TachiBackupChapterCopyWithImpl($value, $cast, t);
+  TachiBackupChapterCopyWith<$R2, TachiBackupChapter, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _TachiBackupChapterCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

@@ -12,6 +12,12 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_histor
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_source_manga.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
@@ -63,10 +69,15 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   static const fromMap = AidokuBackupMapper.fromMap;
   static const fromJson = AidokuBackupMapper.fromJson;
 
-  AidokuBackup mergeWith(AidokuBackup otherBackup) {
+  AidokuBackup mergeWith(AidokuBackup otherBackup, {bool verbose = false}) {
     final libraryCombined = <AidokuBackupLibraryManga>{};
+    int itemsWithoutCategories = 0;
+    int itemsWithDuplicates = 0;
     for (final libraryItem in (library ?? <AidokuBackupLibraryManga>{})) {
       final libraryItemDuplicates = _findDuplicates(otherBackup, libraryItem);
+      if (libraryItemDuplicates.isNotEmpty) {
+        itemsWithDuplicates++;
+      }
       final combinedCategories = {
         ...libraryItem.categories,
         ...libraryItemDuplicates.fold(
@@ -75,6 +86,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         ),
       };
       if (combinedCategories.isEmpty) {
+        itemsWithoutCategories++;
         combinedCategories.add('Default');
       }
       final latestDateAdded = libraryItemDuplicates.fold(
@@ -118,6 +130,12 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
           lastRead: latestLastRead,
         ),
       );
+    }
+    if (itemsWithDuplicates > 0 && verbose) {
+      print('Found $itemsWithDuplicates library items with duplicates, merging categories and dates.');
+    }
+    if (itemsWithoutCategories > 0 && verbose) {
+      print('Found $itemsWithoutCategories library items without categories, using "Default" category.');
     }
     for (final otherLibraryItem in (otherBackup.library ?? <AidokuBackupLibraryManga>{})) {
       if (libraryCombined
@@ -171,7 +189,27 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
     // TODO: implement toBackup
     return switch (type) {
       BackupType.aidoku => this,
-      BackupType.paperback => throw const AidokuException('Aidoku backup cannot be converted to Paperback'),
+      BackupType.paperback => (() {
+        final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker = [];
+        final List<PaperbackBackupChapter> chapters = [];
+        final List<PaperbackBackupLibraryManga> libraryManga =
+            library
+                ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
+                .toList() ??
+            <PaperbackBackupLibraryManga>[];
+        final List<PaperbackBackupMangaInfo> mangaInfo =
+            manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
+            <PaperbackBackupMangaInfo>[];
+        final List<PaperbackBackupSourceManga> sourceManga = [];
+        return PaperbackBackup(
+          name: name,
+          chapterProgressMarker: chapterProgressMarker,
+          chapters: chapters,
+          libraryManga: libraryManga,
+          mangaInfo: mangaInfo,
+          sourceManga: sourceManga,
+        );
+      })(),
       BackupType.tachi => throw const AidokuException('Aidoku backup cannot be converted to Tachi'),
       BackupType.tachimanga => throw const AidokuException('Aidoku backup cannot be converted to TachiManga'),
       BackupType.mangayomi => throw const AidokuException('Aidoku backup cannot be converted to Mangayomi'),

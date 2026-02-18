@@ -4,8 +4,9 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.11.0
   flutter: ">=3.27.0 <4.0.0"
+resolution: workspace
 
 dependencies:
   env:

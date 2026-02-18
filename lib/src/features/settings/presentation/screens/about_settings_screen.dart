@@ -42,21 +42,20 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
               title: const Text('Version'),
               leading: const Icon(Icons.info),
               subtitle: Text(versionId),
-              onTap:
-                  clipboard == null
-                      ? null
-                      : () async {
-                        final item = DataWriterItem();
-                        item.add(Formats.plainText(versionId));
-                        await clipboard!.write([item]);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Version copied to clipboard'),
-                            ),
-                          );
-                        }
-                      },
+              onTap: clipboard == null
+                  ? null
+                  : () async {
+                      final item = DataWriterItem();
+                      item.add(Formats.plainText(versionId));
+                      await clipboard!.write([item]);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Version copied to clipboard'),
+                          ),
+                        );
+                      }
+                    },
             ),
             ListTile(
               title: const Text('Open Source Licenses'),

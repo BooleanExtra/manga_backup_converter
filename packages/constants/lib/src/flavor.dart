@@ -54,18 +54,17 @@ extension _FlavorToConfig on Flavor {
     };
   }
 
-  FlavorConfig? _createDebugModeFlavor() =>
-      kDebugMode
-          ? FlavorConfig(
-            name: 'DEBUG',
-            color: Colors.blue,
-            location: BannerLocation.topEnd,
-          )
-          : kReleaseMode
-          ? null
-          : FlavorConfig(
-            name: 'LOCAL',
-            color: Colors.blue,
-            location: BannerLocation.topEnd,
-          );
+  FlavorConfig? _createDebugModeFlavor() => kDebugMode
+      ? FlavorConfig(
+          name: 'DEBUG',
+          color: Colors.blue,
+          location: BannerLocation.topEnd,
+        )
+      : kReleaseMode
+      ? null
+      : FlavorConfig(
+          name: 'LOCAL',
+          color: Colors.blue,
+          location: BannerLocation.topEnd,
+        );
 }

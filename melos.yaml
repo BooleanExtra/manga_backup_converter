@@ -113,7 +113,7 @@ scripts:
     description: Verify formatting was applied.
 
   generate:
-    run: melos run assets && melos run env --no-select && melos run generate:pkg --no-select && melos run format
+    run: melos run env --no-select && melos run generate:pkg --no-select && melos run format
     description: Run `build_runner build` in all packages.
 
   generate:pkg:
@@ -149,18 +149,6 @@ scripts:
     description: Run `build_runner` in a specific package that depends on `envied`.
     packageFilters:
       dependsOn: envied
-
-  assets:
-    run: melos run assets:pkg --no-select
-    description: Run `flutter pub run assets_gen build` all packages with assets gen.
-
-  assets:pkg:
-    run: flutter pub run assets_gen build
-    exec:
-      failFast: true
-    description: Run `flutter pub run assets_gen build` in the selected package.
-    packageFilters:
-      dependsOn: assets_gen
 
   dart_test:pkg:
     run: dart pub global run coverage:test_with_coverage

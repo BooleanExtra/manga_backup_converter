@@ -3,7 +3,8 @@ enum BackupType {
   paperback(['.pas4']),
   tachi(['.tachibk', '.proto.gz']),
   tachimanga(['.tmb']),
-  mangayomi(['.backup']);
+  mangayomi(['.backup'])
+  ;
 
   const BackupType(this.extensions);
 

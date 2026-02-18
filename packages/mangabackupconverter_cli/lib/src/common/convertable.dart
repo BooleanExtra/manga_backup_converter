@@ -13,8 +13,3 @@ abstract interface class ConvertableBackup {
   // ignore: avoid_positional_boolean_parameters
   void verbosePrint(bool verbose);
 }
-
-// TODO: Implement mapping of extensions and extension repos
-abstract interface class ConvertableExtension {}
-
-abstract interface class ConvertableExtensionRepo {}

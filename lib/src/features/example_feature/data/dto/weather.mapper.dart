@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -76,8 +78,11 @@ mixin WeatherParamsMappable {
   }
 
   WeatherParamsCopyWith<WeatherParams, WeatherParams, WeatherParams>
-  get copyWith =>
-      _WeatherParamsCopyWithImpl(this as WeatherParams, $identity, $identity);
+  get copyWith => _WeatherParamsCopyWithImpl<WeatherParams, WeatherParams>(
+    this as WeatherParams,
+    $identity,
+    $identity,
+  );
   @override
   String toString() {
     return WeatherParamsMapper.ensureInitialized().stringifyValue(
@@ -104,7 +109,7 @@ mixin WeatherParamsMappable {
 extension WeatherParamsValueCopy<$R, $Out>
     on ObjectCopyWith<$R, WeatherParams, $Out> {
   WeatherParamsCopyWith<$R, WeatherParams, $Out> get $asWeatherParams =>
-      $base.as((v, t, t2) => _WeatherParamsCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _WeatherParamsCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class WeatherParamsCopyWith<$R, $In extends WeatherParams, $Out>
@@ -139,7 +144,7 @@ class _WeatherParamsCopyWithImpl<$R, $Out>
   @override
   WeatherParamsCopyWith<$R2, WeatherParams, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
-  ) => _WeatherParamsCopyWithImpl($value, $cast, t);
+  ) => _WeatherParamsCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class WeatherInfoMapper extends ClassMapperBase<WeatherInfo> {
@@ -207,7 +212,11 @@ mixin WeatherInfoMappable {
   }
 
   WeatherInfoCopyWith<WeatherInfo, WeatherInfo, WeatherInfo> get copyWith =>
-      _WeatherInfoCopyWithImpl(this as WeatherInfo, $identity, $identity);
+      _WeatherInfoCopyWithImpl<WeatherInfo, WeatherInfo>(
+        this as WeatherInfo,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return WeatherInfoMapper.ensureInitialized().stringifyValue(
@@ -232,7 +241,7 @@ mixin WeatherInfoMappable {
 extension WeatherInfoValueCopy<$R, $Out>
     on ObjectCopyWith<$R, WeatherInfo, $Out> {
   WeatherInfoCopyWith<$R, WeatherInfo, $Out> get $asWeatherInfo =>
-      $base.as((v, t, t2) => _WeatherInfoCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _WeatherInfoCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class WeatherInfoCopyWith<$R, $In extends WeatherInfo, $Out>
@@ -267,7 +276,7 @@ class _WeatherInfoCopyWithImpl<$R, $Out>
   @override
   WeatherInfoCopyWith<$R2, WeatherInfo, $Out2> $chain<$R2, $Out2>(
     Then<$Out2, $R2> t,
-  ) => _WeatherInfoCopyWithImpl($value, $cast, t);
+  ) => _WeatherInfoCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
 
 class WeatherMapper extends ClassMapperBase<Weather> {
@@ -342,7 +351,11 @@ mixin WeatherMappable {
   }
 
   WeatherCopyWith<Weather, Weather, Weather> get copyWith =>
-      _WeatherCopyWithImpl(this as Weather, $identity, $identity);
+      _WeatherCopyWithImpl<Weather, Weather>(
+        this as Weather,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
     return WeatherMapper.ensureInitialized().stringifyValue(this as Weather);
@@ -364,7 +377,7 @@ mixin WeatherMappable {
 
 extension WeatherValueCopy<$R, $Out> on ObjectCopyWith<$R, Weather, $Out> {
   WeatherCopyWith<$R, Weather, $Out> get $asWeather =>
-      $base.as((v, t, t2) => _WeatherCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _WeatherCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class WeatherCopyWith<$R, $In extends Weather, $Out>
@@ -427,5 +440,6 @@ class _WeatherCopyWithImpl<$R, $Out>
 
   @override
   WeatherCopyWith<$R2, Weather, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _WeatherCopyWithImpl($value, $cast, t);
+      _WeatherCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

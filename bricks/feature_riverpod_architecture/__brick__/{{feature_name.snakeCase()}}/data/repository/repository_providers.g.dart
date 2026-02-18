@@ -14,10 +14,9 @@ final weatherRepositoryProvider =
     AutoDisposeProvider<HttpWeatherRepository>.internal(
       weatherRepository,
       name: r'weatherRepositoryProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$weatherRepositoryHash,
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$weatherRepositoryHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );

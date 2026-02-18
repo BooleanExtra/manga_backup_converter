@@ -89,18 +89,15 @@ class FlexSchemeColorConverter {
       ),
       tertiary: _colorFromJson(map['tertiary'] as ColorJson),
       tertiaryContainer: _colorFromJson(map['tertiaryContainer'] as ColorJson),
-      appBarColor:
-          map['appBarColor'] == null
-              ? null
-              : _colorFromJson(map['appBarColor'] as ColorJson),
-      error:
-          map['error'] == null
-              ? null
-              : _colorFromJson(map['error'] as ColorJson),
-      errorContainer:
-          map['errorContainer'] == null
-              ? null
-              : _colorFromJson(map['errorContainer'] as ColorJson),
+      appBarColor: map['appBarColor'] == null
+          ? null
+          : _colorFromJson(map['appBarColor'] as ColorJson),
+      error: map['error'] == null
+          ? null
+          : _colorFromJson(map['error'] as ColorJson),
+      errorContainer: map['errorContainer'] == null
+          ? null
+          : _colorFromJson(map['errorContainer'] as ColorJson),
       swapOnMaterial3: map['swapOnMaterial3'] as bool,
     );
   }

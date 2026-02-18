@@ -31,9 +31,8 @@ GoRouter createRouter() {
               GoRoute(
                 path: 'settings/:id',
                 name: RouteName.settingDetails.name,
-                builder:
-                    (context, state) =>
-                        SettingDetailsRoute(id: state.pathParameters['id']),
+                builder: (context, state) =>
+                    SettingDetailsRoute(id: state.pathParameters['id']),
               ),
             ],
           ),

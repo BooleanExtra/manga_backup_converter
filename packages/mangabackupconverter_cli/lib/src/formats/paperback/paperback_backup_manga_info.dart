@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
 
 part 'paperback_backup_manga_info.mapper.dart';
 
@@ -33,6 +34,17 @@ class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable {
     this.rating,
     this.banner,
   });
+
+  static String statusFromAidoku(AidokuPublishingStatus aidokuStatus) {
+    return switch (aidokuStatus) {
+      AidokuPublishingStatus.ongoing => 'Ongoing',
+      AidokuPublishingStatus.completed => 'Completed',
+      AidokuPublishingStatus.cancelled => 'Finished',
+      AidokuPublishingStatus.unknown => 'Ongoing',
+      AidokuPublishingStatus.hiatus => 'Ongoing',
+      AidokuPublishingStatus.notPublished => 'Ongoing',
+    };
+  }
 
   static const fromMap = PaperbackBackupMangaInfoMapper.fromMap;
   static const fromJson = PaperbackBackupMangaInfoMapper.fromJson;

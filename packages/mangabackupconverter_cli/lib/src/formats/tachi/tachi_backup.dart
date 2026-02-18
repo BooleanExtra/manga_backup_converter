@@ -93,7 +93,7 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   }
 
   factory TachiBackup.fromData(Uint8List bytes, {TachiFork fork = TachiFork.mihon}) {
-    final backupArchive = GZipDecoder().decodeBytes(bytes);
+    final backupArchive = const GZipDecoder().decodeBytes(bytes);
     return switch (fork) {
       TachiFork.mihon => TachiBackup._fromMihon(backup: mihon.Backup.fromBuffer(backupArchive)),
       TachiFork.sy => TachiBackup._fromSy(backup: sy.Backup.fromBuffer(backupArchive)),
@@ -106,18 +106,14 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   @override
   Future<Uint8List> toData() async {
     final json = toJson();
-    final backupJson = switch (fork) {
-      TachiFork.mihon => mihon.Backup.fromJson(json).toProto3Json(),
-      TachiFork.sy => sy.Backup.fromJson(json).toProto3Json(),
-      TachiFork.j2k => j2k.Backup.fromJson(json).toProto3Json(),
-      TachiFork.yokai => yokai.Backup.fromJson(json).toProto3Json(),
-      TachiFork.neko => neko.Backup.fromJson(json).toProto3Json(),
+    final backupBytes = switch (fork) {
+      TachiFork.mihon => mihon.Backup.fromJson(json).writeToBuffer(),
+      TachiFork.sy => sy.Backup.fromJson(json).writeToBuffer(),
+      TachiFork.j2k => j2k.Backup.fromJson(json).writeToBuffer(),
+      TachiFork.yokai => yokai.Backup.fromJson(json).writeToBuffer(),
+      TachiFork.neko => neko.Backup.fromJson(json).writeToBuffer(),
     };
-    final gzip = GZipEncoder().encode(backupJson);
-    if (gzip == null) {
-      throw const TachiException('Could not encode Tachi backup');
-    }
-    return Uint8List.fromList(gzip);
+    return const GZipEncoder().encodeBytes(backupBytes);
   }
 
   @override

@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -26,39 +28,40 @@ class PaperbackBackupMapper extends ClassMapperBase<PaperbackBackup> {
   @override
   final String id = 'PaperbackBackup';
 
-  static List<PaperbackBackupChapterProgressMarker>? _$chapterProgressMarker(PaperbackBackup v) =>
-      v.chapterProgressMarker;
-  static const Field<PaperbackBackup, List<PaperbackBackupChapterProgressMarker>> _f$chapterProgressMarker = Field(
+  static List<PaperbackBackupChapterProgressMarker>? _$chapterProgressMarker(
+    PaperbackBackup v,
+  ) => v.chapterProgressMarker;
+  static const Field<
+    PaperbackBackup,
+    List<PaperbackBackupChapterProgressMarker>
+  >
+  _f$chapterProgressMarker = Field(
     'chapterProgressMarker',
     _$chapterProgressMarker,
     opt: true,
   );
-  static List<PaperbackBackupChapter>? _$chapters(PaperbackBackup v) => v.chapters;
-  static const Field<PaperbackBackup, List<PaperbackBackupChapter>> _f$chapters = Field(
-    'chapters',
-    _$chapters,
-    opt: true,
-  );
-  static List<PaperbackBackupLibraryManga>? _$libraryManga(PaperbackBackup v) => v.libraryManga;
-  static const Field<PaperbackBackup, List<PaperbackBackupLibraryManga>> _f$libraryManga = Field(
-    'libraryManga',
-    _$libraryManga,
-    opt: true,
-  );
-  static List<PaperbackBackupMangaInfo>? _$mangaInfo(PaperbackBackup v) => v.mangaInfo;
-  static const Field<PaperbackBackup, List<PaperbackBackupMangaInfo>> _f$mangaInfo = Field(
-    'mangaInfo',
-    _$mangaInfo,
-    opt: true,
-  );
-  static List<PaperbackBackupSourceManga>? _$sourceManga(PaperbackBackup v) => v.sourceManga;
-  static const Field<PaperbackBackup, List<PaperbackBackupSourceManga>> _f$sourceManga = Field(
-    'sourceManga',
-    _$sourceManga,
-    opt: true,
-  );
+  static List<PaperbackBackupChapter>? _$chapters(PaperbackBackup v) =>
+      v.chapters;
+  static const Field<PaperbackBackup, List<PaperbackBackupChapter>>
+  _f$chapters = Field('chapters', _$chapters, opt: true);
+  static List<PaperbackBackupLibraryManga>? _$libraryManga(PaperbackBackup v) =>
+      v.libraryManga;
+  static const Field<PaperbackBackup, List<PaperbackBackupLibraryManga>>
+  _f$libraryManga = Field('libraryManga', _$libraryManga, opt: true);
+  static List<PaperbackBackupMangaInfo>? _$mangaInfo(PaperbackBackup v) =>
+      v.mangaInfo;
+  static const Field<PaperbackBackup, List<PaperbackBackupMangaInfo>>
+  _f$mangaInfo = Field('mangaInfo', _$mangaInfo, opt: true);
+  static List<PaperbackBackupSourceManga>? _$sourceManga(PaperbackBackup v) =>
+      v.sourceManga;
+  static const Field<PaperbackBackup, List<PaperbackBackupSourceManga>>
+  _f$sourceManga = Field('sourceManga', _$sourceManga, opt: true);
   static String? _$name(PaperbackBackup v) => v.name;
-  static const Field<PaperbackBackup, String> _f$name = Field('name', _$name, opt: true);
+  static const Field<PaperbackBackup, String> _f$name = Field(
+    'name',
+    _$name,
+    opt: true,
+  );
 
   @override
   final MappableFields<PaperbackBackup> fields = const {
@@ -95,37 +98,54 @@ class PaperbackBackupMapper extends ClassMapperBase<PaperbackBackup> {
 
 mixin PaperbackBackupMappable {
   String toJson() {
-    return PaperbackBackupMapper.ensureInitialized().encodeJson<PaperbackBackup>(this as PaperbackBackup);
+    return PaperbackBackupMapper.ensureInitialized()
+        .encodeJson<PaperbackBackup>(this as PaperbackBackup);
   }
 
   Map<String, dynamic> toMap() {
-    return PaperbackBackupMapper.ensureInitialized().encodeMap<PaperbackBackup>(this as PaperbackBackup);
+    return PaperbackBackupMapper.ensureInitialized().encodeMap<PaperbackBackup>(
+      this as PaperbackBackup,
+    );
   }
 
-  PaperbackBackupCopyWith<PaperbackBackup, PaperbackBackup, PaperbackBackup> get copyWith =>
-      _PaperbackBackupCopyWithImpl(this as PaperbackBackup, $identity, $identity);
+  PaperbackBackupCopyWith<PaperbackBackup, PaperbackBackup, PaperbackBackup>
+  get copyWith =>
+      _PaperbackBackupCopyWithImpl<PaperbackBackup, PaperbackBackup>(
+        this as PaperbackBackup,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return PaperbackBackupMapper.ensureInitialized().stringifyValue(this as PaperbackBackup);
+    return PaperbackBackupMapper.ensureInitialized().stringifyValue(
+      this as PaperbackBackup,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return PaperbackBackupMapper.ensureInitialized().equalsValue(this as PaperbackBackup, other);
+    return PaperbackBackupMapper.ensureInitialized().equalsValue(
+      this as PaperbackBackup,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return PaperbackBackupMapper.ensureInitialized().hashValue(this as PaperbackBackup);
+    return PaperbackBackupMapper.ensureInitialized().hashValue(
+      this as PaperbackBackup,
+    );
   }
 }
 
-extension PaperbackBackupValueCopy<$R, $Out> on ObjectCopyWith<$R, PaperbackBackup, $Out> {
+extension PaperbackBackupValueCopy<$R, $Out>
+    on ObjectCopyWith<$R, PaperbackBackup, $Out> {
   PaperbackBackupCopyWith<$R, PaperbackBackup, $Out> get $asPaperbackBackup =>
-      $base.as((v, t, t2) => _PaperbackBackupCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _PaperbackBackupCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
-abstract class PaperbackBackupCopyWith<$R, $In extends PaperbackBackup, $Out> implements ClassCopyWith<$R, $In, $Out> {
+abstract class PaperbackBackupCopyWith<$R, $In extends PaperbackBackup, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
   ListCopyWith<
     $R,
     PaperbackBackupChapterProgressMarker,
@@ -139,25 +159,41 @@ abstract class PaperbackBackupCopyWith<$R, $In extends PaperbackBackup, $Out> im
   ListCopyWith<
     $R,
     PaperbackBackupChapter,
-    PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, PaperbackBackupChapter>
+    PaperbackBackupChapterCopyWith<
+      $R,
+      PaperbackBackupChapter,
+      PaperbackBackupChapter
+    >
   >?
   get chapters;
   ListCopyWith<
     $R,
     PaperbackBackupLibraryManga,
-    PaperbackBackupLibraryMangaCopyWith<$R, PaperbackBackupLibraryManga, PaperbackBackupLibraryManga>
+    PaperbackBackupLibraryMangaCopyWith<
+      $R,
+      PaperbackBackupLibraryManga,
+      PaperbackBackupLibraryManga
+    >
   >?
   get libraryManga;
   ListCopyWith<
     $R,
     PaperbackBackupMangaInfo,
-    PaperbackBackupMangaInfoCopyWith<$R, PaperbackBackupMangaInfo, PaperbackBackupMangaInfo>
+    PaperbackBackupMangaInfoCopyWith<
+      $R,
+      PaperbackBackupMangaInfo,
+      PaperbackBackupMangaInfo
+    >
   >?
   get mangaInfo;
   ListCopyWith<
     $R,
     PaperbackBackupSourceManga,
-    PaperbackBackupSourceMangaCopyWith<$R, PaperbackBackupSourceManga, PaperbackBackupSourceManga>
+    PaperbackBackupSourceMangaCopyWith<
+      $R,
+      PaperbackBackupSourceManga,
+      PaperbackBackupSourceManga
+    >
   >?
   get sourceManga;
   $R call({
@@ -168,15 +204,19 @@ abstract class PaperbackBackupCopyWith<$R, $In extends PaperbackBackup, $Out> im
     List<PaperbackBackupSourceManga>? sourceManga,
     String? name,
   });
-  PaperbackBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+  PaperbackBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  );
 }
 
-class _PaperbackBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, PaperbackBackup, $Out>
+class _PaperbackBackupCopyWithImpl<$R, $Out>
+    extends ClassCopyWithBase<$R, PaperbackBackup, $Out>
     implements PaperbackBackupCopyWith<$R, PaperbackBackup, $Out> {
   _PaperbackBackupCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<PaperbackBackup> $mapper = PaperbackBackupMapper.ensureInitialized();
+  late final ClassMapperBase<PaperbackBackup> $mapper =
+      PaperbackBackupMapper.ensureInitialized();
   @override
   ListCopyWith<
     $R,
@@ -187,54 +227,81 @@ class _PaperbackBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Paper
       PaperbackBackupChapterProgressMarker
     >
   >?
-  get chapterProgressMarker =>
-      $value.chapterProgressMarker != null
-          ? ListCopyWith(
-            $value.chapterProgressMarker!,
-            (v, t) => v.copyWith.$chain(t),
-            (v) => call(chapterProgressMarker: v),
-          )
-          : null;
+  get chapterProgressMarker => $value.chapterProgressMarker != null
+      ? ListCopyWith(
+          $value.chapterProgressMarker!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(chapterProgressMarker: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     PaperbackBackupChapter,
-    PaperbackBackupChapterCopyWith<$R, PaperbackBackupChapter, PaperbackBackupChapter>
+    PaperbackBackupChapterCopyWith<
+      $R,
+      PaperbackBackupChapter,
+      PaperbackBackupChapter
+    >
   >?
-  get chapters =>
-      $value.chapters != null
-          ? ListCopyWith($value.chapters!, (v, t) => v.copyWith.$chain(t), (v) => call(chapters: v))
-          : null;
+  get chapters => $value.chapters != null
+      ? ListCopyWith(
+          $value.chapters!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(chapters: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     PaperbackBackupLibraryManga,
-    PaperbackBackupLibraryMangaCopyWith<$R, PaperbackBackupLibraryManga, PaperbackBackupLibraryManga>
+    PaperbackBackupLibraryMangaCopyWith<
+      $R,
+      PaperbackBackupLibraryManga,
+      PaperbackBackupLibraryManga
+    >
   >?
-  get libraryManga =>
-      $value.libraryManga != null
-          ? ListCopyWith($value.libraryManga!, (v, t) => v.copyWith.$chain(t), (v) => call(libraryManga: v))
-          : null;
+  get libraryManga => $value.libraryManga != null
+      ? ListCopyWith(
+          $value.libraryManga!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(libraryManga: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     PaperbackBackupMangaInfo,
-    PaperbackBackupMangaInfoCopyWith<$R, PaperbackBackupMangaInfo, PaperbackBackupMangaInfo>
+    PaperbackBackupMangaInfoCopyWith<
+      $R,
+      PaperbackBackupMangaInfo,
+      PaperbackBackupMangaInfo
+    >
   >?
-  get mangaInfo =>
-      $value.mangaInfo != null
-          ? ListCopyWith($value.mangaInfo!, (v, t) => v.copyWith.$chain(t), (v) => call(mangaInfo: v))
-          : null;
+  get mangaInfo => $value.mangaInfo != null
+      ? ListCopyWith(
+          $value.mangaInfo!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(mangaInfo: v),
+        )
+      : null;
   @override
   ListCopyWith<
     $R,
     PaperbackBackupSourceManga,
-    PaperbackBackupSourceMangaCopyWith<$R, PaperbackBackupSourceManga, PaperbackBackupSourceManga>
+    PaperbackBackupSourceMangaCopyWith<
+      $R,
+      PaperbackBackupSourceManga,
+      PaperbackBackupSourceManga
+    >
   >?
-  get sourceManga =>
-      $value.sourceManga != null
-          ? ListCopyWith($value.sourceManga!, (v, t) => v.copyWith.$chain(t), (v) => call(sourceManga: v))
-          : null;
+  get sourceManga => $value.sourceManga != null
+      ? ListCopyWith(
+          $value.sourceManga!,
+          (v, t) => v.copyWith.$chain(t),
+          (v) => call(sourceManga: v),
+        )
+      : null;
   @override
   $R call({
     Object? chapterProgressMarker = $none,
@@ -245,7 +312,8 @@ class _PaperbackBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Paper
     Object? name = $none,
   }) => $apply(
     FieldCopyWithData({
-      if (chapterProgressMarker != $none) #chapterProgressMarker: chapterProgressMarker,
+      if (chapterProgressMarker != $none)
+        #chapterProgressMarker: chapterProgressMarker,
       if (chapters != $none) #chapters: chapters,
       if (libraryManga != $none) #libraryManga: libraryManga,
       if (mangaInfo != $none) #mangaInfo: mangaInfo,
@@ -255,7 +323,10 @@ class _PaperbackBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Paper
   );
   @override
   PaperbackBackup $make(CopyWithData data) => PaperbackBackup(
-    chapterProgressMarker: data.get(#chapterProgressMarker, or: $value.chapterProgressMarker),
+    chapterProgressMarker: data.get(
+      #chapterProgressMarker,
+      or: $value.chapterProgressMarker,
+    ),
     chapters: data.get(#chapters, or: $value.chapters),
     libraryManga: data.get(#libraryManga, or: $value.libraryManga),
     mangaInfo: data.get(#mangaInfo, or: $value.mangaInfo),
@@ -264,6 +335,8 @@ class _PaperbackBackupCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Paper
   );
 
   @override
-  PaperbackBackupCopyWith<$R2, PaperbackBackup, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _PaperbackBackupCopyWithImpl($value, $cast, t);
+  PaperbackBackupCopyWith<$R2, PaperbackBackup, $Out2> $chain<$R2, $Out2>(
+    Then<$Out2, $R2> t,
+  ) => _PaperbackBackupCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

@@ -3,20 +3,22 @@ description: A new Flutter package project.
 version: 0.0.1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.11.0
   flutter: ">=3.27.0 <4.0.0"
+resolution: workspace
 
 dependencies:
   equatable: ^2.0.5
   flutter:
     sdk: flutter
   fpdart: ^1.1.0
-  hooks_riverpod: ^2.3.6
+  hooks_riverpod: ^3.0.0
 
 dev_dependencies:
   app_lints:
     path: ../app_lints
-  assets_gen: ^1.5.0
+  build_runner: ^2.4.0
+  flutter_gen_runner: ^5.12.0
   flutter_test:
     sdk: flutter
 
@@ -26,10 +28,13 @@ flutter:
   #
   # Run the generator with `melos run assets`
   assets:
-    - packages/assets/images/flutter_logo.png
+    - lib/images/flutter_logo.png
 
-assets_gen:
-  code_style: lowerCamelCase
-  format_dart_code: true
-  gen_package_path: false
-  output: src/assets.dart
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
+  assets:
+    enabled: true
+    outputs:
+      package_parameter_enabled: false
+      style: camel-case
