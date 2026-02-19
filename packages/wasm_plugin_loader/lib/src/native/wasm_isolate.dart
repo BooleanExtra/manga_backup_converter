@@ -79,10 +79,12 @@ class WasmMangaDetailsCmd {
 
 class WasmPageListCmd {
   const WasmPageListCmd({
-    required this.keyBytes,
+    required this.mangaBytes,
+    required this.chapterBytes,
     required this.replyPort,
   });
-  final Uint8List keyBytes;
+  final Uint8List mangaBytes; // pre-encoded postcard Manga bytes
+  final Uint8List chapterBytes; // pre-encoded postcard Chapter bytes
   final SendPort replyPort;
 }
 
@@ -307,16 +309,18 @@ void _processCmd(
 
   if (cmd is WasmPageListCmd) {
     Uint8List? result;
-    // v2 ABI: get_page_list(chapter_descriptor_rid, manga_id_rid)
-    // chapter_descriptor is postcard-encoded Chapter struct with the key set.
-    final chapterRid = store.addBytes(encodeChapterKey(utf8.decode(cmd.keyBytes)));
+    // ABI: get_page_list(manga_descriptor_rid, chapter_descriptor_rid)
+    // Note: manga comes FIRST, chapter comes SECOND.
+    final mangaRid = store.addBytes(cmd.mangaBytes);
+    final chapterRid = store.addBytes(cmd.chapterBytes);
     try {
-      final ptr = (runner.call('get_page_list', [chapterRid, -1]) as num).toInt();
+      final ptr = (runner.call('get_page_list', [mangaRid, chapterRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_page_list: $e', stackTrace: st.toString()));
     } finally {
+      store.remove(mangaRid);
       store.remove(chapterRid);
     }
     cmd.replyPort.send(result);

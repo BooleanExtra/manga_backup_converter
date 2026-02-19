@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:wasm_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
+import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
@@ -212,11 +213,12 @@ class AidokuPlugin {
   }
 
   /// Fetch page image URLs for a chapter.
-  Future<List<Page>> getPageList(String key) async {
+  Future<List<Page>> getPageList(Manga manga, Chapter chapter) async {
     final port = ReceivePort();
     _wasmCmdPort.send(
       WasmPageListCmd(
-        keyBytes: Uint8List.fromList(utf8.encode(key)),
+        mangaBytes: encodeManga(manga),
+        chapterBytes: encodeChapter(chapter),
         replyPort: port.sendPort,
       ),
     );
