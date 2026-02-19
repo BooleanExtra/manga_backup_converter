@@ -5,6 +5,7 @@ import 'package:wasm_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
+import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
@@ -129,17 +130,20 @@ class AidokuPlugin {
   }
 
   /// Fetch page image URLs for a chapter.
-  Future<List<Page>> getPageList(String key) async {
-    // v2 ABI: get_page_list(chapter_descriptor_rid, manga_id_rid); -1 = manga not provided
-    final chapterRid = _store.addBytes(encodeChapterKey(key));
+  Future<List<Page>> getPageList(Manga manga, Chapter chapter) async {
+    // ABI: get_page_list(manga_descriptor_rid, chapter_descriptor_rid)
+    // Note: manga comes FIRST, chapter comes SECOND.
+    final mangaRid = _store.addBytes(encodeManga(manga));
+    final chapterRid = _store.addBytes(encodeChapter(chapter));
     try {
-      final ptr = _callInt('get_page_list', [chapterRid, -1]);
+      final ptr = _callInt('get_page_list', [mangaRid, chapterRid]);
       if (ptr <= 0) return [];
       return decodePageList(PostcardReader(_readResult(ptr)));
     } on Object {
       return [];
     } finally {
       _store.remove(chapterRid);
+      _store.remove(mangaRid);
     }
   }
 

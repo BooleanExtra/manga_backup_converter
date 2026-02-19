@@ -48,6 +48,59 @@ Uint8List encodeMangaKey(String key) {
   return w.bytes;
 }
 
+/// Encode a full Manga struct (postcard) with all fields populated.
+/// Used to pass a manga descriptor RID to WASM functions like `get_page_list`.
+Uint8List encodeManga(Manga m) {
+  final w = PostcardWriter();
+  w.writeString(m.key); // key: String
+  w.writeString(m.title); // title: String
+  w.writeOption(m.coverUrl, (v, pw) => pw.writeString(v)); // cover: Option<String>
+  w.writeOption(
+    m.artists.isEmpty ? null : m.artists,
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  ); // artists: Option<Vec<String>>
+  w.writeOption(
+    m.authors.isEmpty ? null : m.authors,
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  ); // authors: Option<Vec<String>>
+  w.writeOption(m.description, (v, pw) => pw.writeString(v)); // description: Option<String>
+  w.writeOption(m.url, (v, pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption(
+    m.tags.isEmpty ? null : m.tags,
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  ); // tags: Option<Vec<String>>
+  w.writeVarInt(m.status.index); // status: varint
+  w.writeVarInt(m.contentRating.index); // content_rating: varint
+  w.writeVarInt(0); // viewer: Default
+  w.writeVarInt(0); // update_strategy: Default
+  w.writeU8(0); // next_update_time: None (Option<i64>)
+  w.writeU8(0); // chapters: None (Option<Vec<Chapter>>) — omit to avoid circular encoding
+  return w.bytes;
+}
+
+/// Encode a full Chapter struct (postcard) with all fields populated.
+/// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
+Uint8List encodeChapter(Chapter ch) {
+  final w = PostcardWriter();
+  w.writeString(ch.key); // key: String
+  w.writeOption(ch.title, (v, pw) => pw.writeString(v)); // title: Option<String>
+  w.writeOption(ch.chapterNumber, (v, pw) => pw.writeF32(v)); // chapter_number: Option<f32>
+  w.writeOption(ch.volumeNumber, (v, pw) => pw.writeF32(v)); // volume_number: Option<f32>
+  w.writeOption(
+    ch.dateUploaded != null ? ch.dateUploaded!.millisecondsSinceEpoch ~/ 1000 : null,
+    (v, pw) => pw.writeI64(v),
+  ); // date_uploaded: Option<i64> (seconds)
+  w.writeOption(
+    ch.scanlators.isEmpty ? null : ch.scanlators,
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  ); // scanlators: Option<Vec<String>>
+  w.writeOption(ch.url, (v, pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption(ch.language, (v, pw) => pw.writeString(v)); // language: Option<String>
+  w.writeU8(0); // thumbnail: None (Option<String>)
+  w.writeBool(false); // locked: bool
+  return w.bytes;
+}
+
 /// Encode a minimal Chapter struct (postcard) with only the key field set.
 /// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
 /// Field order matches the Rust `Chapter` struct in aidoku-rs structs/mod.rs.
@@ -185,13 +238,59 @@ Chapter decodeChapter(PostcardReader r) {
 }
 
 /// Decode a list of [Page] objects from a postcard result buffer.
-/// Layout per page: [varint index][option<string> url][option<string> base64][option<string> text]
+///
+/// Aidoku Page struct layout (postcard serialization):
+///   content: PageContent enum (varint variant index + variant data)
+///     0 = Url(String url, Option<PageContext> context)
+///     1 = Text(String text)
+///     2 = Image(...) — externally managed, not decoded
+///     3 = Zip(String url, String path)
+///   thumbnail: Option<String>
+///   has_description: bool
+///   description: Option<String>
+///
+/// The page index is the position in the Vec (0-based), not a serialized field.
 List<Page> decodePageList(PostcardReader r) {
-  return r.readList(() {
-    final index = r.readVarInt();
-    final url = r.readOption(r.readString);
-    final base64 = r.readOption(r.readString);
-    final text = r.readOption(r.readString);
-    return Page(index: index, url: url, base64: base64, text: text);
+  final pages = r.readList(() {
+    // PageContent enum variant
+    final variant = r.readVarInt();
+    String? url;
+    String? base64;
+    String? text;
+    switch (variant) {
+      case 0: // Url(String, Option<PageContext>)
+        url = r.readString();
+        // Option<PageContext> — skip (read as None/Some + fields if present)
+        _skipPageContext(r);
+      case 1: // Text(String)
+        text = r.readString();
+      case 2: // Image — externally managed, no serialized data expected
+        break;
+      case 3: // Zip(String url, String path)
+        url = r.readString();
+        r.readString(); // path (discard)
+    }
+    // thumbnail: Option<String>
+    r.readOption(r.readString);
+    // has_description: bool
+    r.readBool();
+    // description: Option<String>
+    r.readOption(r.readString);
+    return (url: url, base64: base64, text: text);
   });
+  return [
+    for (var i = 0; i < pages.length; i++)
+      Page(index: i, url: pages[i].url, base64: pages[i].base64, text: pages[i].text),
+  ];
+}
+
+/// Skip an Option<PageContext> field in the postcard stream.
+/// PageContext is not used by our model — we just need to advance past it.
+void _skipPageContext(PostcardReader r) {
+  final tag = r.readU8();
+  if (tag == 0) return; // None
+  // Some(PageContext) — PageContext fields vary by version; skip conservatively.
+  // PageContext typically contains: Option<String> (previous_page), Option<String> (next_page)
+  r.readOption(r.readString); // previous page
+  r.readOption(r.readString); // next page
 }

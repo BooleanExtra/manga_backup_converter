@@ -17,7 +17,7 @@ All exports return `i32`:
 | `start`                        | none → void                   | Initialize source; call before all others    |
 | `get_search_manga_list`        | `query_rid, page, filters_rid`         | Search manga; page is 1-indexed                       |
 | `get_manga_update`             | `manga_key_rid, needs_details, needs_chapters` | Fetch manga details/chapters (i32 booleans) |
-| `get_page_list`                | `chapter_key_rid, manga_id_rid`        | Fetch page URLs; pass -1 for manga_id if unknown      |
+| `get_page_list`                | `manga_descriptor_rid, chapter_descriptor_rid` | Fetch page URLs (manga first, chapter second) |
 | `free_result`                  | `ptr` → void                           | Free a result buffer returned by the above            |
 | `get_manga_list`               | `listing_index, page`                  | (optional) Browse listing, page is 1-indexed          |
 | `get_listings`                 | none                                   | (optional) Available listing names                    |

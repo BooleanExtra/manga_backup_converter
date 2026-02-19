@@ -97,13 +97,21 @@ void main() {
       });
 
       group('getPageList', () {
+        late Manga manga;
+        late Chapter chapter;
+
+        setUpAll(() async {
+          manga = (await plugin.getMangaDetails(mangaId))!;
+          chapter = const Chapter(key: chapterId);
+        });
+
         test('Ch. 108 returns exactly 14 pages', () async {
-          final pages = await plugin.getPageList(chapterId);
+          final pages = await plugin.getPageList(manga, chapter);
           check(pages).length.equals(14);
         });
 
         test('pages are indexed sequentially from 0', () async {
-          final pages = await plugin.getPageList(chapterId);
+          final pages = await plugin.getPageList(manga, chapter);
           check(pages).isNotEmpty();
           for (var i = 0; i < pages.length; i++) {
             check(pages[i].index).equals(i);
@@ -111,7 +119,7 @@ void main() {
         });
 
         test('each page has a non-empty URL', () async {
-          final pages = await plugin.getPageList(chapterId);
+          final pages = await plugin.getPageList(manga, chapter);
           check(pages).isNotEmpty();
           for (final page in pages) {
             check(page.url).isNotNull();
