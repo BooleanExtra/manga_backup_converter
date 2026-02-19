@@ -3,22 +3,17 @@
 import 'dart:io' as io;
 import 'dart:typed_data';
 
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:path/path.dart' as p;
 
 class ConvertCommand extends Command<void> {
-  // The [name] and [description] properties must be defined by every
-  // subclass.
   @override
   final name = 'convert';
   @override
   final description = 'Convert a manga backup to another format.';
 
   ConvertCommand() {
-    // we can add command specific arguments here.
-    // [argParser] is automatically created by the parent class.
     argParser
       ..addFlag('verbose', abbr: 'v', negatable: false, help: 'Show additional command output.')
       ..addOption(
@@ -51,65 +46,41 @@ class ConvertCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    return await _executeConvertCommand(argResults!);
-  }
-
-  Future<void> _executeConvertCommand(ArgResults results) async {
-    bool verbose = false;
-
-    if (results.wasParsed('verbose')) {
-      verbose = true;
-    }
+    final results = argResults!;
+    final bool verbose = results.flag('verbose');
 
     if (verbose) {
       print('[VERBOSE] All arguments: ${results.arguments}');
     }
 
-    final io.File backupFile;
-    if (results.wasParsed('backup')) {
-      backupFile = io.File(results.option('backup') ?? '');
-      if (!backupFile.existsSync()) {
-        print('backup file does not exist');
-        return;
-      }
-    } else {
-      print('backup file not provided');
-      return;
+    final backupFile = io.File(results.option('backup')!);
+    if (!backupFile.existsSync()) {
+      throw UsageException('Backup file does not exist: ${backupFile.path}', usage);
     }
 
-    BackupType outputFormat = BackupType.aidoku;
-    if (results.wasParsed('output-format')) {
-      final outputFormatArg = results.option('output-format');
-      if (outputFormatArg == null) {
-        print('Output format not provided');
-        return;
-      }
-      outputFormat = BackupType.values.byName(outputFormatArg);
-    }
+    final outputFormat = BackupType.values.byName(results.option('output-format')!);
 
     final backupFileExtension = p.extension(backupFile.uri.toString());
-    BackupType? inputFormat = BackupType.byExtension(backupFileExtension);
     if (verbose) {
       print('Imported Backup Extension: $backupFileExtension');
     }
 
+    BackupType? inputFormat = BackupType.byExtension(backupFileExtension);
     if (results.wasParsed('input-format')) {
-      final inputFormatArg = results.option('input-format');
-      inputFormat = inputFormatArg != null ? BackupType.values.byName(inputFormatArg) : null;
-    }
-    if (inputFormat == null && !BackupType.validExtensions.contains(backupFileExtension)) {
-      print('Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.');
-      return;
+      inputFormat = BackupType.values.byName(results.option('input-format')!);
     }
 
-    TachiFork outputTachiFork = TachiFork.mihon;
-    if (results.wasParsed('tachi-fork')) {
-      outputTachiFork = TachiFork.values.byName(results.option('tachi-fork') ?? TachiFork.mihon.name);
+    if (inputFormat == null) {
+      throw UsageException(
+        'Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.',
+        usage,
+      );
     }
+
+    final outputTachiFork = TachiFork.values.byName(results.option('tachi-fork')!);
 
     final converter = MangaBackupConverter();
-
-    final ConvertableBackup? importedBackup = switch (inputFormat) {
+    final importedBackup = switch (inputFormat) {
       BackupType.aidoku => converter.importAidokuBackup(backupFile.readAsBytesSync()),
       BackupType.tachi => converter.importTachibkBackup(backupFile.readAsBytesSync(), fork: outputTachiFork),
       BackupType.paperback => converter.importPaperbackPas4Backup(
@@ -118,19 +89,13 @@ class ConvertCommand extends Command<void> {
       ),
       BackupType.tachimanga => await converter.importTachimangaBackup(backupFile.readAsBytesSync()),
       BackupType.mangayomi => converter.importMangayomiBackup(backupFile.readAsBytesSync()),
-      null => () {
-        print('Unsupported imported backup type');
-        return null;
-      }(),
     };
-    if (importedBackup == null) {
-      print('Failed to import backup type $backupFileExtension');
-      return;
-    }
+
     if (verbose) {
       print('============ Imported Backup Data ============ ');
       importedBackup.verbosePrint(verbose);
     }
+
     final ConvertableBackup convertedBackup = importedBackup.toBackup(outputFormat);
     if (verbose) {
       print('============ Converted Backup Data ============ ');

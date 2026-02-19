@@ -1,13 +1,13 @@
-// ignore_for_file: avoid_print
+import 'dart:io';
 
-import 'package:args/command_runner.dart';
+import 'package:mangabackupconverter_cli/src/runner.dart';
 
-import 'src/convert_command.dart';
-import 'src/merge_command.dart';
-
-void main(List<String> args) async {
-  final runner = CommandRunner<void>('mangabackuputil', 'A utility cli for managing manga backups.')
-    ..addCommand(ConvertCommand())
-    ..addCommand(MergeCommand());
-  await runner.run(args);
+Future<void> main(List<String> arguments) async {
+  try {
+    await runApp(arguments);
+  } catch (e, stack) {
+    stderr.writeln('Unexpected error: $e');
+    stderr.writeln(stack);
+    exitCode = 1;
+  }
 }
