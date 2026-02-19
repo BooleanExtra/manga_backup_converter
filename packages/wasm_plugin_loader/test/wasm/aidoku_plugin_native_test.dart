@@ -122,13 +122,15 @@ void main() {
 
       group('getMangaList', () {
         test('returns a MangaPageResult without throwing', () async {
-          final result = await plugin.getMangaList(1, listingIndex: 1);
+          final listing = plugin.sourceInfo.listings[1];
+          final result = await plugin.getMangaList(1, listing: listing);
           check(result).isA<MangaPageResult>();
           check(result.manga).isNotEmpty();
         });
 
         test('each result has non-empty key and title', () async {
-          final result = await plugin.getMangaList(1, listingIndex: 1);
+          final listing = plugin.sourceInfo.listings[1];
+          final result = await plugin.getMangaList(1, listing: listing);
           for (final m in result.manga) {
             check(m.key).isNotEmpty();
             check(m.title).isNotEmpty();
