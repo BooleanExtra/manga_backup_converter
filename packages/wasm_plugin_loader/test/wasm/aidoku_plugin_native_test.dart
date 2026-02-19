@@ -45,7 +45,12 @@ void main() {
 
       setUpAll(() async {
         final loader = WasmPluginLoader();
-        plugin = await loader.load(fixture.readAsBytesSync());
+        plugin = await loader.load(
+          fixture.readAsBytesSync(),
+          defaults: {
+            'login': {'access_token': 'fake', 'refresh_token': 'token'},
+          },
+        );
       });
 
       tearDownAll(() => plugin.dispose());
