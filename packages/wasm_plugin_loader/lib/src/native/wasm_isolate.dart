@@ -84,7 +84,7 @@ class WasmMangaListCmd {
 
 class WasmRawGetCmd {
   const WasmRawGetCmd({required this.funcName, required this.replyPort});
-  final String funcName; // e.g. '__wasm_get_filters'
+  final String funcName; // e.g. 'get_filters'
   final SendPort replyPort;
 }
 
@@ -129,6 +129,14 @@ class WasmSleepMsg {
   });
   final int seconds;
   final int semaphoreAddress;
+}
+
+/// An error or warning logged by the WASM isolate, sent to the main isolate
+/// for printing. Using the existing [asyncPort] avoids an extra port.
+class WasmLogMsg {
+  const WasmLogMsg({required this.message, required this.stackTrace});
+  final String message;
+  final String stackTrace;
 }
 
 // ---------------------------------------------------------------------------
@@ -221,15 +229,15 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
 
   // Initialize the source.
   try {
-    runner.call('__start', []);
+    runner.call('start', []);
   } catch (_) {
-    // Some sources may not export __start.
+    // Some sources may not export start.
   }
 
   // Process commands until shutdown.
   await for (final cmd in cmdPort) {
     if (cmd is WasmShutdownCmd) break;
-    _processCmd(cmd as Object, runner, store);
+    _processCmd(cmd as Object, runner, store, init.asyncPort);
   }
 
   store.dispose();
@@ -244,16 +252,18 @@ void _processCmd(
   Object cmd,
   WasmRunner runner,
   HostStore store,
+  SendPort logPort,
 ) {
   if (cmd is WasmSearchCmd) {
     Uint8List? result;
     final queryRid = store.addBytes(cmd.queryBytes);
     final filtersRid = store.addBytes(cmd.filtersBytes);
     try {
-      final ptr = (runner.call('__wasm_get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
+      final ptr = (runner.call('get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (_) {
+    } catch (e, st) {
       result = null;
+      logPort.send(WasmLogMsg(message: 'get_search_manga_list: $e', stackTrace: st.toString()));
     } finally {
       store.remove(queryRid);
       store.remove(filtersRid);
@@ -266,10 +276,11 @@ void _processCmd(
     Uint8List? result;
     final keyRid = store.addBytes(cmd.keyBytes);
     try {
-      final ptr = (runner.call('__wasm_get_manga_update', [keyRid]) as num).toInt();
+      final ptr = (runner.call('get_manga_update', [keyRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (_) {
+    } catch (e, st) {
       result = null;
+      logPort.send(WasmLogMsg(message: 'get_manga_update: $e', stackTrace: st.toString()));
     } finally {
       store.remove(keyRid);
     }
@@ -281,10 +292,11 @@ void _processCmd(
     Uint8List? result;
     final keyRid = store.addBytes(cmd.keyBytes);
     try {
-      final ptr = (runner.call('__wasm_get_page_list', [keyRid]) as num).toInt();
+      final ptr = (runner.call('get_page_list', [keyRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (_) {
+    } catch (e, st) {
       result = null;
+      logPort.send(WasmLogMsg(message: 'get_page_list: $e', stackTrace: st.toString()));
     } finally {
       store.remove(keyRid);
     }
@@ -295,10 +307,11 @@ void _processCmd(
   if (cmd is WasmMangaListCmd) {
     Uint8List? result;
     try {
-      final ptr = (runner.call('__wasm_get_manga_list', [cmd.page]) as num).toInt();
+      final ptr = (runner.call('get_manga_list', [cmd.page]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (_) {
+    } catch (e, st) {
       result = null;
+      logPort.send(WasmLogMsg(message: 'get_manga_list: $e', stackTrace: st.toString()));
     }
     cmd.replyPort.send(result);
     return;
@@ -309,8 +322,9 @@ void _processCmd(
     try {
       final ptr = (runner.call(cmd.funcName, []) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (_) {
+    } catch (e, st) {
       result = null;
+      logPort.send(WasmLogMsg(message: '${cmd.funcName}: $e', stackTrace: st.toString()));
     }
     cmd.replyPort.send(result);
     return;
@@ -324,7 +338,7 @@ Uint8List _readResult(WasmRunner runner, int ptr) {
   final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
   final data = runner.readMemory(ptr + 8, length);
   try {
-    runner.call('__wasm_free_result', [ptr]);
+    runner.call('free_result', [ptr]);
   } catch (_) {}
   return data;
 }

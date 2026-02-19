@@ -40,9 +40,9 @@ class AidokuPlugin {
     lazyRunner.delegate = runner;
 
     try {
-      runner.call('__start', []);
+      runner.call('start', []);
     } catch (_) {
-      // Some sources may not export __start.
+      // Some sources may not export start.
     }
 
     return AidokuPlugin._(runner, store, bundle.sourceInfo);
@@ -61,7 +61,7 @@ class AidokuPlugin {
     final queryRid = _store.addBytes(Uint8List.fromList(utf8.encode(query)));
     final filtersRid = _store.addBytes(encodeFilters(filters));
     try {
-      final ptr = _callInt('__wasm_get_search_manga_list', [queryRid, page, filtersRid]);
+      final ptr = _callInt('get_search_manga_list', [queryRid, page, filtersRid]);
       if (ptr <= 0) return const MangaPageResult(manga: [], hasNextPage: false);
       final data = _readResult(ptr);
       return decodeMangaPageResult(PostcardReader(data));
@@ -77,7 +77,7 @@ class AidokuPlugin {
   Future<Manga?> getMangaDetails(String key) async {
     final keyRid = _store.addBytes(Uint8List.fromList(utf8.encode(key)));
     try {
-      final ptr = _callInt('__wasm_get_manga_update', [keyRid]);
+      final ptr = _callInt('get_manga_update', [keyRid]);
       if (ptr <= 0) return null;
       return decodeManga(PostcardReader(_readResult(ptr)));
     } on Object {
@@ -91,7 +91,7 @@ class AidokuPlugin {
   Future<List<Page>> getPageList(String key) async {
     final keyRid = _store.addBytes(Uint8List.fromList(utf8.encode(key)));
     try {
-      final ptr = _callInt('__wasm_get_page_list', [keyRid]);
+      final ptr = _callInt('get_page_list', [keyRid]);
       if (ptr <= 0) return [];
       return decodePageList(PostcardReader(_readResult(ptr)));
     } on Object {
@@ -104,7 +104,7 @@ class AidokuPlugin {
   /// Browse manga listing (page is 1-based).
   Future<MangaPageResult> getMangaList(int page) async {
     try {
-      final ptr = _callInt('__wasm_get_manga_list', [page]);
+      final ptr = _callInt('get_manga_list', [page]);
       if (ptr <= 0) return const MangaPageResult(manga: [], hasNextPage: false);
       return decodeMangaPageResult(PostcardReader(_readResult(ptr)));
     } on Object {
@@ -112,14 +112,14 @@ class AidokuPlugin {
     }
   }
 
-  /// Raw postcard bytes from `__wasm_get_filters`, or null if not supported.
-  Future<Uint8List?> getFilters() => _rawGet('__wasm_get_filters');
+  /// Raw postcard bytes from `get_filters`, or null if not supported.
+  Future<Uint8List?> getFilters() => _rawGet('get_filters');
 
-  /// Raw postcard bytes from `__wasm_get_settings`, or null if not supported.
-  Future<Uint8List?> getSettings() => _rawGet('__wasm_get_settings');
+  /// Raw postcard bytes from `get_settings`, or null if not supported.
+  Future<Uint8List?> getSettings() => _rawGet('get_settings');
 
-  /// Raw postcard bytes from `__wasm_get_home`, or null if not supported.
-  Future<Uint8List?> getHome() => _rawGet('__wasm_get_home');
+  /// Raw postcard bytes from `get_home`, or null if not supported.
+  Future<Uint8List?> getHome() => _rawGet('get_home');
 
   Stream<Uint8List> get partialResults => _store.partialResults;
 
@@ -138,7 +138,7 @@ class AidokuPlugin {
     final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
     final data = _runner.readMemory(ptr + 8, length);
     try {
-      _runner.call('__wasm_free_result', [ptr]);
+      _runner.call('free_result', [ptr]);
     } catch (_) {}
     return data;
   }
