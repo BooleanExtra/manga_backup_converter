@@ -33,6 +33,7 @@ melos run flutter_test:pkg       # Flutter tests for a specific package
 melos run dart_test:pkg          # Dart tests for a specific package
 # For dart test directly: use --reporter expanded (not -v, which is invalid)
 # Native WASM tests skip automatically if wasmer or test fixture is absent
+# WASM_ABI.md in wasm_plugin_loader documents the Aidoku ABI; cross-check against aidoku-rs source if behavior doesn't match
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
