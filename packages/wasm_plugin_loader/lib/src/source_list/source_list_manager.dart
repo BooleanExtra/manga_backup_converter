@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'source_entry.dart';
-import 'source_list.dart';
+import 'package:wasm_plugin_loader/src/source_list/source_entry.dart';
+import 'package:wasm_plugin_loader/src/source_list/source_list.dart';
 
 /// Official Aidoku Community source list URL.
 const kAidokuCommunitySourceListUrl =
@@ -15,8 +15,8 @@ class SourceListManager {
   SourceListManager({
     List<String> initialUrls = const [],
     http.Client? httpClient,
-  })  : _urls = List.of(initialUrls),
-        _client = httpClient ?? http.Client();
+  }) : _urls = List.of(initialUrls),
+       _client = httpClient ?? http.Client();
 
   final List<String> _urls;
   final http.Client _client;
@@ -42,10 +42,7 @@ class SourceListManager {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final name = json['name'] as String? ?? '';
       final rawSources = json['sources'] as List? ?? const [];
-      final sources = rawSources
-          .cast<Map<String, dynamic>>()
-          .map(SourceEntry.fromJson)
-          .toList();
+      final sources = rawSources.cast<Map<String, dynamic>>().map(SourceEntry.fromJson).toList();
 
       return RemoteSourceList(url: url, name: name, sources: sources);
     } on Object {

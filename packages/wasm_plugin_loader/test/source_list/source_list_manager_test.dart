@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:checks/checks.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/src/source_list/source_list_manager.dart';
-import 'package:wasm_plugin_loader/src/source_list/source_entry.dart';
-import 'package:wasm_plugin_loader/src/source_list/source_list.dart';
 
 const _kSampleJson = '''
 {
