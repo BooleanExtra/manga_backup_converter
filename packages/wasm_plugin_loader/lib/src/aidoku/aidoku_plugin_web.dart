@@ -45,7 +45,10 @@ class AidokuPlugin {
   // ---------------------------------------------------------------------------
 
   /// Load a plugin from raw .aix file bytes.
-  static Future<AidokuPlugin> fromAix(Uint8List aixBytes) async {
+  static Future<AidokuPlugin> fromAix(
+    Uint8List aixBytes, {
+    Map<String, dynamic>? defaults,
+  }) async {
     final bundle = AixParser.parse(aixBytes);
 
     final settings = bundle.settings ?? const [];
@@ -67,6 +70,27 @@ class AidokuPlugin {
     }
     if (defaultLanguages.isNotEmpty) {
       initialDefaults['$sourceId.languages'] = encodeStringList(defaultLanguages);
+    }
+
+    if (defaults != null) {
+      for (final entry in defaults.entries) {
+        final key = '$sourceId.${entry.key}';
+        final value = entry.value;
+        if (value == null) {
+          // skip
+        } else if (value is bool) {
+          initialDefaults[key] = value ? 1 : 0;
+        } else if (value is int) {
+          initialDefaults[key] = value;
+        } else if (value is Uint8List) {
+          initialDefaults[key] = value;
+        } else if (value is String) {
+          initialDefaults[key] = Uint8List.fromList(utf8.encode(value));
+        } else {
+          // double, List, Map → JSON-encoded UTF-8 bytes
+          initialDefaults[key] = Uint8List.fromList(utf8.encode(jsonEncode(value)));
+        }
+      }
     }
 
     final store = HostStore();

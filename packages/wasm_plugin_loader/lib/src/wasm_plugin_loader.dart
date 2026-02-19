@@ -10,8 +10,8 @@ class WasmPluginLoader {
   final _plugins = <String, AidokuPlugin>{};
 
   /// Load a plugin from .aix bytes and register it.
-  Future<AidokuPlugin> load(Uint8List aixBytes) async {
-    final plugin = await AidokuPlugin.fromAix(aixBytes);
+  Future<AidokuPlugin> load(Uint8List aixBytes, {Map<String, dynamic>? defaults}) async {
+    final plugin = await AidokuPlugin.fromAix(aixBytes, defaults: defaults);
     _plugins[plugin.sourceInfo.id] = plugin;
     return plugin;
   }
