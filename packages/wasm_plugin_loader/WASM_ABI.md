@@ -12,17 +12,17 @@ All exports return `i32`:
 - **Negative** → error code (-1: general, -2: not supported, -3: login required)
 - **Zero** → success with no payload
 
-| Export name                       | Parameters (i32 unless noted) | Description                                  |
-|-----------------------------------|-------------------------------|----------------------------------------------|
-| `__start`                         | none → void                   | Initialize source; call before all others    |
-| `__wasm_get_search_manga_list`    | `query_rid, page, filters_rid`| Search manga; page is 1-indexed              |
-| `__wasm_get_manga_update`         | `manga_key_rid`               | Fetch updated manga details                  |
-| `__wasm_get_page_list`            | `chapter_key_rid`             | Fetch page image URLs for a chapter          |
-| `__wasm_free_result`              | `ptr` → void                  | Free a result buffer returned by the above   |
-| `__wasm_get_manga_list`           | `page`                        | (optional) Browse listing, 1-indexed         |
-| `__wasm_get_home`                 | none                          | (optional) Home screen sections              |
-| `__wasm_get_filters`             | none                          | (optional) Filter list                       |
-| `__wasm_get_settings`            | none                          | (optional) Settings definitions              |
+| Export name                    | Parameters (i32 unless noted) | Description                                  |
+|--------------------------------|-------------------------------|----------------------------------------------|
+| `start`                        | none → void                   | Initialize source; call before all others    |
+| `get_search_manga_list`        | `query_rid, page, filters_rid`| Search manga; page is 1-indexed              |
+| `get_manga_update`             | `manga_key_rid`               | Fetch updated manga details                  |
+| `get_page_list`                | `chapter_key_rid`             | Fetch page image URLs for a chapter          |
+| `free_result`                  | `ptr` → void                  | Free a result buffer returned by the above   |
+| `get_manga_list`               | `page`                        | (optional) Browse listing, 1-indexed         |
+| `get_home`                     | none                          | (optional) Home screen sections              |
+| `get_filters`                  | none                          | (optional) Filter list                       |
+| `get_settings`                 | none                          | (optional) Settings definitions              |
 
 **Result buffer layout** (at the returned pointer in WASM memory):
 ```
@@ -125,12 +125,12 @@ So Dart must store string data in `_buffers[rid]` as UTF-8 bytes.
 
 ---
 
-## Calling `__wasm_get_search_manga_list`
+## Calling `get_search_manga_list`
 
 ```
 1. Dart encodes query String → UTF-8 bytes → stores at _buffers[queryRid]
 2. Dart encodes filters (Vec<FilterValue>) → postcard → stores at _buffers[filtersRid]
-3. Dart calls: ptr = plugin.callFunction('__wasm_get_search_manga_list', [queryRid, page, filtersRid])
+3. Dart calls: ptr = plugin.callFunction('get_search_manga_list', [queryRid, page, filtersRid])
 4. Dart reads: header = readMemory(ptr, 8)
                len = header.buffer.asByteData().getUint32(0, Endian.little)
                payload = readMemory(ptr + 8, len)

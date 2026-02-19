@@ -88,6 +88,9 @@ class AidokuPlugin {
       } else if (msg is WasmSleepMsg) {
         await Future<void>.delayed(Duration(seconds: msg.seconds));
         WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
+      } else if (msg is WasmLogMsg) {
+        // ignore: avoid_print
+        print('[wasm] ${msg.message}\n${msg.stackTrace}');
       }
     });
 
@@ -193,14 +196,14 @@ class AidokuPlugin {
     }
   }
 
-  /// Raw postcard bytes from `__wasm_get_filters`, or null if not supported.
-  Future<Uint8List?> getFilters() => _rawGet('__wasm_get_filters');
+  /// Raw postcard bytes from `get_filters`, or null if not supported.
+  Future<Uint8List?> getFilters() => _rawGet('get_filters');
 
-  /// Raw postcard bytes from `__wasm_get_settings`, or null if not supported.
-  Future<Uint8List?> getSettings() => _rawGet('__wasm_get_settings');
+  /// Raw postcard bytes from `get_settings`, or null if not supported.
+  Future<Uint8List?> getSettings() => _rawGet('get_settings');
 
-  /// Raw postcard bytes from `__wasm_get_home`, or null if not supported.
-  Future<Uint8List?> getHome() => _rawGet('__wasm_get_home');
+  /// Raw postcard bytes from `get_home`, or null if not supported.
+  Future<Uint8List?> getHome() => _rawGet('get_home');
 
   /// Partial results stream — pushed by `env::_send_partial_result`.
   // Not plumbed through isolate boundary in this implementation;

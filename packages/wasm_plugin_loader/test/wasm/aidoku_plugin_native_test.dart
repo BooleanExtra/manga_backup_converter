@@ -88,6 +88,7 @@ void main() {
         test('returns a MangaPageResult without throwing', () async {
           final result = await plugin.getMangaList(1);
           check(result).isA<MangaPageResult>();
+          check(result.manga).isNotEmpty();
         });
       });
     },
