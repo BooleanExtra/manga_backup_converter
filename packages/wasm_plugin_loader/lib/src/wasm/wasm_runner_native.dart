@@ -107,7 +107,8 @@ class WasmRunner {
       final funcType = bindings.externtypeAsFunctypeConst(bindings.importtypeType(it));
 
       final dartFn = imports[modName]?[fnName];
-      final callable = _makeCallable(dartFn);
+      final resultKind = bindings.functypeFirstResultKind(funcType);
+      final callable = _makeCallable(dartFn, resultKind: resultKind, debugName: '$modName::$fnName');
       nativeCallables.add(callable);
       externPtrs.add(bindings.funcAsExtern(bindings.funcNew(store, funcType, callable.nativeFunction)));
     }
@@ -265,16 +266,24 @@ class WasmRunner {
   /// All WASM imports share the same C callback type:
   ///   wasm_trap_t* fn(const wasm_val_vec_t* args, wasm_val_vec_t* results)
   ///
+  /// [resultKind] is the wasm_valkind of the first result type (0=I32, 1=I64,
+  /// 2=F32, 3=F64, -1=void).  It is used to write a type-correct stub value
+  /// when the Dart function is null, async, or throws.
+  ///
   /// **Async limitation**: wasmer callbacks are synchronous. If the Dart
   /// function returns a Future (e.g. net::send), it cannot be awaited here.
-  /// In that case -1 is written as an i32 stub (network-error convention).
-  static ffi.NativeCallable<WasmFuncCallbackC> _makeCallable(Function? dartFn) {
+  /// In that case a type-correct -1 stub is written instead.
+  static ffi.NativeCallable<WasmFuncCallbackC> _makeCallable(
+    Function? dartFn, {
+    int resultKind = -1,
+    String debugName = '',
+  }) {
     return ffi.NativeCallable<WasmFuncCallbackC>.isolateLocal(
       (ffi.Pointer<WasmValVec> args, ffi.Pointer<WasmValVec> results) {
         try {
           if (dartFn == null) {
-            // Unregistered import: write -1 stub for any expected return value.
-            if (results.ref.size > 0) _setVal(results.ref.data, -1);
+            // Unregistered import: write type-correct -1 stub.
+            if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
             return ffi.nullptr;
           }
           final dartArgs = <Object?>[
@@ -287,20 +296,37 @@ class WasmRunner {
             } else if (result is double) {
               _setVal(results.ref.data, result);
             } else {
-              // Future (async not supported) or null: write -1 as i32 stub.
-              // Wasmer pre-initialises results with I64(0); leaving it unwritten
-              // causes a type-mismatch trap for any i32-returning import.
-              _setVal(results.ref.data, -1);
+              // Future (async not supported) or null: write type-correct stub.
+              _setDefaultVal(results.ref.data, resultKind);
             }
           }
         } catch (e, st) {
-          if (results.ref.size > 0) _setVal(results.ref.data, -1);
+          if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
           // ignore: avoid_print
-          print('[CB] exception in host import: $e\n$st');
+          print('[CB] exception in host import $debugName: $e\n$st');
         }
         return ffi.nullptr;
       },
     );
+  }
+
+  /// Write a type-correct stub value (-1 or -1.0) into a result slot.
+  /// [kind] is the wasm_valkind: 0=I32, 1=I64, 2=F32, 3=F64.
+  static void _setDefaultVal(ffi.Pointer<WasmVal> val, int kind) {
+    switch (kind) {
+      case 1: // I64
+        val.ref.kind = 1;
+        val.ref.of.i64 = -1;
+      case 2: // F32
+        val.ref.kind = 2;
+        val.ref.of.f32 = -1.0;
+      case 3: // F64
+        val.ref.kind = 3;
+        val.ref.of.f64 = -1.0;
+      default: // I32 (0) and void/unknown (-1)
+        val.ref.kind = 0;
+        val.ref.of.i32 = -1;
+    }
   }
 
   static void _setVal(ffi.Pointer<WasmVal> val, Object? v) {

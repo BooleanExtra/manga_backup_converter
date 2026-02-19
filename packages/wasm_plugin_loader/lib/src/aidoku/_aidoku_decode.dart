@@ -10,6 +10,7 @@ import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
 import 'package:wasm_plugin_loader/src/models/page.dart';
+import 'package:wasm_plugin_loader/src/models/source_info.dart';
 
 // ---------------------------------------------------------------------------
 // Encoding helpers
@@ -285,12 +286,522 @@ List<Page> decodePageList(PostcardReader r) {
 }
 
 /// Skip an Option<PageContext> field in the postcard stream.
-/// PageContext is not used by our model — we just need to advance past it.
+/// PageContext is HashMap<String, String> in Rust — serialized as varint(len) + pairs.
+/// We don't use it, so just advance past it.
 void _skipPageContext(PostcardReader r) {
   final tag = r.readU8();
   if (tag == 0) return; // None
-  // Some(PageContext) — PageContext fields vary by version; skip conservatively.
-  // PageContext typically contains: Option<String> (previous_page), Option<String> (next_page)
-  r.readOption(r.readString); // previous page
-  r.readOption(r.readString); // next page
+  // Some(HashMap<String, String>) — varint length + key-value pairs
+  final len = r.readVarInt();
+  for (var i = 0; i < len; i++) {
+    r.readString(); // key
+    r.readString(); // value
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Viewer / UpdateStrategy enums
+// ---------------------------------------------------------------------------
+
+/// Matches Rust `Viewer` enum in aidoku-rs (serde index order).
+enum AidokuViewer { unknown, ltr, rtl, vertical, webtoon }
+
+/// Matches Rust `UpdateStrategy` enum in aidoku-rs (serde index order).
+enum AidokuUpdateStrategy { always, never }
+
+/// Read a varint discriminant and return the corresponding enum value.
+/// Out-of-range discriminants return the first value (index 0).
+T decodeEnum<T>(PostcardReader r, List<T> values) {
+  final idx = r.readVarInt();
+  if (idx < 0 || idx >= values.length) return values[0];
+  return values[idx];
+}
+
+// ---------------------------------------------------------------------------
+// HomeLayout model classes
+// ---------------------------------------------------------------------------
+
+/// Top-level home screen layout returned by `get_home`.
+class HomeLayout {
+  const HomeLayout({required this.components});
+  final List<HomeComponent> components;
+}
+
+/// A single section in the home layout.
+class HomeComponent {
+  const HomeComponent({required this.value, this.title, this.subtitle});
+  final HomeComponentValue value;
+  final String? title;
+  final String? subtitle;
+}
+
+/// Sealed discriminated union for the content of a [HomeComponent].
+/// Discriminants match serde index order from the Rust definition:
+///   0=ImageScroller, 1=BigScroller, 2=Scroller, 3=MangaList,
+///   4=MangaChapterList, 5=Filters, 6=Links
+sealed class HomeComponentValue {}
+
+final class ImageScrollerValue extends HomeComponentValue {
+  ImageScrollerValue({
+    required this.links,
+    this.autoScrollInterval,
+    this.width,
+    this.height,
+  });
+  final List<HomeLink> links;
+  final double? autoScrollInterval;
+  final int? width;
+  final int? height;
+}
+
+final class BigScrollerValue extends HomeComponentValue {
+  BigScrollerValue({required this.items, this.autoScrollInterval});
+  final List<Manga> items;
+  final double? autoScrollInterval;
+}
+
+final class ScrollerValue extends HomeComponentValue {
+  ScrollerValue({required this.links, this.listing});
+  final List<HomeLink> links;
+  final SourceListing? listing;
+}
+
+final class MangaListValue extends HomeComponentValue {
+  MangaListValue({
+    required this.links,
+    required this.ranked,
+    this.pageSize,
+    this.listing,
+  });
+  final List<HomeLink> links;
+  final bool ranked;
+  final int? pageSize;
+  final SourceListing? listing;
+}
+
+final class MangaChapterListValue extends HomeComponentValue {
+  MangaChapterListValue({required this.items, this.pageSize, this.listing});
+  final List<MangaWithChapter> items;
+  final int? pageSize;
+  final SourceListing? listing;
+}
+
+final class FiltersValue extends HomeComponentValue {
+  FiltersValue({required this.filters});
+  final List<FilterItem> filters;
+}
+
+/// A filter item in the Filters home component.
+class FilterItem {
+  const FilterItem({required this.title, this.filterValues});
+  final String title;
+  final List<AidokuFilterValue>? filterValues;
+}
+
+/// Raw decoded filter value from WASM (distinct from app-level FilterValue model).
+class AidokuFilterValue {
+  const AidokuFilterValue({required this.id, required this.discriminant, this.raw});
+  final String id;
+  final int discriminant; // 0=Text,1=Sort,2=Check,3=Select,4=MultiSelect,5=Range
+  final Object? raw; // variant data — opaque
+}
+
+final class LinksValue extends HomeComponentValue {
+  LinksValue({required this.links});
+  final List<HomeLink> links;
+}
+
+// ---------------------------------------------------------------------------
+// HomePartialResult — streamed via partialResults
+// ---------------------------------------------------------------------------
+
+sealed class HomePartialResult {}
+
+final class HomePartialResultLayout extends HomePartialResult {
+  HomePartialResultLayout({required this.layout});
+  final HomeLayout layout;
+}
+
+final class HomePartialResultComponent extends HomePartialResult {
+  HomePartialResultComponent({required this.component});
+  final HomeComponent component;
+}
+
+// ---------------------------------------------------------------------------
+// Supporting types
+// ---------------------------------------------------------------------------
+
+/// A manga + its latest chapter, used in MangaChapterList home components.
+class MangaWithChapter {
+  const MangaWithChapter({required this.manga, required this.chapter});
+  final Manga manga;
+  final Chapter chapter;
+}
+
+/// A link item in a Links home component.
+class HomeLink {
+  const HomeLink({required this.title, this.subtitle, this.imageUrl, this.value});
+  final String title;
+  final String? subtitle;
+  final String? imageUrl;
+  final HomeLinkValue? value;
+}
+
+/// Destination for a [HomeLink].
+sealed class HomeLinkValue {}
+
+final class UrlHomeLinkValue extends HomeLinkValue {
+  UrlHomeLinkValue({required this.url});
+  final String url;
+}
+
+final class ListingHomeLinkValue extends HomeLinkValue {
+  ListingHomeLinkValue({required this.listing});
+  final SourceListing listing;
+}
+
+final class MangaHomeLinkValue extends HomeLinkValue {
+  MangaHomeLinkValue({required this.manga});
+  final Manga manga;
+}
+
+// ---------------------------------------------------------------------------
+// DeepLinkResult
+// ---------------------------------------------------------------------------
+
+sealed class DeepLinkResult {}
+
+final class MangaDeepLink extends DeepLinkResult {
+  MangaDeepLink({required this.key});
+  final String key;
+}
+
+final class ChapterDeepLink extends DeepLinkResult {
+  ChapterDeepLink({required this.mangaKey, required this.key});
+  final String mangaKey;
+  final String key;
+}
+
+final class ListingDeepLink extends DeepLinkResult {
+  ListingDeepLink({required this.listing});
+  final SourceListing listing;
+}
+
+// ---------------------------------------------------------------------------
+// ImageRequest — returned by get_image_request
+// ---------------------------------------------------------------------------
+
+class ImageRequest {
+  const ImageRequest({required this.headers, this.url});
+  final String? url;
+  final Map<String, String> headers;
+}
+
+// ---------------------------------------------------------------------------
+// New decoders
+// ---------------------------------------------------------------------------
+
+/// Decode a full [HomeLayout] from postcard bytes (no result-buffer header).
+HomeLayout decodeHomeLayout(PostcardReader r) {
+  final components = r.readList(() => decodeHomeComponent(r));
+  return HomeLayout(components: components);
+}
+
+/// Decode a single [HomeComponent].
+HomeComponent decodeHomeComponent(PostcardReader r) {
+  final title = r.readOption(r.readString);
+  final subtitle = r.readOption(r.readString);
+  final value = decodeHomeComponentValue(r);
+  return HomeComponent(value: value, title: title, subtitle: subtitle);
+}
+
+/// Decode a [HomeComponentValue] variant.
+HomeComponentValue decodeHomeComponentValue(PostcardReader r) {
+  final discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // ImageScroller
+      final links = r.readList(() => decodeHomeLink(r));
+      final autoScroll = r.readOption(r.readF32);
+      final width = r.readOption(r.readVarInt);
+      final height = r.readOption(r.readVarInt);
+      return ImageScrollerValue(
+        links: links,
+        autoScrollInterval: autoScroll,
+        width: width,
+        height: height,
+      );
+    case 1: // BigScroller
+      final items = r.readList(() => decodeManga(r));
+      final autoScroll = r.readOption(r.readF32);
+      return BigScrollerValue(items: items, autoScrollInterval: autoScroll);
+    case 2: // Scroller
+      final links = r.readList(() => decodeHomeLink(r));
+      final listing = r.readOption(() => _decodeSourceListing(r));
+      return ScrollerValue(links: links, listing: listing);
+    case 3: // MangaList
+      final ranked = r.readBool();
+      final pageSize = r.readOption(r.readVarInt);
+      final links = r.readList(() => decodeHomeLink(r));
+      final listing = r.readOption(() => _decodeSourceListing(r));
+      return MangaListValue(
+        links: links,
+        ranked: ranked,
+        pageSize: pageSize,
+        listing: listing,
+      );
+    case 4: // MangaChapterList
+      final pageSize = r.readOption(r.readVarInt);
+      final items = r.readList(() => decodeMangaWithChapter(r));
+      final listing = r.readOption(() => _decodeSourceListing(r));
+      return MangaChapterListValue(items: items, pageSize: pageSize, listing: listing);
+    case 5: // Filters
+      return FiltersValue(filters: r.readList(() => decodeFilterItem(r)));
+    case 6: // Links
+      return LinksValue(links: r.readList(() => decodeHomeLink(r)));
+    default:
+      throw FormatException('Unknown HomeComponentValue discriminant: $discriminant');
+  }
+}
+
+/// Decode a [HomePartialResult] from postcard bytes (no result-buffer header).
+HomePartialResult decodeHomePartialResult(PostcardReader r) {
+  final discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0:
+      return HomePartialResultLayout(layout: decodeHomeLayout(r));
+    case 1:
+      return HomePartialResultComponent(component: decodeHomeComponent(r));
+    default:
+      throw FormatException('Unknown HomePartialResult discriminant: $discriminant');
+  }
+}
+
+/// Decode a [MangaWithChapter] (manga followed by chapter, both postcard-encoded).
+MangaWithChapter decodeMangaWithChapter(PostcardReader r) {
+  return MangaWithChapter(manga: decodeManga(r), chapter: decodeChapter(r));
+}
+
+/// Decode a [HomeLink].
+HomeLink decodeHomeLink(PostcardReader r) {
+  final title = r.readString();
+  final subtitle = r.readOption(r.readString);
+  final imageUrl = r.readOption(r.readString);
+  final value = r.readOption(() => _decodeHomeLinkValue(r));
+  return HomeLink(title: title, subtitle: subtitle, imageUrl: imageUrl, value: value);
+}
+
+HomeLinkValue _decodeHomeLinkValue(PostcardReader r) {
+  final discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // Url
+      return UrlHomeLinkValue(url: r.readString());
+    case 1: // Listing
+      return ListingHomeLinkValue(listing: _decodeSourceListing(r));
+    case 2: // Manga
+      return MangaHomeLinkValue(manga: decodeManga(r));
+    default:
+      throw FormatException('Unknown HomeLinkValue discriminant: $discriminant');
+  }
+}
+
+/// Decode an [ImageRequest] (url: Option<String>, headers: HashMap<String,String>).
+ImageRequest decodeImageRequest(PostcardReader r) {
+  final url = r.readOption(r.readString);
+  final headers = decodeStringMap(r);
+  return ImageRequest(url: url, headers: headers);
+}
+
+/// Decode a [DeepLinkResult]? (Option<enum> — reads option tag then discriminant).
+DeepLinkResult? decodeDeepLinkResult(PostcardReader r) {
+  final tag = r.readU8();
+  if (tag == 0) return null; // None
+  final discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // Manga
+      return MangaDeepLink(key: r.readString());
+    case 1: // Chapter
+      final mangaKey = r.readString();
+      final key = r.readString();
+      return ChapterDeepLink(mangaKey: mangaKey, key: key);
+    case 2: // Listing
+      return ListingDeepLink(listing: _decodeSourceListing(r));
+    default:
+      throw FormatException('Unknown DeepLinkResult discriminant: $discriminant');
+  }
+}
+
+/// Decode a postcard HashMap<String,String>.
+Map<String, String> decodeStringMap(PostcardReader r) {
+  final count = r.readVarInt();
+  final result = <String, String>{};
+  for (var i = 0; i < count; i++) {
+    final key = r.readString();
+    final value = r.readString();
+    result[key] = value;
+  }
+  return result;
+}
+
+// Internal: decode a SourceListing (id, name, kind).
+SourceListing _decodeSourceListing(PostcardReader r) {
+  final id = r.readString();
+  final name = r.readString();
+  final kind = r.readVarInt();
+  return SourceListing(id: id, name: name, kind: kind);
+}
+
+/// Decode a [FilterItem] from a Filters home component.
+FilterItem decodeFilterItem(PostcardReader r) {
+  final title = r.readString();
+  final values = r.readOption(() => r.readList(() => _decodeAidokuFilterValue(r)));
+  return FilterItem(title: title, filterValues: values);
+}
+
+AidokuFilterValue _decodeAidokuFilterValue(PostcardReader r) {
+  final discriminant = r.readVarInt();
+  final id = r.readString();
+  Object? raw;
+  switch (discriminant) {
+    case 0: // Text: value: String
+      raw = r.readString();
+    case 1: // Sort: index: i32, ascending: bool
+      raw = (index: r.readVarInt(), ascending: r.readBool());
+    case 2: // Check: value: i32
+      raw = r.readVarInt();
+    case 3: // Select: value: String
+      raw = r.readString();
+    case 4: // MultiSelect: included: Vec<String>, excluded: Vec<String>
+      raw = (included: r.readList(r.readString), excluded: r.readList(r.readString));
+    case 5: // Range: from: Option<f32>, to: Option<f32>
+      raw = (from: r.readOption(r.readF32), to: r.readOption(r.readF32));
+  }
+  return AidokuFilterValue(id: id, discriminant: discriminant, raw: raw);
+}
+
+
+// ---------------------------------------------------------------------------
+// Result-buffer entry points (strip 8-byte header, then decode)
+// ---------------------------------------------------------------------------
+
+/// Decode a `get_home` result payload into a [HomeLayout].
+HomeLayout? decodeHomeLayoutResult(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    return decodeHomeLayout(PostcardReader(bytes));
+  } on Object {
+    return null;
+  }
+}
+
+/// Decode a `Vec<String>` result payload.
+List<String> decodeStringVecResult(Uint8List bytes) {
+  if (bytes.isEmpty) return const [];
+  try {
+    final r = PostcardReader(bytes);
+    return r.readList(r.readString);
+  } on Object {
+    return const [];
+  }
+}
+
+/// Decode a `get_image_request` result payload into an [ImageRequest].
+ImageRequest? decodeImageRequestResult(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    return decodeImageRequest(PostcardReader(bytes));
+  } on Object {
+    return null;
+  }
+}
+
+/// Decode a `handle_deep_link` result payload into a [DeepLinkResult].
+DeepLinkResult? decodeDeepLinkResultFromBytes(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    return decodeDeepLinkResult(PostcardReader(bytes));
+  } on Object {
+    return null;
+  }
+}
+
+/// Decode a plain String result payload.
+String? decodeStringResult(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    return PostcardReader(bytes).readString();
+  } on Object {
+    return null;
+  }
+}
+
+/// Decode a bool result payload.
+bool decodeBoolResult(Uint8List bytes) {
+  if (bytes.isEmpty) return false;
+  try {
+    return PostcardReader(bytes).readBool();
+  } on Object {
+    return false;
+  }
+}
+
+/// Decode a partial result payload into a [HomePartialResult].
+HomePartialResult? decodeHomePartialResultFromBytes(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    return decodeHomePartialResult(PostcardReader(bytes));
+  } on Object {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// New encoders
+// ---------------------------------------------------------------------------
+
+/// Encode a String as raw UTF-8 bytes (no postcard framing).
+/// Used for WASM parameters that expect plain UTF-8 via a BytesResource RID.
+Uint8List encodeStringBytes(String s) => Uint8List.fromList(utf8.encode(s));
+
+/// Wrap image bytes in a postcard Vec<u8> (varint length + raw bytes).
+/// Used for `process_page_image` input encoding.
+Uint8List encodeImageResponse(Uint8List bytes) {
+  final w = PostcardWriter()..writeVarInt(bytes.length);
+  return Uint8List.fromList([...w.bytes, ...bytes]);
+}
+
+/// Encode a Map<String,String> as a postcard HashMap.
+Uint8List encodeStringMap(Map<String, String> m) {
+  final w = PostcardWriter();
+  w.writeVarInt(m.length);
+  for (final e in m.entries) {
+    w.writeString(e.key);
+    w.writeString(e.value);
+  }
+  return w.bytes;
+}
+
+/// Encode an optional Map<String,String> as postcard Option<HashMap>.
+Uint8List encodeOptionalStringMap(Map<String, String>? m) {
+  if (m == null) return Uint8List.fromList([0]);
+  return Uint8List.fromList([1, ...encodeStringMap(m)]);
+}
+
+/// Encode a [Page] as postcard bytes for `get_page_description`.
+/// Maps to the Rust Page struct: PageContent enum + thumbnail + has_description + description.
+Uint8List encodePage(Page p) {
+  final w = PostcardWriter();
+  if (p.url != null) {
+    w.writeVarInt(0); // PageContent::Url
+    w.writeString(p.url!);
+    w.writeU8(0); // Option<PageContext> = None
+  } else if (p.text != null) {
+    w.writeVarInt(1); // PageContent::Text
+    w.writeString(p.text!);
+  } else {
+    w.writeVarInt(2); // PageContent::Image — no additional data
+  }
+  w.writeU8(0); // thumbnail: None (Option<String>)
+  w.writeBool(false); // has_description: false
+  w.writeU8(0); // description: None (Option<String>)
+  return w.bytes;
 }

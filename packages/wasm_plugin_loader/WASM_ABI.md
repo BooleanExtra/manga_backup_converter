@@ -24,6 +24,16 @@ All exports return `i32`:
 | `get_home`                     | none                          | (optional) Home screen sections              |
 | `get_filters`                  | none                          | (optional) Filter list                       |
 | `get_settings`                 | none                          | (optional) Settings definitions              |
+| `get_alternate_covers`         | `manga_descriptor_rid`                 | (optional) Alternate cover URLs → `Vec<String>` |
+| `get_image_request`            | `url_rid, context_rid`                 | (optional) Custom image request → `ImageRequest` |
+| `get_base_url`                 | none                                   | (optional) Source base URL → `String`        |
+| `get_page_description`         | `page_descriptor_rid`                  | (optional) Page description string           |
+| `process_page_image`           | `image_rid, context_rid`               | (optional) Process page image bytes → `Vec<u8>` |
+| `handle_notification`          | `notification_rid`                     | (optional) Receive notification; void return |
+| `handle_deep_link`             | `url_rid`                              | (optional) Handle deep link → `DeepLinkResult?` |
+| `handle_basic_login`           | `key_rid, username_rid, password_rid`  | (optional) Basic auth login; 0=success, <0=fail |
+| `handle_web_login`             | `key_rid, cookies_rid`                 | (optional) Web/cookie login; 0=success, <0=fail |
+| `handle_key_migration`         | `manga_key_rid, chapter_key_rid`       | (optional) Migrate key → new key `String?`  |
 
 **Result buffer layout** (at the returned pointer in WASM memory):
 ```
@@ -136,6 +146,42 @@ So Dart must store string data in `_buffers[rid]` as UTF-8 bytes.
                len = header.buffer.asByteData().getUint32(0, Endian.little)
                payload = readMemory(ptr + 8, len)
 5. Dart decodes payload with PostcardReader → MangaPageResult
-6. Dart calls: plugin.callFunction('__wasm_free_result', [ptr])
+6. Dart calls: plugin.callFunction('free_result', [ptr])
 7. Dart calls: std::destroy(queryRid), std::destroy(filtersRid)
 ```
+
+---
+
+## New optional export parameter encoding
+
+### Parameter encoding formats
+
+| Encoding | Description |
+|----------|-------------|
+| raw UTF-8 | Plain `utf8.encode(string)` bytes — no postcard framing |
+| postcard Manga | `encodeManga(m)` — full postcard-serialized Rust Manga struct |
+| postcard Page | `encodePage(p)` — postcard PageContent enum + thumbnail + has_description + description |
+| postcard Vec<u8> | `encodeImageResponse(bytes)` — varint(len) + raw bytes |
+| postcard HashMap<String,String> | `encodeStringMap(m)` — varint(count) + (key,value) string pairs |
+| postcard Option<HashMap<String,String>> | `encodeOptionalStringMap(m)` — 0x00 for None, or 0x01 + HashMap encoding |
+
+### Export-by-export encoding
+
+| Export | Parameter 1 | Parameter 2 | Parameter 3 |
+|--------|------------|------------|------------|
+| `get_alternate_covers` | postcard Manga | — | — |
+| `get_image_request` | raw UTF-8 URL | postcard Option<HashMap> context | — |
+| `get_page_description` | postcard Page | — | — |
+| `process_page_image` | postcard Vec<u8> image | postcard Option<HashMap> context | — |
+| `handle_notification` | raw UTF-8 notification | — | — |
+| `handle_deep_link` | raw UTF-8 URL | — | — |
+| `handle_basic_login` | raw UTF-8 key | raw UTF-8 username | raw UTF-8 password |
+| `handle_web_login` | raw UTF-8 key | postcard HashMap cookies | — |
+| `handle_key_migration` (manga) | raw UTF-8 manga key | `-1` (i32 sentinel = no chapter) | — |
+| `handle_key_migration` (chapter) | raw UTF-8 manga key | raw UTF-8 chapter key | — |
+
+### `handle_key_migration` dual usage
+
+- **Manga migration**: `handle_key_migration(manga_key_rid, -1)` → returns new manga key as `String`
+- **Chapter migration**: `handle_key_migration(manga_key_rid, chapter_key_rid)` → returns new chapter key as `String`
+- Returns 0 (zero ptr) if migration is not needed or not supported.

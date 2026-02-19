@@ -145,6 +145,36 @@ void main() {
           }
         });
       });
+
+      group('getListings', () {
+        test('returns a list (may be empty if plugin does not implement it)', () async {
+          final listings = await plugin.getListings();
+          check(listings).isA<List<AidokuListing>>();
+          // MangaDex plugin exports get_listings — should return at least one.
+          check(listings).isNotEmpty();
+        });
+
+        test('each listing has non-empty id and name', () async {
+          final listings = await plugin.getListings();
+          for (final l in listings) {
+            check(l.id).isNotEmpty();
+            check(l.name).isNotEmpty();
+          }
+        });
+      });
+
+      group('getHome', () {
+        test(
+          'returns HomeLayout or null (null is acceptable if plugin does not implement it)',
+          () async {
+            final home = await plugin.getHome();
+            // Acceptable: null (not implemented) or a valid HomeLayout.
+            if (home != null) {
+              check(home.components).isA<List<HomeComponent>>();
+            }
+          },
+        );
+      });
     },
   );
 }
