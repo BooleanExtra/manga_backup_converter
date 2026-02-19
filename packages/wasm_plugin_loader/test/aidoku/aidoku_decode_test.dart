@@ -24,18 +24,29 @@ void _writeManga(
   String? cover,
   List<String> tags = const [],
 }) {
-  w.writeString(key);
-  w.writeString(title);
-  w.writeOption<String>(author, (v, pw) => pw.writeString(v));
-  w.writeOption<String>(artist, (v, pw) => pw.writeString(v));
-  w.writeOption<String>(description, (v, pw) => pw.writeString(v));
-  w.writeOption<String>(url, (v, pw) => pw.writeString(v));
-  w.writeVarInt(status);
-  w.writeVarInt(rating);
-  w.writeVarInt(0); // viewer (unused in our model)
-  w.writeOption<String>(cover, (v, pw) => pw.writeString(v));
-  w.writeList(tags, (v, pw) => pw.writeString(v));
-  w.writeVarInt(0); // empty chapters list
+  w.writeString(key); // key: String
+  w.writeString(title); // title: String
+  w.writeOption<String>(cover, (v, pw) => pw.writeString(v)); // cover: Option<String>
+  w.writeOption<List<String>>( // artists: Option<Vec<String>>
+    artist == null ? null : [artist],
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  );
+  w.writeOption<List<String>>( // authors: Option<Vec<String>>
+    author == null ? null : [author],
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  );
+  w.writeOption<String>(description, (v, pw) => pw.writeString(v)); // description: Option<String>
+  w.writeOption<String>(url, (v, pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption<List<String>>( // tags: Option<Vec<String>>
+    tags.isEmpty ? null : tags,
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  );
+  w.writeVarInt(status); // status: VarInt
+  w.writeVarInt(rating); // content_rating: VarInt
+  w.writeVarInt(0); // viewer: VarInt
+  w.writeVarInt(0); // update_strategy: VarInt
+  w.writeU8(0); // next_update_time: None
+  w.writeU8(0); // chapters: None
 }
 
 /// Write a chapter into [w].
@@ -50,14 +61,19 @@ void _writeChapter(
   double? volumeNum,
   double? dateSecs,
 }) {
-  w.writeString(key);
-  w.writeOption<String>(title, (v, pw) => pw.writeString(v));
-  w.writeOption<String>(scanlator, (v, pw) => pw.writeString(v));
-  w.writeOption<String>(url, (v, pw) => pw.writeString(v));
-  w.writeString(lang);
-  w.writeOption<double>(chapterNum, (v, pw) => pw.writeF32(v));
-  w.writeOption<double>(volumeNum, (v, pw) => pw.writeF32(v));
-  w.writeOption<double>(dateSecs, (v, pw) => pw.writeF64(v));
+  w.writeString(key); // key: String
+  w.writeOption<String>(title, (v, pw) => pw.writeString(v)); // title: Option<String>
+  w.writeOption<double>(chapterNum, (v, pw) => pw.writeF32(v)); // chapter_number: Option<f32>
+  w.writeOption<double>(volumeNum, (v, pw) => pw.writeF32(v)); // volume_number: Option<f32>
+  w.writeOption<int>(dateSecs?.toInt(), (v, pw) => pw.writeI64(v)); // date_uploaded: Option<i64>
+  w.writeOption<List<String>>( // scanlators: Option<Vec<String>>
+    scanlator == null ? null : [scanlator],
+    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+  );
+  w.writeOption<String>(url, (v, pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption<String>(lang, (v, pw) => pw.writeString(v)); // language: Option<String>
+  w.writeU8(0); // thumbnail: None
+  w.writeBool(false); // locked: bool
 }
 
 void main() {
@@ -270,17 +286,20 @@ void main() {
     test('chapters list decoded', () {
       final w = PostcardWriter();
       // Write manga manually to include an inline chapter.
-      w.writeString('k');
-      w.writeString('T');
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // author
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // artist
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // description
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // url
+      w.writeString('k'); // key
+      w.writeString('T'); // title
+      w.writeU8(0); // cover: None
+      w.writeU8(0); // artists: None
+      w.writeU8(0); // authors: None
+      w.writeU8(0); // description: None
+      w.writeU8(0); // url: None
+      w.writeU8(0); // tags: None
       w.writeVarInt(0); // status
-      w.writeVarInt(0); // rating
+      w.writeVarInt(0); // content_rating
       w.writeVarInt(0); // viewer
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // cover
-      w.writeVarInt(0); // empty tags
+      w.writeVarInt(0); // update_strategy
+      w.writeU8(0); // next_update_time: None
+      w.writeU8(1); // chapters: Some
       w.writeVarInt(1); // 1 chapter
       _writeChapter(w, key: 'ch001', title: 'Chapter 1', chapterNum: 1.0);
       final manga = decodeManga(PostcardReader(w.bytes));
