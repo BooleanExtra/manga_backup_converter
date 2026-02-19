@@ -27,17 +27,20 @@ void _writeManga(
   w.writeString(key); // key: String
   w.writeString(title); // title: String
   w.writeOption<String>(cover, (v, pw) => pw.writeString(v)); // cover: Option<String>
-  w.writeOption<List<String>>( // artists: Option<Vec<String>>
+  w.writeOption<List<String>>(
+    // artists: Option<Vec<String>>
     artist == null ? null : [artist],
     (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
   );
-  w.writeOption<List<String>>( // authors: Option<Vec<String>>
+  w.writeOption<List<String>>(
+    // authors: Option<Vec<String>>
     author == null ? null : [author],
     (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
   );
   w.writeOption<String>(description, (v, pw) => pw.writeString(v)); // description: Option<String>
   w.writeOption<String>(url, (v, pw) => pw.writeString(v)); // url: Option<String>
-  w.writeOption<List<String>>( // tags: Option<Vec<String>>
+  w.writeOption<List<String>>(
+    // tags: Option<Vec<String>>
     tags.isEmpty ? null : tags,
     (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
   );
@@ -66,7 +69,8 @@ void _writeChapter(
   w.writeOption<double>(chapterNum, (v, pw) => pw.writeF32(v)); // chapter_number: Option<f32>
   w.writeOption<double>(volumeNum, (v, pw) => pw.writeF32(v)); // volume_number: Option<f32>
   w.writeOption<int>(dateSecs?.toInt(), (v, pw) => pw.writeI64(v)); // date_uploaded: Option<i64>
-  w.writeOption<List<String>>( // scanlators: Option<Vec<String>>
+  w.writeOption<List<String>>(
+    // scanlators: Option<Vec<String>>
     scanlator == null ? null : [scanlator],
     (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
   );
@@ -356,70 +360,99 @@ void main() {
     });
   });
 
+  // Helper to write a Page in Aidoku postcard format:
+  //   PageContent enum variant + data
+  //   Option<String> thumbnail
+  //   bool has_description
+  //   Option<String> description
   group('decodePageList', () {
+    void writePage(
+      PostcardWriter w, {
+      int variant = 0,
+      String? url,
+      String? text,
+      Map<String, String>? pageContext,
+    }) {
+      w.writeVarInt(variant);
+      switch (variant) {
+        case 0: // Url(String, Option<PageContext>)
+          w.writeString(url ?? '');
+          if (pageContext != null) {
+            w.writeU8(1); // Some
+            w.writeVarInt(pageContext.length);
+            for (final e in pageContext.entries) {
+              w.writeString(e.key);
+              w.writeString(e.value);
+            }
+          } else {
+            w.writeU8(0); // None
+          }
+        case 1: // Text(String)
+          w.writeString(text ?? '');
+        case 2: // Image — no data
+          break;
+      }
+      w.writeU8(0); // thumbnail: None
+      w.writeBool(false); // has_description
+      w.writeU8(0); // description: None
+    }
+
     test('empty list', () {
       final w = PostcardWriter()..writeVarInt(0);
       check(decodePageList(PostcardReader(w.bytes))).isEmpty();
     });
 
-    test('single page with only index', () {
+    test('single Url page', () {
       final w = PostcardWriter();
       w.writeVarInt(1); // 1 page
-      w.writeVarInt(0); // index
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // url
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // base64
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v)); // text
+      writePage(w, url: 'https://img.example.com/page.jpg');
       final pages = decodePageList(PostcardReader(w.bytes));
       check(pages).length.equals(1);
       check(pages[0].index).equals(0);
-      check(pages[0].url).isNull();
-      check(pages[0].base64).isNull();
+      check(pages[0].url).equals('https://img.example.com/page.jpg');
       check(pages[0].text).isNull();
     });
 
-    test('page with url', () {
+    test('Text page', () {
       final w = PostcardWriter();
       w.writeVarInt(1);
-      w.writeVarInt(3); // index
-      w.writeOption('https://img.example.com/page.jpg', (v, pw) => pw.writeString(v));
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      final pages = decodePageList(PostcardReader(w.bytes));
-      check(pages[0].index).equals(3);
-      check(pages[0].url).equals('https://img.example.com/page.jpg');
-    });
-
-    test('page with base64', () {
-      final w = PostcardWriter();
-      w.writeVarInt(1);
-      w.writeVarInt(0);
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      w.writeOption('abc123=', (v, pw) => pw.writeString(v));
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      final pages = decodePageList(PostcardReader(w.bytes));
-      check(pages[0].base64).equals('abc123=');
-    });
-
-    test('page with text', () {
-      final w = PostcardWriter();
-      w.writeVarInt(1);
-      w.writeVarInt(0);
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      w.writeOption('caption', (v, pw) => pw.writeString(v));
+      writePage(w, variant: 1, text: 'caption');
       final pages = decodePageList(PostcardReader(w.bytes));
       check(pages[0].text).equals('caption');
+      check(pages[0].url).isNull();
     });
 
-    test('multiple pages preserve order and indices', () {
+    test('Image page (variant 2) has no url or text', () {
       final w = PostcardWriter();
-      w.writeVarInt(3); // 3 pages
-      for (var i = 0; i < 3; i++) {
-        w.writeVarInt(i);
-        w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-        w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-        w.writeOption<String>(null, (v, pw) => pw.writeString(v));
-      }
+      w.writeVarInt(1);
+      writePage(w, variant: 2);
+      final pages = decodePageList(PostcardReader(w.bytes));
+      check(pages[0].url).isNull();
+      check(pages[0].text).isNull();
+    });
+
+    test('Url page with PageContext (HashMap) is skipped correctly', () {
+      final w = PostcardWriter();
+      w.writeVarInt(1);
+      writePage(
+        w,
+        url: 'https://img.example.com/1.jpg',
+        pageContext: {
+          'Referer': 'https://example.com',
+          'User-Agent': 'Test',
+        },
+      );
+      final pages = decodePageList(PostcardReader(w.bytes));
+      check(pages).length.equals(1);
+      check(pages[0].url).equals('https://img.example.com/1.jpg');
+    });
+
+    test('multiple pages preserve order', () {
+      final w = PostcardWriter();
+      w.writeVarInt(3);
+      writePage(w, url: 'https://img.example.com/0.jpg');
+      writePage(w, url: 'https://img.example.com/1.jpg');
+      writePage(w, url: 'https://img.example.com/2.jpg');
       final pages = decodePageList(PostcardReader(w.bytes));
       check(pages).length.equals(3);
       check(pages[0].index).equals(0);
