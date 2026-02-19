@@ -10,7 +10,8 @@
 // Run: dart test packages/wasm_plugin_loader/test/wasm/wasm_runner_native_test.dart -v
 import 'dart:io';
 
-import 'package:test/test.dart';
+import 'package:checks/checks.dart';
+import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 bool _hasWasmer() {
@@ -39,10 +40,10 @@ void main() {
         final aixBytes = fixture.readAsBytesSync();
         final loader = WasmPluginLoader();
         final plugin = await loader.load(aixBytes);
-        expect(plugin.sourceInfo.id, 'multi.mangadex');
-        expect(plugin.sourceInfo.name, 'MangaDex');
-        expect(plugin.sourceInfo.language, 'en');
-        expect(plugin.sourceInfo.url, 'https://mangadex.org');
+        check(plugin.sourceInfo.id).equals('multi.mangadex');
+        check(plugin.sourceInfo.name).equals('MangaDex');
+        check(plugin.sourceInfo.language).equals('en');
+        check(plugin.sourceInfo.url).equals('https://mangadex.org');
         // ignore: avoid_print
         print('Loaded: ${plugin.sourceInfo.id} (${plugin.sourceInfo.name})');
       });
