@@ -35,11 +35,13 @@ typedef AsyncSleepDispatch = void Function(int seconds);
 
 /// Builds the complete map of host import functions for an Aidoku WASM plugin.
 ///
+/// [sourceId] is prepended to all defaults keys to match Swift's behavior.
 /// [asyncHttp] and [asyncSleep] are optional async dispatch callbacks. When
 /// null (web stub or unit tests) HTTP calls return -1 and sleep is a no-op.
 Map<String, Map<String, Function>> buildAidokuHostImports(
   WasmRunner runner,
   HostStore store, {
+  required String sourceId,
   AsyncHttpDispatch? asyncHttp,
   AsyncSleepDispatch? asyncSleep,
 }) {
@@ -48,7 +50,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
     'env': _envImports(runner, store, asyncSleep),
     'net': _netImports(runner, store, asyncHttp),
     'html': _htmlImports(runner, store),
-    'defaults': _defaultsImports(runner, store),
+    'defaults': _defaultsImports(runner, store, sourceId),
     'canvas': _canvasImports(),
     'js': _jsImports(),
   };
@@ -518,9 +520,13 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
 // defaults module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _defaultsImports(WasmRunner runner, HostStore store) => {
+Map<String, Function> _defaultsImports(
+  WasmRunner runner,
+  HostStore store,
+  String sourceId,
+) => {
   'get': (int keyPtr, int keyLen) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
     final stored = store.defaults[key];
     if (stored == null) return 0;
     if (stored is int) return stored;
@@ -529,7 +535,7 @@ Map<String, Function> _defaultsImports(WasmRunner runner, HostStore store) => {
   },
   // kind: 0=int, 1=float, 2=string, 3=bool, 4=string-array
   'set': (int keyPtr, int keyLen, int kind, int value) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
     if (kind == 2) {
       // value is an RID pointing to a BytesResource (the string bytes).
       final res = store.get<BytesResource>(value);

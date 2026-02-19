@@ -53,9 +53,19 @@ class AidokuPlugin {
     final initialDefaults = Map<String, Object>.from(
       flattenSettingDefaults(settings, sourceId: sourceId),
     );
-    if (bundle.sourceInfo.languages.isNotEmpty) {
-      initialDefaults['$sourceId.languages'] =
-          encodeStringList(bundle.sourceInfo.languages);
+    // Mirror Swift Source.loadSettings() defaultLanguages selection.
+    var defaultLanguages = bundle.languageInfos
+        .where((l) => l.isDefault == true)
+        .map((l) => l.effectiveValue)
+        .toList();
+    if (defaultLanguages.isEmpty && bundle.languageInfos.isNotEmpty) {
+      defaultLanguages = [bundle.languageInfos.first.effectiveValue];
+    }
+    if (bundle.languageSelectType == 'single' && defaultLanguages.length > 1) {
+      defaultLanguages = [defaultLanguages.first];
+    }
+    if (defaultLanguages.isNotEmpty) {
+      initialDefaults['$sourceId.languages'] = encodeStringList(defaultLanguages);
     }
 
     final store = HostStore();
@@ -65,7 +75,7 @@ class AidokuPlugin {
     final lazyRunner = _LazyRunner();
 
     // No asyncHttp/asyncSleep on web — HTTP imports return -1 (stub).
-    final imports = buildAidokuHostImports(lazyRunner, store);
+    final imports = buildAidokuHostImports(lazyRunner, store, sourceId: sourceId);
     final runner = await WasmRunner.fromBytes(bundle.wasmBytes, imports: imports);
     lazyRunner.delegate = runner;
 
