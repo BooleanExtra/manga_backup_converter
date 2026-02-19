@@ -42,7 +42,7 @@ void main() {
         final plugin = await loader.load(aixBytes);
         check(plugin.sourceInfo.id).equals('multi.mangadex');
         check(plugin.sourceInfo.name).equals('MangaDex');
-        check(plugin.sourceInfo.language).equals('en');
+        check(plugin.sourceInfo.languages).contains('en');
         check(plugin.sourceInfo.url).equals('https://mangadex.org');
         // ignore: avoid_print
         print('Loaded: ${plugin.sourceInfo.id} (${plugin.sourceInfo.name})');

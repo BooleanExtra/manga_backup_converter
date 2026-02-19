@@ -49,7 +49,14 @@ class AidokuPlugin {
 
     final settings = bundle.settings ?? const [];
     final filterDefinitions = bundle.filters ?? const [];
-    final initialDefaults = flattenSettingDefaults(settings);
+    final sourceId = bundle.sourceInfo.id;
+    final initialDefaults = Map<String, Object>.from(
+      flattenSettingDefaults(settings, sourceId: sourceId),
+    );
+    if (bundle.sourceInfo.languages.isNotEmpty) {
+      initialDefaults['$sourceId.languages'] =
+          encodeStringList(bundle.sourceInfo.languages);
+    }
 
     final store = HostStore();
     // Seed defaults from settings.json before WASM starts.

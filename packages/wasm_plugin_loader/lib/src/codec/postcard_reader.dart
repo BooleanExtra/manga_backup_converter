@@ -45,6 +45,12 @@ class PostcardReader {
     return view.getFloat64(0, Endian.little);
   }
 
+  int readI64() {
+    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
+    _pos += 8;
+    return view.getInt64(0, Endian.little);
+  }
+
   String readString() {
     final len = readVarInt();
     final str = utf8.decode(_bytes.sublist(_pos, _pos + len));

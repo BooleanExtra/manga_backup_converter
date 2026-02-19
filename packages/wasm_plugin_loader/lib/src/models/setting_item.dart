@@ -338,17 +338,22 @@ class UnknownSetting extends SettingItem {
 // ---------------------------------------------------------------------------
 
 /// Flatten a list of settings into key→seed-value pairs, recursing into groups.
-Map<String, Object> flattenSettingDefaults(List<SettingItem> items) {
+/// If [sourceId] is provided, all keys are prefixed with `"$sourceId."`.
+Map<String, Object> flattenSettingDefaults(
+  List<SettingItem> items, {
+  String? sourceId,
+}) {
   final result = <String, Object>{};
   for (final item in items) {
     final entry = item.defaultEntry;
     if (entry != null) {
-      result[entry.key] = entry.value;
+      final key = sourceId != null ? '$sourceId.${entry.key}' : entry.key;
+      result[key] = entry.value;
     }
     if (item is GroupSetting) {
-      result.addAll(flattenSettingDefaults(item.items));
+      result.addAll(flattenSettingDefaults(item.items, sourceId: sourceId));
     } else if (item is PageSetting) {
-      result.addAll(flattenSettingDefaults(item.items));
+      result.addAll(flattenSettingDefaults(item.items, sourceId: sourceId));
     }
   }
   return result;

@@ -64,9 +64,9 @@ void main() {
       });
 
       group('getMangaDetails', () {
-        test('returns Manga without throwing', () async {
+        test('returns Manga? without throwing', () async {
           final result = await plugin.getMangaDetails('some-manga-key');
-          check(result).isA<Manga>();
+          check(result).isA<Manga?>();
         });
       });
 
@@ -86,7 +86,7 @@ void main() {
 
       group('getMangaList', () {
         test('returns a MangaPageResult without throwing', () async {
-          final result = await plugin.getMangaList(1);
+          final result = await plugin.getMangaList(1, listingIndex: 1);
           check(result).isA<MangaPageResult>();
           check(result.manga).isNotEmpty();
         });
