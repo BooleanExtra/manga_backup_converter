@@ -25,46 +25,44 @@ Uint8List _buildFakeAix(String id) {
 }
 
 void main() {
-  group('WasmPluginLoader', () {
-    test('starts empty', () {
-      final loader = WasmPluginLoader();
-      expect(loader.loadedSources, isEmpty);
-      expect(loader.findBySourceId('multi.mangadex'), isNull);
-    });
+  test('starts empty', () {
+    final loader = WasmPluginLoader();
+    expect(loader.loadedSources, isEmpty);
+    expect(loader.findBySourceId('multi.mangadex'), isNull);
+  });
 
-    test('findBySourceId returns null for unknown id', () {
-      final loader = WasmPluginLoader();
-      expect(loader.findBySourceId('unknown.source'), isNull);
-    });
+  test('findBySourceId returns null for unknown id', () {
+    final loader = WasmPluginLoader();
+    expect(loader.findBySourceId('unknown.source'), isNull);
+  });
 
-    test('load() registers plugin by source id', () async {
-      final loader = WasmPluginLoader();
-      final plugin = await loader.load(_buildFakeAix('en.testsource'));
-      expect(plugin.sourceInfo.id, 'en.testsource');
-      expect(loader.loadedSources, hasLength(1));
-      expect(loader.findBySourceId('en.testsource'), same(plugin));
-    }, skip: _wasmSkip);
+  test('load() registers plugin by source id', skip: _wasmSkip, () async {
+    final loader = WasmPluginLoader();
+    final plugin = await loader.load(_buildFakeAix('en.testsource'));
+    expect(plugin.sourceInfo.id, 'en.testsource');
+    expect(loader.loadedSources, hasLength(1));
+    expect(loader.findBySourceId('en.testsource'), same(plugin));
+  });
 
-    test('load() can register multiple plugins', () async {
-      final loader = WasmPluginLoader();
-      await loader.load(_buildFakeAix('en.source1'));
-      await loader.load(_buildFakeAix('en.source2'));
-      expect(loader.loadedSources, hasLength(2));
-    }, skip: _wasmSkip);
+  test('load() can register multiple plugins', skip: _wasmSkip, () async {
+    final loader = WasmPluginLoader();
+    await loader.load(_buildFakeAix('en.source1'));
+    await loader.load(_buildFakeAix('en.source2'));
+    expect(loader.loadedSources, hasLength(2));
+  });
 
-    test('load() replaces plugin with same id', () async {
-      final loader = WasmPluginLoader();
-      await loader.load(_buildFakeAix('en.source'));
-      final second = await loader.load(_buildFakeAix('en.source'));
-      expect(loader.loadedSources, hasLength(1));
-      expect(loader.findBySourceId('en.source'), same(second));
-    }, skip: _wasmSkip);
+  test('load() replaces plugin with same id', skip: _wasmSkip, () async {
+    final loader = WasmPluginLoader();
+    await loader.load(_buildFakeAix('en.source'));
+    final second = await loader.load(_buildFakeAix('en.source'));
+    expect(loader.loadedSources, hasLength(1));
+    expect(loader.findBySourceId('en.source'), same(second));
+  });
 
-    test('unload() removes plugin', () async {
-      final loader = WasmPluginLoader();
-      await loader.load(_buildFakeAix('en.source'));
-      loader.unload('en.source');
-      expect(loader.loadedSources, isEmpty);
-    }, skip: _wasmSkip);
+  test('unload() removes plugin', skip: _wasmSkip, () async {
+    final loader = WasmPluginLoader();
+    await loader.load(_buildFakeAix('en.source'));
+    loader.unload('en.source');
+    expect(loader.loadedSources, isEmpty);
   });
 }
