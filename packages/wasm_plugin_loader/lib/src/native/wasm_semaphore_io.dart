@@ -8,8 +8,7 @@ import 'package:ffi/ffi.dart' show calloc;
 // POSIX typedefs
 // ---------------------------------------------------------------------------
 
-typedef _SemInitC = ffi.Int Function(
-    ffi.Pointer<ffi.Void>, ffi.Int, ffi.UnsignedInt);
+typedef _SemInitC = ffi.Int Function(ffi.Pointer<ffi.Void>, ffi.Int, ffi.UnsignedInt);
 typedef _SemInitDart = int Function(ffi.Pointer<ffi.Void>, int, int);
 
 typedef _SemWaitC = ffi.Int Function(ffi.Pointer<ffi.Void>);
@@ -25,19 +24,15 @@ typedef _SemDestroyDart = int Function(ffi.Pointer<ffi.Void>);
 // Windows typedefs
 // ---------------------------------------------------------------------------
 
-typedef _CreateSemaphoreC = ffi.Pointer<ffi.Void> Function(
-    ffi.Pointer<ffi.Void>, ffi.Int32, ffi.Int32, ffi.Pointer<ffi.Void>);
-typedef _CreateSemaphoreDart = ffi.Pointer<ffi.Void> Function(
-    ffi.Pointer<ffi.Void>, int, int, ffi.Pointer<ffi.Void>);
+typedef _CreateSemaphoreC =
+    ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>, ffi.Int32, ffi.Int32, ffi.Pointer<ffi.Void>);
+typedef _CreateSemaphoreDart = ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>, int, int, ffi.Pointer<ffi.Void>);
 
-typedef _WaitForSingleObjectC = ffi.Uint32 Function(
-    ffi.Pointer<ffi.Void>, ffi.Uint32);
+typedef _WaitForSingleObjectC = ffi.Uint32 Function(ffi.Pointer<ffi.Void>, ffi.Uint32);
 typedef _WaitForSingleObjectDart = int Function(ffi.Pointer<ffi.Void>, int);
 
-typedef _ReleaseSemaphoreC = ffi.Int32 Function(
-    ffi.Pointer<ffi.Void>, ffi.Int32, ffi.Pointer<ffi.Int32>);
-typedef _ReleaseSemaphoreDart = int Function(
-    ffi.Pointer<ffi.Void>, int, ffi.Pointer<ffi.Int32>);
+typedef _ReleaseSemaphoreC = ffi.Int32 Function(ffi.Pointer<ffi.Void>, ffi.Int32, ffi.Pointer<ffi.Int32>);
+typedef _ReleaseSemaphoreDart = int Function(ffi.Pointer<ffi.Void>, int, ffi.Pointer<ffi.Int32>);
 
 typedef _CloseHandleC = ffi.Int32 Function(ffi.Pointer<ffi.Void>);
 typedef _CloseHandleDart = int Function(ffi.Pointer<ffi.Void>);
@@ -77,27 +72,16 @@ class WasmSemaphore {
     _initialized = true;
     if (Platform.isWindows) {
       final lib = ffi.DynamicLibrary.open('kernel32.dll');
-      _createSemaphore =
-          lib.lookupFunction<_CreateSemaphoreC, _CreateSemaphoreDart>(
-              'CreateSemaphoreA');
-      _waitForSingleObject =
-          lib.lookupFunction<_WaitForSingleObjectC, _WaitForSingleObjectDart>(
-              'WaitForSingleObject');
-      _releaseSemaphore =
-          lib.lookupFunction<_ReleaseSemaphoreC, _ReleaseSemaphoreDart>(
-              'ReleaseSemaphore');
-      _closeHandle = lib
-          .lookupFunction<_CloseHandleC, _CloseHandleDart>('CloseHandle');
+      _createSemaphore = lib.lookupFunction<_CreateSemaphoreC, _CreateSemaphoreDart>('CreateSemaphoreA');
+      _waitForSingleObject = lib.lookupFunction<_WaitForSingleObjectC, _WaitForSingleObjectDart>('WaitForSingleObject');
+      _releaseSemaphore = lib.lookupFunction<_ReleaseSemaphoreC, _ReleaseSemaphoreDart>('ReleaseSemaphore');
+      _closeHandle = lib.lookupFunction<_CloseHandleC, _CloseHandleDart>('CloseHandle');
     } else {
       final lib = ffi.DynamicLibrary.process();
-      _semInit =
-          lib.lookupFunction<_SemInitC, _SemInitDart>('sem_init');
-      _semWait =
-          lib.lookupFunction<_SemWaitC, _SemWaitDart>('sem_wait');
-      _semPost =
-          lib.lookupFunction<_SemPostC, _SemPostDart>('sem_post');
-      _semDestroy =
-          lib.lookupFunction<_SemDestroyC, _SemDestroyDart>('sem_destroy');
+      _semInit = lib.lookupFunction<_SemInitC, _SemInitDart>('sem_init');
+      _semWait = lib.lookupFunction<_SemWaitC, _SemWaitDart>('sem_wait');
+      _semPost = lib.lookupFunction<_SemPostC, _SemPostDart>('sem_post');
+      _semDestroy = lib.lookupFunction<_SemDestroyC, _SemDestroyDart>('sem_destroy');
     }
   }
 
@@ -105,8 +89,7 @@ class WasmSemaphore {
   static WasmSemaphore create() {
     _ensureInitialized();
     if (Platform.isWindows) {
-      final handle =
-          _createSemaphore!(ffi.nullptr, 0, 1, ffi.nullptr);
+      final handle = _createSemaphore!(ffi.nullptr, 0, 1, ffi.nullptr);
       return WasmSemaphore._(handle, true);
     } else {
       // 64 bytes is large enough for sem_t on all supported Unix platforms.

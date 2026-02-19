@@ -46,8 +46,7 @@ class HostStore {
   final defaults = <String, int>{};
 
   /// Partial results pushed by `env::_send_partial_result`.
-  late final _partialResultsController =
-      StreamController<Uint8List>.broadcast();
+  late final _partialResultsController = StreamController<Uint8List>.broadcast();
 
   Stream<Uint8List> get partialResults => _partialResultsController.stream;
 

@@ -12,7 +12,9 @@ void main() {
   });
 
   test('u8 boundary values', () {
-    final w = PostcardWriter()..writeU8(0)..writeU8(255);
+    final w = PostcardWriter()
+      ..writeU8(0)
+      ..writeU8(255);
     final r = PostcardReader(w.bytes);
     check(r.readU8()).equals(0);
     check(r.readU8()).equals(255);
@@ -49,7 +51,9 @@ void main() {
   });
 
   test('bool true and false', () {
-    final w = PostcardWriter()..writeBool(true)..writeBool(false);
+    final w = PostcardWriter()
+      ..writeBool(true)
+      ..writeBool(false);
     final r = PostcardReader(w.bytes);
     check(r.readBool()).isTrue();
     check(r.readBool()).isFalse();
@@ -128,7 +132,10 @@ void main() {
   });
 
   test('position advances with each read', () {
-    final w = PostcardWriter()..writeU8(1)..writeU8(2)..writeU8(3);
+    final w = PostcardWriter()
+      ..writeU8(1)
+      ..writeU8(2)
+      ..writeU8(3);
     final r = PostcardReader(w.bytes);
     check(r.position).equals(0);
     r.readU8();

@@ -27,13 +27,13 @@ class WasmRunner {
     required ffi.Pointer<WasmMemoryT> memory,
     required Map<String, ffi.Pointer<WasmExternT>> exports,
     required List<ffi.NativeCallable<WasmFuncCallbackC>> nativeCallables,
-  })  : _bindings = bindings,
-        _engine = engine,
-        _store = store,
-        _instance = instance,
-        _memory = memory,
-        _exports = exports,
-        _nativeCallables = nativeCallables;
+  }) : _bindings = bindings,
+       _engine = engine,
+       _store = store,
+       _instance = instance,
+       _memory = memory,
+       _exports = exports,
+       _nativeCallables = nativeCallables;
 
   final WasmerBindings _bindings;
   // ignore: unused_field
@@ -76,8 +76,7 @@ class WasmRunner {
       ..free(nativeBuf);
 
     if (module.address == 0) {
-      throw const WasmRuntimeException(
-          'wasm_module_new failed — invalid WASM binary');
+      throw const WasmRuntimeException('wasm_module_new failed — invalid WASM binary');
     }
 
     // Read export names BEFORE the module is freed
@@ -87,8 +86,7 @@ class WasmRunner {
     final exportNames = <String>[
       for (var i = 0; i < exportTypeVec.ref.size; i++)
         WasmerBindings.readByteVec(
-          bindings.exporttypeName(
-              (exportTypeVec.ref.data + i).value),
+          bindings.exporttypeName((exportTypeVec.ref.data + i).value),
         ),
     ];
     bindings.exporttypeVecDelete(exportTypeVec);
@@ -106,14 +104,12 @@ class WasmRunner {
       final it = (importTypeVec.ref.data + i).value;
       final modName = WasmerBindings.readByteVec(bindings.importtypeModule(it));
       final fnName = WasmerBindings.readByteVec(bindings.importtypeName(it));
-      final funcType =
-          bindings.externtypeAsFunctypeConst(bindings.importtypeType(it));
+      final funcType = bindings.externtypeAsFunctypeConst(bindings.importtypeType(it));
 
       final dartFn = imports[modName]?[fnName];
       final callable = _makeCallable(dartFn);
       nativeCallables.add(callable);
-      externPtrs.add(bindings.funcAsExtern(
-          bindings.funcNew(store, funcType, callable.nativeFunction)));
+      externPtrs.add(bindings.funcAsExtern(bindings.funcNew(store, funcType, callable.nativeFunction)));
     }
 
     bindings.importtypeVecDelete(importTypeVec);
@@ -139,9 +135,7 @@ class WasmRunner {
     bindings.moduleDelete(module);
 
     if (instance.address == 0) {
-      final msg = trapOut.value.address != 0
-          ? _readTrap(bindings, trapOut.value)
-          : 'unknown error';
+      final msg = trapOut.value.address != 0 ? _readTrap(bindings, trapOut.value) : 'unknown error';
       calloc.free(trapOut);
       throw WasmRuntimeException('wasm_instance_new failed: $msg');
     }
@@ -154,9 +148,7 @@ class WasmRunner {
 
     final exportMap = <String, ffi.Pointer<WasmExternT>>{};
     var memory = ffi.nullptr as ffi.Pointer<WasmMemoryT>;
-    final count = exportVec.ref.size < exportNames.length
-        ? exportVec.ref.size
-        : exportNames.length;
+    final count = exportVec.ref.size < exportNames.length ? exportVec.ref.size : exportNames.length;
     for (var i = 0; i < count; i++) {
       final extern = (exportVec.ref.data + i).value;
       exportMap[exportNames[i]] = extern;
@@ -212,8 +204,7 @@ class WasmRunner {
       throw WasmTrapException('WASM trap in $name: $msg');
     }
 
-    final result =
-        resultsVec.ref.size > 0 ? _getVal(resultsVec.ref.data) : null;
+    final result = resultsVec.ref.size > 0 ? _getVal(resultsVec.ref.data) : null;
     _bindings.valVecDelete(resultsVec);
     calloc.free(resultsVec);
     return result;
@@ -224,12 +215,10 @@ class WasmRunner {
     if (length == 0) return Uint8List(0);
     final size = memorySize;
     if (offset < 0 || length < 0 || offset + length > size) {
-      throw RangeError(
-          'readMemory($offset, $length): out of WASM memory bounds ($size bytes)');
+      throw RangeError('readMemory($offset, $length): out of WASM memory bounds ($size bytes)');
     }
     final data = _bindings.memoryData(_memory);
-    return Uint8List.fromList(
-        List.generate(length, (i) => (data + offset + i).value));
+    return Uint8List.fromList(List.generate(length, (i) => (data + offset + i).value));
   }
 
   void writeMemory(int offset, Uint8List bytes) {
@@ -250,9 +239,7 @@ class WasmRunner {
   // ---------------------------------------------------------------------------
 
   static ffi.DynamicLibrary _openWasmer() {
-    final home = Platform.environment['HOME'] ??
-        Platform.environment['USERPROFILE'] ??
-        '';
+    final home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
     final String path;
     if (Platform.isLinux || Platform.isAndroid) {
       path = '$home/.wasmer/lib/libwasmer.so';
@@ -261,8 +248,7 @@ class WasmRunner {
     } else if (Platform.isWindows) {
       path = r'$home\.wasmer\lib\wasmer.dll'.replaceFirst(r'$home', home);
     } else {
-      throw UnsupportedError(
-          'Native WASM not supported on ${Platform.operatingSystem}');
+      throw UnsupportedError('Native WASM not supported on ${Platform.operatingSystem}');
     }
     try {
       return ffi.DynamicLibrary.open(path);
@@ -292,8 +278,7 @@ class WasmRunner {
             return ffi.nullptr;
           }
           final dartArgs = <Object?>[
-            for (var i = 0; i < args.ref.size; i++)
-              _getVal(args.ref.data + i),
+            for (var i = 0; i < args.ref.size; i++) _getVal(args.ref.data + i),
           ];
           final result = Function.apply(dartFn, dartArgs);
           if (results.ref.size > 0) {

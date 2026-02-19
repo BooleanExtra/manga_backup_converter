@@ -15,27 +15,25 @@ import 'package:test/test.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 bool _hasWasmer() {
-  final home =
-      Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
+  final home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
   final lib = Platform.isWindows
       ? '$home\\.wasmer\\lib\\wasmer.dll'
       : Platform.isMacOS
-          ? '$home/.wasmer/lib/libwasmer.dylib'
-          : '$home/.wasmer/lib/libwasmer.so';
+      ? '$home/.wasmer/lib/libwasmer.dylib'
+      : '$home/.wasmer/lib/libwasmer.so';
   return File(lib).existsSync();
 }
 
 void main() {
-  final fixture =
-      File('test/aidoku/fixtures/multi.mangadex-v12.aix');
+  final fixture = File('test/aidoku/fixtures/multi.mangadex-v12.aix');
 
   group(
     'AidokuPlugin method calls',
     skip: !fixture.existsSync()
         ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
         : !_hasWasmer()
-            ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-            : null,
+        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
+        : null,
     () {
       late AidokuPlugin plugin;
 

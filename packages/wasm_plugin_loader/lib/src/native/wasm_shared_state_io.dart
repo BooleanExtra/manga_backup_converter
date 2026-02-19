@@ -9,18 +9,18 @@ import 'package:ffi/ffi.dart' show calloc;
 /// across Dart isolate boundaries and dereferenced from any isolate via FFI.
 class WasmSharedState {
   WasmSharedState()
-      : _resultSlot = calloc<ffi.Int32>(),
-        _statusSlot = calloc<ffi.Int32>(),
-        _bufferPtrSlot = calloc<ffi.Int64>(),
-        _bufferLenSlot = calloc<ffi.Int64>() {
+    : _resultSlot = calloc<ffi.Int32>(),
+      _statusSlot = calloc<ffi.Int32>(),
+      _bufferPtrSlot = calloc<ffi.Int64>(),
+      _bufferLenSlot = calloc<ffi.Int64>() {
     _resultSlot.value = 0;
     _statusSlot.value = 0;
     _bufferPtrSlot.value = 0;
     _bufferLenSlot.value = 0;
   }
 
-  final ffi.Pointer<ffi.Int32> _resultSlot;    // 0 = ok, -1 = error
-  final ffi.Pointer<ffi.Int32> _statusSlot;    // HTTP status code
+  final ffi.Pointer<ffi.Int32> _resultSlot; // 0 = ok, -1 = error
+  final ffi.Pointer<ffi.Int32> _statusSlot; // HTTP status code
   final ffi.Pointer<ffi.Int64> _bufferPtrSlot; // address of response bytes
   final ffi.Pointer<ffi.Int64> _bufferLenSlot; // byte count
 
@@ -62,11 +62,9 @@ class WasmSharedState {
   // ---------------------------------------------------------------------------
 
   /// Read result flag (called on the WASM isolate via fromAddress).
-  static int readResult(int resultSlotAddress) =>
-      ffi.Pointer<ffi.Int32>.fromAddress(resultSlotAddress).value;
+  static int readResult(int resultSlotAddress) => ffi.Pointer<ffi.Int32>.fromAddress(resultSlotAddress).value;
 
-  static int readStatus(int statusSlotAddress) =>
-      ffi.Pointer<ffi.Int32>.fromAddress(statusSlotAddress).value;
+  static int readStatus(int statusSlotAddress) => ffi.Pointer<ffi.Int32>.fromAddress(statusSlotAddress).value;
 
   /// Copy response bytes out of native heap into a Dart [Uint8List].
   static Uint8List readResponse(int bufferPtrSlotAddress, int bufferLenSlotAddress) {
@@ -74,8 +72,7 @@ class WasmSharedState {
     final len = ffi.Pointer<ffi.Int64>.fromAddress(bufferLenSlotAddress).value;
     if (ptr == 0 || len == 0) return Uint8List(0);
     final nativePtr = ffi.Pointer<ffi.Uint8>.fromAddress(ptr);
-    return Uint8List.fromList(
-        List.generate(len, (i) => (nativePtr + i).value));
+    return Uint8List.fromList(List.generate(len, (i) => (nativePtr + i).value));
   }
 
   void _freeBuffer() {

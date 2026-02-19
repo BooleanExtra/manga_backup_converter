@@ -58,12 +58,10 @@ class AidokuPlugin {
     int page, {
     List<FilterValue> filters = const [],
   }) async {
-    final queryRid =
-        _store.addBytes(Uint8List.fromList(utf8.encode(query)));
+    final queryRid = _store.addBytes(Uint8List.fromList(utf8.encode(query)));
     final filtersRid = _store.addBytes(encodeFilters(filters));
     try {
-      final ptr = _callInt('__wasm_get_search_manga_list',
-          [queryRid, page, filtersRid]);
+      final ptr = _callInt('__wasm_get_search_manga_list', [queryRid, page, filtersRid]);
       if (ptr <= 0) return const MangaPageResult(manga: [], hasNextPage: false);
       final data = _readResult(ptr);
       return decodeMangaPageResult(PostcardReader(data));
@@ -77,8 +75,7 @@ class AidokuPlugin {
 
   /// Fetch updated manga details. Returns null on error or no data.
   Future<Manga?> getMangaDetails(String key) async {
-    final keyRid =
-        _store.addBytes(Uint8List.fromList(utf8.encode(key)));
+    final keyRid = _store.addBytes(Uint8List.fromList(utf8.encode(key)));
     try {
       final ptr = _callInt('__wasm_get_manga_update', [keyRid]);
       if (ptr <= 0) return null;
@@ -92,8 +89,7 @@ class AidokuPlugin {
 
   /// Fetch page image URLs for a chapter.
   Future<List<Page>> getPageList(String key) async {
-    final keyRid =
-        _store.addBytes(Uint8List.fromList(utf8.encode(key)));
+    final keyRid = _store.addBytes(Uint8List.fromList(utf8.encode(key)));
     try {
       final ptr = _callInt('__wasm_get_page_list', [keyRid]);
       if (ptr <= 0) return [];
@@ -133,15 +129,13 @@ class AidokuPlugin {
   // Internal helpers
   // ---------------------------------------------------------------------------
 
-  int _callInt(String name, List<Object?> args) =>
-      (_runner.call(name, args) as num).toInt();
+  int _callInt(String name, List<Object?> args) => (_runner.call(name, args) as num).toInt();
 
   /// Read a length-prefixed result buffer from WASM memory and free it.
   /// Layout: [u32 length LE][u32 capacity LE][<length> bytes postcard]
   Uint8List _readResult(int ptr) {
     final lenBytes = _runner.readMemory(ptr, 4);
-    final length =
-        ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
+    final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
     final data = _runner.readMemory(ptr + 8, length);
     try {
       _runner.call('__wasm_free_result', [ptr]);
@@ -163,19 +157,16 @@ class AidokuPlugin {
 /// Proxy that forwards [WasmRunner] calls to a [delegate] once set.
 class _LazyRunner implements WasmRunner {
   WasmRunner? delegate;
-  WasmRunner get _r =>
-      delegate ?? (throw StateError('WasmRunner not yet initialized'));
+  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
 
   @override
   dynamic call(String name, List<Object?> args) => _r.call(name, args);
 
   @override
-  Uint8List readMemory(int offset, int length) =>
-      _r.readMemory(offset, length);
+  Uint8List readMemory(int offset, int length) => _r.readMemory(offset, length);
 
   @override
-  void writeMemory(int offset, Uint8List bytes) =>
-      _r.writeMemory(offset, bytes);
+  void writeMemory(int offset, Uint8List bytes) => _r.writeMemory(offset, bytes);
 
   @override
   int get memorySize => _r.memorySize;
