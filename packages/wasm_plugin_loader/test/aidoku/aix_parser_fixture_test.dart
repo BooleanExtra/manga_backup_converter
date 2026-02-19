@@ -8,6 +8,8 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
+import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
@@ -54,36 +56,36 @@ void main() {
         });
       });
 
-      group('filtersJson', () {
-        test('filtersJson is non-null', () {
-          expect(bundle.filtersJson, isNotNull);
+      group('filters', () {
+        test('filters is non-null', () {
+          expect(bundle.filters, isNotNull);
         });
 
-        test('filtersJson is non-empty', () {
-          expect(bundle.filtersJson, isNotEmpty);
+        test('filters is non-empty', () {
+          expect(bundle.filters, isNotEmpty);
         });
 
-        test('each filtersJson entry has a String type field', () {
-          for (final entry in bundle.filtersJson!) {
-            final map = entry as Map<String, dynamic>;
-            expect(map['type'], isA<String>());
+        test('each filter is a FilterInfo with a non-empty type', () {
+          for (final fi in bundle.filters!) {
+            expect(fi, isA<FilterInfo>());
+            expect(fi.type, isA<String>());
+            expect(fi.type, isNotEmpty);
           }
         });
       });
 
-      group('settingsJson', () {
-        test('settingsJson is non-null', () {
-          expect(bundle.settingsJson, isNotNull);
+      group('settings', () {
+        test('settings is non-null', () {
+          expect(bundle.settings, isNotNull);
         });
 
-        test('settingsJson is non-empty', () {
-          expect(bundle.settingsJson, isNotEmpty);
+        test('settings is non-empty', () {
+          expect(bundle.settings, isNotEmpty);
         });
 
-        test('each settingsJson entry has a String type field', () {
-          for (final entry in bundle.settingsJson!) {
-            final map = entry as Map<String, dynamic>;
-            expect(map['type'], isA<String>());
+        test('each setting is a SettingItem subtype', () {
+          for (final s in bundle.settings!) {
+            expect(s, isA<SettingItem>());
           }
         });
       });

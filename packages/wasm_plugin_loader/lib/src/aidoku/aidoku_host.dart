@@ -521,11 +521,22 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
 Map<String, Function> _defaultsImports(WasmRunner runner, HostStore store) => {
   'get': (int keyPtr, int keyLen) {
     final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-    return store.defaults[key] ?? 0;
+    final stored = store.defaults[key];
+    if (stored == null) return 0;
+    if (stored is int) return stored;
+    if (stored is Uint8List) return store.addBytes(stored);
+    return 0;
   },
+  // kind: 0=int, 1=float, 2=string, 3=bool, 4=string-array
   'set': (int keyPtr, int keyLen, int kind, int value) {
     final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-    store.defaults[key] = value;
+    if (kind == 2) {
+      // value is an RID pointing to a BytesResource (the string bytes).
+      final res = store.get<BytesResource>(value);
+      if (res != null) store.defaults[key] = Uint8List.fromList(res.bytes);
+    } else {
+      store.defaults[key] = value;
+    }
     return 0;
   },
 };

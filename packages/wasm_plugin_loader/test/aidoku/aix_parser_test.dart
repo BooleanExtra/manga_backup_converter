@@ -5,6 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
+import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 Uint8List buildFakeAix({
   String id = 'en.test',
@@ -65,13 +67,13 @@ void main() {
     check(() => AixParser.parse(buildFakeAix(includeWasm: false))).throws<AixParseException>();
   });
 
-  test('filtersJson and settingsJson are null when not present', () {
+  test('filters and settings are null when not present', () {
     final bundle = AixParser.parse(buildFakeAix());
-    check(bundle.filtersJson).isNull();
-    check(bundle.settingsJson).isNull();
+    check(bundle.filters).isNull();
+    check(bundle.settings).isNull();
   });
 
-  test('parses filtersJson when present', () {
+  test('parses filters when present', () {
     final archive = Archive();
     final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
@@ -82,26 +84,47 @@ void main() {
     archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
 
     final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
-    check(bundle.filtersJson).isNotNull().isEmpty();
+    check(bundle.filters).isNotNull().isEmpty();
   });
 
-  test('parses settingsJson when present', () {
+  test('parses settings when present', () {
     final archive = Archive();
     final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
     final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
-    final settings = utf8.encode(
+    final settingsJson = utf8.encode(
       jsonEncode([
         {'type': 'toggle', 'key': 'nsfw'},
       ]),
     );
-    archive.addFile(ArchiveFile('Payload/settings.json', settings.length, settings));
+    archive.addFile(ArchiveFile('Payload/settings.json', settingsJson.length, settingsJson));
 
     final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
-    check(bundle.settingsJson).isNotNull();
-    check(bundle.settingsJson!).length.equals(1);
-    check((bundle.settingsJson![0] as Map<String, dynamic>)['type']).equals('toggle');
+    check(bundle.settings).isNotNull();
+    check(bundle.settings!).length.equals(1);
+    check(bundle.settings![0]).isA<SwitchSetting>().has((s) => s.key, 'key').equals('nsfw');
+  });
+
+  test('parses check filter from filters.json', () {
+    final archive = Archive();
+    final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
+    final filtersJson = utf8.encode(
+      jsonEncode([
+        {'type': 'check', 'name': 'Has chapters', 'default': true},
+      ]),
+    );
+    archive.addFile(ArchiveFile('Payload/filters.json', filtersJson.length, filtersJson));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    check(bundle.filters).isNotNull();
+    check(bundle.filters!).length.equals(1);
+    final fi = bundle.filters![0];
+    check(fi).isA<FilterInfo>().has((f) => f.type, 'type').equals('check');
+    check(fi.defaultValue).equals(true);
   });
 
   test('parses nested info format (info.id + info.languages[0])', () {
