@@ -34,8 +34,16 @@ void main() {
           expect(bundle.sourceInfo.name, 'MangaDex');
         });
 
-        test('language is en', () {
-          expect(bundle.sourceInfo.language, 'en');
+        test('languages contains en', () {
+          expect(bundle.sourceInfo.languages, contains('en'));
+        });
+
+        test('version is 12', () {
+          expect(bundle.sourceInfo.version, 12);
+        });
+
+        test('contentRating is 1', () {
+          expect(bundle.sourceInfo.contentRating, 1);
         });
 
         test('url is https://mangadex.org', () {

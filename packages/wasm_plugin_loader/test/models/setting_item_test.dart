@@ -218,5 +218,24 @@ void main() {
       final result = flattenSettingDefaults(items);
       check(result).isEmpty();
     });
+
+    test('prefixes keys with sourceId when provided', () {
+      const items = [
+        GroupSetting(
+          title: 'Content',
+          items: [SwitchSetting(defaultValue: false, key: 'nsfw')],
+        ),
+      ];
+      final result = flattenSettingDefaults(items, sourceId: 'en.test');
+      check(result.containsKey('en.test.nsfw')).isTrue();
+      check(result.containsKey('nsfw')).isFalse();
+      check(result['en.test.nsfw']).equals(0);
+    });
+
+    test('no prefix when sourceId is null', () {
+      const items = [SwitchSetting(defaultValue: true, key: 'x')];
+      final result = flattenSettingDefaults(items);
+      check(result.containsKey('x')).isTrue();
+    });
   });
 }

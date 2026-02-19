@@ -4,21 +4,22 @@ import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 void main() {
   group('SourceInfo', () {
-    test('stores id, name, language', () {
+    test('stores id, name, languages', () {
       const info = SourceInfo(
         id: 'multi.mangadex',
         name: 'MangaDex',
-        language: 'multi',
+        version: 1,
+        languages: ['multi'],
         url: 'https://mangadex.org',
       );
       check(info.id).equals('multi.mangadex');
       check(info.name).equals('MangaDex');
-      check(info.language).equals('multi');
+      check(info.languages).deepEquals(['multi']);
       check(info.url).equals('https://mangadex.org');
     });
 
     test('url is optional', () {
-      const info = SourceInfo(id: 'en.test', name: 'Test', language: 'en');
+      const info = SourceInfo(id: 'en.test', name: 'Test', version: 1);
       check(info.url).isNull();
     });
   });

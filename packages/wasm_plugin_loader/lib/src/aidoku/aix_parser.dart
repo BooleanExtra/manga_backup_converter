@@ -33,9 +33,13 @@ class AixParser {
     // and nested format { "info": { "id": ..., "languages": [...] } }
     final infoJson = (sourceJson['info'] as Map<String, dynamic>?) ?? sourceJson;
     final languagesRaw = infoJson['languages'];
-    final language = languagesRaw is List && languagesRaw.isNotEmpty
-        ? languagesRaw.first as String
-        : infoJson['language'] as String;
+    final List<String> languages;
+    if (languagesRaw is List && languagesRaw.isNotEmpty) {
+      languages = languagesRaw.cast<String>();
+    } else {
+      final single = infoJson['language'] as String?;
+      languages = single != null ? [single] : const [];
+    }
 
     // Listings may be at root level or inside the info block.
     final listingsRaw = (sourceJson['listings'] ?? infoJson['listings']) as List<dynamic>?;
@@ -54,8 +58,10 @@ class AixParser {
     final info = SourceInfo(
       id: infoJson['id'] as String,
       name: infoJson['name'] as String,
-      language: language,
+      version: (infoJson['version'] as num?)?.toInt() ?? 0,
+      languages: languages,
       url: infoJson['url'] as String?,
+      contentRating: (infoJson['contentRating'] as int?) ?? 0,
       listings: listings,
     );
 

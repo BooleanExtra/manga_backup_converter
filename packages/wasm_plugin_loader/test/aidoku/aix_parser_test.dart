@@ -45,8 +45,10 @@ void main() {
     final bundle = AixParser.parse(buildFakeAix());
     check(bundle.sourceInfo.id).equals('en.test');
     check(bundle.sourceInfo.name).equals('TestSource');
-    check(bundle.sourceInfo.language).equals('en');
+    check(bundle.sourceInfo.languages).deepEquals(['en']);
     check(bundle.sourceInfo.url).equals('https://example.com');
+    check(bundle.sourceInfo.version).equals(1);
+    check(bundle.sourceInfo.contentRating).equals(0);
     check(bundle.wasmBytes.length).isGreaterThan(4);
     check(bundle.wasmBytes[0]).equals(0x00);
     check(bundle.wasmBytes[1]).equals(0x61); // 'a'
@@ -127,7 +129,7 @@ void main() {
     check(fi.defaultValue).equals(true);
   });
 
-  test('parses nested info format (info.id + info.languages[0])', () {
+  test('parses nested info format (info.id + info.languages)', () {
     final archive = Archive();
     final meta = utf8.encode(
       jsonEncode({
@@ -146,8 +148,27 @@ void main() {
     final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
     check(bundle.sourceInfo.id).equals('en.nested');
     check(bundle.sourceInfo.name).equals('Nested Source');
-    check(bundle.sourceInfo.language).equals('en');
+    check(bundle.sourceInfo.languages).deepEquals(['en']);
     check(bundle.sourceInfo.url).equals('https://nested.com');
+  });
+
+  test('parses multi-language nested format', () {
+    final archive = Archive();
+    final meta = utf8.encode(
+      jsonEncode({
+        'info': {
+          'id': 'multi.test',
+          'name': 'Multi Source',
+          'languages': ['en', 'ja'],
+        },
+      }),
+    );
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    check(bundle.sourceInfo.languages).deepEquals(['en', 'ja']);
   });
 
   test('throws when source.json contains invalid JSON', () {

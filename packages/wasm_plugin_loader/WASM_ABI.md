@@ -15,11 +15,12 @@ All exports return `i32`:
 | Export name                    | Parameters (i32 unless noted) | Description                                  |
 |--------------------------------|-------------------------------|----------------------------------------------|
 | `start`                        | none → void                   | Initialize source; call before all others    |
-| `get_search_manga_list`        | `query_rid, page, filters_rid`| Search manga; page is 1-indexed              |
-| `get_manga_update`             | `manga_key_rid`               | Fetch updated manga details                  |
-| `get_page_list`                | `chapter_key_rid`             | Fetch page image URLs for a chapter          |
-| `free_result`                  | `ptr` → void                  | Free a result buffer returned by the above   |
-| `get_manga_list`               | `page`                        | (optional) Browse listing, 1-indexed         |
+| `get_search_manga_list`        | `query_rid, page, filters_rid`         | Search manga; page is 1-indexed                       |
+| `get_manga_update`             | `manga_key_rid, needs_details, needs_chapters` | Fetch manga details/chapters (i32 booleans) |
+| `get_page_list`                | `chapter_key_rid, manga_id_rid`        | Fetch page URLs; pass -1 for manga_id if unknown      |
+| `free_result`                  | `ptr` → void                           | Free a result buffer returned by the above            |
+| `get_manga_list`               | `listing_index, page`                  | (optional) Browse listing, page is 1-indexed          |
+| `get_listings`                 | none                                   | (optional) Available listing names                    |
 | `get_home`                     | none                          | (optional) Home screen sections              |
 | `get_filters`                  | none                          | (optional) Filter list                       |
 | `get_settings`                 | none                          | (optional) Settings definitions              |
