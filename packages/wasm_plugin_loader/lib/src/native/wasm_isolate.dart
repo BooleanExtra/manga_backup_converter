@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+import 'package:wasm_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
 import 'package:wasm_plugin_loader/src/native/wasm_semaphore_io.dart';
@@ -23,6 +25,7 @@ class WasmIsolateInit {
     required this.statusSlotAddress,
     required this.bufferPtrSlotAddress,
     required this.bufferLenSlotAddress,
+    this.initialDefaults = const {},
   });
 
   /// The isolate sends its own command [SendPort] back on this port.
@@ -39,6 +42,9 @@ class WasmIsolateInit {
   final int statusSlotAddress;
   final int bufferPtrSlotAddress;
   final int bufferLenSlotAddress;
+
+  /// Pre-seeded defaults from settings.json (int | Uint8List values).
+  final Map<String, Object> initialDefaults;
 }
 
 // ---------------------------------------------------------------------------
@@ -77,7 +83,8 @@ class WasmPageListCmd {
 }
 
 class WasmMangaListCmd {
-  const WasmMangaListCmd({required this.page, required this.replyPort});
+  const WasmMangaListCmd({required this.listingBytes, required this.page, required this.replyPort});
+  final Uint8List? listingBytes; // pre-encoded postcard Listing bytes, or null for fallback search
   final int page;
   final SendPort replyPort;
 }
@@ -132,7 +139,7 @@ class WasmSleepMsg {
 }
 
 /// An error or warning logged by the WASM isolate, sent to the main isolate
-/// for printing. Using the existing [asyncPort] avoids an extra port.
+/// for printing. Using the existing asyncPort avoids an extra port.
 class WasmLogMsg {
   const WasmLogMsg({required this.message, required this.stackTrace});
   final String message;
@@ -158,6 +165,9 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   init.handshakePort.send(cmdPort.sendPort);
 
   final store = HostStore();
+
+  // Seed defaults from settings.json before WASM starts.
+  store.defaults.addAll(init.initialDefaults);
 
   // Build the synchronous async-dispatch closures.
   // These are called from within NativeCallable callbacks (synchronous from
@@ -274,15 +284,17 @@ void _processCmd(
 
   if (cmd is WasmMangaDetailsCmd) {
     Uint8List? result;
-    final keyRid = store.addBytes(cmd.keyBytes);
+    // v2 ABI: get_manga_update(manga_descriptor_rid, needs_details, needs_chapters)
+    // manga_descriptor is postcard-encoded Manga struct with the key set.
+    final mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
     try {
-      final ptr = (runner.call('get_manga_update', [keyRid]) as num).toInt();
+      final ptr = (runner.call('get_manga_update', [mangaRid, 1, 0]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_manga_update: $e', stackTrace: st.toString()));
     } finally {
-      store.remove(keyRid);
+      store.remove(mangaRid);
     }
     cmd.replyPort.send(result);
     return;
@@ -290,15 +302,17 @@ void _processCmd(
 
   if (cmd is WasmPageListCmd) {
     Uint8List? result;
-    final keyRid = store.addBytes(cmd.keyBytes);
+    // v2 ABI: get_page_list(chapter_descriptor_rid, manga_id_rid)
+    // chapter_descriptor is postcard-encoded Chapter struct with the key set.
+    final chapterRid = store.addBytes(encodeChapterKey(utf8.decode(cmd.keyBytes)));
     try {
-      final ptr = (runner.call('get_page_list', [keyRid]) as num).toInt();
+      final ptr = (runner.call('get_page_list', [chapterRid, -1]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_page_list: $e', stackTrace: st.toString()));
     } finally {
-      store.remove(keyRid);
+      store.remove(chapterRid);
     }
     cmd.replyPort.send(result);
     return;
@@ -306,13 +320,35 @@ void _processCmd(
 
   if (cmd is WasmMangaListCmd) {
     Uint8List? result;
-    try {
-      final ptr = (runner.call('get_manga_list', [cmd.page]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
-    } catch (e, st) {
-      result = null;
-      logPort.send(WasmLogMsg(message: 'get_manga_list: $e', stackTrace: st.toString()));
+
+    // Call get_manga_list with the pre-encoded Listing descriptor RID from the manifest.
+    if (cmd.listingBytes != null) {
+      final listingRid = store.addBytes(cmd.listingBytes!);
+      try {
+        final ptr = (runner.call('get_manga_list', [listingRid, cmd.page]) as num).toInt();
+        if (ptr > 0) result = _readResult(runner, ptr);
+      } catch (e, st) {
+        logPort.send(WasmLogMsg(message: 'get_manga_list: $e', stackTrace: st.toString()));
+      } finally {
+        store.remove(listingRid);
+      }
     }
+
+    if (result == null) {
+      // No listing provided or get_manga_list failed — fall back to empty-query search.
+      final queryRid = store.addBytes(Uint8List(0)); // empty UTF-8 string
+      final filtersRid = store.addBytes(Uint8List.fromList([0])); // postcard empty list
+      try {
+        final ptr = (runner.call('get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
+        if (ptr > 0) result = _readResult(runner, ptr);
+      } catch (e, st) {
+        logPort.send(WasmLogMsg(message: 'get_search_manga_list (fallback): $e', stackTrace: st.toString()));
+      } finally {
+        store.remove(queryRid);
+        store.remove(filtersRid);
+      }
+    }
+
     cmd.replyPort.send(result);
     return;
   }
@@ -332,11 +368,36 @@ void _processCmd(
 }
 
 /// Read a length-prefixed result buffer and free it.
-/// Layout: [u32 length LE][u32 capacity LE][payload bytes]
+///
+/// Layout written by Rust `__handle_result`:
+///   bytes[0..4] = (8 + payload_len) as i32 LE  ← total buffer size, signed
+///   bytes[4..8] = capacity as i32 LE
+///   bytes[8..]  = postcard payload
+///
+/// AidokuError::Message returns a positive ptr where bytes[0..4] = -1_i32 LE.
+/// All other negative return codes (−1, −2, −3) arrive as a negative i32
+/// ptr directly (not as a buffer), so they never reach this function.
 Uint8List _readResult(WasmRunner runner, int ptr) {
   final lenBytes = runner.readMemory(ptr, 4);
-  final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
-  final data = runner.readMemory(ptr + 8, length);
+  final totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
+  if (totalLen < 0) {
+    // AidokuError::Message: bytes[8..12] = total buffer length, bytes[12+] = UTF-8 message.
+    String message = 'AidokuError from WASM result buffer';
+    try {
+      final msgLenBytes = runner.readMemory(ptr + 8, 4);
+      final msgBufLen = ByteData.sublistView(msgLenBytes).getInt32(0, Endian.little);
+      if (msgBufLen > 12) {
+        final msgBytes = runner.readMemory(ptr + 12, msgBufLen - 12);
+        message = 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}';
+      }
+    } catch (_) {}
+    try {
+      runner.call('free_result', [ptr]);
+    } catch (_) {}
+    throw FormatException(message);
+  }
+  final payloadLen = totalLen - 8;
+  final data = runner.readMemory(ptr + 8, payloadLen);
   try {
     runner.call('free_result', [ptr]);
   } catch (_) {}

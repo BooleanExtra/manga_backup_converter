@@ -43,7 +43,8 @@ class HostStore {
   int _nextId = 1;
 
   /// Per-source preference values managed by `defaults::set` / `defaults::get`.
-  final defaults = <String, int>{};
+  /// Values are either [int] (numeric/bool prefs) or [Uint8List] (string/multi-select prefs).
+  final defaults = <String, Object>{};
 
   /// Partial results pushed by `env::_send_partial_result`.
   late final _partialResultsController = StreamController<Uint8List>.broadcast();

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
+import 'package:wasm_plugin_loader/src/codec/postcard_writer.dart';
 
 void main() {
   group('HostStore', () {
@@ -97,9 +98,23 @@ void main() {
         check(store.defaults).isEmpty();
       });
 
-      test('can set and read back values', () {
+      test('can set and read back int values', () {
         store.defaults['pref_key'] = 7;
         check(store.defaults['pref_key']).equals(7);
+      });
+
+      test('can set and read back Uint8List values', () {
+        final writer = PostcardWriter()..writeString('hello');
+        final bytes = writer.bytes;
+        store.defaults['str_key'] = bytes;
+        final stored = store.defaults['str_key'];
+        check(stored).isA<Uint8List>().deepEquals(bytes);
+      });
+
+      test('can be pre-seeded with addAll', () {
+        store.defaults.addAll({'a': 1, 'b': 0});
+        check(store.defaults['a']).equals(1);
+        check(store.defaults['b']).equals(0);
       });
     });
 

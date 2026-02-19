@@ -7,8 +7,10 @@ import 'package:wasm_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
+import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
 import 'package:wasm_plugin_loader/src/models/page.dart';
+import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 import 'package:wasm_plugin_loader/src/models/source_info.dart';
 import 'package:wasm_plugin_loader/src/native/wasm_isolate.dart';
 import 'package:wasm_plugin_loader/src/native/wasm_semaphore_io.dart';
@@ -26,6 +28,8 @@ class AidokuPlugin {
     required WasmSemaphore semaphore,
     required WasmSharedState sharedState,
     required this.sourceInfo,
+    required this.settings,
+    required this.filterDefinitions,
   }) : _wasmCmdPort = wasmCmdPort,
        _asyncPort = asyncPort,
        _semaphore = semaphore,
@@ -38,6 +42,19 @@ class AidokuPlugin {
 
   final SourceInfo sourceInfo;
 
+  /// Parsed settings from `settings.json`.
+  final List<SettingItem> settings;
+
+  /// Parsed filter definitions from `filters.json`.
+  final List<FilterInfo> filterDefinitions;
+
+  /// Default filters derived from `filters.json` default values.
+  List<FilterValue> get defaultFilters => filterDefinitions
+      .expand((f) => f.type == 'group' ? f.items : [f])
+      .map((f) => f.toDefaultFilterValue())
+      .whereType<FilterValue>()
+      .toList();
+
   // Shared HTTP client reused for the plugin's lifetime.
   static final _httpClient = http.Client();
 
@@ -48,6 +65,10 @@ class AidokuPlugin {
   /// Load a plugin from raw .aix file bytes.
   static Future<AidokuPlugin> fromAix(Uint8List aixBytes) async {
     final bundle = AixParser.parse(aixBytes);
+
+    final settings = bundle.settings ?? const [];
+    final filterDefinitions = bundle.filters ?? const [];
+    final initialDefaults = flattenSettingDefaults(settings);
 
     final semaphore = WasmSemaphore.create();
     final sharedState = WasmSharedState();
@@ -68,6 +89,7 @@ class AidokuPlugin {
         statusSlotAddress: sharedState.statusSlotAddress,
         bufferPtrSlotAddress: sharedState.bufferPtrSlotAddress,
         bufferLenSlotAddress: sharedState.bufferLenSlotAddress,
+        initialDefaults: initialDefaults,
       ),
     );
 
@@ -80,6 +102,8 @@ class AidokuPlugin {
       semaphore: semaphore,
       sharedState: sharedState,
       sourceInfo: bundle.sourceInfo,
+      settings: settings,
+      filterDefinitions: filterDefinitions,
     );
 
     asyncPort.listen((msg) async {
@@ -101,6 +125,8 @@ class AidokuPlugin {
     try {
       final uri = Uri.parse(msg.url);
       final methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
+      // ignore: avoid_print
+      print('[wasm/net] $methodStr ${msg.url}');
       final request = http.Request(methodStr, uri);
       request.headers.addAll(msg.headers);
       if (msg.body != null) {
@@ -108,8 +134,12 @@ class AidokuPlugin {
       }
       final response = await _httpClient.send(request).timeout(Duration(seconds: msg.timeout.toInt()));
       final body = await response.stream.toBytes();
+      // ignore: avoid_print
+      print('[wasm/net] ${response.statusCode} ${body.length}b');
       _sharedState.writeResponse(statusCode: response.statusCode, body: body);
-    } catch (_) {
+    } catch (e) {
+      // ignore: avoid_print
+      print('[wasm/net] error: $e');
       _sharedState.writeError();
     }
     WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
@@ -182,10 +212,15 @@ class AidokuPlugin {
     }
   }
 
-  /// Browse manga listing (page is 1-based).
-  Future<MangaPageResult> getMangaList(int page) async {
+  /// Browse manga listing (page is 1-based, listingIndex selects the source's listing).
+  Future<MangaPageResult> getMangaList(int page, {int listingIndex = 0}) async {
+    Uint8List? listingBytes;
+    if (listingIndex < sourceInfo.listings.length) {
+      final sl = sourceInfo.listings[listingIndex];
+      listingBytes = encodeListing(AidokuListing(id: sl.id, name: sl.name, kind: sl.kind));
+    }
     final port = ReceivePort();
-    _wasmCmdPort.send(WasmMangaListCmd(page: page, replyPort: port.sendPort));
+    _wasmCmdPort.send(WasmMangaListCmd(listingBytes: listingBytes, page: page, replyPort: port.sendPort));
     final data = await port.first as Uint8List?;
     port.close();
     if (data == null) return const MangaPageResult(manga: [], hasNextPage: false);
