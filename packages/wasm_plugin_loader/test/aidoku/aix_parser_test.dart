@@ -17,13 +17,15 @@ Uint8List buildFakeAix({
   final archive = Archive();
 
   if (includeSourceJson) {
-    final meta = utf8.encode(jsonEncode({
-      'id': id,
-      'name': name,
-      'version': 1,
-      'language': language,
-      if (url != null) 'url': url,
-    }));
+    final meta = utf8.encode(
+      jsonEncode({
+        'id': id,
+        'name': name,
+        'version': 1,
+        'language': language,
+        if (url != null) 'url': url,
+      }),
+    );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
   }
 
@@ -89,9 +91,11 @@ void main() {
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
     final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
-    final settings = utf8.encode(jsonEncode([
-      {'type': 'toggle', 'key': 'nsfw'},
-    ]));
+    final settings = utf8.encode(
+      jsonEncode([
+        {'type': 'toggle', 'key': 'nsfw'},
+      ]),
+    );
     archive.addFile(ArchiveFile('Payload/settings.json', settings.length, settings));
 
     final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
@@ -102,14 +106,16 @@ void main() {
 
   test('parses nested info format (info.id + info.languages[0])', () {
     final archive = Archive();
-    final meta = utf8.encode(jsonEncode({
-      'info': {
-        'id': 'en.nested',
-        'name': 'Nested Source',
-        'languages': ['en'],
-        'url': 'https://nested.com',
-      },
-    }));
+    final meta = utf8.encode(
+      jsonEncode({
+        'info': {
+          'id': 'en.nested',
+          'name': 'Nested Source',
+          'languages': ['en'],
+          'url': 'https://nested.com',
+        },
+      }),
+    );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
     final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.nested.wasm', wasm.length, wasm));

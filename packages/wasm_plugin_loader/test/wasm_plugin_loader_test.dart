@@ -12,13 +12,15 @@ const _wasmSkip = 'Requires web platform (dart:js_interop + browser WebAssembly 
 
 Uint8List _buildFakeAix(String id) {
   final archive = Archive();
-  final meta = utf8.encode(jsonEncode({
-    'id': id,
-    'name': 'Test $id',
-    'version': 1,
-    'language': 'en',
-    'url': 'https://example.com',
-  }));
+  final meta = utf8.encode(
+    jsonEncode({
+      'id': id,
+      'name': 'Test $id',
+      'version': 1,
+      'language': 'en',
+      'url': 'https://example.com',
+    }),
+  );
   archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
   final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
   archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));

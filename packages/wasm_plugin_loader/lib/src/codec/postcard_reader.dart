@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class PostcardReader {
-  PostcardReader(Uint8List bytes)
-      : _bytes = bytes,
-        _pos = 0;
+  PostcardReader(Uint8List bytes) : _bytes = bytes, _pos = 0;
 
   final Uint8List _bytes;
   int _pos;

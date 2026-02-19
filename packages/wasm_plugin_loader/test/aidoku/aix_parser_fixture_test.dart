@@ -8,6 +8,7 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
+
 void main() {
   final fixture = File('test/aidoku/fixtures/multi.mangadex-v12.aix');
 

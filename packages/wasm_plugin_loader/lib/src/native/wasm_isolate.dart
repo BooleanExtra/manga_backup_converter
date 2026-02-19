@@ -164,37 +164,39 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     double timeout,
   ) {
     // 1. Send the request to the main isolate (non-blocking).
-    init.asyncPort.send(WasmHttpMsg(
-      url: url,
-      method: method,
-      headers: headers,
-      timeout: timeout,
-      semaphoreAddress: init.semaphoreAddress,
-      resultSlotAddress: init.resultSlotAddress,
-      statusSlotAddress: init.statusSlotAddress,
-      bufferPtrSlotAddress: init.bufferPtrSlotAddress,
-      bufferLenSlotAddress: init.bufferLenSlotAddress,
-      body: body != null ? List.from(body) : null,
-    ));
+    init.asyncPort.send(
+      WasmHttpMsg(
+        url: url,
+        method: method,
+        headers: headers,
+        timeout: timeout,
+        semaphoreAddress: init.semaphoreAddress,
+        resultSlotAddress: init.resultSlotAddress,
+        statusSlotAddress: init.statusSlotAddress,
+        bufferPtrSlotAddress: init.bufferPtrSlotAddress,
+        bufferLenSlotAddress: init.bufferLenSlotAddress,
+        body: body != null ? List.from(body) : null,
+      ),
+    );
     // 2. Block this thread until the main isolate signals.
     WasmSemaphore.fromAddress(init.semaphoreAddress).wait();
     // 3. Read result from shared native memory.
-    final result =
-        WasmSharedState.readResult(init.resultSlotAddress);
+    final result = WasmSharedState.readResult(init.resultSlotAddress);
     if (result != 0) {
       return (statusCode: -1, body: null);
     }
     final statusCode = WasmSharedState.readStatus(init.statusSlotAddress);
-    final respBody = WasmSharedState.readResponse(
-        init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
+    final respBody = WasmSharedState.readResponse(init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
     return (statusCode: statusCode, body: respBody);
   }
 
   void asyncSleep(int seconds) {
-    init.asyncPort.send(WasmSleepMsg(
-      seconds: seconds,
-      semaphoreAddress: init.semaphoreAddress,
-    ));
+    init.asyncPort.send(
+      WasmSleepMsg(
+        seconds: seconds,
+        semaphoreAddress: init.semaphoreAddress,
+      ),
+    );
     WasmSemaphore.fromAddress(init.semaphoreAddress).wait();
   }
 
@@ -248,10 +250,7 @@ void _processCmd(
     final queryRid = store.addBytes(cmd.queryBytes);
     final filtersRid = store.addBytes(cmd.filtersBytes);
     try {
-      final ptr = (runner.call(
-              '__wasm_get_search_manga_list',
-              [queryRid, cmd.page, filtersRid]) as num)
-          .toInt();
+      final ptr = (runner.call('__wasm_get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (_) {
       result = null;
@@ -267,8 +266,7 @@ void _processCmd(
     Uint8List? result;
     final keyRid = store.addBytes(cmd.keyBytes);
     try {
-      final ptr =
-          (runner.call('__wasm_get_manga_update', [keyRid]) as num).toInt();
+      final ptr = (runner.call('__wasm_get_manga_update', [keyRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (_) {
       result = null;
@@ -283,8 +281,7 @@ void _processCmd(
     Uint8List? result;
     final keyRid = store.addBytes(cmd.keyBytes);
     try {
-      final ptr =
-          (runner.call('__wasm_get_page_list', [keyRid]) as num).toInt();
+      final ptr = (runner.call('__wasm_get_page_list', [keyRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (_) {
       result = null;
@@ -298,8 +295,7 @@ void _processCmd(
   if (cmd is WasmMangaListCmd) {
     Uint8List? result;
     try {
-      final ptr =
-          (runner.call('__wasm_get_manga_list', [cmd.page]) as num).toInt();
+      final ptr = (runner.call('__wasm_get_manga_list', [cmd.page]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (_) {
       result = null;
@@ -339,19 +335,16 @@ Uint8List _readResult(WasmRunner runner, int ptr) {
 
 class _LazyRunner implements WasmRunner {
   WasmRunner? delegate;
-  WasmRunner get _r =>
-      delegate ?? (throw StateError('WasmRunner not yet initialized'));
+  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
 
   @override
   dynamic call(String name, List<Object?> args) => _r.call(name, args);
 
   @override
-  Uint8List readMemory(int offset, int length) =>
-      _r.readMemory(offset, length);
+  Uint8List readMemory(int offset, int length) => _r.readMemory(offset, length);
 
   @override
-  void writeMemory(int offset, Uint8List bytes) =>
-      _r.writeMemory(offset, bytes);
+  void writeMemory(int offset, Uint8List bytes) => _r.writeMemory(offset, bytes);
 
   @override
   int get memorySize => _r.memorySize;

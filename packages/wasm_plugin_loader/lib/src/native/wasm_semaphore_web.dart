@@ -49,8 +49,7 @@ class WasmSemaphore {
   }
 
   /// Not applicable on web — use [fromBuffer].
-  static WasmSemaphore fromAddress(int address) =>
-      throw UnsupportedError('Use WasmSemaphore.fromBuffer on web');
+  static WasmSemaphore fromAddress(int address) => throw UnsupportedError('Use WasmSemaphore.fromBuffer on web');
 
   /// Block the calling Worker thread until [signal] is called.
   /// Throws on the main thread (Atomics.wait is disallowed there).

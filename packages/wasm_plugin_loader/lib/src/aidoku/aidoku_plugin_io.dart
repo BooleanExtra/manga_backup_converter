@@ -26,10 +26,10 @@ class AidokuPlugin {
     required WasmSemaphore semaphore,
     required WasmSharedState sharedState,
     required this.sourceInfo,
-  })  : _wasmCmdPort = wasmCmdPort,
-        _asyncPort = asyncPort,
-        _semaphore = semaphore,
-        _sharedState = sharedState;
+  }) : _wasmCmdPort = wasmCmdPort,
+       _asyncPort = asyncPort,
+       _semaphore = semaphore,
+       _sharedState = sharedState;
 
   final SendPort _wasmCmdPort;
   final ReceivePort _asyncPort;
@@ -97,18 +97,13 @@ class AidokuPlugin {
   Future<void> _handleHttpMsg(WasmHttpMsg msg) async {
     try {
       final uri = Uri.parse(msg.url);
-      final methodStr =
-          msg.method < _httpMethodNames.length
-              ? _httpMethodNames[msg.method]
-              : 'GET';
+      final methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
       final request = http.Request(methodStr, uri);
       request.headers.addAll(msg.headers);
       if (msg.body != null) {
         request.bodyBytes = Uint8List.fromList(msg.body!);
       }
-      final response = await _httpClient
-          .send(request)
-          .timeout(Duration(seconds: msg.timeout.toInt()));
+      final response = await _httpClient.send(request).timeout(Duration(seconds: msg.timeout.toInt()));
       final body = await response.stream.toBytes();
       _sharedState.writeResponse(statusCode: response.statusCode, body: body);
     } catch (_) {
@@ -128,12 +123,14 @@ class AidokuPlugin {
     List<FilterValue> filters = const [],
   }) async {
     final port = ReceivePort();
-    _wasmCmdPort.send(WasmSearchCmd(
-      queryBytes: Uint8List.fromList(utf8.encode(query)),
-      page: page,
-      filtersBytes: encodeFilters(filters),
-      replyPort: port.sendPort,
-    ));
+    _wasmCmdPort.send(
+      WasmSearchCmd(
+        queryBytes: Uint8List.fromList(utf8.encode(query)),
+        page: page,
+        filtersBytes: encodeFilters(filters),
+        replyPort: port.sendPort,
+      ),
+    );
     final data = await port.first as Uint8List?;
     port.close();
     if (data == null) return const MangaPageResult(manga: [], hasNextPage: false);
@@ -147,10 +144,12 @@ class AidokuPlugin {
   /// Fetch updated manga details. Returns null on error or no data.
   Future<Manga?> getMangaDetails(String key) async {
     final port = ReceivePort();
-    _wasmCmdPort.send(WasmMangaDetailsCmd(
-      keyBytes: Uint8List.fromList(utf8.encode(key)),
-      replyPort: port.sendPort,
-    ));
+    _wasmCmdPort.send(
+      WasmMangaDetailsCmd(
+        keyBytes: Uint8List.fromList(utf8.encode(key)),
+        replyPort: port.sendPort,
+      ),
+    );
     final data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
@@ -164,10 +163,12 @@ class AidokuPlugin {
   /// Fetch page image URLs for a chapter.
   Future<List<Page>> getPageList(String key) async {
     final port = ReceivePort();
-    _wasmCmdPort.send(WasmPageListCmd(
-      keyBytes: Uint8List.fromList(utf8.encode(key)),
-      replyPort: port.sendPort,
-    ));
+    _wasmCmdPort.send(
+      WasmPageListCmd(
+        keyBytes: Uint8List.fromList(utf8.encode(key)),
+        replyPort: port.sendPort,
+      ),
+    );
     final data = await port.first as Uint8List?;
     port.close();
     if (data == null) return [];

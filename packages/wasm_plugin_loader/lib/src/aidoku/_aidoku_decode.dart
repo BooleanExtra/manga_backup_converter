@@ -16,8 +16,7 @@ import 'package:wasm_plugin_loader/src/models/page.dart';
 // ---------------------------------------------------------------------------
 
 /// Encode query as raw UTF-8 bytes (stored as a BytesResource RID).
-Uint8List encodeQuery(String query) =>
-    Uint8List.fromList(utf8.encode(query));
+Uint8List encodeQuery(String query) => Uint8List.fromList(utf8.encode(query));
 
 /// Encode filter list as postcard bytes.
 Uint8List encodeFilters(List<FilterValue> filters) {
@@ -57,8 +56,7 @@ Manga decodeManga(PostcardReader r) {
   final statusIdx = r.readVarInt();
   final status = MangaStatus.values[statusIdx.clamp(0, MangaStatus.values.length - 1)];
   final ratingIdx = r.readVarInt();
-  final rating =
-      ContentRating.values[ratingIdx.clamp(0, ContentRating.values.length - 1)];
+  final rating = ContentRating.values[ratingIdx.clamp(0, ContentRating.values.length - 1)];
   r.readVarInt(); // viewer enum (not in our model)
   final cover = r.readOption(r.readString);
   final tags = r.readList(r.readString);
@@ -94,9 +92,7 @@ Chapter decodeChapter(PostcardReader r) {
     title: title,
     chapterNumber: chapterNum,
     volumeNumber: volumeNum,
-    dateUploaded: dateSecs != null
-        ? DateTime.fromMillisecondsSinceEpoch((dateSecs * 1000).toInt())
-        : null,
+    dateUploaded: dateSecs != null ? DateTime.fromMillisecondsSinceEpoch((dateSecs * 1000).toInt()) : null,
     scanlators: scanlator != null ? [scanlator] : [],
     language: lang,
     url: url,
