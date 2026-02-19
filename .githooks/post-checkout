@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# .githooks/post-checkout
+#
+# Copies ignored and untracked project files from the main worktree into a
+# newly-created worktree so that local tooling and tests work immediately.
+#
+# Triggered automatically by `git worktree add`.
+#
+# One-time setup per clone:
+#   git config core.hooksPath .githooks
+
+set -uo pipefail
+
+# $1 == previous HEAD (all-zeros only on `git worktree add`, not branch switches)
+[[ "$1" == "0000000000000000000000000000000000000000" ]] || exit 0
+
+dest="$(pwd)"
+main_worktree="$(git worktree list | awk 'NR==1{print $1}')"
+
+# Nothing to do when the hook fires in the main worktree itself.
+[[ "$dest" != "$main_worktree" ]] || exit 0
+
+echo "post-checkout: syncing ignored/untracked files from $main_worktree ..."
+
+# copy_if_exists <relative-path>
+# Copies a file or directory from the main worktree to this worktree.
+# Silently skips when the source is absent or the destination already exists.
+copy_if_exists() {
+  local rel="$1"
+  local src="$main_worktree/$rel"
+  local dst="$dest/$rel"
+  [[ -e "$src" ]]  || return 0   # source missing → skip
+  [[ ! -e "$dst" ]] || return 0  # destination exists → skip (don't overwrite)
+  mkdir -p "$(dirname "$dst")"
+  cp -r "$src" "$dst"
+  echo "  $rel"
+}
+
+# ── Explicitly named ignored dev/test paths ───────────────────────────────────
+copy_if_exists ".claude/settings.local.json"
+copy_if_exists "packages/mangabackupconverter_cli/.input_files"
+copy_if_exists "packages/mangabackupconverter_cli/.output_files"
+
+# ── Any *.env* files (gitignored, any depth) ─────────────────────────────────
+while IFS= read -r file; do
+  copy_if_exists "$file"
+done < <(
+  git -C "$main_worktree" ls-files --others --ignored --exclude-standard \
+    | grep -vE '^(\.dart_tool|\.pub)' \
+    | grep -vE '/\.(dart_tool|pub)/' \
+    | grep -iE '\.env($|\.)' \
+    | grep -v '\.example$' \
+    || true
+)
+
+# ── Untracked (uncommitted) project source files ──────────────────────────────
+# Picks up work-in-progress files that haven't been committed yet.
+# Scoped to project directories; excludes generated build artefacts.
+# while IFS= read -r file; do
+#   copy_if_exists "$file"
+# done < <(
+#   git -C "$main_worktree" ls-files --others --exclude-standard \
+#     | grep -E '^(packages|lib|test|integration_test)/' \
+#     | grep -vE '(/\.dart_tool/|/build/|/\.pub[-/]|/\.packages)' \
+#     || true
+# )
+
+echo "post-checkout: done."

@@ -15,6 +15,12 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
 
+## One-Time Setup (per clone)
+
+```bash
+git config core.hooksPath .githooks   # Enable .githooks/post-checkout for worktree file sync
+```
+
 ## Common Commands
 
 ```bash
