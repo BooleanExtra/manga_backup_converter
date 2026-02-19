@@ -40,13 +40,13 @@ melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
 ```
 
-Build with flavor: `flutter build <platform> --dart-define FLAVOR=<local|dev|beta|staging|prod>`
+Build: `flutter build <platform>`
 
 ## Architecture
 
 **Riverpod App Architecture** — feature-first with layered structure per feature:
 
-```
+```txt
 lib/src/features/<feature>/
   ├── domain/         # Entities, value objects (freezed + modddels)
   ├── data/           # Repositories, DTOs (dart_mappable), data sources
@@ -71,6 +71,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 ## Code Generation
 
 This project relies heavily on code generation. Generated files use these suffixes:
+
 - `*.mapper.dart` (dart_mappable), `*.freezed.dart` (freezed)
 - `*.g.dart` (riverpod_generator, json_serializable), `*.pb.dart` / `*.pbenum.dart` (protobuf)
 
