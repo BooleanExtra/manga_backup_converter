@@ -11,7 +11,8 @@
 // Run: dart test packages/wasm_plugin_loader/test/wasm/aidoku_plugin_native_test.dart --reporter expanded
 import 'dart:io';
 
-import 'package:test/test.dart';
+import 'package:checks/checks.dart';
+import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 bool _hasWasmer() {
@@ -48,37 +49,37 @@ void main() {
       group('searchManga', () {
         test('returns a MangaPageResult without throwing', () async {
           final result = await plugin.searchManga('', 1);
-          expect(result, isA<MangaPageResult>());
+          check(result).isA<MangaPageResult>();
         });
 
         test('manga field is a List<Manga>', () async {
           final result = await plugin.searchManga('', 1);
-          expect(result.manga, isA<List<Manga>>());
+          check(result.manga).isA<List<Manga>>();
         });
 
         test('hasNextPage is bool', () async {
           final result = await plugin.searchManga('', 1);
-          expect(result.hasNextPage, isA<bool>());
+          check(result.hasNextPage).isA<bool>();
         });
       });
 
       group('getMangaDetails', () {
-        test('returns null or Manga without throwing', () async {
+        test('returns Manga without throwing', () async {
           final result = await plugin.getMangaDetails('some-manga-key');
-          expect(result, anyOf(isNull, isA<Manga>()));
+          check(result).isA<Manga>();
         });
       });
 
       group('getPageList', () {
         test('returns a List<Page> without throwing', () async {
           final result = await plugin.getPageList('some-chapter-key');
-          expect(result, isA<List<Page>>());
+          check(result).isA<List<Page>>();
         });
 
         test('each page has a non-negative index', () async {
           final pages = await plugin.getPageList('some-chapter-key');
           for (final page in pages) {
-            expect(page.index, greaterThanOrEqualTo(0));
+            check(page.index).isGreaterThan(-1);
           }
         });
       });
@@ -86,7 +87,7 @@ void main() {
       group('getMangaList', () {
         test('returns a MangaPageResult without throwing', () async {
           final result = await plugin.getMangaList(1);
-          expect(result, isA<MangaPageResult>());
+          check(result).isA<MangaPageResult>();
         });
       });
     },
