@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/language_info.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 import 'package:wasm_plugin_loader/src/models/source_info.dart';
 
@@ -11,12 +12,20 @@ class AixBundle {
     required this.wasmBytes,
     this.filters,
     this.settings,
+    this.languageInfos = const [],
+    this.languageSelectType,
   });
 
   final SourceInfo sourceInfo;
   final Uint8List wasmBytes;
   final List<FilterInfo>? filters;
   final List<SettingItem>? settings;
+
+  /// Parsed language entries from the manifest (preserves isDefault metadata).
+  final List<LanguageInfo> languageInfos;
+
+  /// From the manifest's `languageSelectType` field (e.g. "single", "multi").
+  final String? languageSelectType;
 }
 
 class AixParser {
@@ -32,14 +41,18 @@ class AixParser {
     // Support both flat format { "id": ..., "language": ... }
     // and nested format { "info": { "id": ..., "languages": [...] } }
     final infoJson = (sourceJson['info'] as Map<String, dynamic>?) ?? sourceJson;
-    final languagesRaw = infoJson['languages'];
-    final List<String> languages;
-    if (languagesRaw is List && languagesRaw.isNotEmpty) {
-      languages = languagesRaw.cast<String>();
-    } else {
+    final languageSelectType = sourceJson['languageSelectType'] as String?;
+
+    final rawLangs = infoJson['languages'] as List<dynamic>?;
+    List<LanguageInfo> languageInfos = rawLangs != null
+        ? rawLangs.map((e) => LanguageInfo.fromJson(e as Object)).toList()
+        : <LanguageInfo>[];
+    // Flat-format fallback: single 'language' string.
+    if (languageInfos.isEmpty) {
       final single = infoJson['language'] as String?;
-      languages = single != null ? [single] : const [];
+      if (single != null) languageInfos = [LanguageInfo.fromJson(single)];
     }
+    final List<String> languages = languageInfos.map((l) => l.effectiveValue).toList();
 
     // Listings may be at root level or inside the info block.
     final listingsRaw = (sourceJson['listings'] ?? infoJson['listings']) as List<dynamic>?;
@@ -89,6 +102,8 @@ class AixParser {
       wasmBytes: Uint8List.fromList(wasmFile.content as List<int>),
       filters: filters,
       settings: settings,
+      languageInfos: languageInfos,
+      languageSelectType: languageSelectType,
     );
   }
 }

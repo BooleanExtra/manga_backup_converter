@@ -6,6 +6,7 @@ import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/language_info.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 Uint8List buildFakeAix({
@@ -185,5 +186,73 @@ void main() {
     const ex = AixParseException('test error message');
     check(ex.toString()).contains('AixParseException');
     check(ex.toString()).contains('test error message');
+  });
+
+  test('parses languages as LanguageInfo objects with isDefault', () {
+    final archive = Archive();
+    final meta = utf8.encode(
+      jsonEncode({
+        'info': {
+          'id': 'multi.test',
+          'name': 'Multi Source',
+          'languages': [
+            {'code': 'en', 'value': 'english', 'default': true},
+            {'code': 'ja', 'value': 'japanese'},
+          ],
+        },
+      }),
+    );
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+
+    // languageInfos preserves full metadata
+    check(bundle.languageInfos).length.equals(2);
+    check(bundle.languageInfos[0]).isA<LanguageInfo>()
+      ..has((l) => l.code, 'code').equals('en')
+      ..has((l) => l.value, 'value').equals('english')
+      ..has((l) => l.isDefault, 'isDefault').equals(true);
+    check(bundle.languageInfos[1]).isA<LanguageInfo>()
+      ..has((l) => l.code, 'code').equals('ja')
+      ..has((l) => l.value, 'value').equals('japanese')
+      ..has((l) => l.isDefault, 'isDefault').isNull();
+
+    // sourceInfo.languages maps to effectiveValue
+    check(bundle.sourceInfo.languages).deepEquals(['english', 'japanese']);
+  });
+
+  test('parses languageSelectType from manifest', () {
+    final archive = Archive();
+    final meta = utf8.encode(
+      jsonEncode({
+        'info': {
+          'id': 'multi.test',
+          'name': 'Multi Source',
+          'languages': ['en', 'ja'],
+        },
+        'languageSelectType': 'single',
+      }),
+    );
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    check(bundle.languageSelectType).equals('single');
+  });
+
+  test('languageSelectType defaults to null when absent', () {
+    final bundle = AixParser.parse(buildFakeAix());
+    check(bundle.languageSelectType).isNull();
+  });
+
+  test('flat string languages populate languageInfos', () {
+    final bundle = AixParser.parse(buildFakeAix(language: 'en'));
+    check(bundle.languageInfos).length.equals(1);
+    check(bundle.languageInfos[0]).isA<LanguageInfo>()
+      ..has((l) => l.code, 'code').equals('en')
+      ..has((l) => l.effectiveValue, 'effectiveValue').equals('en');
   });
 }

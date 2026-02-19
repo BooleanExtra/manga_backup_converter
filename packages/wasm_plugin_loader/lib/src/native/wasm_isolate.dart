@@ -25,6 +25,7 @@ class WasmIsolateInit {
     required this.statusSlotAddress,
     required this.bufferPtrSlotAddress,
     required this.bufferLenSlotAddress,
+    required this.sourceId,
     this.initialDefaults = const {},
   });
 
@@ -42,6 +43,9 @@ class WasmIsolateInit {
   final int statusSlotAddress;
   final int bufferPtrSlotAddress;
   final int bufferLenSlotAddress;
+
+  /// Source ID — prepended to all defaults keys in the host imports.
+  final String sourceId;
 
   /// Pre-seeded defaults from settings.json (int | Uint8List values).
   final Map<String, Object> initialDefaults;
@@ -223,6 +227,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   final imports = buildAidokuHostImports(
     lazyRunner,
     store,
+    sourceId: init.sourceId,
     asyncHttp: asyncHttp,
     asyncSleep: asyncSleep,
   );
