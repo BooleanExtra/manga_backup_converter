@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 /// Resource types held in the host-side store.
@@ -22,8 +23,10 @@ class HttpRequestResource extends HostResource {
 }
 
 class HtmlDocumentResource extends HostResource {
-  HtmlDocumentResource(this.document);
+  HtmlDocumentResource(this.document, {this.baseUri = ''});
   final Object document; // html.Document or html.Element
+  /// The base URI provided when this document was parsed (html::parse).
+  final String baseUri;
 }
 
 class HtmlNodeListResource extends HostResource {
@@ -38,6 +41,19 @@ class HostStore {
 
   final _map = <int, HostResource>{};
   int _nextId = 1;
+
+  /// Per-source preference values managed by `defaults::set` / `defaults::get`.
+  final defaults = <String, int>{};
+
+  /// Partial results pushed by `env::_send_partial_result`.
+  late final _partialResultsController =
+      StreamController<Uint8List>.broadcast();
+
+  Stream<Uint8List> get partialResults => _partialResultsController.stream;
+
+  void addPartialResult(Uint8List data) {
+    if (!_partialResultsController.isClosed) _partialResultsController.add(data);
+  }
 
   /// Register a resource and return its Rid.
   int add(HostResource resource) {
@@ -62,4 +78,9 @@ class HostStore {
   }
 
   bool contains(int rid) => _map.containsKey(rid);
+
+  void dispose() {
+    _map.clear();
+    _partialResultsController.close();
+  }
 }

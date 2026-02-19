@@ -1,30 +1,53 @@
+// ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:html/dom.dart' as html_dom;
 import 'package:html/parser.dart' as html_parser;
-import 'package:http/http.dart' as http;
 
 import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_writer.dart';
 import 'package:wasm_plugin_loader/src/wasm/wasm_runner.dart';
 
+// ---------------------------------------------------------------------------
+// Async dispatch callbacks
+// ---------------------------------------------------------------------------
+
+/// Synchronously dispatch an HTTP request and return the response.
+/// On native: blocks the WASM isolate thread via a semaphore while the main
+/// isolate performs the async HTTP request.
+/// On web (stub): returns immediately with a -1 error result.
+typedef AsyncHttpDispatch = ({int statusCode, Uint8List? body}) Function(
+  String url,
+  int method,
+  Map<String, String> headers,
+  Uint8List? body,
+  double timeout,
+);
+
+/// Synchronously dispatch a sleep (blocks WASM isolate thread).
+typedef AsyncSleepDispatch = void Function(int seconds);
+
+// ---------------------------------------------------------------------------
+// Public factory
+// ---------------------------------------------------------------------------
+
 /// Builds the complete map of host import functions for an Aidoku WASM plugin.
 ///
-/// Keys: outer = module name, inner = function name.
-/// Values: Dart functions matching the WASM import signature.
-///
-/// ABI source: packages/wasm_plugin_loader/WASM_ABI.md
+/// [asyncHttp] and [asyncSleep] are optional async dispatch callbacks. When
+/// null (web stub or unit tests) HTTP calls return -1 and sleep is a no-op.
 Map<String, Map<String, Function>> buildAidokuHostImports(
   WasmRunner runner,
-  HostStore store,
-) {
+  HostStore store, {
+  AsyncHttpDispatch? asyncHttp,
+  AsyncSleepDispatch? asyncSleep,
+}) {
   return {
     'std': _stdImports(runner, store),
-    'env': _envImports(runner),
-    'net': _netImports(runner, store),
+    'env': _envImports(runner, store, asyncSleep),
+    'net': _netImports(runner, store, asyncHttp),
     'html': _htmlImports(runner, store),
-    'defaults': _defaultsImports(runner),
+    'defaults': _defaultsImports(runner, store),
   };
 }
 
@@ -41,6 +64,7 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
         if (r == null) return -1;
         return r.bytes.length;
       },
+      // ABI canonical name has a leading underscore.
       '_read_buffer': (int rid, int ptr, int len) {
         final r = store.get<BytesResource>(rid);
         if (r == null) return -1;
@@ -48,8 +72,17 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
         runner.writeMemory(ptr, bytes);
         return 0;
       },
+      // Alias for older plugins that omit the leading underscore.
+      'read_buffer': (int rid, int ptr, int len) {
+        final r = store.get<BytesResource>(rid);
+        if (r == null) return -1;
+        final bytes = r.bytes.length <= len ? r.bytes : r.bytes.sublist(0, len);
+        runner.writeMemory(ptr, bytes);
+        return 0;
+      },
+      // Returns UNIX timestamp as f64 seconds (NOT milliseconds).
       '_current_date': () {
-        return DateTime.now().millisecondsSinceEpoch.toDouble();
+        return DateTime.now().millisecondsSinceEpoch / 1000.0;
       },
       'utc_offset': () {
         return DateTime.now().timeZoneOffset.inSeconds;
@@ -64,33 +97,61 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
         int tzPtr,
         int tzLen,
       ) {
-        // Best-effort date parsing — return -1 on failure
         try {
           final dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
-          final parsed = DateTime.tryParse(dateStr);
-          return parsed?.millisecondsSinceEpoch.toDouble() ?? -1.0;
+          final parsed = _tryParseDate(dateStr);
+          return parsed != null
+              ? parsed.millisecondsSinceEpoch / 1000.0
+              : -1.0;
         } catch (_) {
           return -1.0;
         }
       },
     };
 
+/// Try to parse a date string using ISO 8601 and common fallback formats.
+DateTime? _tryParseDate(String s) {
+  final trimmed = s.trim();
+  if (trimmed.isEmpty) return null;
+  final iso = DateTime.tryParse(trimmed);
+  if (iso != null) return iso;
+  // Strip trailing timezone abbreviation / extra text and retry.
+  final cleaned = trimmed.replaceAll(RegExp(r'\s+\w+$'), '');
+  return DateTime.tryParse(cleaned);
+}
+
 // ---------------------------------------------------------------------------
 // env module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _envImports(WasmRunner runner) => {
+Map<String, Function> _envImports(
+  WasmRunner runner,
+  HostStore store,
+  AsyncSleepDispatch? asyncSleep,
+) =>
+    {
       '_print': (int ptr, int len) {
         if (len > 0) {
-          // ignore: avoid_print
           print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
         }
       },
       '_sleep': (int seconds) {
-        // Intentional no-op — blocking sleep is incompatible with async Dart.
+        if (asyncSleep != null) {
+          asyncSleep(seconds);
+        }
+        // else: no-op (blocking sleep not supported without async dispatch)
       },
       '_send_partial_result': (int ptr) {
-        // Partial results are not used for backup conversion; stub.
+        try {
+          // Layout: [u32 length LE][u32 capacity LE][<length> bytes postcard]
+          final lenBytes = runner.readMemory(ptr, 4);
+          final length =
+              ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
+          if (length > 0) {
+            final data = runner.readMemory(ptr + 8, length);
+            store.addPartialResult(data);
+          }
+        } catch (_) {}
       },
     };
 
@@ -98,120 +159,119 @@ Map<String, Function> _envImports(WasmRunner runner) => {
 // net module
 // ---------------------------------------------------------------------------
 
-/// HTTP method constants matching Aidoku's HttpMethod enum.
-const _httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'];
+Map<String, Function> _netImports(
+  WasmRunner runner,
+  HostStore store,
+  AsyncHttpDispatch? asyncHttp,
+) {
+  return {
+    'init': (int method) {
+      return store.add(HttpRequestResource(method: method));
+    },
+    'set_url': (int rid, int ptr, int len) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null) return -1;
+      req.url = utf8.decode(runner.readMemory(ptr, len));
+      return 0;
+    },
+    'set_header': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null) return -1;
+      final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      final val = utf8.decode(runner.readMemory(valPtr, valLen));
+      req.headers[key] = val;
+      return 0;
+    },
+    'set_body': (int rid, int ptr, int len) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null) return -1;
+      req.body = Uint8List.fromList(runner.readMemory(ptr, len));
+      return 0;
+    },
+    'set_timeout': (int rid, double timeout) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null) return -1;
+      req.timeout = timeout;
+      return 0;
+    },
+    'send': (int rid) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null || req.url == null) return -1;
+      if (asyncHttp == null) return -1;
 
-Map<String, Function> _netImports(WasmRunner runner, HostStore store) => {
-      'init': (int method) {
-        final req = HttpRequestResource(method: method);
-        return store.add(req);
-      },
-      'set_url': (int rid, int ptr, int len) {
+      final resp = asyncHttp(
+        req.url!,
+        req.method,
+        Map.from(req.headers),
+        req.body,
+        req.timeout,
+      );
+      req.statusCode = resp.statusCode;
+      req.responseBody = resp.body;
+      return rid;
+    },
+    'send_all': (int ridsPtr, int count) {
+      if (asyncHttp == null) return -1;
+      for (var i = 0; i < count; i++) {
+        final ridBytes = runner.readMemory(ridsPtr + i * 4, 4);
+        final rid =
+            ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
         final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        req.url = utf8.decode(runner.readMemory(ptr, len));
-        return 0;
-      },
-      'set_header': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-        final val = utf8.decode(runner.readMemory(valPtr, valLen));
-        req.headers[key] = val;
-        return 0;
-      },
-      'set_body': (int rid, int ptr, int len) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        req.body = Uint8List.fromList(runner.readMemory(ptr, len));
-        return 0;
-      },
-      'set_timeout': (int rid, double timeout) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        req.timeout = timeout;
-        return 0;
-      },
-      'send': (int rid) async {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        if (req.url == null) return -1;
-        return _executeRequest(req);
-      },
-      'send_all': (int ridsPtr, int count) async {
-        // Read array of i32 Rids from WASM memory
-        final futures = <Future<int>>[];
-        for (var i = 0; i < count; i++) {
-          final ridBytes = runner.readMemory(ridsPtr + i * 4, 4);
-          final rid = ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
-          final req = store.get<HttpRequestResource>(rid);
-          if (req != null) futures.add(_executeRequest(req));
-        }
-        await Future.wait(futures);
-        return 0;
-      },
-      'data_len': (int rid) {
-        final req = store.get<HttpRequestResource>(rid);
-        return req?.responseBody?.length ?? -1;
-      },
-      'read_data': (int rid, int ptr, int len) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req?.responseBody == null) return -1;
-        final body = req!.responseBody!;
-        final bytesToCopy = len < body.length ? len : body.length;
-        runner.writeMemory(ptr, body.sublist(0, bytesToCopy));
-        return bytesToCopy;
-      },
-      'get_status_code': (int rid) {
-        return store.get<HttpRequestResource>(rid)?.statusCode ?? -1;
-      },
-      'get_header': (int rid, int keyPtr, int keyLen) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req == null) return -1;
-        final key = utf8.decode(runner.readMemory(keyPtr, keyLen)).toLowerCase();
-        final val = req.responseHeaders[key];
-        if (val == null) return -1;
-        final encoded = _encodeString(val);
-        return store.addBytes(encoded);
-      },
-      'html': (int rid) {
-        final req = store.get<HttpRequestResource>(rid);
-        if (req?.responseBody == null) return -1;
-        final htmlStr = utf8.decode(req!.responseBody!);
-        final doc = html_parser.parse(htmlStr);
-        return store.add(HtmlDocumentResource(doc));
-      },
-      'get_image': (int rid) {
-        // Image data passthrough — return the response bytes as a resource
-        final req = store.get<HttpRequestResource>(rid);
-        if (req?.responseBody == null) return -1;
-        return store.addBytes(req!.responseBody!);
-      },
-      'set_rate_limit': (int permits, int period, int unit) {
-        // Rate limiting is managed by the app layer; stub here.
-      },
-    };
-
-Future<int> _executeRequest(HttpRequestResource req) async {
-  try {
-    final uri = Uri.parse(req.url!);
-    final methodName = req.method < _httpMethods.length ? _httpMethods[req.method] : 'GET';
-    final request = http.Request(methodName, uri);
-    request.headers.addAll(req.headers);
-    if (req.body != null) request.bodyBytes = req.body!;
-
-    final response = await http.Client()
-        .send(request)
-        .timeout(Duration(seconds: req.timeout.toInt()));
-    final bodyBytes = await response.stream.toBytes();
-
-    req.statusCode = response.statusCode;
-    req.responseBody = bodyBytes;
-    response.headers.forEach((k, v) => req.responseHeaders[k.toLowerCase()] = v);
-    return 0;
-  } catch (_) {
-    return -1;
-  }
+        if (req == null || req.url == null) continue;
+        final resp = asyncHttp(
+          req.url!,
+          req.method,
+          Map.from(req.headers),
+          req.body,
+          req.timeout,
+        );
+        req.statusCode = resp.statusCode;
+        req.responseBody = resp.body;
+      }
+      return 0;
+    },
+    'data_len': (int rid) {
+      return store.get<HttpRequestResource>(rid)?.responseBody?.length ?? -1;
+    },
+    'read_data': (int rid, int ptr, int len) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req?.responseBody == null) return -1;
+      final body = req!.responseBody!;
+      final n = len < body.length ? len : body.length;
+      runner.writeMemory(ptr, body.sublist(0, n));
+      return n;
+    },
+    'get_status_code': (int rid) {
+      return store.get<HttpRequestResource>(rid)?.statusCode ?? -1;
+    },
+    'get_header': (int rid, int keyPtr, int keyLen) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req == null) return -1;
+      final key =
+          utf8.decode(runner.readMemory(keyPtr, keyLen)).toLowerCase();
+      final val = req.responseHeaders[key];
+      if (val == null) return -1;
+      return store.addBytes(_encodeString(val));
+    },
+    'html': (int rid) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req?.responseBody == null) return -1;
+      final htmlStr = utf8.decode(req!.responseBody!);
+      final doc = html_parser.parse(htmlStr);
+      return store.add(HtmlDocumentResource(doc));
+    },
+    'get_image': (int rid) {
+      final req = store.get<HttpRequestResource>(rid);
+      if (req?.responseBody == null) return -1;
+      return store.addBytes(req!.responseBody!);
+    },
+    'net_set_rate_limit': (int permits, int period, int unit) {
+      // Rate limiting stored; enforcement happens at the application layer.
+    },
+    'set_rate_limit': (int permits, int period, int unit) {
+      // Legacy alias without 'net_' prefix.
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -219,33 +279,43 @@ Future<int> _executeRequest(HttpRequestResource req) async {
 // ---------------------------------------------------------------------------
 
 Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
-      'parse': (int contentRid, int baseUrlPtr, int baseUrlLen) {
-        // contentRid is a resource with HTML bytes, or -1 for direct WASM memory
-        Uint8List? htmlBytes;
-        if (store.contains(contentRid)) {
-          htmlBytes = store.get<BytesResource>(contentRid)?.bytes;
+      // ABI: html::parse(ptr: i32, len: i32 [, base_uri_ptr, base_uri_len]) -> rid
+      'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
+        try {
+          final htmlStr = utf8.decode(runner.readMemory(ptr, len));
+          final doc = html_parser.parse(htmlStr);
+          String baseUri = '';
+          if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
+            baseUri =
+                utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
+          }
+          return store.add(HtmlDocumentResource(doc, baseUri: baseUri));
+        } catch (_) {
+          return -1;
         }
-        if (htmlBytes == null) return -1;
-        final htmlStr = utf8.decode(htmlBytes);
-        final doc = html_parser.parse(htmlStr);
-        return store.add(HtmlDocumentResource(doc));
       },
-      'parse_fragment': (int contentRid, int baseUrlPtr, int baseUrlLen) {
-        final htmlBytes = store.get<BytesResource>(contentRid)?.bytes;
-        if (htmlBytes == null) return -1;
-        final htmlStr = utf8.decode(htmlBytes);
-        final nodes = html_parser.parseFragment(htmlStr);
-        final elements = nodes.children.whereType<html_dom.Element>().toList();
-        return store.add(HtmlNodeListResource(elements));
+      'parse_fragment': (int ptr, int len,
+          [int? baseUriPtr, int? baseUriLen]) {
+        try {
+          final htmlStr = utf8.decode(runner.readMemory(ptr, len));
+          final nodes = html_parser.parseFragment(htmlStr);
+          final elements =
+              nodes.children.whereType<html_dom.Element>().toList();
+          return store.add(HtmlNodeListResource(elements));
+        } catch (_) {
+          return -1;
+        }
       },
       'select': (int rid, int selectorPtr, int selectorLen) {
-        final selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+        final selector =
+            utf8.decode(runner.readMemory(selectorPtr, selectorLen));
         final elements = _querySelectorAll(store, rid, selector);
         if (elements == null) return -1;
         return store.add(HtmlNodeListResource(elements));
       },
       'select_first': (int rid, int selectorPtr, int selectorLen) {
-        final selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+        final selector =
+            utf8.decode(runner.readMemory(selectorPtr, selectorLen));
         final element = _querySelector(store, rid, selector);
         if (element == null) return -1;
         return store.add(HtmlDocumentResource(element));
@@ -271,7 +341,6 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
       'own_text': (int rid) {
         final el = _asElement(store, rid);
         if (el == null) return -1;
-        // Own text: text nodes that are direct children (not inside child elements)
         final ownText = el.nodes
             .whereType<html_dom.Text>()
             .map((n) => n.text)
@@ -312,8 +381,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
         return store.addBytes(_encodeString(el.className));
       },
       'base_uri': (int rid) {
-        // html package doesn't track base URI; return empty
-        return store.addBytes(_encodeString(''));
+        final r = store.get<HtmlDocumentResource>(rid);
+        return store.addBytes(_encodeString(r?.baseUri ?? ''));
       },
       'first': (int rid) {
         final list = store.get<HtmlNodeListResource>(rid);
@@ -327,7 +396,9 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
       },
       'html_get': (int rid, int index) {
         final list = store.get<HtmlNodeListResource>(rid);
-        if (list == null || index < 0 || index >= list.nodes.length) return -1;
+        if (list == null || index < 0 || index >= list.nodes.length) {
+          return -1;
+        }
         return store.add(HtmlDocumentResource(list.nodes[index]));
       },
       'size': (int rid) {
@@ -404,7 +475,9 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
       },
       'has_class': (int rid, int classPtr, int classLen) {
         final className = utf8.decode(runner.readMemory(classPtr, classLen));
-        return (_asElement(store, rid)?.classes.contains(className) ?? false) ? 1 : 0;
+        return (_asElement(store, rid)?.classes.contains(className) ?? false)
+            ? 1
+            : 0;
       },
       'add_class': (int rid, int classPtr, int classLen) {
         final className = utf8.decode(runner.readMemory(classPtr, classLen));
@@ -416,7 +489,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
         _asElement(store, rid)?.classes.remove(className);
         return 0;
       },
-      'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
+      'set_attr': (
+          int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
         final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
         final val = utf8.decode(runner.readMemory(valPtr, valLen));
         _asElement(store, rid)?.attributes[key] = val;
@@ -430,19 +504,16 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
       'prepend': (int rid, int ptr, int len) {
         final el = _asElement(store, rid);
         if (el == null) return -1;
-        final html = utf8.decode(runner.readMemory(ptr, len));
-        el.innerHtml = html + el.innerHtml;
+        el.innerHtml = utf8.decode(runner.readMemory(ptr, len)) + el.innerHtml;
         return 0;
       },
       'append': (int rid, int ptr, int len) {
         final el = _asElement(store, rid);
         if (el == null) return -1;
-        final html = utf8.decode(runner.readMemory(ptr, len));
-        el.innerHtml = el.innerHtml + html;
+        el.innerHtml = el.innerHtml + utf8.decode(runner.readMemory(ptr, len));
         return 0;
       },
       'data': (int rid) {
-        // Script/comment data; return text content as fallback
         final el = _asElement(store, rid);
         if (el == null) return -1;
         return store.addBytes(_encodeString(el.text));
@@ -453,19 +524,21 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
 // defaults module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _defaultsImports(WasmRunner runner) => {
+Map<String, Function> _defaultsImports(WasmRunner runner, HostStore store) =>
+    {
       'get': (int keyPtr, int keyLen) {
-        // Return -1 for all preferences — plugin uses its built-in defaults.
-        return -1;
+        final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+        return store.defaults[key] ?? 0;
       },
       'set': (int keyPtr, int keyLen, int kind, int value) {
-        // Ignore preference writes during backup conversion.
+        final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+        store.defaults[key] = value;
         return 0;
       },
     };
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Internal helpers
 // ---------------------------------------------------------------------------
 
 html_dom.Element? _asElement(HostStore store, int rid) {
@@ -477,7 +550,8 @@ html_dom.Element? _asElement(HostStore store, int rid) {
   return null;
 }
 
-List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selector) {
+List<html_dom.Element>? _querySelectorAll(
+    HostStore store, int rid, String selector) {
   final r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
   final doc = r.document;
@@ -500,7 +574,4 @@ html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
 }
 
 /// Encode a Dart string as Postcard bytes (varint length + UTF-8).
-Uint8List _encodeString(String s) {
-  final w = PostcardWriter()..writeString(s);
-  return w.bytes;
-}
+Uint8List _encodeString(String s) => (PostcardWriter()..writeString(s)).bytes;
