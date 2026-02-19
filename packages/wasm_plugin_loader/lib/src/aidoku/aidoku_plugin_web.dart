@@ -143,14 +143,13 @@ class AidokuPlugin {
     }
   }
 
-  /// Browse manga listing (page is 1-based, listingIndex selects the source's listing).
-  Future<MangaPageResult> getMangaList(int page, {int listingIndex = 0}) async {
+  /// Browse manga listing (page is 1-based, listing selects the source's listing).
+  Future<MangaPageResult> getMangaList(int page, {SourceListing? listing}) async {
     Uint8List? data;
 
     // Call get_manga_list with the Listing descriptor RID from the manifest.
-    if (listingIndex < sourceInfo.listings.length) {
-      final sl = sourceInfo.listings[listingIndex];
-      final listingRid = _store.addBytes(encodeListing(AidokuListing(id: sl.id, name: sl.name, kind: sl.kind)));
+    if (listing != null) {
+      final listingRid = _store.addBytes(encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)));
       try {
         final ptr = _callInt('get_manga_list', [listingRid, page]);
         if (ptr > 0) data = _readResult(ptr);

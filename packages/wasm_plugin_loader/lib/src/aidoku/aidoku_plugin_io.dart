@@ -230,13 +230,11 @@ class AidokuPlugin {
     }
   }
 
-  /// Browse manga listing (page is 1-based, listingIndex selects the source's listing).
-  Future<MangaPageResult> getMangaList(int page, {int listingIndex = 0}) async {
-    Uint8List? listingBytes;
-    if (listingIndex < sourceInfo.listings.length) {
-      final sl = sourceInfo.listings[listingIndex];
-      listingBytes = encodeListing(AidokuListing(id: sl.id, name: sl.name, kind: sl.kind));
-    }
+  /// Browse manga listing (page is 1-based, listing selects the source's listing).
+  Future<MangaPageResult> getMangaList(int page, {SourceListing? listing}) async {
+    final listingBytes = listing != null
+        ? encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind))
+        : null;
     final port = ReceivePort();
     _wasmCmdPort.send(WasmMangaListCmd(listingBytes: listingBytes, page: page, replyPort: port.sendPort));
     final data = await port.first as Uint8List?;
