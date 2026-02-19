@@ -1,4 +1,4 @@
-import 'source_entry.dart';
+import 'package:wasm_plugin_loader/src/source_list/source_entry.dart';
 
 class RemoteSourceList {
   const RemoteSourceList({
