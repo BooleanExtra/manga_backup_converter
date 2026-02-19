@@ -34,6 +34,7 @@ melos run dart_test:pkg          # Dart tests for a specific package
 # For dart test directly: use --reporter expanded (not -v, which is invalid)
 # Native WASM tests skip automatically if wasmer or test fixture is absent
 # WASM_ABI.md in wasm_plugin_loader documents the Aidoku ABI; cross-check against aidoku-rs source if behavior doesn't match
+# IMPORTANT: Compiled .aix plugins may use older aidoku-rs versions — always verify enum/struct layouts against integration tests with real plugins, not just aidoku-rs source
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
