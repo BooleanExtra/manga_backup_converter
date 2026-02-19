@@ -105,6 +105,100 @@ class WasmShutdownCmd {
   const WasmShutdownCmd();
 }
 
+// New optional-export commands --------------------------------------------
+
+class WasmAlternateCoversCmd {
+  const WasmAlternateCoversCmd({required this.mangaBytes, required this.replyPort});
+  final Uint8List mangaBytes;
+  final SendPort replyPort;
+}
+
+class WasmImageRequestCmd {
+  const WasmImageRequestCmd({
+    required this.urlBytes,
+    required this.contextBytes,
+    required this.replyPort,
+  });
+  final Uint8List urlBytes; // raw UTF-8 URL
+  final Uint8List contextBytes; // postcard Option<HashMap<String,String>>
+  final SendPort replyPort;
+}
+
+class WasmBaseUrlCmd {
+  const WasmBaseUrlCmd({required this.replyPort});
+  final SendPort replyPort;
+}
+
+class WasmPageDescriptionCmd {
+  const WasmPageDescriptionCmd({required this.pageBytes, required this.replyPort});
+  final Uint8List pageBytes; // postcard Page
+  final SendPort replyPort;
+}
+
+class WasmProcessPageImageCmd {
+  const WasmProcessPageImageCmd({
+    required this.imageBytes,
+    required this.contextBytes,
+    required this.replyPort,
+  });
+  final Uint8List imageBytes; // postcard Vec<u8>
+  final Uint8List contextBytes; // postcard Option<HashMap<String,String>>
+  final SendPort replyPort;
+}
+
+class WasmNotificationCmd {
+  const WasmNotificationCmd({required this.notifBytes, required this.replyPort});
+  final Uint8List notifBytes; // raw UTF-8
+  final SendPort replyPort;
+}
+
+class WasmDeepLinkCmd {
+  const WasmDeepLinkCmd({required this.urlBytes, required this.replyPort});
+  final Uint8List urlBytes; // raw UTF-8
+  final SendPort replyPort;
+}
+
+class WasmBasicLoginCmd {
+  const WasmBasicLoginCmd({
+    required this.keyBytes,
+    required this.usernameBytes,
+    required this.passwordBytes,
+    required this.replyPort,
+  });
+  final Uint8List keyBytes; // raw UTF-8
+  final Uint8List usernameBytes; // raw UTF-8
+  final Uint8List passwordBytes; // raw UTF-8
+  final SendPort replyPort;
+}
+
+class WasmWebLoginCmd {
+  const WasmWebLoginCmd({
+    required this.keyBytes,
+    required this.cookiesBytes,
+    required this.replyPort,
+  });
+  final Uint8List keyBytes; // raw UTF-8
+  final Uint8List cookiesBytes; // postcard HashMap<String,String>
+  final SendPort replyPort;
+}
+
+class WasmMangaMigrationCmd {
+  const WasmMangaMigrationCmd({required this.keyBytes, required this.replyPort});
+  final Uint8List keyBytes; // raw UTF-8 manga key
+  final SendPort replyPort;
+}
+
+class WasmChapterMigrationCmd {
+  const WasmChapterMigrationCmd({
+    required this.mangaKeyBytes,
+    required this.chapterKeyBytes,
+    required this.replyPort,
+  });
+  final Uint8List mangaKeyBytes; // raw UTF-8
+  final Uint8List chapterKeyBytes; // raw UTF-8
+  final SendPort replyPort;
+}
+
 // ---------------------------------------------------------------------------
 // Async messages from WASM isolate --> main isolate
 // ---------------------------------------------------------------------------
@@ -152,6 +246,13 @@ class WasmLogMsg {
   final String stackTrace;
 }
 
+/// A partial result pushed by `env::_send_partial_result` inside the WASM
+/// isolate — forwarded to the main isolate for streaming to callers.
+class WasmPartialResultMsg {
+  const WasmPartialResultMsg(this.data);
+  final Uint8List data;
+}
+
 // ---------------------------------------------------------------------------
 // Isolate entry point
 // ---------------------------------------------------------------------------
@@ -171,6 +272,9 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   init.handshakePort.send(cmdPort.sendPort);
 
   final store = HostStore();
+
+  // Forward partial results from the WASM isolate to the main isolate.
+  store.partialResults.listen((bytes) => init.asyncPort.send(WasmPartialResultMsg(bytes)));
 
   // Seed defaults from settings.json before WASM starts.
   store.defaults.addAll(init.initialDefaults);
@@ -370,6 +474,178 @@ void _processCmd(
     } catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: '${cmd.funcName}: $e', stackTrace: st.toString()));
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmAlternateCoversCmd) {
+    Uint8List? result;
+    final mangaRid = store.addBytes(cmd.mangaBytes);
+    try {
+      final ptr = (runner.call('get_alternate_covers', [mangaRid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'get_alternate_covers: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(mangaRid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmImageRequestCmd) {
+    Uint8List? result;
+    final urlRid = store.addBytes(cmd.urlBytes);
+    final contextRid = store.addBytes(cmd.contextBytes);
+    try {
+      final ptr = (runner.call('get_image_request', [urlRid, contextRid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'get_image_request: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(urlRid);
+      store.remove(contextRid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmBaseUrlCmd) {
+    Uint8List? result;
+    try {
+      final ptr = (runner.call('get_base_url', []) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'get_base_url: $e', stackTrace: st.toString()));
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmPageDescriptionCmd) {
+    Uint8List? result;
+    final pageRid = store.addBytes(cmd.pageBytes);
+    try {
+      final ptr = (runner.call('get_page_description', [pageRid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'get_page_description: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(pageRid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmProcessPageImageCmd) {
+    Uint8List? result;
+    final imageRid = store.addBytes(cmd.imageBytes);
+    final contextRid = store.addBytes(cmd.contextBytes);
+    try {
+      final ptr = (runner.call('process_page_image', [imageRid, contextRid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'process_page_image: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(imageRid);
+      store.remove(contextRid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmNotificationCmd) {
+    final rid = store.addBytes(cmd.notifBytes);
+    try {
+      runner.call('handle_notification', [rid]);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_notification: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(rid);
+    }
+    cmd.replyPort.send(null); // void return
+    return;
+  }
+
+  if (cmd is WasmDeepLinkCmd) {
+    Uint8List? result;
+    final rid = store.addBytes(cmd.urlBytes);
+    try {
+      final ptr = (runner.call('handle_deep_link', [rid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_deep_link: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(rid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmBasicLoginCmd) {
+    final keyRid = store.addBytes(cmd.keyBytes);
+    final userRid = store.addBytes(cmd.usernameBytes);
+    final passRid = store.addBytes(cmd.passwordBytes);
+    bool success = false;
+    try {
+      final result = (runner.call('handle_basic_login', [keyRid, userRid, passRid]) as num).toInt();
+      success = result >= 0;
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_basic_login: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(keyRid);
+      store.remove(userRid);
+      store.remove(passRid);
+    }
+    cmd.replyPort.send(success);
+    return;
+  }
+
+  if (cmd is WasmWebLoginCmd) {
+    final keyRid = store.addBytes(cmd.keyBytes);
+    final cookiesRid = store.addBytes(cmd.cookiesBytes);
+    bool success = false;
+    try {
+      final result = (runner.call('handle_web_login', [keyRid, cookiesRid]) as num).toInt();
+      success = result >= 0;
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_web_login: $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(keyRid);
+      store.remove(cookiesRid);
+    }
+    cmd.replyPort.send(success);
+    return;
+  }
+
+  if (cmd is WasmMangaMigrationCmd) {
+    Uint8List? result;
+    final keyRid = store.addBytes(cmd.keyBytes);
+    try {
+      final ptr = (runner.call('handle_key_migration', [keyRid, -1]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_key_migration (manga): $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(keyRid);
+    }
+    cmd.replyPort.send(result);
+    return;
+  }
+
+  if (cmd is WasmChapterMigrationCmd) {
+    Uint8List? result;
+    final mangaRid = store.addBytes(cmd.mangaKeyBytes);
+    final chapterRid = store.addBytes(cmd.chapterKeyBytes);
+    try {
+      final ptr = (runner.call('handle_key_migration', [mangaRid, chapterRid]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr);
+    } catch (e, st) {
+      logPort.send(WasmLogMsg(message: 'handle_key_migration (chapter): $e', stackTrace: st.toString()));
+    } finally {
+      store.remove(mangaRid);
+      store.remove(chapterRid);
     }
     cmd.replyPort.send(result);
     return;

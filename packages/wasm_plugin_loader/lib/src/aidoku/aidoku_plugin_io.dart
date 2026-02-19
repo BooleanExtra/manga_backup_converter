@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
@@ -41,6 +42,8 @@ class AidokuPlugin {
   final WasmSemaphore _semaphore;
   final WasmSharedState _sharedState;
 
+  final _partialResultsController = StreamController<Uint8List>.broadcast();
+
   final SourceInfo sourceInfo;
 
   /// Parsed settings from `settings.json`.
@@ -75,7 +78,7 @@ class AidokuPlugin {
     );
     // Mirror Swift Source.loadSettings() defaultLanguages selection.
     var defaultLanguages = bundle.languageInfos
-        .where((l) => l.isDefault == true)
+        .where((l) => l.isDefault ?? false)
         .map((l) => l.effectiveValue)
         .toList();
     if (defaultLanguages.isEmpty && bundle.languageInfos.isNotEmpty) {
@@ -134,6 +137,8 @@ class AidokuPlugin {
       } else if (msg is WasmLogMsg) {
         // ignore: avoid_print
         print('[wasm] ${msg.message}\n${msg.stackTrace}');
+      } else if (msg is WasmPartialResultMsg) {
+        plugin._partialResultsController.add(msg.data);
       }
     });
 
@@ -255,14 +260,168 @@ class AidokuPlugin {
   /// Raw postcard bytes from `get_settings`, or null if not supported.
   Future<Uint8List?> getSettings() => _rawGet('get_settings');
 
-  /// Raw postcard bytes from `get_home`, or null if not supported.
-  Future<Uint8List?> getHome() => _rawGet('get_home');
+  /// Decoded home layout from `get_home`, or null if not supported.
+  Future<HomeLayout?> getHome() async {
+    final bytes = await _rawGet('get_home');
+    if (bytes == null) return null;
+    return decodeHomeLayoutResult(bytes);
+  }
 
-  /// Partial results stream — pushed by `env::_send_partial_result`.
-  // Not plumbed through isolate boundary in this implementation;
-  // partial results during WASM execution are streamed inside the isolate.
-  // Expose a no-op stream here for API compatibility.
-  Stream<Uint8List> get partialResults => const Stream.empty();
+  /// Available source listings from `get_listings`.
+  Future<List<AidokuListing>> getListings() async {
+    final bytes = await _rawGet('get_listings');
+    if (bytes == null) return const [];
+    try {
+      return decodeListings(PostcardReader(bytes));
+    } on Object {
+      return const [];
+    }
+  }
+
+  /// Alternate cover URLs for a manga from `get_alternate_covers`.
+  Future<List<String>> getAlternateCovers(Manga manga) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmAlternateCoversCmd(mangaBytes: encodeManga(manga), replyPort: port.sendPort),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return const [];
+    return decodeStringVecResult(data);
+  }
+
+  /// Custom image request for a URL from `get_image_request`.
+  Future<ImageRequest?> getImageRequest(String url, {Map<String, String>? context}) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmImageRequestCmd(
+        urlBytes: encodeStringBytes(url),
+        contextBytes: encodeOptionalStringMap(context),
+        replyPort: port.sendPort,
+      ),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return null;
+    return decodeImageRequestResult(data);
+  }
+
+  /// Source base URL from `get_base_url`.
+  Future<String?> getBaseUrl() async {
+    final bytes = await _rawGet('get_base_url');
+    if (bytes == null) return null;
+    return decodeStringResult(bytes);
+  }
+
+  /// Page description string from `get_page_description`.
+  Future<String?> getPageDescription(Page page) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmPageDescriptionCmd(pageBytes: encodePage(page), replyPort: port.sendPort),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return null;
+    return decodeStringResult(data);
+  }
+
+  /// Process a page image (e.g. descramble) via `process_page_image`.
+  Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmProcessPageImageCmd(
+        imageBytes: encodeImageResponse(imageBytes),
+        contextBytes: encodeOptionalStringMap(context),
+        replyPort: port.sendPort,
+      ),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    return data;
+  }
+
+  /// Deliver a notification string to the plugin via `handle_notification`.
+  Future<void> handleNotification(String notification) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmNotificationCmd(notifBytes: encodeStringBytes(notification), replyPort: port.sendPort),
+    );
+    await port.first;
+    port.close();
+  }
+
+  /// Handle a deep link URL via `handle_deep_link`.
+  Future<DeepLinkResult?> handleDeepLink(String url) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(WasmDeepLinkCmd(urlBytes: encodeStringBytes(url), replyPort: port.sendPort));
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return null;
+    return decodeDeepLinkResultFromBytes(data);
+  }
+
+  /// Perform basic (username/password) login via `handle_basic_login`.
+  Future<bool> handleBasicLogin(String key, String username, String password) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmBasicLoginCmd(
+        keyBytes: encodeStringBytes(key),
+        usernameBytes: encodeStringBytes(username),
+        passwordBytes: encodeStringBytes(password),
+        replyPort: port.sendPort,
+      ),
+    );
+    final result = await port.first;
+    port.close();
+    return result is bool && result;
+  }
+
+  /// Perform web (cookie) login via `handle_web_login`.
+  Future<bool> handleWebLogin(String key, Map<String, String> cookies) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmWebLoginCmd(
+        keyBytes: encodeStringBytes(key),
+        cookiesBytes: encodeStringMap(cookies),
+        replyPort: port.sendPort,
+      ),
+    );
+    final result = await port.first;
+    port.close();
+    return result is bool && result;
+  }
+
+  /// Migrate a manga key via `handle_key_migration`.
+  Future<String?> handleMangaMigration(String key) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmMangaMigrationCmd(keyBytes: encodeStringBytes(key), replyPort: port.sendPort),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return null;
+    return decodeStringResult(data);
+  }
+
+  /// Migrate a chapter key via `handle_key_migration`.
+  Future<String?> handleChapterMigration(String mangaKey, String chapterKey) async {
+    final port = ReceivePort();
+    _wasmCmdPort.send(
+      WasmChapterMigrationCmd(
+        mangaKeyBytes: encodeStringBytes(mangaKey),
+        chapterKeyBytes: encodeStringBytes(chapterKey),
+        replyPort: port.sendPort,
+      ),
+    );
+    final data = await port.first as Uint8List?;
+    port.close();
+    if (data == null) return null;
+    return decodeStringResult(data);
+  }
+
+  /// Partial results stream — pushed by `env::_send_partial_result` during
+  /// `get_home` and other streaming exports.
+  Stream<Uint8List> get partialResults => _partialResultsController.stream;
 
   /// Shut down the WASM background isolate and free native resources.
   void dispose() {
@@ -270,6 +429,7 @@ class AidokuPlugin {
     _asyncPort.close();
     _semaphore.dispose();
     _sharedState.dispose();
+    _partialResultsController.close();
   }
 
   // ---------------------------------------------------------------------------

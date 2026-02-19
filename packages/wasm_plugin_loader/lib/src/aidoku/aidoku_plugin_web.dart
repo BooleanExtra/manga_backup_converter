@@ -5,8 +5,8 @@ import 'package:wasm_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:wasm_plugin_loader/src/aidoku/host_store.dart';
-import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
+import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
@@ -56,7 +56,7 @@ class AidokuPlugin {
     );
     // Mirror Swift Source.loadSettings() defaultLanguages selection.
     var defaultLanguages = bundle.languageInfos
-        .where((l) => l.isDefault == true)
+        .where((l) => l.isDefault ?? false)
         .map((l) => l.effectiveValue)
         .toList();
     if (defaultLanguages.isEmpty && bundle.languageInfos.isNotEmpty) {
@@ -153,7 +153,9 @@ class AidokuPlugin {
 
     // Call get_manga_list with the Listing descriptor RID from the manifest.
     if (listing != null) {
-      final listingRid = _store.addBytes(encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)));
+      final listingRid = _store.addBytes(
+        encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)),
+      );
       try {
         final ptr = _callInt('get_manga_list', [listingRid, page]);
         if (ptr > 0) data = _readResult(ptr);
@@ -193,8 +195,176 @@ class AidokuPlugin {
   /// Raw postcard bytes from `get_settings`, or null if not supported.
   Future<Uint8List?> getSettings() => _rawGet('get_settings');
 
-  /// Raw postcard bytes from `get_home`, or null if not supported.
-  Future<Uint8List?> getHome() => _rawGet('get_home');
+  /// Decoded home layout from `get_home`, or null if not supported.
+  Future<HomeLayout?> getHome() async {
+    final bytes = await _rawGet('get_home');
+    return bytes == null ? null : decodeHomeLayoutResult(bytes);
+  }
+
+  /// Available source listings from `get_listings`.
+  Future<List<AidokuListing>> getListings() async {
+    final bytes = await _rawGet('get_listings');
+    if (bytes == null) return const [];
+    try {
+      return decodeListings(PostcardReader(bytes));
+    } on Object {
+      return const [];
+    }
+  }
+
+  /// Alternate cover URLs for a manga from `get_alternate_covers`.
+  Future<List<String>> getAlternateCovers(Manga manga) async {
+    final mangaRid = _store.addBytes(encodeManga(manga));
+    try {
+      final ptr = _callInt('get_alternate_covers', [mangaRid]);
+      if (ptr <= 0) return const [];
+      return decodeStringVecResult(_readResult(ptr));
+    } on Object {
+      return const [];
+    } finally {
+      _store.remove(mangaRid);
+    }
+  }
+
+  /// Custom image request for a URL from `get_image_request`.
+  Future<ImageRequest?> getImageRequest(String url, {Map<String, String>? context}) async {
+    final urlRid = _store.addBytes(encodeStringBytes(url));
+    final contextRid = _store.addBytes(encodeOptionalStringMap(context));
+    try {
+      final ptr = _callInt('get_image_request', [urlRid, contextRid]);
+      if (ptr <= 0) return null;
+      return decodeImageRequestResult(_readResult(ptr));
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(urlRid);
+      _store.remove(contextRid);
+    }
+  }
+
+  /// Source base URL from `get_base_url`.
+  Future<String?> getBaseUrl() async {
+    final bytes = await _rawGet('get_base_url');
+    return bytes == null ? null : decodeStringResult(bytes);
+  }
+
+  /// Page description string from `get_page_description`.
+  Future<String?> getPageDescription(Page page) async {
+    final pageRid = _store.addBytes(encodePage(page));
+    try {
+      final ptr = _callInt('get_page_description', [pageRid]);
+      if (ptr <= 0) return null;
+      return decodeStringResult(_readResult(ptr));
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(pageRid);
+    }
+  }
+
+  /// Process a page image (e.g. descramble) via `process_page_image`.
+  Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
+    final imageRid = _store.addBytes(encodeImageResponse(imageBytes));
+    final contextRid = _store.addBytes(encodeOptionalStringMap(context));
+    try {
+      final ptr = _callInt('process_page_image', [imageRid, contextRid]);
+      if (ptr <= 0) return null;
+      return _readResult(ptr);
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(imageRid);
+      _store.remove(contextRid);
+    }
+  }
+
+  /// Deliver a notification string to the plugin via `handle_notification`.
+  Future<void> handleNotification(String notification) async {
+    final rid = _store.addBytes(encodeStringBytes(notification));
+    try {
+      _runner.call('handle_notification', [rid]);
+    } on Object {
+      // Not implemented or error — ignore.
+    } finally {
+      _store.remove(rid);
+    }
+  }
+
+  /// Handle a deep link URL via `handle_deep_link`.
+  Future<DeepLinkResult?> handleDeepLink(String url) async {
+    final rid = _store.addBytes(encodeStringBytes(url));
+    try {
+      final ptr = _callInt('handle_deep_link', [rid]);
+      if (ptr <= 0) return null;
+      return decodeDeepLinkResultFromBytes(_readResult(ptr));
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(rid);
+    }
+  }
+
+  /// Perform basic (username/password) login via `handle_basic_login`.
+  Future<bool> handleBasicLogin(String key, String username, String password) async {
+    final keyRid = _store.addBytes(encodeStringBytes(key));
+    final userRid = _store.addBytes(encodeStringBytes(username));
+    final passRid = _store.addBytes(encodeStringBytes(password));
+    try {
+      final result = _callInt('handle_basic_login', [keyRid, userRid, passRid]);
+      return result >= 0;
+    } on Object {
+      return false;
+    } finally {
+      _store.remove(keyRid);
+      _store.remove(userRid);
+      _store.remove(passRid);
+    }
+  }
+
+  /// Perform web (cookie) login via `handle_web_login`.
+  Future<bool> handleWebLogin(String key, Map<String, String> cookies) async {
+    final keyRid = _store.addBytes(encodeStringBytes(key));
+    final cookiesRid = _store.addBytes(encodeStringMap(cookies));
+    try {
+      final result = _callInt('handle_web_login', [keyRid, cookiesRid]);
+      return result >= 0;
+    } on Object {
+      return false;
+    } finally {
+      _store.remove(keyRid);
+      _store.remove(cookiesRid);
+    }
+  }
+
+  /// Migrate a manga key via `handle_key_migration`.
+  Future<String?> handleMangaMigration(String key) async {
+    final rid = _store.addBytes(encodeStringBytes(key));
+    try {
+      final ptr = _callInt('handle_key_migration', [rid, -1]);
+      if (ptr <= 0) return null;
+      return decodeStringResult(_readResult(ptr));
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(rid);
+    }
+  }
+
+  /// Migrate a chapter key via `handle_key_migration`.
+  Future<String?> handleChapterMigration(String mangaKey, String chapterKey) async {
+    final mangaRid = _store.addBytes(encodeStringBytes(mangaKey));
+    final chapterRid = _store.addBytes(encodeStringBytes(chapterKey));
+    try {
+      final ptr = _callInt('handle_key_migration', [mangaRid, chapterRid]);
+      if (ptr <= 0) return null;
+      return decodeStringResult(_readResult(ptr));
+    } on Object {
+      return null;
+    } finally {
+      _store.remove(mangaRid);
+      _store.remove(chapterRid);
+    }
+  }
 
   Stream<Uint8List> get partialResults => _store.partialResults;
 

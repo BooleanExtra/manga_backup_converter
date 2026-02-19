@@ -249,7 +249,7 @@ void main() {
   });
 
   test('flat string languages populate languageInfos', () {
-    final bundle = AixParser.parse(buildFakeAix(language: 'en'));
+    final bundle = AixParser.parse(buildFakeAix());
     check(bundle.languageInfos).length.equals(1);
     check(bundle.languageInfos[0]).isA<LanguageInfo>()
       ..has((l) => l.code, 'code').equals('en')
