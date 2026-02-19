@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:test/test.dart';
+import 'package:checks/checks.dart';
+import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/src/aidoku/aix_parser.dart';
 
 Uint8List buildFakeAix({
@@ -38,40 +39,34 @@ Uint8List buildFakeAix({
 void main() {
   test('extracts source info and wasm bytes', () {
     final bundle = AixParser.parse(buildFakeAix());
-    expect(bundle.sourceInfo.id, 'en.test');
-    expect(bundle.sourceInfo.name, 'TestSource');
-    expect(bundle.sourceInfo.language, 'en');
-    expect(bundle.sourceInfo.url, 'https://example.com');
-    expect(bundle.wasmBytes.length, greaterThan(4));
-    expect(bundle.wasmBytes[0], 0x00);
-    expect(bundle.wasmBytes[1], 0x61); // 'a'
-    expect(bundle.wasmBytes[2], 0x73); // 's'
-    expect(bundle.wasmBytes[3], 0x6D); // 'm'
+    check(bundle.sourceInfo.id).equals('en.test');
+    check(bundle.sourceInfo.name).equals('TestSource');
+    check(bundle.sourceInfo.language).equals('en');
+    check(bundle.sourceInfo.url).equals('https://example.com');
+    check(bundle.wasmBytes.length).isGreaterThan(4);
+    check(bundle.wasmBytes[0]).equals(0x00);
+    check(bundle.wasmBytes[1]).equals(0x61); // 'a'
+    check(bundle.wasmBytes[2]).equals(0x73); // 's'
+    check(bundle.wasmBytes[3]).equals(0x6D); // 'm'
   });
 
   test('handles missing optional url', () {
     final bundle = AixParser.parse(buildFakeAix(url: null));
-    expect(bundle.sourceInfo.url, isNull);
+    check(bundle.sourceInfo.url).isNull();
   });
 
   test('throws when source.json is missing', () {
-    expect(
-      () => AixParser.parse(buildFakeAix(includeSourceJson: false)),
-      throwsA(isA<AixParseException>()),
-    );
+    check(() => AixParser.parse(buildFakeAix(includeSourceJson: false))).throws<AixParseException>();
   });
 
   test('throws when no .wasm file is present', () {
-    expect(
-      () => AixParser.parse(buildFakeAix(includeWasm: false)),
-      throwsA(isA<AixParseException>()),
-    );
+    check(() => AixParser.parse(buildFakeAix(includeWasm: false))).throws<AixParseException>();
   });
 
   test('filtersJson and settingsJson are null when not present', () {
     final bundle = AixParser.parse(buildFakeAix());
-    expect(bundle.filtersJson, isNull);
-    expect(bundle.settingsJson, isNull);
+    check(bundle.filtersJson).isNull();
+    check(bundle.settingsJson).isNull();
   });
 
   test('parses filtersJson when present', () {
@@ -85,7 +80,60 @@ void main() {
     archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
 
     final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
-    expect(bundle.filtersJson, isNotNull);
-    expect(bundle.filtersJson, isEmpty);
+    check(bundle.filtersJson).isNotNull().isEmpty();
+  });
+
+  test('parses settingsJson when present', () {
+    final archive = Archive();
+    final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
+    final settings = utf8.encode(jsonEncode([
+      {'type': 'toggle', 'key': 'nsfw'},
+    ]));
+    archive.addFile(ArchiveFile('Payload/settings.json', settings.length, settings));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    check(bundle.settingsJson).isNotNull();
+    check(bundle.settingsJson!).length.equals(1);
+    check((bundle.settingsJson![0] as Map<String, dynamic>)['type']).equals('toggle');
+  });
+
+  test('parses nested info format (info.id + info.languages[0])', () {
+    final archive = Archive();
+    final meta = utf8.encode(jsonEncode({
+      'info': {
+        'id': 'en.nested',
+        'name': 'Nested Source',
+        'languages': ['en'],
+        'url': 'https://nested.com',
+      },
+    }));
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('en.nested.wasm', wasm.length, wasm));
+
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    check(bundle.sourceInfo.id).equals('en.nested');
+    check(bundle.sourceInfo.name).equals('Nested Source');
+    check(bundle.sourceInfo.language).equals('en');
+    check(bundle.sourceInfo.url).equals('https://nested.com');
+  });
+
+  test('throws when source.json contains invalid JSON', () {
+    final archive = Archive();
+    final badJson = utf8.encode('not valid json {{{');
+    archive.addFile(ArchiveFile('Payload/source.json', badJson.length, badJson));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
+
+    check(() => AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)))).throws<Object>();
+  });
+
+  test('AixParseException toString includes the message', () {
+    const ex = AixParseException('test error message');
+    check(ex.toString()).contains('AixParseException');
+    check(ex.toString()).contains('test error message');
   });
 }
