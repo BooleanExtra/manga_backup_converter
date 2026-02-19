@@ -36,58 +36,56 @@ Uint8List buildFakeAix({
 }
 
 void main() {
-  group('AixParser', () {
-    test('extracts source info and wasm bytes', () {
-      final bundle = AixParser.parse(buildFakeAix());
-      expect(bundle.sourceInfo.id, 'en.test');
-      expect(bundle.sourceInfo.name, 'TestSource');
-      expect(bundle.sourceInfo.language, 'en');
-      expect(bundle.sourceInfo.url, 'https://example.com');
-      expect(bundle.wasmBytes.length, greaterThan(4));
-      expect(bundle.wasmBytes[0], 0x00);
-      expect(bundle.wasmBytes[1], 0x61); // 'a'
-      expect(bundle.wasmBytes[2], 0x73); // 's'
-      expect(bundle.wasmBytes[3], 0x6D); // 'm'
-    });
+  test('extracts source info and wasm bytes', () {
+    final bundle = AixParser.parse(buildFakeAix());
+    expect(bundle.sourceInfo.id, 'en.test');
+    expect(bundle.sourceInfo.name, 'TestSource');
+    expect(bundle.sourceInfo.language, 'en');
+    expect(bundle.sourceInfo.url, 'https://example.com');
+    expect(bundle.wasmBytes.length, greaterThan(4));
+    expect(bundle.wasmBytes[0], 0x00);
+    expect(bundle.wasmBytes[1], 0x61); // 'a'
+    expect(bundle.wasmBytes[2], 0x73); // 's'
+    expect(bundle.wasmBytes[3], 0x6D); // 'm'
+  });
 
-    test('handles missing optional url', () {
-      final bundle = AixParser.parse(buildFakeAix(url: null));
-      expect(bundle.sourceInfo.url, isNull);
-    });
+  test('handles missing optional url', () {
+    final bundle = AixParser.parse(buildFakeAix(url: null));
+    expect(bundle.sourceInfo.url, isNull);
+  });
 
-    test('throws when source.json is missing', () {
-      expect(
-        () => AixParser.parse(buildFakeAix(includeSourceJson: false)),
-        throwsA(isA<AixParseException>()),
-      );
-    });
+  test('throws when source.json is missing', () {
+    expect(
+      () => AixParser.parse(buildFakeAix(includeSourceJson: false)),
+      throwsA(isA<AixParseException>()),
+    );
+  });
 
-    test('throws when no .wasm file is present', () {
-      expect(
-        () => AixParser.parse(buildFakeAix(includeWasm: false)),
-        throwsA(isA<AixParseException>()),
-      );
-    });
+  test('throws when no .wasm file is present', () {
+    expect(
+      () => AixParser.parse(buildFakeAix(includeWasm: false)),
+      throwsA(isA<AixParseException>()),
+    );
+  });
 
-    test('filtersJson and settingsJson are null when not present', () {
-      final bundle = AixParser.parse(buildFakeAix());
-      expect(bundle.filtersJson, isNull);
-      expect(bundle.settingsJson, isNull);
-    });
+  test('filtersJson and settingsJson are null when not present', () {
+    final bundle = AixParser.parse(buildFakeAix());
+    expect(bundle.filtersJson, isNull);
+    expect(bundle.settingsJson, isNull);
+  });
 
-    test('parses filtersJson when present', () {
-      final archive = Archive();
-      final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
-      archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-      final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
-      archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
-      // filters.json is a top-level JSON array (list of filter descriptor objects)
-      final filters = utf8.encode(jsonEncode(<Object>[]));
-      archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
+  test('parses filtersJson when present', () {
+    final archive = Archive();
+    final meta = utf8.encode(jsonEncode({'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}));
+    archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
+    final wasm = Uint8List.fromList([0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
+    // filters.json is a top-level JSON array (list of filter descriptor objects)
+    final filters = utf8.encode(jsonEncode(<Object>[]));
+    archive.addFile(ArchiveFile('Payload/filters.json', filters.length, filters));
 
-      final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
-      expect(bundle.filtersJson, isNotNull);
-      expect(bundle.filtersJson, isEmpty);
-    });
+    final bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
+    expect(bundle.filtersJson, isNotNull);
+    expect(bundle.filtersJson, isEmpty);
   });
 }

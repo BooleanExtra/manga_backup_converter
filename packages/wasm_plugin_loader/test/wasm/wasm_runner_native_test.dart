@@ -28,6 +28,11 @@ void main() {
 
   group(
     'WasmRunner native integration',
+    skip: !fixture.existsSync()
+        ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
+        : !_hasWasmer()
+        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
+        : null,
     () {
       test('loads .aix and returns source info', () async {
         final aixBytes = fixture.readAsBytesSync();
@@ -41,10 +46,5 @@ void main() {
         print('Loaded: ${plugin.sourceInfo.id} (${plugin.sourceInfo.name})');
       });
     },
-    skip: !fixture.existsSync()
-        ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
-        : !_hasWasmer()
-        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-        : null,
   );
 }

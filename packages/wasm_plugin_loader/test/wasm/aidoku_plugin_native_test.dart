@@ -31,6 +31,11 @@ void main() {
 
   group(
     'AidokuPlugin method calls',
+    skip: !fixture.existsSync()
+        ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
+        : !_hasWasmer()
+            ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
+            : null,
     () {
       late AidokuPlugin plugin;
 
@@ -41,7 +46,6 @@ void main() {
 
       tearDownAll(() => plugin.dispose());
 
-      // -------------------------------------------------------------------
       group('searchManga', () {
         test('returns a MangaPageResult without throwing', () async {
           final result = await plugin.searchManga('', 1);
@@ -59,7 +63,6 @@ void main() {
         });
       });
 
-      // -------------------------------------------------------------------
       group('getMangaDetails', () {
         test('returns null or Manga without throwing', () async {
           final result = await plugin.getMangaDetails('some-manga-key');
@@ -67,7 +70,6 @@ void main() {
         });
       });
 
-      // -------------------------------------------------------------------
       group('getPageList', () {
         test('returns a List<Page> without throwing', () async {
           final result = await plugin.getPageList('some-chapter-key');
@@ -82,7 +84,6 @@ void main() {
         });
       });
 
-      // -------------------------------------------------------------------
       group('getMangaList', () {
         test('returns a MangaPageResult without throwing', () async {
           final result = await plugin.getMangaList(1);
@@ -90,10 +91,5 @@ void main() {
         });
       });
     },
-    skip: !fixture.existsSync()
-        ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
-        : !_hasWasmer()
-            ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-            : null,
   );
 }
