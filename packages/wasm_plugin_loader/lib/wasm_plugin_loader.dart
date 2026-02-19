@@ -5,4 +5,7 @@ export 'src/models/filter.dart';
 export 'src/models/manga.dart';
 export 'src/models/page.dart';
 export 'src/models/source_info.dart';
+export 'src/source_list/source_entry.dart';
+export 'src/source_list/source_list.dart';
+export 'src/source_list/source_list_manager.dart';
 export 'src/wasm_plugin_loader.dart';
