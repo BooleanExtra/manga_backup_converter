@@ -48,6 +48,8 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
     'net': _netImports(runner, store, asyncHttp),
     'html': _htmlImports(runner, store),
     'defaults': _defaultsImports(runner, store),
+    'canvas': _canvasImports(),
+    'js': _jsImports(),
   };
 }
 
@@ -394,6 +396,14 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
         if (list == null || list.nodes.isEmpty) return -1;
         return store.add(HtmlDocumentResource(list.nodes.last));
       },
+      'get': (int rid, int index) {
+        final list = store.get<HtmlNodeListResource>(rid);
+        if (list == null || index < 0 || index >= list.nodes.length) {
+          return -1;
+        }
+        return store.add(HtmlDocumentResource(list.nodes[index]));
+      },
+      // Alias kept for any legacy WASM binaries compiled with the old name.
       'html_get': (int rid, int index) {
         final list = store.get<HtmlNodeListResource>(rid);
         if (list == null || index < 0 || index >= list.nodes.length) {
@@ -535,6 +545,95 @@ Map<String, Function> _defaultsImports(WasmRunner runner, HostStore store) =>
         store.defaults[key] = value;
         return 0;
       },
+    };
+
+// ---------------------------------------------------------------------------
+// canvas module (stub — canvas rendering not implemented)
+// ---------------------------------------------------------------------------
+
+// TODO: implement canvas rendering
+Map<String, Function> _canvasImports() => {
+      'new_context': (double width, double height) => -1,
+      'set_transform': (
+        int ctx,
+        double tx,
+        double ty,
+        double sx,
+        double sy,
+        double angle,
+      ) =>
+          -1,
+      'draw_image': (
+        int ctx,
+        int img,
+        double dx,
+        double dy,
+        double dw,
+        double dh,
+      ) =>
+          -1,
+      'copy_image': (
+        int ctx,
+        int img,
+        double sx,
+        double sy,
+        double sw,
+        double sh,
+        double dx,
+        double dy,
+        double dw,
+        double dh,
+      ) =>
+          -1,
+      'fill': (int ctx, int path, double r, double g, double b, double a) => -1,
+      'stroke': (int ctx, int path, int style) => -1,
+      'draw_text': (
+        int ctx,
+        int textPtr,
+        int textLen,
+        double size,
+        double x,
+        double y,
+        int font,
+        double r,
+        double g,
+        double b,
+        double a,
+      ) =>
+          -1,
+      'get_image': (int ctx) => -1,
+      'new_font': (int namePtr, int nameLen) => -1,
+      'system_font': (int weight) => -1,
+      'load_font': (int urlPtr, int urlLen) => -1,
+      'new_image': (int dataPtr, int dataLen) => -1,
+      'get_image_data': (int image) => -1,
+      'get_image_width': (int image) => 0.0,
+      'get_image_height': (int image) => 0.0,
+    };
+
+// ---------------------------------------------------------------------------
+// js module (stub — embedded JS execution not implemented)
+// ---------------------------------------------------------------------------
+
+Map<String, Function> _jsImports() => {
+      'context_create': () {
+        print('[aidoku] js module not implemented');
+        return -1;
+      },
+      'context_eval': (int ctx, int strPtr, int len) => -1,
+      'context_get': (int ctx, int strPtr, int len) => -1,
+      'webview_create': () => -1,
+      'webview_load': (int webview, int request) => -1,
+      'webview_load_html': (
+        int webview,
+        int htmlPtr,
+        int htmlLen,
+        int basePtr,
+        int baseLen,
+      ) =>
+          -1,
+      'webview_wait_for_load': (int webview) => -1,
+      'webview_eval': (int webview, int strPtr, int len) => -1,
     };
 
 // ---------------------------------------------------------------------------
