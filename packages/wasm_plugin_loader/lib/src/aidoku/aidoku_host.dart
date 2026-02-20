@@ -86,13 +86,33 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
     return 0;
   },
   // Returns UNIX timestamp as f64 seconds (NOT milliseconds).
-  '_current_date': () {
-    return DateTime.now().millisecondsSinceEpoch / 1000.0;
-  },
+  '_current_date': () => DateTime.now().millisecondsSinceEpoch / 1000.0,
+  // Alias without leading underscore (some plugins use this name).
+  'current_date': () => DateTime.now().millisecondsSinceEpoch / 1000.0,
   'utc_offset': () {
     return DateTime.now().timeZoneOffset.inSeconds;
   },
   '_parse_date':
+      (
+        int strPtr,
+        int strLen,
+        int fmtPtr,
+        int fmtLen,
+        int localePtr,
+        int localeLen,
+        int tzPtr,
+        int tzLen,
+      ) {
+        try {
+          final dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
+          final parsed = _tryParseDate(dateStr);
+          return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
+        } catch (_) {
+          return -1.0;
+        }
+      },
+  // Alias without leading underscore (used by newer compiled plugins).
+  'parse_date':
       (
         int strPtr,
         int strLen,
@@ -138,15 +158,37 @@ Map<String, Function> _envImports(
       print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
     }
   },
+  // Alias without leading underscore (used by newer compiled plugins).
+  'print': (int ptr, int len) {
+    if (len > 0) {
+      print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
+    }
+  },
   '_sleep': (int seconds) {
     if (asyncSleep != null) {
       asyncSleep(seconds);
     }
     // else: no-op (blocking sleep not supported without async dispatch)
   },
+  // Rust panic/abort — called when the WASM module panics.
+  // Log and return; the host will see a corrupt result and handle it gracefully.
+  'abort': () {
+    print('[aidoku] WASM abort called (plugin panic)');
+  },
   '_send_partial_result': (int ptr) {
     try {
       // Layout: [u32 length LE][u32 capacity LE][<length> bytes postcard]
+      final lenBytes = runner.readMemory(ptr, 4);
+      final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
+      if (length > 0) {
+        final data = runner.readMemory(ptr + 8, length);
+        store.addPartialResult(data);
+      }
+    } catch (_) {}
+  },
+  // Alias without leading underscore (used by newer compiled plugins).
+  'send_partial_result': (int ptr) {
+    try {
       final lenBytes = runner.readMemory(ptr, 4);
       final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
       if (length > 0) {
@@ -533,15 +575,17 @@ Map<String, Function> _defaultsImports(
     if (stored is Uint8List) return store.addBytes(stored);
     return 0;
   },
-  // kind: 0=int, 1=float, 2=string, 3=bool, 4=string-array
+  // Aidoku SDK DefaultValue kinds: 1=Bool, 2=Int, 3=Float, 4=String, 5=StringArray, 6=Null.
+  // For all non-null kinds, `value` is an RID pointing to postcard-encoded bytes.
   'set': (int keyPtr, int keyLen, int kind, int value) {
     final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
-    if (kind == 2) {
-      // value is an RID pointing to a BytesResource (the string bytes).
+    if (kind == 6 || value == 0) {
+      // DefaultValue::Null → clear the stored value.
+      store.defaults.remove(key);
+    } else {
+      // All other kinds: value is an RID with postcard-encoded bytes. Read and cache them.
       final res = store.get<BytesResource>(value);
       if (res != null) store.defaults[key] = Uint8List.fromList(res.bytes);
-    } else {
-      store.defaults[key] = value;
     }
     return 0;
   },

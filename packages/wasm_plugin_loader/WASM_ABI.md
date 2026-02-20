@@ -115,10 +115,19 @@ All functions take and return RIDs (i32). The HTML document is parsed by the hos
 
 ### Module: `"defaults"`
 
-| Name | Signature                                              | Dart behavior                         |
-|------|--------------------------------------------------------|---------------------------------------|
-| `get`| `(key_ptr: i32, len: i32) → i32`                      | Return 0 (None) — no persisted prefs |
-| `set`| `(key_ptr: i32, len: i32, kind: i32, val: i32) → i32` | No-op; return 0                       |
+| Name | Signature                                              | Dart behavior                                                     |
+|------|--------------------------------------------------------|-------------------------------------------------------------------|
+| `get`| `(key_ptr: i32, len: i32) → i32`                      | Look up `"$sourceId.$key"` in `HostStore.defaults`; return RID (>0) or 0 (None) |
+| `set`| `(key_ptr: i32, len: i32, kind: i32, val: i32) → i32` | Store postcard bytes at `"$sourceId.$key"`; remove if `kind=6` (Null) |
+
+**`DefaultValue` kind discriminants** (aidoku-rs `DefaultValue::as_byte()`):
+`Bool=1, Int=2, Float=3, String=4, StringArray=5, Null=6`
+For all non-null kinds, `val` is an RID pointing to postcard-encoded bytes (not a raw scalar).
+
+**Seeding defaults at load time** — use `WasmPluginLoader.load(aixBytes, defaults: {'key': value})`.
+Values can be `Uint8List` (stored as-is), `String` (UTF-8 encoded), `bool`, or `int`.
+For a JSON-parsed field (e.g. a login token read via `defaults_get_json::<T>`), the stored bytes
+must be postcard-encoded `String(json_text)` — e.g. for `"{}"`:  `[0x02, 0x7B, 0x7D]`.
 
 ---
 

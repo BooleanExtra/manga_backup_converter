@@ -171,6 +171,65 @@ class WasmRunner {
   }
 
   // ---------------------------------------------------------------------------
+  // Static utility — import enumeration (no instantiation)
+  // ---------------------------------------------------------------------------
+
+  /// Returns all imports declared by [wasmBytes] without instantiating the module.
+  ///
+  /// Each entry is a record:
+  /// - [module]: import module name (e.g. `'std'`, `'net'`)
+  /// - [name]: function name within that module
+  /// - [resultKind]: wasm_valkind of the first result type
+  ///   (0=i32, 1=i64, 2=f32, 3=f64, -1=void or non-function import)
+  ///
+  /// Safe to call with no import implementations — compiles but never instantiates.
+  static List<({String module, String name, int resultKind})> listImports(
+    Uint8List wasmBytes,
+  ) {
+    final lib = _openWasmer();
+    final bindings = WasmerBindings(lib);
+    final engine = bindings.engineNew();
+    final store = bindings.storeNew(engine);
+
+    final nativeBuf = calloc<ffi.Uint8>(wasmBytes.length);
+    for (var i = 0; i < wasmBytes.length; i++) {
+      (nativeBuf + i).value = wasmBytes[i];
+    }
+    final byteVec = calloc<WasmByteVec>();
+    bindings.byteVecNew(byteVec, wasmBytes.length, nativeBuf);
+    final module = bindings.moduleNew(store, byteVec);
+    bindings.byteVecDelete(byteVec);
+    calloc
+      ..free(byteVec)
+      ..free(nativeBuf);
+
+    if (module.address == 0) {
+      throw const WasmRuntimeException('wasm_module_new failed — invalid WASM binary');
+    }
+
+    final importTypeVec = calloc<WasmImporttypeVec>();
+    bindings.importtypeVecNewEmpty(importTypeVec);
+    bindings.moduleImports(module, importTypeVec);
+
+    final result = <({String module, String name, int resultKind})>[];
+    for (var i = 0; i < importTypeVec.ref.size; i++) {
+      final it = (importTypeVec.ref.data + i).value;
+      final mod = WasmerBindings.readByteVec(bindings.importtypeModule(it));
+      final nm = WasmerBindings.readByteVec(bindings.importtypeName(it));
+      final extType = bindings.importtypeType(it);
+      final fn = bindings.externtypeAsFunctypeConst(extType);
+      final rk = fn == ffi.nullptr ? -1 : bindings.functypeFirstResultKind(fn);
+      result.add((module: mod, name: nm, resultKind: rk));
+    }
+
+    bindings.importtypeVecDelete(importTypeVec);
+    calloc.free(importTypeVec);
+    bindings.moduleDelete(module);
+
+    return result;
+  }
+
+  // ---------------------------------------------------------------------------
   // Public interface
   // ---------------------------------------------------------------------------
 
