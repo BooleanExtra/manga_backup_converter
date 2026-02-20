@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/aidoku_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapter.dart';
@@ -12,12 +11,6 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_histor
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_source_manga.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
@@ -189,39 +182,6 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
       name: name == null ? null : '${name}_MergedWith_${otherBackup.name}',
       version: version ?? otherBackup.version ?? '0.6.10',
     );
-  }
-
-  @override
-  ConvertableBackup toBackup(BackupType type) {
-    // TODO: implement toBackup
-    return switch (type) {
-      BackupType.aidoku => this,
-      BackupType.paperback => (() {
-        final chapterProgressMarker =
-            <PaperbackBackupChapterProgressMarker>[];
-        final chapters = <PaperbackBackupChapter>[];
-        final List<PaperbackBackupLibraryManga> libraryManga =
-            library
-                ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
-                .toList() ??
-            <PaperbackBackupLibraryManga>[];
-        final List<PaperbackBackupMangaInfo> mangaInfo =
-            manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
-            <PaperbackBackupMangaInfo>[];
-        final sourceManga = <PaperbackBackupSourceManga>[];
-        return PaperbackBackup(
-          name: name,
-          chapterProgressMarker: chapterProgressMarker,
-          chapters: chapters,
-          libraryManga: libraryManga,
-          mangaInfo: mangaInfo,
-          sourceManga: sourceManga,
-        );
-      })(),
-      BackupType.tachi => throw const AidokuException('Aidoku backup cannot be converted to Tachi'),
-      BackupType.tachimanga => throw const AidokuException('Aidoku backup cannot be converted to TachiManga'),
-      BackupType.mangayomi => throw const AidokuException('Aidoku backup cannot be converted to Mangayomi'),
-    };
   }
 
   @override

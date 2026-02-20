@@ -5,10 +5,8 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
-import 'package:mangabackupconverter_cli/src/exceptions/paperback_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
@@ -90,18 +88,6 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
 
   @override
   List<PaperbackBackupMangaInfo> get mangaSearchEntries => mangaInfo ?? const <PaperbackBackupMangaInfo>[];
-
-  @override
-  ConvertableBackup toBackup(BackupType type) {
-    // TODO: implement toBackup
-    return switch (type) {
-      BackupType.paperback => this,
-      BackupType.aidoku => throw const PaperbackException('Aidoku backup format not supported yet'),
-      BackupType.mangayomi => throw const PaperbackException('Mangayomi backup format not supported yet'),
-      BackupType.tachi => throw const PaperbackException('Tachi backup format not supported yet'),
-      BackupType.tachimanga => throw const PaperbackException('TachiManga backup format not supported yet'),
-    };
-  }
 
   @override
   Future<Uint8List> toData() async {

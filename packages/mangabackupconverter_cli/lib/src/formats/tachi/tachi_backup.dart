@@ -116,17 +116,6 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     return const GZipEncoder().encodeBytes(backupBytes);
   }
 
-  @override
-  ConvertableBackup toBackup(BackupType type) {
-    // TODO: implement toBackup
-    return switch (type) {
-      BackupType.tachi => this,
-      BackupType.aidoku => throw const TachiException('Tachi backup format not supported yet'),
-      BackupType.paperback => throw const TachiException('Tachi backup format not supported yet'),
-      BackupType.tachimanga => throw const TachiException('TachiManga backup format not supported yet'),
-      BackupType.mangayomi => throw const TachiException('Mangayomi backup format not supported yet'),
-    };
-  }
 
   @override
   List<TachiBackupManga> get mangaSearchEntries => backupManga;

@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/tachimanga_exception.dart';
@@ -140,21 +139,13 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   @override
   List<TachimangaBackupManga> get mangaSearchEntries => db.mangaTable;
 
-  @override
-  ConvertableBackup toBackup(BackupType type) {
-    // TODO: implement toBackup
-    return switch (type) {
-      BackupType.tachimanga => this,
-      BackupType.tachi => TachiBackup(
-        backupCategories: db.categoryTable.map((TachimangaBackupCategory c) => c.toType(db)).toList(),
-        backupManga: db.mangaTable.map((TachimangaBackupManga c) => c.toType(db)).toList(),
-        backupSources: db.sourceTable.map((TachimangaBackupSource c) => c.toType(db)).toList(),
-        backupExtensionRepo: db.repoTable.map((TachimangaBackupRepo c) => c.toType(db)).toList(),
-      ),
-      BackupType.aidoku => throw const TachimangaException('Tachimanga backup cannot be converted to Aidoku'),
-      BackupType.paperback => throw const TachimangaException('Tachimanga backup cannot be converted to Paperback'),
-      BackupType.mangayomi => throw const TachimangaException('Tachimanga backup cannot be converted to Mangayomi'),
-    };
+  TachiBackup toTachiBackup() {
+    return TachiBackup(
+      backupCategories: db.categoryTable.map((TachimangaBackupCategory c) => c.toType(db)).toList(),
+      backupManga: db.mangaTable.map((TachimangaBackupManga c) => c.toType(db)).toList(),
+      backupSources: db.sourceTable.map((TachimangaBackupSource c) => c.toType(db)).toList(),
+      backupExtensionRepo: db.repoTable.map((TachimangaBackupRepo c) => c.toType(db)).toList(),
+    );
   }
 
   static const TachimangaBackup Function(Map<String, dynamic> map) fromMap = TachimangaBackupMapper.fromMap;

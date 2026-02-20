@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io' as io;
-import 'dart:typed_data';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
@@ -97,22 +96,22 @@ class ConvertCommand extends Command<void> {
       importedBackup.verbosePrint(verbose);
     }
 
-    final ConvertableBackup convertedBackup = importedBackup.toBackup(outputFormat);
-    if (verbose) {
-      print('============ Converted Backup Data ============ ');
-      convertedBackup.verbosePrint(verbose);
-    }
+    // final ConvertableBackup convertedBackup = importedBackup.toBackup(outputFormat);
+    // if (verbose) {
+    //   print('============ Converted Backup Data ============ ');
+    //   convertedBackup.verbosePrint(verbose);
+    // }
 
-    final outputFile = io.File(
-      '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
-    );
-    final Uint8List fileData = await convertedBackup.toData();
-    if (verbose) {
-      print('Converted Backup Size: ${fileData.length}');
-    }
-    if (outputFile.existsSync()) {
-      print('Output file already exists, overwriting...');
-    }
-    outputFile.writeAsBytesSync(fileData);
+    // final outputFile = io.File(
+    //   '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
+    // );
+    // final Uint8List fileData = await convertedBackup.toData();
+    // if (verbose) {
+    //   print('Converted Backup Size: ${fileData.length}');
+    // }
+    // if (outputFile.existsSync()) {
+    //   print('Output file already exists, overwriting...');
+    // }
+    // outputFile.writeAsBytesSync(fileData);
   }
 }

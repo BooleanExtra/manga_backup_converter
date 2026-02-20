@@ -1,6 +1,7 @@
 export 'src/aidoku/_aidoku_decode.dart';
 export 'src/aidoku/aidoku_plugin.dart';
 export 'src/aidoku/aix_parser.dart';
+export 'src/aidoku_plugin_memory_store.dart';
 export 'src/models/chapter.dart';
 export 'src/models/filter.dart';
 export 'src/models/language_info.dart';
@@ -10,4 +11,3 @@ export 'src/models/source_info.dart';
 export 'src/source_list/source_entry.dart';
 export 'src/source_list/source_list.dart';
 export 'src/source_list/source_list_manager.dart';
-export 'src/aidoku_plugin_memory_store.dart';

@@ -5,18 +5,10 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_category.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_extension_repo.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_manga.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_preference.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source_preferences.dart';
 import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
@@ -52,31 +44,6 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
 
   @override
   List<MangayomiBackupManga> get mangaSearchEntries => db.manga ?? const <MangayomiBackupManga>[];
-
-  @override
-  ConvertableBackup toBackup(BackupType type) {
-    // TODO: implement toBackup
-    return switch (type) {
-      BackupType.mangayomi => this,
-      BackupType.tachi => TachiBackup(
-        backupCategories: (db.categories ?? <MangayomiBackupCategory>[])
-            .map(
-              (MangayomiBackupCategory category) =>
-                  TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
-            )
-            .toList(),
-        backupManga: <TachiBackupManga>[],
-        backupBrokenSources: <TachiBackupSource>[],
-        backupSources: <TachiBackupSource>[],
-        backupExtensionRepo: <TachiBackupExtensionRepo>[],
-        backupPreferences: <TachiBackupPreference>[],
-        backupSourcePreferences: <TachiBackupSourcePreferences>[],
-      ),
-      BackupType.aidoku => throw const MangayomiException('Mangayomi backup cannot be converted to Aidoku'),
-      BackupType.paperback => throw const MangayomiException('Mangayomi backup cannot be converted to Paperback'),
-      BackupType.tachimanga => throw const MangayomiException('Mangayomi backup cannot be converted to Tachiyomi'),
-    };
-  }
 
   @override
   Future<Uint8List> toData() async {

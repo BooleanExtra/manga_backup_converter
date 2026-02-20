@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/extensions.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/migration_exception.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
@@ -26,7 +27,7 @@ class MigrationPipeline {
     final ConversionStrategy strategy = determineStrategy(source, target);
     return switch (strategy) {
       Skip() => sourceBackup,
-      DirectConversion() => sourceBackup.toBackup(target.backupType),
+      DirectConversion() => sourceBackup is TachimangaBackup && target is Tachiyomi ? sourceBackup.toTachiBackup() : sourceBackup,
       Migration() => _runMigration(sourceBackup, source, target),
     };
   }
