@@ -106,12 +106,16 @@ class MigrationPipeline {
       final loader = AidokuPluginMemoryStore();
       final plugins = <PluginSource>[];
       for (var i = 0; i < extensions.length; i++) {
-        final entry = extensions[i];
+        final SourceEntry entry = extensions[i];
         onProgress(i + 1, extensions.length, 'Loading plugin: ${entry.name}');
         try {
           final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
           if (response.statusCode != 200) {
-            onProgress(i + 1, extensions.length, 'Warning: failed to download ${entry.name}: HTTP ${response.statusCode}');
+            onProgress(
+              i + 1,
+              extensions.length,
+              'Warning: failed to download ${entry.name}: HTTP ${response.statusCode}',
+            );
             continue;
           }
           final AidokuPlugin plugin = await loader.loadAixBytes(Uint8List.fromList(response.bodyBytes));
