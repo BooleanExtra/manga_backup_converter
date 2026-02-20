@@ -18,9 +18,11 @@ Future<void> main() async {
   final mgr = SourceListManager(httpClient: client);
 
   print('Fetching source list...');
-  final RemoteSourceList? list = await mgr.fetchRemoteSourceList(kAidokuCommunitySourceListUrl);
-  if (list == null) {
-    stderr.writeln('Failed to fetch source list.');
+  late final RemoteSourceList list;
+  try {
+    list = await mgr.fetchRemoteSourceList(kAidokuCommunitySourceListUrl);
+  } on Object catch (e) {
+    stderr.writeln('Failed to fetch source list: $e');
     client.close();
     exit(1);
   }

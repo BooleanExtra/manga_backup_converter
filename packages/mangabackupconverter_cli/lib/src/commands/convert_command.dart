@@ -95,6 +95,11 @@ class ConvertCommand extends Command<void> {
       onSelectRepos: (ExtensionType targetType, List<ExtensionRepo> available) async => available,
       onSelectExtensions: (extensions) async => extensions,
       onConfirmMatches: (List<MangaMatchProposal> proposals) async {
+        for (final proposal in proposals) {
+          for (final PluginSearchFailure failure in proposal.failures) {
+            io.stderr.writeln('Warning: ${failure.pluginId} search failed: ${failure.error}');
+          }
+        }
         return proposals
             .map(
               (MangaMatchProposal p) => MangaMatchConfirmation(sourceManga: p.sourceManga, confirmedMatch: p.bestMatch),

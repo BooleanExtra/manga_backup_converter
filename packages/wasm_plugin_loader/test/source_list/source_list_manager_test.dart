@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:checks/checks.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:test/scaffolding.dart';
+import 'package:test/test.dart';
 import 'package:wasm_plugin_loader/src/source_list/source_entry.dart';
 import 'package:wasm_plugin_loader/src/source_list/source_list.dart';
 import 'package:wasm_plugin_loader/src/source_list/source_list_manager.dart';
@@ -91,10 +91,8 @@ void main() {
   group('SourceListManager.fetchRemoteSourceList', () {
     test('success — parses list name and sources', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
-      check(list).isNotNull();
-      if (list == null) throw Exception('list is null');
       check(list.url).equals('https://example.com/index.json');
       check(list.name).equals('Test List');
       check(list.sources).length.equals(2);
@@ -102,9 +100,8 @@ void main() {
 
     test('success — first source fields parsed correctly', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
-      if (list == null) throw Exception('list is null');
       final SourceEntry entry = list.sources[0];
       check(entry.id).equals('mangadex');
       check(entry.name).equals('MangaDex');
@@ -119,33 +116,45 @@ void main() {
 
     test('success — optional fields default when absent', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
-      if (list == null) throw Exception('list is null');
       final SourceEntry entry = list.sources[1]; // safe_source — no contentRating/baseURL/altNames
       check(entry.contentRating).equals(0);
       check(entry.baseUrl).isNull();
       check(entry.altNames).isEmpty();
     });
 
-    test('HTTP error status returns null', () async {
+    test('HTTP error status throws SourceListFetchException', () async {
       final mgr = SourceListManager(
         httpClient: _mockClient('Not Found', statusCode: 404),
       );
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
-      check(list).isNull();
+      try {
+        await mgr.fetchRemoteSourceList('https://example.com/index.json');
+        fail('Expected SourceListFetchException');
+      } on SourceListFetchException catch (e) {
+        check(e.statusCode).equals(404);
+        check(e.url).equals('https://example.com/index.json');
+      }
     });
 
-    test('malformed JSON returns null', () async {
+    test('malformed JSON throws FormatException', () async {
       final mgr = SourceListManager(httpClient: _mockClient('{invalid'));
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
-      check(list).isNull();
+      try {
+        await mgr.fetchRemoteSourceList('https://example.com/index.json');
+        fail('Expected FormatException');
+      } on FormatException {
+        // expected
+      }
     });
 
-    test('timeout returns null', () async {
+    test('timeout throws TimeoutException', () async {
       final mgr = SourceListManager(httpClient: _timeoutClient());
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
-      check(list).isNull();
+      try {
+        await mgr.fetchRemoteSourceList('https://example.com/index.json');
+        fail('Expected TimeoutException');
+      } on TimeoutException {
+        // expected
+      }
     }, timeout: const Timeout(Duration(seconds: 30)));
   });
 
@@ -158,11 +167,12 @@ void main() {
         ],
         httpClient: _mockClient(_kSampleJson),
       );
-      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
-      check(lists).length.equals(2);
+      final SourceListFetchResult result = await mgr.fetchAllSourceLists();
+      check(result.lists).length.equals(2);
+      check(result.failures).isEmpty();
     });
 
-    test('drops failing lists, returns successful ones', () async {
+    test('collects failures alongside successful lists', () async {
       var callCount = 0;
       final client = MockClient((_) async {
         callCount++;
@@ -176,24 +186,28 @@ void main() {
         ],
         httpClient: client,
       );
-      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
-      check(lists).length.equals(1);
-      check(lists[0].name).equals('Test List');
+      final SourceListFetchResult result = await mgr.fetchAllSourceLists();
+      check(result.lists).length.equals(1);
+      check(result.lists[0].name).equals('Test List');
+      check(result.failures).length.equals(1);
+      check(result.failures[0].url).equals('https://example.com/bad.json');
     });
 
-    test('returns empty list when no URLs configured', () async {
+    test('returns empty lists when no URLs configured', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
-      check(lists).isEmpty();
+      final SourceListFetchResult result = await mgr.fetchAllSourceLists();
+      check(result.lists).isEmpty();
+      check(result.failures).isEmpty();
     });
 
-    test('returns empty list when all URLs fail', () async {
+    test('returns failures when all URLs fail', () async {
       final mgr = SourceListManager(
         initialUrls: <String>['https://example.com/a.json'],
         httpClient: _mockClient('', statusCode: 500),
       );
-      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
-      check(lists).isEmpty();
+      final SourceListFetchResult result = await mgr.fetchAllSourceLists();
+      check(result.lists).isEmpty();
+      check(result.failures).length.equals(1);
     });
   });
 }

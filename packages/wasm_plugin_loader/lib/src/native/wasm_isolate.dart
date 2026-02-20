@@ -349,11 +349,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   lazyRunner.delegate = runner;
 
   // Initialize the source.
-  try {
-    runner.call('start', <Object?>[]);
-  } on Exception catch (_) {
-    // start should always exist (core export), but catch defensively.
-  }
+  runner.call('start', <Object?>[]);
 
   // Process commands until shutdown.
   await for (final Object? cmd in cmdPort) {
@@ -676,17 +672,26 @@ Uint8List _readResult(WasmRunner runner, int ptr) {
         final Uint8List msgBytes = runner.readMemory(ptr + 12, msgBufLen - 12);
         message = 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}';
       }
-    } on Exception catch (_) {}
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print('[aidoku] failed to extract error message: $e');
+    }
     try {
       runner.call('free_result', <Object?>[ptr]);
-    } on Exception catch (_) {}
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print('[aidoku] free_result failed after error result: $e');
+    }
     throw FormatException(message);
   }
   final int payloadLen = totalLen - 8;
   final Uint8List data = runner.readMemory(ptr + 8, payloadLen);
   try {
     runner.call('free_result', <Object?>[ptr]);
-  } on Exception catch (_) {}
+  } on Exception catch (e) {
+    // ignore: avoid_print
+    print('[aidoku] free_result failed: $e');
+  }
   return data;
 }
 

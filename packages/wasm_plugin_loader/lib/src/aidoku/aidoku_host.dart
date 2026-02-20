@@ -107,7 +107,8 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
-        } on Exception catch (_) {
+        } on Exception catch (e) {
+          print('[aidoku] _parse_date failed: $e');
           return -1.0;
         }
       },
@@ -127,7 +128,8 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
-        } on Exception catch (_) {
+        } on Exception catch (e) {
+          print('[aidoku] parse_date failed: $e');
           return -1.0;
         }
       },
@@ -184,7 +186,9 @@ Map<String, Function> _envImports(
         final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
-    } on Exception catch (_) {}
+    } on Exception catch (e) {
+      print('[aidoku] _send_partial_result failed: $e');
+    }
   },
   // Alias without leading underscore (used by newer compiled plugins).
   'send_partial_result': (int ptr) {
@@ -195,7 +199,9 @@ Map<String, Function> _envImports(
         final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
-    } on Exception catch (_) {}
+    } on Exception catch (e) {
+      print('[aidoku] send_partial_result failed: $e');
+    }
   },
 };
 
@@ -333,7 +339,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
         baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
       }
       return store.add(HtmlDocumentResource(doc, baseUri: baseUri));
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      print('[aidoku] html::parse failed: $e');
       return -1;
     }
   },
@@ -343,7 +350,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
       final html_dom.DocumentFragment nodes = html_parser.parseFragment(htmlStr);
       final List<html_dom.Element> elements = nodes.children.whereType<html_dom.Element>().toList();
       return store.add(HtmlNodeListResource(elements));
-    } on Exception catch (_) {
+    } on Exception catch (e) {
+      print('[aidoku] html::parse_fragment failed: $e');
       return -1;
     }
   },
@@ -704,7 +712,9 @@ List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selec
   try {
     if (doc is html_dom.Element) return doc.querySelectorAll(selector);
     if (doc is html_dom.Document) return doc.querySelectorAll(selector);
-  } on Exception catch (_) {}
+  } on Exception catch (e) {
+    print('[aidoku] querySelectorAll("$selector") failed: $e');
+  }
   return null;
 }
 
@@ -715,7 +725,9 @@ html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
   try {
     if (doc is html_dom.Element) return doc.querySelector(selector);
     if (doc is html_dom.Document) return doc.querySelector(selector);
-  } on Exception catch (_) {}
+  } on Exception catch (e) {
+    print('[aidoku] querySelector("$selector") failed: $e');
+  }
   return null;
 }
 

@@ -105,11 +105,7 @@ class AidokuPlugin {
     final WasmRunner runner = await WasmRunner.fromBytes(bundle.wasmBytes, imports: imports);
     lazyRunner.delegate = runner;
 
-    try {
-      runner.call('start', <Object?>[]);
-    } on Exception catch (_) {
-      // start should always exist (core export), but catch defensively.
-    }
+    runner.call('start', <Object?>[]);
 
     return AidokuPlugin._(runner, store, bundle.sourceInfo, settings, filterDefinitions);
   }
@@ -415,25 +411,27 @@ class AidokuPlugin {
     if (totalLen < 0) {
       try {
         _runner.call('free_result', <Object?>[ptr]);
-      } on Exception catch (_) {}
+      } on Exception catch (e) {
+        // ignore: avoid_print
+        print('[aidoku] free_result failed after error result: $e');
+      }
       throw const FormatException('AidokuError from WASM result buffer');
     }
     final int payloadLen = totalLen - 8;
     final Uint8List data = _runner.readMemory(ptr + 8, payloadLen);
     try {
       _runner.call('free_result', <Object?>[ptr]);
-    } on Exception catch (_) {}
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print('[aidoku] free_result failed: $e');
+    }
     return data;
   }
 
   Future<Uint8List?> _rawGet(String funcName) async {
-    try {
-      final int ptr = _callInt(funcName, <Object?>[]);
-      if (ptr <= 0) return null;
-      return _readResult(ptr);
-    } on Object {
-      return null;
-    }
+    final int ptr = _callInt(funcName, <Object?>[]);
+    if (ptr <= 0) return null;
+    return _readResult(ptr);
   }
 }
 

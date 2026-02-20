@@ -32,28 +32,76 @@ class SourceListManager {
   void removeSourceList(String url) => _urls.remove(url);
 
   /// Fetches and parses a single source list from [url].
-  /// Returns `null` on any network or parse error.
-  Future<RemoteSourceList?> fetchRemoteSourceList(String url) async {
-    try {
-      final Uri uri = Uri.parse(url);
-      final http.Response response = await _client.get(uri).timeout(_kTimeout);
-      if (response.statusCode != 200) return null;
-
-      final json = jsonDecode(response.body) as Map<String, dynamic>;
-      final String name = json['name'] as String? ?? '';
-      final List<dynamic> rawSources = json['sources'] as List<dynamic>? ?? const <dynamic>[];
-      final List<SourceEntry> sources = rawSources.map((e) => SourceEntry.fromJson(e as Map<String, dynamic>)).toList();
-
-      return RemoteSourceList(url: url, name: name, sources: sources);
-    } on Exception catch (_) {
-      return null;
+  ///
+  /// Throws on network or parse errors. Returns a non-200 status as a
+  /// [SourceListFetchException].
+  Future<RemoteSourceList> fetchRemoteSourceList(String url) async {
+    final Uri uri = Uri.parse(url);
+    final http.Response response = await _client.get(uri).timeout(_kTimeout);
+    if (response.statusCode != 200) {
+      throw SourceListFetchException(url: url, statusCode: response.statusCode);
     }
+
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final String name = json['name'] as String? ?? '';
+    final List<dynamic> rawSources = json['sources'] as List<dynamic>? ?? const <dynamic>[];
+    final List<SourceEntry> sources = rawSources.map((e) => SourceEntry.fromJson(e as Map<String, dynamic>)).toList();
+
+    return RemoteSourceList(url: url, name: name, sources: sources);
   }
 
   /// Fetches all configured source lists concurrently.
-  /// Failed lists are silently dropped.
-  Future<List<RemoteSourceList>> fetchAllSourceLists() async {
-    final List<RemoteSourceList?> results = await Future.wait(_urls.map(fetchRemoteSourceList));
-    return results.whereType<RemoteSourceList>().toList();
+  ///
+  /// Returns a [SourceListFetchResult] with both successful lists and
+  /// per-URL failures.
+  Future<SourceListFetchResult> fetchAllSourceLists() async {
+    final lists = <RemoteSourceList>[];
+    final failures = <SourceListFetchFailure>[];
+
+    final List<RemoteSourceList?> results = await Future.wait(
+      _urls.map((url) async {
+        try {
+          return await fetchRemoteSourceList(url);
+        } on Object catch (e) {
+          failures.add(SourceListFetchFailure(url: url, error: e));
+          return null;
+        }
+      }),
+    );
+
+    lists.addAll(results.whereType<RemoteSourceList>());
+    return SourceListFetchResult(lists: lists, failures: failures);
   }
+}
+
+/// Result of [SourceListManager.fetchAllSourceLists], containing both
+/// successful fetches and per-URL failures.
+class SourceListFetchResult {
+  const SourceListFetchResult({required this.lists, required this.failures});
+
+  final List<RemoteSourceList> lists;
+  final List<SourceListFetchFailure> failures;
+}
+
+/// A single URL that failed during [SourceListManager.fetchAllSourceLists].
+class SourceListFetchFailure {
+  const SourceListFetchFailure({required this.url, required this.error});
+
+  final String url;
+  final Object error;
+
+  @override
+  String toString() => 'SourceListFetchFailure(url: $url, error: $error)';
+}
+
+/// Thrown by [SourceListManager.fetchRemoteSourceList] when the server
+/// returns a non-200 status code.
+class SourceListFetchException implements Exception {
+  const SourceListFetchException({required this.url, required this.statusCode});
+
+  final String url;
+  final int statusCode;
+
+  @override
+  String toString() => 'SourceListFetchException: HTTP $statusCode for $url';
 }

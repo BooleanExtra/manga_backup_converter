@@ -85,8 +85,12 @@ class MigrationPipeline {
       final entries = <SourceEntry>[];
       for (final repo in repos) {
         final manager = SourceListManager();
-        final RemoteSourceList? sourceList = await manager.fetchRemoteSourceList(repo.url);
-        if (sourceList != null) entries.addAll(sourceList.sources);
+        try {
+          final RemoteSourceList sourceList = await manager.fetchRemoteSourceList(repo.url);
+          entries.addAll(sourceList.sources);
+        } on Object catch (e) {
+          onProgress(0, 0, 'Warning: failed to fetch repo ${repo.url}: $e');
+        }
       }
       return entries;
     }
@@ -101,11 +105,20 @@ class MigrationPipeline {
     if (extensionType == ExtensionType.aidoku) {
       final loader = AidokuPluginMemoryStore();
       final plugins = <PluginSource>[];
-      for (final entry in extensions) {
-        final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
-        if (response.statusCode != 200) continue;
-        final AidokuPlugin plugin = await loader.loadAixBytes(Uint8List.fromList(response.bodyBytes));
-        plugins.add(AidokuPluginSource(plugin: plugin));
+      for (var i = 0; i < extensions.length; i++) {
+        final entry = extensions[i];
+        onProgress(i + 1, extensions.length, 'Loading plugin: ${entry.name}');
+        try {
+          final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
+          if (response.statusCode != 200) {
+            onProgress(i + 1, extensions.length, 'Warning: failed to download ${entry.name}: HTTP ${response.statusCode}');
+            continue;
+          }
+          final AidokuPlugin plugin = await loader.loadAixBytes(Uint8List.fromList(response.bodyBytes));
+          plugins.add(AidokuPluginSource(plugin: plugin));
+        } on Object catch (e) {
+          onProgress(i + 1, extensions.length, 'Warning: failed to load ${entry.name}: $e');
+        }
       }
       return plugins;
     }
@@ -126,12 +139,13 @@ class MigrationPipeline {
 
   Future<MangaMatchProposal> _searchForManga(MangaSearchDetails manga, List<PluginSource> plugins) async {
     final allCandidates = <PluginSearchResult>[];
+    final failures = <PluginSearchFailure>[];
     for (final plugin in plugins) {
       try {
         final PluginSearchPageResult result = await plugin.search(manga.title, 1);
         allCandidates.addAll(result.results);
-      } on Object {
-        // Search failed for this plugin; continue with others.
+      } on Object catch (e) {
+        failures.add(PluginSearchFailure(pluginId: plugin.sourceId, error: e));
       }
     }
 
@@ -142,7 +156,12 @@ class MigrationPipeline {
             orElse: () => allCandidates.first,
           );
 
-    return MangaMatchProposal(sourceManga: manga, candidates: allCandidates, bestMatch: bestMatch);
+    return MangaMatchProposal(
+      sourceManga: manga,
+      candidates: allCandidates,
+      bestMatch: bestMatch,
+      failures: failures,
+    );
   }
 
   ConvertableBackup _buildTargetBackup(BackupFormat target, List<MangaMatchConfirmation> confirmations) {
@@ -159,9 +178,35 @@ class MangaMatchConfirmation {
 }
 
 class MangaMatchProposal {
-  const MangaMatchProposal({required this.sourceManga, required this.candidates, this.bestMatch});
+  const MangaMatchProposal({
+    required this.sourceManga,
+    required this.candidates,
+    this.bestMatch,
+    this.failures = const <PluginSearchFailure>[],
+  });
 
   final MangaSearchDetails sourceManga;
   final List<PluginSearchResult> candidates;
   final PluginSearchResult? bestMatch;
+  final List<PluginSearchFailure> failures;
+}
+
+class PluginSearchFailure {
+  const PluginSearchFailure({required this.pluginId, required this.error});
+
+  final String pluginId;
+  final Object error;
+
+  @override
+  String toString() => 'PluginSearchFailure(pluginId: $pluginId, error: $error)';
+}
+
+class PluginLoadFailure {
+  const PluginLoadFailure({required this.extensionId, required this.error});
+
+  final String extensionId;
+  final Object error;
+
+  @override
+  String toString() => 'PluginLoadFailure(extensionId: $extensionId, error: $error)';
 }

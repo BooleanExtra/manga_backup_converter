@@ -36,20 +36,17 @@ void main() {
     });
 
     test('parses list name', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      check(list?.name).equals('Aidoku Community Sources');
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
+      check(list.name).equals('Aidoku Community Sources');
     });
 
     test('parses all 96 sources', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      check(list?.sources.length).equals(96);
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
+      check(list.sources.length).equals(96);
     });
 
     test('multi.mangadex entry is fully parsed', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      if (list == null) {
-        fail('list is null');
-      }
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
       final SourceEntry mdx = list.sources.firstWhere((SourceEntry s) => s.id == 'multi.mangadex');
       check(mdx.name).equals('MangaDex');
       check(mdx.version).equals(12);
@@ -63,35 +60,26 @@ void main() {
     });
 
     test('altNames parsed — ja.comicdays', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      if (list == null) {
-        fail('list is null');
-      }
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
       final SourceEntry e = list.sources.firstWhere((SourceEntry s) => s.id == 'ja.comicdays');
       check(e.altNames).deepEquals(<Object?>['Comic Days']);
     });
 
     test('altNames parsed — ja.shonenjumpplus', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      if (list == null) {
-        fail('list is null');
-      }
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
       final SourceEntry e = list.sources.firstWhere((SourceEntry s) => s.id == 'ja.shonenjumpplus');
       check(e.altNames).deepEquals(<Object?>['Shonen Jump+']);
     });
 
     test('sources with no altNames have empty list', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com');
-      if (list == null) {
-        fail('list is null');
-      }
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com');
       final SourceEntry e = list.sources.firstWhere((SourceEntry s) => s.id == 'en.asurascans');
       check(e.altNames).isEmpty();
     });
 
     test('url field set to fetch URL, not fixture path', () async {
-      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
-      check(list?.url).equals('https://example.com/index.json');
+      final RemoteSourceList list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
+      check(list.url).equals('https://example.com/index.json');
     });
   });
 }
