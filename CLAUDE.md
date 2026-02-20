@@ -97,3 +97,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 ## CI
 
 GitHub Actions runs on all branches: format verification, analysis, tests with coverage (Codecov), then platform builds (iOS, Android, Web, Windows, Linux). Flutter 3.41.1 stable.
+
+## Commits
+
+Do not commit changes with "Co-Authored-By: Claude" or similar in the description.
