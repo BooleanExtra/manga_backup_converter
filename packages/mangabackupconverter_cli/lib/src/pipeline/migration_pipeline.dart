@@ -23,24 +23,24 @@ class MigrationPipeline {
 
   Future<ConvertableBackup> run({
     required ConvertableBackup sourceBackup,
-    required BackupFormat source,
-    required BackupFormat target,
+    required BackupFormat sourceFormat,
+    required BackupFormat targetFormat,
   }) async {
-    final ConversionStrategy strategy = determineStrategy(source, target);
+    final ConversionStrategy strategy = determineStrategy(sourceFormat, targetFormat);
     return switch (strategy) {
       Skip() => sourceBackup,
       DirectConversion() =>
-        sourceBackup is TachimangaBackup && target is Tachiyomi ? sourceBackup.toTachiBackup() : sourceBackup,
-      Migration() => _runMigration(sourceBackup, source, target),
+        sourceBackup is TachimangaBackup && targetFormat is Tachiyomi ? sourceBackup.toTachiBackup() : sourceBackup,
+      Migration() => _runMigration(sourceBackup, sourceFormat, targetFormat),
     };
   }
 
   Future<ConvertableBackup> _runMigration(
     ConvertableBackup sourceBackup,
-    BackupFormat source,
-    BackupFormat target,
+    BackupFormat sourceFormat,
+    BackupFormat targetFormat,
   ) async {
-    final PluginLoader loader = target.pluginLoader;
+    final PluginLoader loader = targetFormat.pluginLoader;
 
     final List<SourceEntry> availableExtensions = await loader.fetchExtensionLists(
       repoUrls,
@@ -69,7 +69,7 @@ class MigrationPipeline {
         confirmations.add(confirmation);
       }
 
-      return _buildTargetBackup(target, confirmations);
+      return _buildTargetBackup(sourceBackup, targetFormat, confirmations);
     } finally {
       for (final plugin in plugins) {
         plugin.dispose();
@@ -108,7 +108,11 @@ class MigrationPipeline {
     );
   }
 
-  ConvertableBackup _buildTargetBackup(BackupFormat target, List<MangaMatchConfirmation> confirmations) {
+  ConvertableBackup _buildTargetBackup(
+    ConvertableBackup sourceBackup,
+    BackupFormat target,
+    List<MangaMatchConfirmation> confirmations,
+  ) {
     // TODO: Construct the target backup from confirmed matches.
     throw UnimplementedError('Target backup construction not yet implemented');
   }
