@@ -352,7 +352,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   try {
     runner.call('start', <Object?>[]);
   } on Exception catch (_) {
-    // Some sources may not export start.
+    // start should always exist (core export), but catch defensively.
   }
 
   // Process commands until shutdown.
