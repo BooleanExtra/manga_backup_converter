@@ -48,8 +48,7 @@ class AidokuPluginLoader extends PluginLoader {
   }) async {
     final loader = AidokuPluginMemoryStore();
     final plugins = <PluginSource>[];
-    for (var i = 0; i < extensions.length; i++) {
-      final SourceEntry entry = extensions[i];
+    for (final (int i, SourceEntry entry) in extensions.indexed) {
       onProgress?.call(i + 1, extensions.length, 'Loading plugin: ${entry.name}');
       try {
         final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
@@ -78,19 +77,17 @@ class PaperbackPluginLoader extends PluginLoader {
   Future<List<SourceEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async =>
-      <SourceEntry>[];
+  }) async => <SourceEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
     List<SourceEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
-  }) async =>
-      extensions
-          .map(
-            (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
-          )
-          .toList();
+  }) async => extensions
+      .map(
+        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+      )
+      .toList();
 }
 
 class TachiPluginLoader extends PluginLoader {
@@ -100,19 +97,17 @@ class TachiPluginLoader extends PluginLoader {
   Future<List<SourceEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async =>
-      <SourceEntry>[];
+  }) async => <SourceEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
     List<SourceEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
-  }) async =>
-      extensions
-          .map(
-            (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
-          )
-          .toList();
+  }) async => extensions
+      .map(
+        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+      )
+      .toList();
 }
 
 class MangayomiPluginLoader extends PluginLoader {
@@ -122,17 +117,15 @@ class MangayomiPluginLoader extends PluginLoader {
   Future<List<SourceEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async =>
-      <SourceEntry>[];
+  }) async => <SourceEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
     List<SourceEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
-  }) async =>
-      extensions
-          .map(
-            (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
-          )
-          .toList();
+  }) async => extensions
+      .map(
+        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+      )
+      .toList();
 }
