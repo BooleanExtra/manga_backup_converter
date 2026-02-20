@@ -8,16 +8,23 @@ import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backu
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
-import 'package:mangabackupconverter_cli/src/pipeline/pipeline_callbacks.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_aidoku.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_stub.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 class MigrationPipeline {
-  const MigrationPipeline({required this.callbacks});
+  const MigrationPipeline({
+    required this.onSelectRepos,
+    required this.onSelectExtensions,
+    required this.onConfirmMatches,
+    required this.onProgress,
+  });
 
-  final MigrationCallbacks callbacks;
+  final Future<List<ExtensionRepo>> Function(ExtensionType targetType, List<ExtensionRepo> available) onSelectRepos;
+  final Future<List<SourceEntry>> Function(List<SourceEntry> extensions) onSelectExtensions;
+  final Future<List<MangaMatchConfirmation>> Function(List<MangaMatchProposal> proposals) onConfirmMatches;
+  final void Function(int current, int total, String message) onProgress;
 
   Future<ConvertableBackup> run({
     required ConvertableBackup sourceBackup,
@@ -27,7 +34,8 @@ class MigrationPipeline {
     final ConversionStrategy strategy = determineStrategy(source, target);
     return switch (strategy) {
       Skip() => sourceBackup,
-      DirectConversion() => sourceBackup is TachimangaBackup && target is Tachiyomi ? sourceBackup.toTachiBackup() : sourceBackup,
+      DirectConversion() =>
+        sourceBackup is TachimangaBackup && target is Tachiyomi ? sourceBackup.toTachiBackup() : sourceBackup,
       Migration() => _runMigration(sourceBackup, source, target),
     };
   }
@@ -40,14 +48,14 @@ class MigrationPipeline {
     final repoIndex = ExtensionRepoIndex.parseExtensionRepoIndex();
     final List<ExtensionRepo> availableRepos = repoIndex.repos[target.extensionType] ?? <ExtensionRepo>[];
 
-    final List<ExtensionRepo> selectedRepos = await callbacks.selectRepos(target.extensionType, availableRepos);
+    final List<ExtensionRepo> selectedRepos = await onSelectRepos(target.extensionType, availableRepos);
     if (selectedRepos.isEmpty) throw const MigrationException('No repos selected');
 
     final List<SourceEntry> availableExtensions = await _fetchExtensionLists(target.extensionType, selectedRepos);
-    final List<SourceEntry> selectedExtensions = await callbacks.selectExtensions(availableExtensions);
+    final List<SourceEntry> selectedExtensions = await onSelectExtensions(availableExtensions);
     if (selectedExtensions.isEmpty) throw const MigrationException('No extensions selected');
 
-    callbacks.onProgress(0, selectedExtensions.length, 'Loading plugins...');
+    onProgress(0, selectedExtensions.length, 'Loading plugins...');
     final List<PluginSource> plugins = await _loadPlugins(target.extensionType, selectedExtensions, selectedRepos);
 
     try {
@@ -55,12 +63,12 @@ class MigrationPipeline {
       final proposals = <MangaMatchProposal>[];
 
       for (var i = 0; i < mangaList.length; i++) {
-        callbacks.onProgress(i + 1, mangaList.length, 'Searching for: ${mangaList[i].title}');
+        onProgress(i + 1, mangaList.length, 'Searching for: ${mangaList[i].title}');
         final MangaMatchProposal proposal = await _searchForManga(mangaList[i], plugins);
         proposals.add(proposal);
       }
 
-      final List<MangaMatchConfirmation> confirmations = await callbacks.confirmMatches(proposals);
+      final List<MangaMatchConfirmation> confirmations = await onConfirmMatches(proposals);
       return _buildTargetBackup(target, confirmations);
     } finally {
       for (final plugin in plugins) {
@@ -141,4 +149,19 @@ class MigrationPipeline {
     // TODO: Construct the target backup from confirmed matches.
     throw UnimplementedError('Target backup construction not yet implemented');
   }
+}
+
+class MangaMatchConfirmation {
+  const MangaMatchConfirmation({required this.sourceManga, this.confirmedMatch});
+
+  final MangaSearchDetails sourceManga;
+  final PluginSearchResult? confirmedMatch;
+}
+
+class MangaMatchProposal {
+  const MangaMatchProposal({required this.sourceManga, required this.candidates, this.bestMatch});
+
+  final MangaSearchDetails sourceManga;
+  final List<PluginSearchResult> candidates;
+  final PluginSearchResult? bestMatch;
 }
