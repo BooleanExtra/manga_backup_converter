@@ -11,6 +11,7 @@
 //
 // Run: dart test packages/wasm_plugin_loader/test/wasm/aidoku_plugin_native_test.dart --reporter expanded
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
@@ -45,11 +46,19 @@ void main() {
 
       setUpAll(() async {
         final loader = WasmPluginLoader();
+        // MangaDex's is_logged_in() calls defaults_get_json::<TokenResponse>("login").
+        // The SDK reads stored bytes as postcard<String> (the JSON text), then
+        // serde_json::from_str::<TokenResponse>. TokenResponse has Option<String> fields,
+        // so any valid JSON object works — even {} deserializes to Ok(TokenResponse{..}).
+        // Postcard-encode the JSON string "{}": varint(2) + '{' + '}'
+        const loginJson = '{}';
+        final jsonBytes = loginJson.codeUnits;
+        final loginPostcard = Uint8List(1 + jsonBytes.length)
+          ..[0] = jsonBytes.length
+          ..setAll(1, jsonBytes);
         plugin = await loader.load(
           fixture.readAsBytesSync(),
-          defaults: {
-            'login': {'access_token': 'fake', 'refresh_token': 'token'},
-          },
+          defaults: {'login': loginPostcard},
         );
       });
 
@@ -155,7 +164,7 @@ void main() {
         test('returns a list (may be empty if plugin does not implement it)', () async {
           final listings = await plugin.getListings();
           check(listings).isA<List<AidokuListing>>();
-          // MangaDex plugin exports get_listings — should return at least one.
+          // get_dynamic_listings returns ["Library"] when is_logged_in() is true.
           check(listings).isNotEmpty();
         });
 
