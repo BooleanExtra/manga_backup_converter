@@ -369,7 +369,12 @@ class PaperbackBackupMangaTagMapper
   static List<PaperbackBackupMangaTag> _$tags(PaperbackBackupMangaTag v) =>
       v.tags;
   static const Field<PaperbackBackupMangaTag, List<PaperbackBackupMangaTag>>
-  _f$tags = Field('tags', _$tags, opt: true, def: const []);
+  _f$tags = Field(
+    'tags',
+    _$tags,
+    opt: true,
+    def: const <PaperbackBackupMangaTag>[],
+  );
 
   @override
   final MappableFields<PaperbackBackupMangaTag> fields = const {

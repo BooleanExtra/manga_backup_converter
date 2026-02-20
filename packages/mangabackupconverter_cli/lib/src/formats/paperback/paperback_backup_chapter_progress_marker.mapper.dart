@@ -18,7 +18,9 @@ class PaperbackBackupChapterProgressMarkerMapper
       MapperContainer.globals.use(
         _instance = PaperbackBackupChapterProgressMarkerMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       PaperbackBackupItemReferenceMapper.ensureInitialized();
     }
     return _instance!;

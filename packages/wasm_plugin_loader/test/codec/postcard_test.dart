@@ -91,35 +91,30 @@ void main() {
   });
 
   test('option none', () {
-    final w = PostcardWriter()
-      ..writeOption<String>(null, (String v, PostcardWriter pw) => pw.writeString(v));
+    final w = PostcardWriter()..writeOption<String>(null, (String v, PostcardWriter pw) => pw.writeString(v));
     check(PostcardReader(w.bytes).readOption(() => 'unused')).isNull();
   });
 
   test('option some string', () {
-    final w = PostcardWriter()
-      ..writeOption<String>('world', (String v, PostcardWriter pw) => pw.writeString(v));
+    final w = PostcardWriter()..writeOption<String>('world', (String v, PostcardWriter pw) => pw.writeString(v));
     final r = PostcardReader(w.bytes);
     check(r.readOption(r.readString)).equals('world');
   });
 
   test('empty list', () {
-    final w = PostcardWriter()
-      ..writeList(<String>[], (String v, PostcardWriter pw) => pw.writeString(v));
+    final w = PostcardWriter()..writeList(<String>[], (String v, PostcardWriter pw) => pw.writeString(v));
     final r = PostcardReader(w.bytes);
     check(r.readList(r.readString)).isEmpty();
   });
 
   test('list of strings', () {
-    final w = PostcardWriter()
-      ..writeList(<String>['a', 'b', 'c'], (String v, PostcardWriter pw) => pw.writeString(v));
+    final w = PostcardWriter()..writeList(<String>['a', 'b', 'c'], (String v, PostcardWriter pw) => pw.writeString(v));
     final r = PostcardReader(w.bytes);
     check(r.readList(r.readString)).deepEquals(<Object?>['a', 'b', 'c']);
   });
 
   test('list of ints', () {
-    final w = PostcardWriter()
-      ..writeList(<int>[1, 2, 300], (int v, PostcardWriter pw) => pw.writeVarInt(v));
+    final w = PostcardWriter()..writeList(<int>[1, 2, 300], (int v, PostcardWriter pw) => pw.writeVarInt(v));
     final r = PostcardReader(w.bytes);
     check(r.readList(r.readVarInt)).deepEquals(<Object?>[1, 2, 300]);
   });

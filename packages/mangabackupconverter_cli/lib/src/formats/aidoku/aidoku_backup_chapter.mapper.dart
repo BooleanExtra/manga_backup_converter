@@ -15,7 +15,9 @@ class AidokuBackupChapterMapper extends ClassMapperBase<AidokuBackupChapter> {
   static AidokuBackupChapterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AidokuBackupChapterMapper._());
-      MapperContainer.globals.useAll([AidokuDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        AidokuDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }

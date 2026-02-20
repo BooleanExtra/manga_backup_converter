@@ -216,8 +216,7 @@ class WasmRunner {
     bindings.importtypeVecNewEmpty(importTypeVec);
     bindings.moduleImports(module, importTypeVec);
 
-    final result =
-        <({String module, String name, int resultKind})>[];
+    final result = <({String module, String name, int resultKind})>[];
     for (var i = 0; i < importTypeVec.ref.size; i++) {
       final ffi.Pointer<wasm_importtype_t> it = (importTypeVec.ref.data + i).value;
       final String mod = WasmerBindings.readByteVec(bindings.importtypeModule(it));

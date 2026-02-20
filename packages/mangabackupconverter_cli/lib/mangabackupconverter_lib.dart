@@ -1,4 +1,3 @@
-export 'src/common/backup_type.dart';
 export 'src/common/convertable.dart';
 export 'src/common/extensions.dart';
 export 'src/converter.dart';
@@ -40,7 +39,6 @@ export 'src/formats/tachi/tachi_backup_preference.dart';
 export 'src/formats/tachi/tachi_backup_source.dart';
 export 'src/formats/tachi/tachi_backup_source_preferences.dart';
 export 'src/formats/tachi/tachi_backup_tracking.dart';
-export 'src/formats/tachi/tachi_fork.dart';
 export 'src/formats/tachi/tachi_update_strategy.dart';
 export 'src/formats/tachimanga/tachimanga_backup.dart';
 export 'src/formats/tachimanga/tachimanga_backup_db.dart';

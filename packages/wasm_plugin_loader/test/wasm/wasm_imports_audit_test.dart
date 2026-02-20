@@ -188,8 +188,7 @@ void main() {
     skip: skipReason,
     () {
       // Collect imports per fixture once for the summary table.
-      final allImports =
-          <String, List<({String module, String name, int resultKind})>>{};
+      final allImports = <String, List<({String module, String name, int resultKind})>>{};
 
       setUpAll(() {
         for (final ({String label, String wasmPath}) f in _fixtures) {
@@ -228,8 +227,7 @@ void main() {
       }
 
       test('aggregate — print unique imports across all fixtures', () {
-        final unique =
-            <String, ({int resultKind, List<String> fixtures})>{};
+        final unique = <String, ({int resultKind, List<String> fixtures})>{};
         for (final ({String label, String wasmPath}) f in _fixtures) {
           for (final ({String module, String name, int resultKind}) imp
               in allImports[f.label] ?? <({String module, String name, int resultKind})>[]) {

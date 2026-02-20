@@ -111,7 +111,9 @@ class MangayomiBackupDbMapper extends ClassMapperBase<MangayomiBackupDb> {
   static MangayomiBackupDbMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupDbMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       MangayomiBackupMangaMapper.ensureInitialized();
       MangayomiBackupCategoryMapper.ensureInitialized();
       MangayomiBackupChapterMapper.ensureInitialized();
@@ -669,7 +671,9 @@ class MangayomiBackupMangaMapper extends ClassMapperBase<MangayomiBackupManga> {
   static MangayomiBackupMangaMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupMangaMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       ItemTypeMapper.ensureInitialized();
     }
     return _instance!;
@@ -1080,7 +1084,9 @@ class MangayomiBackupCategoryMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupCategoryMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -1260,7 +1266,9 @@ class MangayomiBackupChapterMapper
   static MangayomiBackupChapterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupChapterMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -1515,7 +1523,9 @@ class MangayomiBackupDownloadMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupDownloadMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -1711,7 +1721,9 @@ class MangayomiBackupTrackMapper extends ClassMapperBase<MangayomiBackupTrack> {
   static MangayomiBackupTrackMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupTrackMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       ItemTypeMapper.ensureInitialized();
     }
     return _instance!;
@@ -2028,7 +2040,9 @@ class MangayomiBackupHistoryMapper
   static MangayomiBackupHistoryMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupHistoryMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       ItemTypeMapper.ensureInitialized();
     }
     return _instance!;
@@ -2225,7 +2239,9 @@ class MangayomiBackupUpdateMapper
   static MangayomiBackupUpdateMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MangayomiBackupUpdateMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -2394,7 +2410,9 @@ class MangayomiBackupExtensionPreferencesMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupExtensionPreferencesMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       EditTextPreferenceMapper.ensureInitialized();
       ListPreferenceMapper.ensureInitialized();
       SwitchPreferenceCompatMapper.ensureInitialized();
@@ -2695,7 +2713,9 @@ class EditTextPreferenceMapper extends ClassMapperBase<EditTextPreference> {
   static EditTextPreferenceMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = EditTextPreferenceMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -2894,7 +2914,9 @@ class ListPreferenceMapper extends ClassMapperBase<ListPreference> {
   static ListPreferenceMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ListPreferenceMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3093,7 +3115,9 @@ class SwitchPreferenceCompatMapper
   static SwitchPreferenceCompatMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SwitchPreferenceCompatMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3255,7 +3279,9 @@ class MultiSelectListPreferenceMapper
       MapperContainer.globals.use(
         _instance = MultiSelectListPreferenceMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3475,7 +3501,9 @@ class MangayomiBackupTrackPreferencesMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupTrackPreferencesMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3667,7 +3695,9 @@ class MangayomiBackupExtensionMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupExtensionMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       ItemTypeMapper.ensureInitialized();
       RepoMapper.ensureInitialized();
       SourceCodeLanguageMapper.ensureInitialized();

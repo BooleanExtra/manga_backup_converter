@@ -15,7 +15,9 @@ class PaperbackBackupMapper extends ClassMapperBase<PaperbackBackup> {
   static PaperbackBackupMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PaperbackBackupMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       PaperbackBackupChapterProgressMarkerMapper.ensureInitialized();
       PaperbackBackupChapterMapper.ensureInitialized();
       PaperbackBackupLibraryMangaMapper.ensureInitialized();

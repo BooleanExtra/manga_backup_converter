@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/extension_exception.dart';
 
 part 'extensions.mapper.dart';
@@ -310,13 +309,4 @@ enum ExtensionType {
   ;
 
   const ExtensionType();
-
-  static ExtensionType fromBackupType(BackupType type) {
-    return switch (type) {
-      BackupType.aidoku => aidoku,
-      BackupType.paperback => paperback,
-      BackupType.tachi || BackupType.tachimanga => tachi,
-      BackupType.mangayomi => mangayomi,
-    };
-  }
 }

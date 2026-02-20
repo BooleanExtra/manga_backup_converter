@@ -490,7 +490,9 @@ class MangayomiBackupSettingsMapper
       MapperContainer.globals.use(
         _instance = MangayomiBackupSettingsMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       DisplayTypeMapper.ensureInitialized();
       SortLibraryMangaMapper.ensureInitialized();
       SortChapterMapper.ensureInitialized();
@@ -2757,7 +2759,9 @@ class SortLibraryMangaMapper extends ClassMapperBase<SortLibraryManga> {
   static SortLibraryMangaMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SortLibraryMangaMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -2895,7 +2899,9 @@ class SortChapterMapper extends ClassMapperBase<SortChapter> {
   static SortChapterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SortChapterMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3046,7 +3052,9 @@ class ChapterFilterDownloadedMapper
       MapperContainer.globals.use(
         _instance = ChapterFilterDownloadedMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3192,7 +3200,9 @@ class ChapterPageurlsMapper extends ClassMapperBase<ChapterPageurls> {
   static ChapterPageurlsMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ChapterPageurlsMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3362,7 +3372,9 @@ class ChapterPageIndexMapper extends ClassMapperBase<ChapterPageIndex> {
   static ChapterPageIndexMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ChapterPageIndexMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3498,7 +3510,9 @@ class MCookieMapper extends ClassMapperBase<MCookie> {
   static MCookieMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = MCookieMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -3623,7 +3637,9 @@ class PersonalReaderModeMapper extends ClassMapperBase<PersonalReaderMode> {
   static PersonalReaderModeMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PersonalReaderModeMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       ReaderModeMapper.ensureInitialized();
     }
     return _instance!;
@@ -3770,7 +3786,9 @@ class PersonalPageModeMapper extends ClassMapperBase<PersonalPageMode> {
   static PersonalPageModeMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PersonalPageModeMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       PageModeMapper.ensureInitialized();
     }
     return _instance!;
@@ -3908,7 +3926,9 @@ class AutoScrollPagesMapper extends ClassMapperBase<AutoScrollPages> {
   static AutoScrollPagesMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = AutoScrollPagesMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4060,7 +4080,9 @@ class CustomColorFilterMapper extends ClassMapperBase<CustomColorFilter> {
   static CustomColorFilterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = CustomColorFilterMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4215,7 +4237,9 @@ class PlayerSubtitleSettingsMapper
   static PlayerSubtitleSettingsMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PlayerSubtitleSettingsMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4541,7 +4565,9 @@ class RepoMapper extends ClassMapperBase<Repo> {
   static RepoMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = RepoMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4666,7 +4692,9 @@ class ChapterFilterUnreadMapper extends ClassMapperBase<ChapterFilterUnread> {
   static ChapterFilterUnreadMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ChapterFilterUnreadMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4814,7 +4842,9 @@ class ChapterFilterBookmarkedMapper
       MapperContainer.globals.use(
         _instance = ChapterFilterBookmarkedMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -4960,7 +4990,9 @@ class FilterScanlatorMapper extends ClassMapperBase<FilterScanlator> {
   static FilterScanlatorMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = FilterScanlatorMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }
@@ -5106,7 +5138,9 @@ class L10nLocaleMapper extends ClassMapperBase<L10nLocale> {
   static L10nLocaleMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = L10nLocaleMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }

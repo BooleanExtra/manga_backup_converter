@@ -42,8 +42,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   });
 
   static AidokuBackup fromData(Uint8List bytes, {String? overrideName}) {
-    final asMap =
-        PropertyListSerialization.propertyListWithData(ByteData.sublistView(bytes)) as Map<String, Object>;
+    final asMap = PropertyListSerialization.propertyListWithData(ByteData.sublistView(bytes)) as Map<String, Object>;
     AidokuBackup backup = fromMap(asMap);
     if (overrideName != null) {
       backup = backup.copyWith(name: overrideName);

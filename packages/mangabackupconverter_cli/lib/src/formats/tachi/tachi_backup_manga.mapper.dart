@@ -115,7 +115,7 @@ class TachiBackupMangaMapper extends ClassMapperBase<TachiBackupManga> {
     'brokenHistory',
     _$brokenHistory,
     opt: true,
-    def: const [],
+    def: const <TachiBackupHistory>[],
   );
   static TachiUpdateStrategy _$updateStrategy(TachiBackupManga v) =>
       v.updateStrategy;

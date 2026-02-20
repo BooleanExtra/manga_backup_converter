@@ -15,7 +15,9 @@ class TachimangaBackupMapper extends ClassMapperBase<TachimangaBackup> {
   static TachimangaBackupMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TachimangaBackupMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       TachimangaBackupMetaMapper.ensureInitialized();
       TachimangaBackupDbMapper.ensureInitialized();
     }

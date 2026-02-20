@@ -18,7 +18,9 @@ class PaperbackBackupSourceMangaMapper
       MapperContainer.globals.use(
         _instance = PaperbackBackupSourceMangaMapper._(),
       );
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       PaperbackBackupItemReferenceMapper.ensureInitialized();
     }
     return _instance!;

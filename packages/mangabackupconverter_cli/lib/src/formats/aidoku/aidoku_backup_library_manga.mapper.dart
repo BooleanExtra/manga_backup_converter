@@ -18,7 +18,9 @@ class AidokuBackupLibraryMangaMapper
       MapperContainer.globals.use(
         _instance = AidokuBackupLibraryMangaMapper._(),
       );
-      MapperContainer.globals.useAll([AidokuDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        AidokuDateTimeMapper(),
+      ]);
     }
     return _instance!;
   }

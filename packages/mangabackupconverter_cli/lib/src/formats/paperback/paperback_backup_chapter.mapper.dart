@@ -16,7 +16,9 @@ class PaperbackBackupChapterMapper
   static PaperbackBackupChapterMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = PaperbackBackupChapterMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       PaperbackBackupItemReferenceMapper.ensureInitialized();
     }
     return _instance!;

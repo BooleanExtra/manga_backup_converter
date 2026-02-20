@@ -36,8 +36,7 @@ class AixParser {
 
     final ArchiveFile? sourceFile = archive.findFile('Payload/source.json');
     if (sourceFile == null) throw const AixParseException('Payload/source.json not found in .aix archive');
-    final sourceJson =
-        jsonDecode(utf8.decode(sourceFile.content as List<int>)) as Map<String, dynamic>;
+    final sourceJson = jsonDecode(utf8.decode(sourceFile.content as List<int>)) as Map<String, dynamic>;
 
     // Support both flat format { "id": ..., "language": ... }
     // and nested format { "info": { "id": ..., "languages": [...] } }

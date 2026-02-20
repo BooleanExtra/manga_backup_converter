@@ -1,39 +1,54 @@
-import 'package:mangabackupconverter_cli/src/common/backup_type.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/extensions.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_fork.dart';
 import 'package:meta/meta.dart';
 
+part 'backup_format.mapper.dart';
+
+@MappableClass(discriminatorKey: 'type')
 @immutable
-sealed class BackupFormat {
+sealed class BackupFormat with BackupFormatMappable {
   const BackupFormat();
 
-  factory BackupFormat.from(BackupType type, [TachiFork? fork]) {
-    return switch (type) {
-      BackupType.aidoku => const Aidoku(),
-      BackupType.paperback => const Paperback(),
-      BackupType.tachi => switch (fork) {
-        TachiFork.mihon || null => const Mihon(),
-        TachiFork.sy => const TachiSy(),
-        TachiFork.j2k => const TachiJ2k(),
-        TachiFork.yokai => const TachiYokai(),
-        TachiFork.neko => const TachiNeko(),
-      },
-      BackupType.tachimanga => const Tachimanga(),
-      BackupType.mangayomi => const Mangayomi(),
-    };
-  }
-
-  BackupType get backupType;
+  String get alias;
   List<String> get extensions;
   ExtensionType get extensionType;
+
+  static const List<BackupFormat> values = <BackupFormat>[
+    Aidoku(),
+    Paperback(),
+    Mihon(),
+    TachiSy(),
+    TachiJ2k(),
+    TachiYokai(),
+    TachiNeko(),
+    Tachimanga(),
+    Mangayomi(),
+  ];
+
+  static BackupFormat byName(String alias) {
+    for (final BackupFormat format in values) {
+      if (format.alias == alias) return format;
+    }
+    throw ArgumentError.value(alias, 'alias', 'Unknown backup format alias');
+  }
+
+  static BackupFormat? byExtension(String ext) {
+    for (final BackupFormat format in values) {
+      if (format.extensions.contains(ext)) return format;
+    }
+    return null;
+  }
+
+  static List<String> get validExtensions => values.expand((BackupFormat f) => f.extensions).toSet().toList();
 }
 
+@MappableClass(discriminatorValue: 'aidoku')
 @immutable
-class Aidoku extends BackupFormat {
+class Aidoku extends BackupFormat with AidokuMappable {
   const Aidoku();
 
   @override
-  BackupType get backupType => BackupType.aidoku;
+  String get alias => 'aidoku';
 
   @override
   List<String> get extensions => const <String>['.aib'];
@@ -51,12 +66,13 @@ class Aidoku extends BackupFormat {
   String toString() => 'Aidoku';
 }
 
+@MappableClass(discriminatorValue: 'paperback')
 @immutable
-class Paperback extends BackupFormat {
+class Paperback extends BackupFormat with PaperbackMappable {
   const Paperback();
 
   @override
-  BackupType get backupType => BackupType.paperback;
+  String get alias => 'paperback';
 
   @override
   List<String> get extensions => const <String>['.pas4'];
@@ -74,13 +90,9 @@ class Paperback extends BackupFormat {
   String toString() => 'Paperback';
 }
 
-sealed class Tachiyomi extends BackupFormat {
+@MappableClass()
+sealed class Tachiyomi extends BackupFormat with TachiyomiMappable {
   const Tachiyomi();
-
-  TachiFork get fork;
-
-  @override
-  BackupType get backupType => BackupType.tachi;
 
   @override
   List<String> get extensions => const <String>['.tachibk', '.proto.gz'];
@@ -89,12 +101,13 @@ sealed class Tachiyomi extends BackupFormat {
   ExtensionType get extensionType => ExtensionType.tachi;
 }
 
+@MappableClass(discriminatorValue: 'mihon')
 @immutable
-class Mihon extends Tachiyomi {
+class Mihon extends Tachiyomi with MihonMappable {
   const Mihon();
 
   @override
-  TachiFork get fork => TachiFork.mihon;
+  String get alias => 'mihon';
 
   @override
   bool operator ==(Object other) => other is Mihon;
@@ -106,12 +119,13 @@ class Mihon extends Tachiyomi {
   String toString() => 'Mihon';
 }
 
+@MappableClass(discriminatorValue: 'sy')
 @immutable
-class TachiSy extends Tachiyomi {
+class TachiSy extends Tachiyomi with TachiSyMappable {
   const TachiSy();
 
   @override
-  TachiFork get fork => TachiFork.sy;
+  String get alias => 'sy';
 
   @override
   bool operator ==(Object other) => other is TachiSy;
@@ -123,12 +137,13 @@ class TachiSy extends Tachiyomi {
   String toString() => 'TachiSy';
 }
 
+@MappableClass(discriminatorValue: 'j2k')
 @immutable
-class TachiJ2k extends Tachiyomi {
+class TachiJ2k extends Tachiyomi with TachiJ2kMappable {
   const TachiJ2k();
 
   @override
-  TachiFork get fork => TachiFork.j2k;
+  String get alias => 'j2k';
 
   @override
   bool operator ==(Object other) => other is TachiJ2k;
@@ -140,12 +155,13 @@ class TachiJ2k extends Tachiyomi {
   String toString() => 'TachiJ2k';
 }
 
+@MappableClass(discriminatorValue: 'yokai')
 @immutable
-class TachiYokai extends Tachiyomi {
+class TachiYokai extends Tachiyomi with TachiYokaiMappable {
   const TachiYokai();
 
   @override
-  TachiFork get fork => TachiFork.yokai;
+  String get alias => 'yokai';
 
   @override
   bool operator ==(Object other) => other is TachiYokai;
@@ -157,12 +173,13 @@ class TachiYokai extends Tachiyomi {
   String toString() => 'TachiYokai';
 }
 
+@MappableClass(discriminatorValue: 'neko')
 @immutable
-class TachiNeko extends Tachiyomi {
+class TachiNeko extends Tachiyomi with TachiNekoMappable {
   const TachiNeko();
 
   @override
-  TachiFork get fork => TachiFork.neko;
+  String get alias => 'neko';
 
   @override
   bool operator ==(Object other) => other is TachiNeko;
@@ -174,38 +191,13 @@ class TachiNeko extends Tachiyomi {
   String toString() => 'TachiNeko';
 }
 
+@MappableClass(discriminatorValue: 'tachimanga')
 @immutable
-class Mangayomi extends Tachiyomi {
-  const Mangayomi();
-
-  @override
-  TachiFork get fork => TachiFork.mihon;
-
-  @override
-  BackupType get backupType => BackupType.mangayomi;
-
-  @override
-  List<String> get extensions => const <String>['.backup'];
-
-  @override
-  ExtensionType get extensionType => ExtensionType.mangayomi;
-
-  @override
-  bool operator ==(Object other) => other is Mangayomi;
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  String toString() => 'Mangayomi';
-}
-
-@immutable
-class Tachimanga extends BackupFormat {
+class Tachimanga extends BackupFormat with TachimangaMappable {
   const Tachimanga();
 
   @override
-  BackupType get backupType => BackupType.tachimanga;
+  String get alias => 'tachimanga';
 
   @override
   List<String> get extensions => const <String>['.tmb'];
@@ -221,4 +213,28 @@ class Tachimanga extends BackupFormat {
 
   @override
   String toString() => 'Tachimanga';
+}
+
+@MappableClass(discriminatorValue: 'mangayomi')
+@immutable
+class Mangayomi extends BackupFormat with MangayomiMappable {
+  const Mangayomi();
+
+  @override
+  String get alias => 'mangayomi';
+
+  @override
+  List<String> get extensions => const <String>['.backup'];
+
+  @override
+  ExtensionType get extensionType => ExtensionType.mangayomi;
+
+  @override
+  bool operator ==(Object other) => other is Mangayomi;
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() => 'Mangayomi';
 }

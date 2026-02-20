@@ -15,14 +15,16 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
   static TachiBackupMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TachiBackupMapper._());
-      MapperContainer.globals.useAll([SecondsEpochDateTimeMapper()]);
+      MapperContainer.globals.useAll(<MapperBase<Object>>[
+        SecondsEpochDateTimeMapper(),
+      ]);
       TachiBackupCategoryMapper.ensureInitialized();
       TachiBackupMangaMapper.ensureInitialized();
       TachiBackupSourceMapper.ensureInitialized();
       TachiBackupExtensionRepoMapper.ensureInitialized();
       TachiBackupPreferenceMapper.ensureInitialized();
       TachiBackupSourcePreferencesMapper.ensureInitialized();
-      TachiForkMapper.ensureInitialized();
+      TachiyomiMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -37,11 +39,16 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     'backupCategories',
     _$backupCategories,
     opt: true,
-    def: const [],
+    def: const <TachiBackupCategory>[],
   );
   static List<TachiBackupManga> _$backupManga(TachiBackup v) => v.backupManga;
   static const Field<TachiBackup, List<TachiBackupManga>> _f$backupManga =
-      Field('backupManga', _$backupManga, opt: true, def: const []);
+      Field(
+        'backupManga',
+        _$backupManga,
+        opt: true,
+        def: const <TachiBackupManga>[],
+      );
   static List<TachiBackupSource> _$backupBrokenSources(TachiBackup v) =>
       v.backupBrokenSources;
   static const Field<TachiBackup, List<TachiBackupSource>>
@@ -49,12 +56,17 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     'backupBrokenSources',
     _$backupBrokenSources,
     opt: true,
-    def: const [],
+    def: const <TachiBackupSource>[],
   );
   static List<TachiBackupSource> _$backupSources(TachiBackup v) =>
       v.backupSources;
   static const Field<TachiBackup, List<TachiBackupSource>> _f$backupSources =
-      Field('backupSources', _$backupSources, opt: true, def: const []);
+      Field(
+        'backupSources',
+        _$backupSources,
+        opt: true,
+        def: const <TachiBackupSource>[],
+      );
   static List<TachiBackupExtensionRepo> _$backupExtensionRepo(TachiBackup v) =>
       v.backupExtensionRepo;
   static const Field<TachiBackup, List<TachiBackupExtensionRepo>>
@@ -62,7 +74,7 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     'backupExtensionRepo',
     _$backupExtensionRepo,
     opt: true,
-    def: const [],
+    def: const <TachiBackupExtensionRepo>[],
   );
   static List<TachiBackupPreference> _$backupPreferences(TachiBackup v) =>
       v.backupPreferences;
@@ -71,7 +83,7 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     'backupPreferences',
     _$backupPreferences,
     opt: true,
-    def: const [],
+    def: const <TachiBackupPreference>[],
   );
   static List<TachiBackupSourcePreferences> _$backupSourcePreferences(
     TachiBackup v,
@@ -81,14 +93,14 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     'backupSourcePreferences',
     _$backupSourcePreferences,
     opt: true,
-    def: const [],
+    def: const <TachiBackupSourcePreferences>[],
   );
-  static TachiFork _$fork(TachiBackup v) => v.fork;
-  static const Field<TachiBackup, TachiFork> _f$fork = Field(
-    'fork',
-    _$fork,
+  static Tachiyomi _$format(TachiBackup v) => v.format;
+  static const Field<TachiBackup, Tachiyomi> _f$format = Field(
+    'format',
+    _$format,
     opt: true,
-    def: TachiFork.mihon,
+    def: const Mihon(),
   );
 
   @override
@@ -100,7 +112,7 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
     #backupExtensionRepo: _f$backupExtensionRepo,
     #backupPreferences: _f$backupPreferences,
     #backupSourcePreferences: _f$backupSourcePreferences,
-    #fork: _f$fork,
+    #format: _f$format,
   };
 
   static TachiBackup _instantiate(DecodingData data) {
@@ -112,7 +124,7 @@ class TachiBackupMapper extends ClassMapperBase<TachiBackup> {
       backupExtensionRepo: data.dec(_f$backupExtensionRepo),
       backupPreferences: data.dec(_f$backupPreferences),
       backupSourcePreferences: data.dec(_f$backupSourcePreferences),
-      fork: data.dec(_f$fork),
+      format: data.dec(_f$format),
     );
   }
 
@@ -230,6 +242,7 @@ abstract class TachiBackupCopyWith<$R, $In extends TachiBackup, $Out>
     >
   >
   get backupSourcePreferences;
+  TachiyomiCopyWith<$R, Tachiyomi, Tachiyomi> get format;
   $R call({
     List<TachiBackupCategory>? backupCategories,
     List<TachiBackupManga>? backupManga,
@@ -238,7 +251,7 @@ abstract class TachiBackupCopyWith<$R, $In extends TachiBackup, $Out>
     List<TachiBackupExtensionRepo>? backupExtensionRepo,
     List<TachiBackupPreference>? backupPreferences,
     List<TachiBackupSourcePreferences>? backupSourcePreferences,
-    TachiFork? fork,
+    Tachiyomi? format,
   });
   TachiBackupCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -341,6 +354,9 @@ class _TachiBackupCopyWithImpl<$R, $Out>
     (v) => call(backupSourcePreferences: v),
   );
   @override
+  TachiyomiCopyWith<$R, Tachiyomi, Tachiyomi> get format =>
+      $value.format.copyWith.$chain((v) => call(format: v));
+  @override
   $R call({
     List<TachiBackupCategory>? backupCategories,
     List<TachiBackupManga>? backupManga,
@@ -349,7 +365,7 @@ class _TachiBackupCopyWithImpl<$R, $Out>
     List<TachiBackupExtensionRepo>? backupExtensionRepo,
     List<TachiBackupPreference>? backupPreferences,
     List<TachiBackupSourcePreferences>? backupSourcePreferences,
-    TachiFork? fork,
+    Tachiyomi? format,
   }) => $apply(
     FieldCopyWithData({
       if (backupCategories != null) #backupCategories: backupCategories,
@@ -362,7 +378,7 @@ class _TachiBackupCopyWithImpl<$R, $Out>
       if (backupPreferences != null) #backupPreferences: backupPreferences,
       if (backupSourcePreferences != null)
         #backupSourcePreferences: backupSourcePreferences,
-      if (fork != null) #fork: fork,
+      if (format != null) #format: format,
     }),
   );
   @override
@@ -386,7 +402,7 @@ class _TachiBackupCopyWithImpl<$R, $Out>
       #backupSourcePreferences,
       or: $value.backupSourcePreferences,
     ),
-    fork: data.get(#fork, or: $value.fork),
+    format: data.get(#format, or: $value.format),
   );
 
   @override

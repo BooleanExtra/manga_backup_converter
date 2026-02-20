@@ -13,9 +13,7 @@ import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync()
-      ? File(fixturePath)
-      : File('packages/wasm_plugin_loader/$fixturePath');
+  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/wasm_plugin_loader/$fixturePath');
 
   group(
     'AixParser with real .aix fixture',
