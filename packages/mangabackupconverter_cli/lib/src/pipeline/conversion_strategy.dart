@@ -19,7 +19,8 @@ class Skip extends ConversionStrategy {
 ConversionStrategy determineStrategy(BackupFormat source, BackupFormat target) {
   if (source == target) return const Skip();
   if (source is Tachiyomi && target is Tachiyomi) return const Skip();
-  if ((source is Tachiyomi && target is Tachimanga) || (source is Tachimanga && target is Tachiyomi)) {
+  if (source is Tachiyomi && target is Tachimanga) return const Skip();
+  if (source is Tachimanga && target is Tachiyomi) {
     return const DirectConversion();
   }
   return const Migration();
