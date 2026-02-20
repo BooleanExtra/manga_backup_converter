@@ -34,7 +34,7 @@ class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
   static const AidokuBackupLibraryManga Function(String json) fromJson = AidokuBackupLibraryMangaMapper.fromJson;
 
   PaperbackBackupLibraryManga toPaperbackBackupLibraryManga() {
-    final ExtensionRepoIndex extensionRepo = ExtensionRepoIndex.parseExtensionRepoIndex();
+    final extensionRepo = ExtensionRepoIndex.parseExtensionRepoIndex();
     final List<String> categoriesSorted = categories.sorted();
     final List<PaperbackBackupLibraryTab> libraryTabs = categoriesSorted
         .mapIndexed(
@@ -43,7 +43,7 @@ class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
         )
         .toList();
 
-    final PaperbackBackupItemReference primarySource = PaperbackBackupItemReference(
+    final primarySource = PaperbackBackupItemReference(
       id: extensionRepo
           .convertExtension(Extension(name: sourceId, id: sourceId), ExtensionType.aidoku, ExtensionType.paperback)
           .first

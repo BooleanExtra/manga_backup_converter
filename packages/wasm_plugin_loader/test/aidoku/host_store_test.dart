@@ -18,11 +18,12 @@ void main() {
       });
 
       test('get returns stored BytesResource', () {
-        final Uint8List bytes = Uint8List.fromList(<int>[1, 2, 3]);
+        final bytes = Uint8List.fromList(<int>[1, 2, 3]);
         final int rid = store.add(BytesResource(bytes));
         final BytesResource? res = store.get<BytesResource>(rid);
         check(res).isNotNull();
-        check(res!.bytes).deepEquals(bytes);
+        if (res == null) throw Exception('res is null');
+        check(res.bytes).deepEquals(bytes);
       });
 
       test('get with wrong type returns null', () {
@@ -41,11 +42,12 @@ void main() {
       });
 
       test('addBytes shorthand stores BytesResource', () {
-        final Uint8List bytes = Uint8List.fromList(<int>[9, 8, 7]);
+        final bytes = Uint8List.fromList(<int>[9, 8, 7]);
         final int rid = store.addBytes(bytes);
         final BytesResource? res = store.get<BytesResource>(rid);
         check(res).isNotNull();
-        check(res!.bytes).deepEquals(bytes);
+        if (res == null) throw Exception('res is null');
+        check(res.bytes).deepEquals(bytes);
       });
     });
 
@@ -104,7 +106,7 @@ void main() {
       });
 
       test('can set and read back Uint8List values', () {
-        final PostcardWriter writer = PostcardWriter()..writeString('hello');
+        final writer = PostcardWriter()..writeString('hello');
         final Uint8List bytes = writer.bytes;
         store.defaults['str_key'] = bytes;
         final Object? stored = store.defaults['str_key'];
@@ -120,8 +122,8 @@ void main() {
 
     group('partialResults stream', () {
       test('emits data added via addPartialResult', () async {
-        final HostStore store = HostStore();
-        final Uint8List data = Uint8List.fromList(<int>[1, 2, 3]);
+        final store = HostStore();
+        final data = Uint8List.fromList(<int>[1, 2, 3]);
         final Future<Uint8List> future = store.partialResults.first;
         store.addPartialResult(data);
         check(await future).deepEquals(data);
@@ -129,7 +131,7 @@ void main() {
       });
 
       test('emits multiple items in order', () async {
-        final HostStore store = HostStore();
+        final store = HostStore();
         final Future<List<Uint8List>> eventsFuture = store.partialResults.take(3).toList();
         store.addPartialResult(Uint8List.fromList(<int>[1]));
         store.addPartialResult(Uint8List.fromList(<int>[2]));
@@ -145,14 +147,14 @@ void main() {
 
     group('dispose', () {
       test('clears all resources', () {
-        final HostStore store = HostStore();
+        final store = HostStore();
         final int rid = store.add(BytesResource(Uint8List(0)));
         store.dispose();
         check(store.contains(rid)).isFalse();
       });
 
       test('closes partialResults stream', () async {
-        final HostStore store = HostStore();
+        final store = HostStore();
         final Future<List<Uint8List>> events = store.partialResults.toList();
         store.dispose();
         check(await events).isEmpty();

@@ -102,7 +102,7 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
 
   @override
   Future<Uint8List> toData() async {
-    final Archive archive = Archive();
+    final archive = Archive();
 
     archive.addFile(ArchiveFile.string('__CHAPTER_PROGRESS_MARKER_V4-1', jsonEncode(chapterProgressMarker)));
     archive.addFile(ArchiveFile.string('__CHAPTER_V4', jsonEncode(chapters)));

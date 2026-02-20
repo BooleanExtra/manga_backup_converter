@@ -17,7 +17,7 @@ Uint8List buildFakeAix({
   bool includeWasm = true,
   bool includeSourceJson = true,
 }) {
-  final Archive archive = Archive();
+  final archive = Archive();
 
   if (includeSourceJson) {
     final Uint8List meta = utf8.encode(
@@ -34,7 +34,7 @@ Uint8List buildFakeAix({
 
   if (includeWasm) {
     // Minimal valid WASM: magic bytes + version
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));
   }
 
@@ -77,12 +77,12 @@ void main() {
   });
 
   test('parses filters when present', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Object>{'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
     // filters.json is a top-level JSON array (list of filter descriptor objects)
     final Uint8List filters = utf8.encode(jsonEncode(<Object>[]));
@@ -93,12 +93,12 @@ void main() {
   });
 
   test('parses settings when present', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Object>{'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
     final Uint8List settingsJson = utf8.encode(
       jsonEncode(<Map<String, String>>[
@@ -114,12 +114,12 @@ void main() {
   });
 
   test('parses check filter from filters.json', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Object>{'id': 'en.test', 'name': 'T', 'version': 1, 'language': 'en'}),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
     final Uint8List filtersJson = utf8.encode(
       jsonEncode(<Map<String, Object>>[
@@ -137,7 +137,7 @@ void main() {
   });
 
   test('parses nested info format (info.id + info.languages)', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Map<String, Object>>{
         'info': <String, Object>{
@@ -149,7 +149,7 @@ void main() {
       }),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.nested.wasm', wasm.length, wasm));
 
     final AixBundle bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
@@ -160,7 +160,7 @@ void main() {
   });
 
   test('parses multi-language nested format', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Map<String, Object>>{
         'info': <String, Object>{
@@ -171,7 +171,7 @@ void main() {
       }),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
 
     final AixBundle bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
@@ -179,23 +179,23 @@ void main() {
   });
 
   test('throws when source.json contains invalid JSON', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List badJson = utf8.encode('not valid json {{{');
     archive.addFile(ArchiveFile('Payload/source.json', badJson.length, badJson));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('en.test.wasm', wasm.length, wasm));
 
     check(() => AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)))).throws<Object>();
   });
 
   test('AixParseException toString includes the message', () {
-    const AixParseException ex = AixParseException('test error message');
+    const ex = AixParseException('test error message');
     check(ex.toString()).contains('AixParseException');
     check(ex.toString()).contains('test error message');
   });
 
   test('parses languages as LanguageInfo objects with isDefault', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Map<String, Object>>{
         'info': <String, Object>{
@@ -209,7 +209,7 @@ void main() {
       }),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
 
     final AixBundle bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));
@@ -230,7 +230,7 @@ void main() {
   });
 
   test('parses languageSelectType from manifest', () {
-    final Archive archive = Archive();
+    final archive = Archive();
     final Uint8List meta = utf8.encode(
       jsonEncode(<String, Object>{
         'info': <String, Object>{
@@ -242,7 +242,7 @@ void main() {
       }),
     );
     archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-    final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+    final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
     archive.addFile(ArchiveFile('multi.test.wasm', wasm.length, wasm));
 
     final AixBundle bundle = AixParser.parse(Uint8List.fromList(ZipEncoder().encode(archive)));

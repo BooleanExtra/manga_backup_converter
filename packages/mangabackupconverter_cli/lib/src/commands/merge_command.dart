@@ -61,13 +61,13 @@ class MergeCommand extends Command<void> {
     print('Combined Library: ${combinedBackup.manga?.length}');
 
     final Uint8List combinedBackupData = await combinedBackup.toData();
-    final io.File outputFile = io.File(outputPath);
+    final outputFile = io.File(outputPath);
     outputFile.writeAsBytesSync(combinedBackupData);
     print('Saved merged backup to ${outputFile.path}');
   }
 
   io.File _parseFile(ArgResults results, String optionName) {
-    final io.File file = io.File(results.option(optionName)!);
+    final file = io.File(results.option(optionName)!);
     if (!file.existsSync()) {
       throw UsageException('$optionName file does not exist: ${file.path}', usage);
     }

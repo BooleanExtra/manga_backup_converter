@@ -41,7 +41,7 @@ class MigrationPipeline {
     BackupFormat source,
     BackupFormat target,
   ) async {
-    final ExtensionRepoIndex repoIndex = ExtensionRepoIndex.parseExtensionRepoIndex();
+    final repoIndex = ExtensionRepoIndex.parseExtensionRepoIndex();
     final List<ExtensionRepo> availableRepos = repoIndex.repos[target.extensionType] ?? <ExtensionRepo>[];
 
     final List<ExtensionRepo> selectedRepos = await callbacks.selectRepos(target.extensionType, availableRepos);
@@ -56,9 +56,9 @@ class MigrationPipeline {
 
     try {
       final List<MangaDetails> mangaList = _extractManga(sourceBackup);
-      final List<MangaMatchProposal> proposals = <MangaMatchProposal>[];
+      final proposals = <MangaMatchProposal>[];
 
-      for (int i = 0; i < mangaList.length; i++) {
+      for (var i = 0; i < mangaList.length; i++) {
         callbacks.onProgress(i + 1, mangaList.length, 'Searching for: ${mangaList[i].title}');
         final MangaMatchProposal proposal = await _searchForManga(mangaList[i], plugins);
         proposals.add(proposal);
@@ -67,7 +67,7 @@ class MigrationPipeline {
       final List<MangaMatchConfirmation> confirmations = await callbacks.confirmMatches(proposals);
       return _buildTargetBackup(target, confirmations);
     } finally {
-      for (final PluginSource plugin in plugins) {
+      for (final plugin in plugins) {
         plugin.dispose();
       }
     }
@@ -78,9 +78,9 @@ class MigrationPipeline {
     List<ExtensionRepo> repos,
   ) async {
     if (extensionType == ExtensionType.aidoku) {
-      final List<SourceEntry> entries = <SourceEntry>[];
-      for (final ExtensionRepo repo in repos) {
-        final SourceListManager manager = SourceListManager();
+      final entries = <SourceEntry>[];
+      for (final repo in repos) {
+        final manager = SourceListManager();
         final RemoteSourceList? sourceList = await manager.fetchSourceList(repo.url);
         if (sourceList != null) entries.addAll(sourceList.sources);
       }
@@ -95,9 +95,9 @@ class MigrationPipeline {
     List<ExtensionRepo> repos,
   ) async {
     if (extensionType == ExtensionType.aidoku) {
-      final WasmPluginLoader loader = WasmPluginLoader();
-      final List<PluginSource> plugins = <PluginSource>[];
-      for (final SourceEntry entry in extensions) {
+      final loader = WasmPluginLoader();
+      final plugins = <PluginSource>[];
+      for (final entry in extensions) {
         final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
         if (response.statusCode != 200) continue;
         final AidokuPlugin plugin = await loader.load(Uint8List.fromList(response.bodyBytes));
@@ -128,8 +128,8 @@ class MigrationPipeline {
   }
 
   Future<MangaMatchProposal> _searchForManga(MangaDetails manga, List<PluginSource> plugins) async {
-    final List<PluginSearchResult> allCandidates = <PluginSearchResult>[];
-    for (final PluginSource plugin in plugins) {
+    final allCandidates = <PluginSearchResult>[];
+    for (final plugin in plugins) {
       try {
         final PluginSearchPageResult result = await plugin.search(manga.title, 1);
         allCandidates.addAll(result.results);

@@ -54,7 +54,7 @@ class ConvertCommand extends Command<void> {
       print('[VERBOSE] All arguments: ${results.arguments}');
     }
 
-    final io.File backupFile = io.File(results.option('backup')!);
+    final backupFile = io.File(results.option('backup')!);
     if (!backupFile.existsSync()) {
       throw UsageException('Backup file does not exist: ${backupFile.path}', usage);
     }
@@ -80,7 +80,7 @@ class ConvertCommand extends Command<void> {
 
     final TachiFork outputTachiFork = TachiFork.values.byName(results.option('tachi-fork')!);
 
-    final MangaBackupConverter converter = MangaBackupConverter();
+    final converter = MangaBackupConverter();
     final ConvertableBackup importedBackup = switch (inputFormat) {
       BackupType.aidoku => converter.importAidokuBackup(backupFile.readAsBytesSync()),
       BackupType.tachi => converter.importTachibkBackup(backupFile.readAsBytesSync(), fork: outputTachiFork),
@@ -103,7 +103,7 @@ class ConvertCommand extends Command<void> {
       convertedBackup.verbosePrint(verbose);
     }
 
-    final io.File outputFile = io.File(
+    final outputFile = io.File(
       '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
     );
     final Uint8List fileData = await convertedBackup.toData();

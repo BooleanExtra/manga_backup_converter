@@ -170,7 +170,7 @@ class WasmerBindings {
   /// Read a [WasmByteVec] / wasm_name_t as a Dart String.
   /// The data field is Pointer<Char> (signed); mask to Uint8 for utf8.decode.
   static String readByteVec(ffi.Pointer<WasmByteVec> vec) {
-    final List<int> bytes = List<int>.generate(vec.ref.size, (int i) => (vec.ref.data + i).value & 0xFF);
+    final bytes = List<int>.generate(vec.ref.size, (int i) => (vec.ref.data + i).value & 0xFF);
     return utf8.decode(bytes);
   }
 }

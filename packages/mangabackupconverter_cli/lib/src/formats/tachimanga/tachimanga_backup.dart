@@ -57,15 +57,15 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
     if (prefFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref.json not found');
     }
-    final Map<String, Object?> pref = jsonDecode(String.fromCharCodes(prefFile.content)) as Map<String, Object?>;
+    final pref = jsonDecode(String.fromCharCodes(prefFile.content)) as Map<String, Object?>;
 
     // This json file is actually a pbxproj file
     final ArchiveFile? prefAllFile = contentArchive.findFile('pref-all.json');
     if (prefAllFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref-all.json not found');
     }
-    final String prefAllContent = String.fromCharCodes(prefAllFile.content);
-    final Pbxproj prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
+    final prefAllContent = String.fromCharCodes(prefAllFile.content);
+    final prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
 
     final List<ArchiveFile> prefsFiles = contentArchive.files.where((ArchiveFile file) {
       return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
@@ -106,7 +106,7 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
 
   @override
   Future<Uint8List> toData() async {
-    final Archive contentsArchive = Archive();
+    final contentsArchive = Archive();
     if (pref case final Map<String, Object?> pref) {
       contentsArchive.addFile(ArchiveFile.string('pref.json', jsonEncode(pref)));
     }
@@ -131,7 +131,7 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
     contentsArchive.addFile(ArchiveFile.noCompress('tachimanga.db', dbContent.lengthInBytes, dbContent));
     final List<int> contentsEncoded = ZipEncoder().encode(contentsArchive);
 
-    final Archive backupArchive = Archive();
+    final backupArchive = Archive();
     backupArchive.addFile(ArchiveFile.string('meta.json', meta.toJson()));
     backupArchive.addFile(ArchiveFile.noCompress('contents.zip', contentsEncoded.length, contentsEncoded));
     return ZipEncoder().encodeBytes(backupArchive);

@@ -129,7 +129,7 @@ DeviceType get _deviceTypeByUserAgent {
 
 extension ListSwap<T> on List<T> {
   List<T> swap(int activeIndex, int initialPage) {
-    final List<T> items = List<T>.of(this, growable: false);
+    final items = List<T>.of(this, growable: false);
     final T temp = items[activeIndex];
     items[activeIndex] = items[initialPage];
     items[initialPage] = temp;

@@ -39,13 +39,13 @@ class SourceListManager {
       final http.Response response = await _client.get(uri).timeout(_kTimeout);
       if (response.statusCode != 200) return null;
 
-      final Map<String, dynamic> json = jsonDecode(response.body) as Map<String, dynamic>;
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       final String name = json['name'] as String? ?? '';
-      final List<Object> rawSources = json['sources'] as List<Object>? ?? const <Object>[];
-      final List<SourceEntry> sources = rawSources.cast<Map<String, dynamic>>().map(SourceEntry.fromJson).toList();
+      final List<dynamic> rawSources = json['sources'] as List<dynamic>? ?? const <dynamic>[];
+      final List<SourceEntry> sources = rawSources.map((e) => SourceEntry.fromJson(e as Map<String, dynamic>)).toList();
 
       return RemoteSourceList(url: url, name: name, sources: sources);
-    } on Object {
+    } on Exception catch (_) {
       return null;
     }
   }

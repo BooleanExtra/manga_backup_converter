@@ -8,7 +8,7 @@ import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 void main() {
   group('SettingItem.fromJson', () {
     test('switch/toggle type produces SwitchSetting with default=true', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'switch',
         'key': 'showNsfw',
         'default': true,
@@ -19,7 +19,7 @@ void main() {
     });
 
     test('toggle type is alias for switch', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'toggle',
         'key': 'adult',
         'default': false,
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('select type produces SelectSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'select',
         'key': 'lang',
         'values': <String>['en', 'ja', 'ko'],
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('segment type produces SegmentSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'segment',
         'key': 'rating',
         'values': <String>['safe', 'suggestive', 'erotica'],
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('multi-select type produces MultiSelectSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'multi-select',
         'key': 'langs',
         'values': <String>['en', 'ja'],
@@ -67,7 +67,7 @@ void main() {
     });
 
     test('stepper type produces StepperSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'stepper',
         'key': 'limit',
         'minimumValue': 5,
@@ -81,7 +81,7 @@ void main() {
     });
 
     test('text type produces TextSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'text',
         'key': 'apiKey',
         'default': 'abc',
@@ -92,7 +92,7 @@ void main() {
     });
 
     test('group type produces GroupSetting with nested items', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'group',
         'title': 'Content',
         'items': <Map<String, Object>>[
@@ -106,7 +106,7 @@ void main() {
     });
 
     test('unknown type produces UnknownSetting', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{
+      final item = SettingItem.fromJson(<String, dynamic>{
         'type': 'button',
         'key': 'reset',
         'title': 'Reset',
@@ -115,77 +115,79 @@ void main() {
     });
 
     test('missing type produces UnknownSetting with empty type', () {
-      final SettingItem item = SettingItem.fromJson(<String, dynamic>{'key': 'x'});
+      final item = SettingItem.fromJson(<String, dynamic>{'key': 'x'});
       check(item).isA<UnknownSetting>();
     });
   });
 
   group('SettingItem.defaultEntry', () {
     test('SwitchSetting true → 1', () {
-      const SwitchSetting item = SwitchSetting(defaultValue: true, key: 'nsfw');
+      const item = SwitchSetting(defaultValue: true, key: 'nsfw');
       final ({String key, Object value})? entry = item.defaultEntry;
       check(entry).isNotNull();
-      check(entry!.key).equals('nsfw');
+      if (entry == null) throw Exception('entry is null');
+      check(entry.key).equals('nsfw');
       check(entry.value).equals(1);
     });
 
     test('SwitchSetting false → 0', () {
-      const SwitchSetting item = SwitchSetting(defaultValue: false, key: 'safe');
-      check(item.defaultEntry!.value).equals(0);
+      const item = SwitchSetting(defaultValue: false, key: 'safe');
+      check(item.defaultEntry?.value).equals(0);
     });
 
     test('SwitchSetting without key → null', () {
-      const SwitchSetting item = SwitchSetting(defaultValue: true);
+      const item = SwitchSetting(defaultValue: true);
       check(item.defaultEntry).isNull();
     });
 
     test('SelectSetting → index of defaultValue', () {
-      const SelectSetting item = SelectSetting(
+      const item = SelectSetting(
         values: <String>['en', 'ja', 'ko'],
         titles: <String>[],
         key: 'lang',
         defaultValue: 'ja',
       );
-      check(item.defaultEntry!.value).equals(1);
+      check(item.defaultEntry?.value).equals(1);
     });
 
     test('SelectSetting with unknown default → 0', () {
-      const SelectSetting item = SelectSetting(
+      const item = SelectSetting(
         values: <String>['en', 'ja'],
         titles: <String>[],
         key: 'lang',
         defaultValue: 'fr',
       );
-      check(item.defaultEntry!.value).equals(0);
+      check(item.defaultEntry?.value).equals(0);
     });
 
     test('SegmentSetting → defaultValue int', () {
-      const SegmentSetting item = SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'r');
-      check(item.defaultEntry!.value).equals(2);
+      const item = SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'r');
+      check(item.defaultEntry?.value).equals(2);
     });
 
     test('StepperSetting → rounded int', () {
-      const StepperSetting item = StepperSetting(min: 0, max: 100, step: 1, defaultValue: 20.7, key: 'n');
-      check(item.defaultEntry!.value).equals(21);
+      const item = StepperSetting(min: 0, max: 100, step: 1, defaultValue: 20.7, key: 'n');
+      check(item.defaultEntry?.value).equals(21);
     });
 
     test('TextSetting → UTF-8 Uint8List', () {
-      const TextSetting item = TextSetting(defaultValue: 'hello', key: 'api');
+      const item = TextSetting(defaultValue: 'hello', key: 'api');
       final ({String key, Object value})? entry = item.defaultEntry;
       check(entry).isNotNull();
-      check(entry!.value).isA<Uint8List>();
+      if (entry == null) throw Exception('entry is null');
+      check(entry.value).isA<Uint8List>();
       check(utf8.decode(entry.value as Uint8List)).equals('hello');
     });
 
     test('GroupSetting itself → null (children flattened separately)', () {
-      const GroupSetting item = GroupSetting(
+      const item = GroupSetting(
         items: <SettingItem>[SwitchSetting(defaultValue: true, key: 'x')],
       );
       check(item.defaultEntry).isNull();
     });
 
     test('UnknownSetting → null', () {
-      const UnknownSetting item = UnknownSetting(type: 'button', key: 'x');
+      const item = UnknownSetting(type: 'button', key: 'x');
       check(item.defaultEntry).isNull();
     });
   });
@@ -196,7 +198,7 @@ void main() {
     });
 
     test('flattens top-level settings', () {
-      final List<SwitchSetting> items = <SwitchSetting>[
+      final items = <SwitchSetting>[
         const SwitchSetting(defaultValue: true, key: 'a'),
         const SwitchSetting(defaultValue: false, key: 'b'),
       ];
@@ -205,7 +207,7 @@ void main() {
     });
 
     test('recurses into GroupSetting', () {
-      const List<GroupSetting> items = <GroupSetting>[
+      const items = <GroupSetting>[
         GroupSetting(
           title: 'Content',
           items: <SettingItem>[
@@ -220,7 +222,7 @@ void main() {
     });
 
     test('recurses into PageSetting', () {
-      const List<PageSetting> items = <PageSetting>[
+      const items = <PageSetting>[
         PageSetting(
           title: 'Advanced',
           items: <SettingItem>[TextSetting(defaultValue: 'abc', key: 'token')],
@@ -232,7 +234,7 @@ void main() {
     });
 
     test('skips items without keys', () {
-      const List<SettingItem> items = <SettingItem>[
+      const items = <SettingItem>[
         GroupSetting(title: 'G', items: <SettingItem>[]),
         UnknownSetting(type: 'button'),
       ];
@@ -241,7 +243,7 @@ void main() {
     });
 
     test('prefixes keys with sourceId when provided', () {
-      const List<GroupSetting> items = <GroupSetting>[
+      const items = <GroupSetting>[
         GroupSetting(
           title: 'Content',
           items: <SettingItem>[SwitchSetting(defaultValue: false, key: 'nsfw')],
@@ -254,7 +256,7 @@ void main() {
     });
 
     test('no prefix when sourceId is null', () {
-      const List<SwitchSetting> items = <SwitchSetting>[SwitchSetting(defaultValue: true, key: 'x')];
+      const items = <SwitchSetting>[SwitchSetting(defaultValue: true, key: 'x')];
       final Map<String, Object> result = flattenSettingDefaults(items);
       check(result.containsKey('x')).isTrue();
     });

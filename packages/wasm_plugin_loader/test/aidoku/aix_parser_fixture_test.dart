@@ -12,8 +12,8 @@ import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 void main() {
-  const String fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final File fixture = File(fixturePath).existsSync()
+  const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
+  final fixture = File(fixturePath).existsSync()
       ? File(fixturePath)
       : File('packages/wasm_plugin_loader/$fixturePath');
 

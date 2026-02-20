@@ -16,8 +16,8 @@ class PostcardReader {
 
   /// Decode a variable-length unsigned integer (LEB128).
   int readVarInt() {
-    int result = 0;
-    int shift = 0;
+    var result = 0;
+    var shift = 0;
     while (true) {
       final int byte = readU8();
       result |= (byte & 0x7F) << shift;
@@ -34,19 +34,19 @@ class PostcardReader {
   }
 
   double readF32() {
-    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 4);
+    final view = ByteData.sublistView(_bytes, _pos, _pos + 4);
     _pos += 4;
     return view.getFloat32(0, Endian.little);
   }
 
   double readF64() {
-    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 8);
+    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
     _pos += 8;
     return view.getFloat64(0, Endian.little);
   }
 
   int readI64() {
-    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 8);
+    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
     _pos += 8;
     return view.getInt64(0, Endian.little);
   }

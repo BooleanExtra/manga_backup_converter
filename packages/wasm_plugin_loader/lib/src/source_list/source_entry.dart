@@ -31,10 +31,10 @@ class SourceEntry {
       version: json['version'] as int,
       iconUrl: json['iconURL'] as String,
       downloadUrl: json['downloadURL'] as String,
-      languages: List<String>.from(json['languages'] as List<Object>? ?? const <Object>[]),
+      languages: List<String>.from(json['languages'] as List<dynamic>? ?? const <dynamic>[]),
       contentRating: json['contentRating'] as int? ?? 0,
       baseUrl: json['baseURL'] as String?,
-      altNames: List<String>.from(json['altNames'] as List<Object>? ?? const <Object>[]),
+      altNames: List<String>.from(json['altNames'] as List<dynamic>? ?? const <dynamic>[]),
     );
   }
 }

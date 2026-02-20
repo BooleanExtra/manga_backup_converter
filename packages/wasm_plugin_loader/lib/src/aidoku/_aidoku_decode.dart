@@ -22,7 +22,7 @@ Uint8List encodeQuery(String query) => Uint8List.fromList(utf8.encode(query));
 /// Encode a List<String> as a postcard Vec<String>.
 /// Used to seed source languages into WASM defaults.
 Uint8List encodeStringList(List<String> values) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeList(values, (String s, PostcardWriter pw) => pw.writeString(s));
   return w.bytes;
 }
@@ -31,7 +31,7 @@ Uint8List encodeStringList(List<String> values) {
 /// Used to pass a manga descriptor RID to WASM functions like `get_manga_update`.
 /// Field order matches the Rust `Manga` struct in aidoku-rs structs/mod.rs.
 Uint8List encodeMangaKey(String key) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeString(key); // key: String
   w.writeString(''); // title: String
   w.writeU8(0); // cover: None (Option<String>)
@@ -52,7 +52,7 @@ Uint8List encodeMangaKey(String key) {
 /// Encode a full Manga struct (postcard) with all fields populated.
 /// Used to pass a manga descriptor RID to WASM functions like `get_page_list`.
 Uint8List encodeManga(Manga m) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeString(m.key); // key: String
   w.writeString(m.title); // title: String
   w.writeOption(m.coverUrl, (String v, PostcardWriter pw) => pw.writeString(v)); // cover: Option<String>
@@ -82,13 +82,14 @@ Uint8List encodeManga(Manga m) {
 /// Encode a full Chapter struct (postcard) with all fields populated.
 /// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
 Uint8List encodeChapter(Chapter ch) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeString(ch.key); // key: String
   w.writeOption(ch.title, (String v, PostcardWriter pw) => pw.writeString(v)); // title: Option<String>
   w.writeOption(ch.chapterNumber, (double v, PostcardWriter pw) => pw.writeF32(v)); // chapter_number: Option<f32>
   w.writeOption(ch.volumeNumber, (double v, PostcardWriter pw) => pw.writeF32(v)); // volume_number: Option<f32>
+  final DateTime? dateUploaded = ch.dateUploaded;
   w.writeOption(
-    ch.dateUploaded != null ? ch.dateUploaded!.millisecondsSinceEpoch ~/ 1000 : null,
+    dateUploaded != null ? dateUploaded.millisecondsSinceEpoch ~/ 1000 : null,
     (int v, PostcardWriter pw) => pw.writeI64(v),
   ); // date_uploaded: Option<i64> (seconds)
   w.writeOption(
@@ -106,7 +107,7 @@ Uint8List encodeChapter(Chapter ch) {
 /// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
 /// Field order matches the Rust `Chapter` struct in aidoku-rs structs/mod.rs.
 Uint8List encodeChapterKey(String key) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeString(key); // key: String
   w.writeU8(0); // title: None (Option<String>)
   w.writeU8(0); // chapter_number: None (Option<f32>)
@@ -144,7 +145,7 @@ List<AidokuListing> decodeListings(PostcardReader r) {
 
 /// Encode an [AidokuListing] as postcard bytes for passing as a descriptor RID.
 Uint8List encodeListing(AidokuListing listing) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeString(listing.id);
   w.writeString(listing.name);
   w.writeVarInt(listing.kind);
@@ -153,7 +154,7 @@ Uint8List encodeListing(AidokuListing listing) {
 
 /// Encode filter list as postcard bytes.
 Uint8List encodeFilters(List<FilterValue> filters) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeList(filters, (FilterValue f, PostcardWriter pw) {
     pw.writeVarInt(f.type.index);
     pw.writeString(f.name);
@@ -291,7 +292,7 @@ void _skipPageContext(PostcardReader r) {
   if (tag == 0) return; // None
   // Some(HashMap<String, String>) — varint length + key-value pairs
   final int len = r.readVarInt();
-  for (int i = 0; i < len; i++) {
+  for (var i = 0; i < len; i++) {
     r.readString(); // key
     r.readString(); // value
   }
@@ -631,8 +632,8 @@ DeepLinkResult? decodeDeepLinkResult(PostcardReader r) {
 /// Decode a postcard HashMap<String,String>.
 Map<String, String> decodeStringMap(PostcardReader r) {
   final int count = r.readVarInt();
-  final Map<String, String> result = <String, String>{};
-  for (int i = 0; i < count; i++) {
+  final result = <String, String>{};
+  for (var i = 0; i < count; i++) {
     final String key = r.readString();
     final String value = r.readString();
     result[key] = value;
@@ -694,7 +695,7 @@ HomeLayout? decodeHomeLayoutResult(Uint8List bytes) {
 List<String> decodeStringVecResult(Uint8List bytes) {
   if (bytes.isEmpty) return const <String>[];
   try {
-    final PostcardReader r = PostcardReader(bytes);
+    final r = PostcardReader(bytes);
     return r.readList(r.readString);
   } on Object {
     return const <String>[];
@@ -762,13 +763,13 @@ Uint8List encodeStringBytes(String s) => Uint8List.fromList(utf8.encode(s));
 /// Wrap image bytes in a postcard Vec<u8> (varint length + raw bytes).
 /// Used for `process_page_image` input encoding.
 Uint8List encodeImageResponse(Uint8List bytes) {
-  final PostcardWriter w = PostcardWriter()..writeVarInt(bytes.length);
+  final w = PostcardWriter()..writeVarInt(bytes.length);
   return Uint8List.fromList(<int>[...w.bytes, ...bytes]);
 }
 
 /// Encode a Map<String,String> as a postcard HashMap.
 Uint8List encodeStringMap(Map<String, String> m) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   w.writeVarInt(m.length);
   for (final MapEntry<String, String> e in m.entries) {
     w.writeString(e.key);
@@ -786,7 +787,7 @@ Uint8List encodeOptionalStringMap(Map<String, String>? m) {
 /// Encode a [Page] as postcard bytes for `get_page_description`.
 /// Maps to the Rust Page struct: PageContent enum + thumbnail + has_description + description.
 Uint8List encodePage(Page p) {
-  final PostcardWriter w = PostcardWriter();
+  final w = PostcardWriter();
   if (p.url != null) {
     w.writeVarInt(0); // PageContent::Url
     w.writeString(p.url!);

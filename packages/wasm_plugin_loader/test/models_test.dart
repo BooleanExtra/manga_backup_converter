@@ -5,7 +5,7 @@ import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 void main() {
   group('SourceInfo', () {
     test('stores id, name, languages', () {
-      const SourceInfo info = SourceInfo(
+      const info = SourceInfo(
         id: 'multi.mangadex',
         name: 'MangaDex',
         version: 1,
@@ -19,21 +19,21 @@ void main() {
     });
 
     test('url is optional', () {
-      const SourceInfo info = SourceInfo(id: 'en.test', name: 'Test', version: 1);
+      const info = SourceInfo(id: 'en.test', name: 'Test', version: 1);
       check(info.url).isNull();
     });
   });
 
   group('Manga', () {
     test('stores key and title', () {
-      const Manga manga = Manga(key: 'abc123', title: 'Test Manga');
+      const manga = Manga(key: 'abc123', title: 'Test Manga');
       check(manga.key).equals('abc123');
       check(manga.title).equals('Test Manga');
       check(manga.coverUrl).isNull();
     });
 
     test('has sensible defaults', () {
-      const Manga manga = Manga(key: 'k', title: 't');
+      const manga = Manga(key: 'k', title: 't');
       check(manga.authors).isEmpty();
       check(manga.artists).isEmpty();
       check(manga.tags).isEmpty();
@@ -45,7 +45,7 @@ void main() {
 
   group('MangaPageResult', () {
     test('stores manga list and hasNextPage', () {
-      const MangaPageResult result = MangaPageResult(manga: <Manga>[], hasNextPage: false);
+      const result = MangaPageResult(manga: <Manga>[], hasNextPage: false);
       check(result.manga).isEmpty();
       check(result.hasNextPage).isFalse();
     });
@@ -53,7 +53,7 @@ void main() {
 
   group('Chapter', () {
     test('stores key and optional fields', () {
-      const Chapter chapter = Chapter(key: 'ch1', title: 'Chapter 1', chapterNumber: 1.0);
+      const chapter = Chapter(key: 'ch1', title: 'Chapter 1', chapterNumber: 1.0);
       check(chapter.key).equals('ch1');
       check(chapter.title).equals('Chapter 1');
       check(chapter.chapterNumber).equals(1.0);
@@ -63,7 +63,7 @@ void main() {
 
   group('FilterValue', () {
     test('stores type, name, and optional value', () {
-      const FilterValue f = FilterValue(type: FilterType.text, name: 'Search', value: 'query');
+      const f = FilterValue(type: FilterType.text, name: 'Search', value: 'query');
       check(f.type).equals(FilterType.text);
       check(f.name).equals('Search');
       check(f.value).equals('query');
@@ -72,7 +72,7 @@ void main() {
 
   group('Page', () {
     test('stores index and optional fields', () {
-      const Page page = Page(
+      const page = Page(
         index: 3,
         url: 'https://example.com/img.jpg',
         base64: 'abc==',
@@ -85,7 +85,7 @@ void main() {
     });
 
     test('toString includes index', () {
-      const Page page = Page(index: 5);
+      const page = Page(index: 5);
       check(page.toString()).contains('5');
     });
   });

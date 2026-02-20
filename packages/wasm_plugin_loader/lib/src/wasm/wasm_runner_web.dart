@@ -28,9 +28,9 @@ extension type _WasmMemory._(JSObject _) implements JSObject {
 // ---------------------------------------------------------------------------
 
 JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
-  final JSObject outer = JSObject();
+  final outer = JSObject();
   for (final MapEntry<String, Map<String, Function>> moduleEntry in imports.entries) {
-    final JSObject inner = JSObject();
+    final inner = JSObject();
     for (final MapEntry<String, Function> fnEntry in moduleEntry.value.entries) {
       final Function dartFn = fnEntry.value;
       // 4-arg JS wrapper; extra args beyond the function's arity are ignored
@@ -78,7 +78,7 @@ class WasmRunner {
     final JSObject importObj = _buildImportObject(imports);
     final JSObject result = await _wasmInstantiateModule(module, importObj).toDart;
 
-    final _WasmInstance instance = result as _WasmInstance;
+    final instance = result as _WasmInstance;
     final JSObject exports = instance.exports;
     final Uint8List memView = _readMemoryView(exports);
 

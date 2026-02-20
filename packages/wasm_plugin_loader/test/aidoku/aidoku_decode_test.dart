@@ -94,7 +94,7 @@ void main() {
     });
 
     test('unicode string encodes correctly', () {
-      const String s = 'こんにちは';
+      const s = 'こんにちは';
       check(encodeQuery(s)).deepEquals(utf8.encode(s));
     });
   });
@@ -102,7 +102,7 @@ void main() {
   group('encodeFilters', () {
     test('empty list encodes to length-0 postcard list', () {
       final Uint8List bytes = encodeFilters(<FilterValue>[]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       check(r.readVarInt()).equals(0);
       check(r.isAtEnd).isTrue();
     });
@@ -111,7 +111,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.text, name: 'Search', value: 'query'),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       check(r.readVarInt()).equals(1); // list length
       check(r.readVarInt()).equals(FilterType.text.index); // 0
       check(r.readString()).equals('Search');
@@ -123,7 +123,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.check, name: 'NSFW', value: true),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       check(r.readVarInt()).equals(FilterType.check.index); // 1
       check(r.readString()).equals('NSFW');
@@ -135,7 +135,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.sort, name: 'Sort', value: 2),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       check(r.readVarInt()).equals(FilterType.sort.index); // 2
       check(r.readString()).equals('Sort');
@@ -147,7 +147,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.select, name: 'Lang', value: 0),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       check(r.readVarInt()).equals(FilterType.select.index); // 3
     });
@@ -156,7 +156,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.range, name: 'Year', value: 2020),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       check(r.readVarInt()).equals(FilterType.range.index); // 4
     });
@@ -165,7 +165,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.group, name: 'Genre'),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       check(r.readVarInt()).equals(FilterType.group.index); // 5
     });
@@ -174,7 +174,7 @@ void main() {
       final Uint8List bytes = encodeFilters(<FilterValue>[
         const FilterValue(type: FilterType.sort, name: 'Sort'),
       ]);
-      final PostcardReader r = PostcardReader(bytes);
+      final r = PostcardReader(bytes);
       r.readVarInt(); // list length
       r.readVarInt(); // type index
       r.readString(); // name
@@ -184,7 +184,7 @@ void main() {
 
   group('decodeMangaPageResult', () {
     test('empty manga list with hasNextPage false', () {
-      final PostcardWriter w = PostcardWriter()
+      final w = PostcardWriter()
         ..writeVarInt(0)
         ..writeBool(false);
       final MangaPageResult result = decodeMangaPageResult(PostcardReader(w.bytes));
@@ -193,7 +193,7 @@ void main() {
     });
 
     test('hasNextPage true', () {
-      final PostcardWriter w = PostcardWriter()
+      final w = PostcardWriter()
         ..writeVarInt(0)
         ..writeBool(true);
       final MangaPageResult result = decodeMangaPageResult(PostcardReader(w.bytes));
@@ -201,7 +201,7 @@ void main() {
     });
 
     test('non-empty manga list decodes all entries', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(2); // 2 manga
       _writeManga(w, key: 'k1', title: 'Manga 1');
       _writeManga(w, key: 'k2', title: 'Manga 2');
@@ -216,7 +216,7 @@ void main() {
 
   group('decodeManga', () {
     test('required fields only, all optionals absent', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, key: 'abc', title: 'My Manga');
       final Manga manga = decodeManga(PostcardReader(w.bytes));
       check(manga.key).equals('abc');
@@ -231,7 +231,7 @@ void main() {
     });
 
     test('all optional string fields present', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(
         w,
         author: 'Author One',
@@ -249,49 +249,49 @@ void main() {
     });
 
     test('status: ongoing(1)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, status: 1);
       check(decodeManga(PostcardReader(w.bytes)).status).equals(MangaStatus.ongoing);
     });
 
     test('status: completed(2)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, status: 2);
       check(decodeManga(PostcardReader(w.bytes)).status).equals(MangaStatus.completed);
     });
 
     test('status: cancelled(3)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, status: 3);
       check(decodeManga(PostcardReader(w.bytes)).status).equals(MangaStatus.cancelled);
     });
 
     test('status: hiatus(4)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, status: 4);
       check(decodeManga(PostcardReader(w.bytes)).status).equals(MangaStatus.hiatus);
     });
 
     test('contentRating: suggestive(1)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, rating: 1);
       check(decodeManga(PostcardReader(w.bytes)).contentRating).equals(ContentRating.suggestive);
     });
 
     test('contentRating: nsfw(2)', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, rating: 2);
       check(decodeManga(PostcardReader(w.bytes)).contentRating).equals(ContentRating.nsfw);
     });
 
     test('tags list decoded', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeManga(w, tags: <String>['action', 'comedy', 'drama']);
       check(decodeManga(PostcardReader(w.bytes)).tags).deepEquals(<Object?>['action', 'comedy', 'drama']);
     });
 
     test('chapters list decoded', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       // Write manga manually to include an inline chapter.
       w.writeString('k'); // key
       w.writeString('T'); // title
@@ -318,7 +318,7 @@ void main() {
 
   group('decodeChapter', () {
     test('required fields only, all optionals absent', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeChapter(w);
       final Chapter ch = decodeChapter(PostcardReader(w.bytes));
       check(ch.key).equals('ch1');
@@ -332,7 +332,7 @@ void main() {
     });
 
     test('optional title and scanlator present', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeChapter(w, title: 'Chapter 5', scanlator: 'GroupX');
       final Chapter ch = decodeChapter(PostcardReader(w.bytes));
       check(ch.title).equals('Chapter 5');
@@ -340,7 +340,7 @@ void main() {
     });
 
     test('chapterNumber and volumeNumber decoded as f32', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeChapter(w, chapterNum: 12.5, volumeNum: 2.0);
       final Chapter ch = decodeChapter(PostcardReader(w.bytes));
       check(ch.chapterNumber).isNotNull().isA<num>().isCloseTo(12.5, 0.001);
@@ -348,15 +348,15 @@ void main() {
     });
 
     test('dateUploaded converts seconds to DateTime', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeChapter(w, dateSecs: 1700000000.0);
       final Chapter ch = decodeChapter(PostcardReader(w.bytes));
       check(ch.dateUploaded).isNotNull();
-      check(ch.dateUploaded!.millisecondsSinceEpoch).equals((1700000000.0 * 1000).toInt());
+      check(ch.dateUploaded?.millisecondsSinceEpoch).equals((1700000000.0 * 1000).toInt());
     });
 
     test('optional url decoded', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       _writeChapter(w, url: 'https://chapter.url/1');
       final Chapter ch = decodeChapter(PostcardReader(w.bytes));
       check(ch.url).equals('https://chapter.url/1');
@@ -401,12 +401,12 @@ void main() {
     }
 
     test('empty list', () {
-      final PostcardWriter w = PostcardWriter()..writeVarInt(0);
+      final w = PostcardWriter()..writeVarInt(0);
       check(decodePageList(PostcardReader(w.bytes))).isEmpty();
     });
 
     test('single Url page', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(1); // 1 page
       writePage(w, url: 'https://img.example.com/page.jpg');
       final List<Page> pages = decodePageList(PostcardReader(w.bytes));
@@ -417,7 +417,7 @@ void main() {
     });
 
     test('Text page', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(1);
       writePage(w, variant: 1, text: 'caption');
       final List<Page> pages = decodePageList(PostcardReader(w.bytes));
@@ -426,7 +426,7 @@ void main() {
     });
 
     test('Image page (variant 2) has no url or text', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(1);
       writePage(w, variant: 2);
       final List<Page> pages = decodePageList(PostcardReader(w.bytes));
@@ -435,7 +435,7 @@ void main() {
     });
 
     test('Url page with PageContext (HashMap) is skipped correctly', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(1);
       writePage(
         w,
@@ -451,7 +451,7 @@ void main() {
     });
 
     test('multiple pages preserve order', () {
-      final PostcardWriter w = PostcardWriter();
+      final w = PostcardWriter();
       w.writeVarInt(3);
       writePage(w, url: 'https://img.example.com/0.jpg');
       writePage(w, url: 'https://img.example.com/1.jpg');

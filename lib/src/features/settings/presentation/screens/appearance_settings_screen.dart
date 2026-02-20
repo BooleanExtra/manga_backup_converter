@@ -14,7 +14,7 @@ class AppearanceSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Settings settings = ref.watch(settingsServiceProvider);
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final List<FlexSchemeData> themes = ref.watch(themesProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Appearance')),

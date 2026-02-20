@@ -49,7 +49,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   });
 
   static AidokuBackup fromData(Uint8List bytes, {String? overrideName}) {
-    final Map<String, Object> asMap =
+    final asMap =
         PropertyListSerialization.propertyListWithData(ByteData.sublistView(bytes)) as Map<String, Object>;
     AidokuBackup backup = fromMap(asMap);
     if (overrideName != null) {
@@ -71,15 +71,15 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   static const AidokuBackup Function(String json) fromJson = AidokuBackupMapper.fromJson;
 
   AidokuBackup mergeWith(AidokuBackup otherBackup, {bool verbose = false}) {
-    final Set<AidokuBackupLibraryManga> libraryCombined = <AidokuBackupLibraryManga>{};
-    int itemsWithoutCategories = 0;
-    int itemsWithDuplicates = 0;
+    final libraryCombined = <AidokuBackupLibraryManga>{};
+    var itemsWithoutCategories = 0;
+    var itemsWithDuplicates = 0;
     for (final AidokuBackupLibraryManga libraryItem in (library ?? <AidokuBackupLibraryManga>{})) {
       final Set<AidokuBackupLibraryManga> libraryItemDuplicates = _findDuplicates(otherBackup, libraryItem);
       if (libraryItemDuplicates.isNotEmpty) {
         itemsWithDuplicates++;
       }
-      final Set<String> combinedCategories = <String>{
+      final combinedCategories = <String>{
         ...libraryItem.categories,
         ...libraryItemDuplicates.fold(
           <String>{},
@@ -157,23 +157,23 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         libraryCombined.add(otherLibraryItem);
       }
     }
-    final Set<AidokuBackupManga> mangaCombined = <AidokuBackupManga>{
+    final mangaCombined = <AidokuBackupManga>{
       ...?manga?.map((AidokuBackupManga e) => e.copyWith()).toSet(),
       ...?otherBackup.manga?.map((AidokuBackupManga e) => e.copyWith()).toSet(),
     };
-    final Set<AidokuBackupHistory> historyCombined = <AidokuBackupHistory>{
+    final historyCombined = <AidokuBackupHistory>{
       ...?history?.map((AidokuBackupHistory e) => e.copyWith()).toSet(),
       ...?otherBackup.history?.map((AidokuBackupHistory e) => e.copyWith()).toSet(),
     };
-    final Set<AidokuBackupChapter> chaptersCombined = <AidokuBackupChapter>{
+    final chaptersCombined = <AidokuBackupChapter>{
       ...?chapters?.map((AidokuBackupChapter e) => e.copyWith()).toSet(),
       ...?otherBackup.chapters?.map((AidokuBackupChapter e) => e.copyWith()).toSet(),
     };
-    final Set<AidokuBackupTrackItem> trackItemsCombined = <AidokuBackupTrackItem>{
+    final trackItemsCombined = <AidokuBackupTrackItem>{
       ...?trackItems?.map((AidokuBackupTrackItem e) => e.copyWith()).toSet(),
       ...?otherBackup.trackItems?.map((AidokuBackupTrackItem e) => e.copyWith()).toSet(),
     };
-    final Set<String> combinedCategories = <String>{...?categories, ...?otherBackup.categories};
+    final combinedCategories = <String>{...?categories, ...?otherBackup.categories};
     if (libraryCombined.where((AidokuBackupLibraryManga l) => l.categories.contains('Default')).isNotEmpty) {
       combinedCategories.add('Default');
     }
@@ -197,9 +197,9 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
     return switch (type) {
       BackupType.aidoku => this,
       BackupType.paperback => (() {
-        final List<PaperbackBackupChapterProgressMarker> chapterProgressMarker =
+        final chapterProgressMarker =
             <PaperbackBackupChapterProgressMarker>[];
-        final List<PaperbackBackupChapter> chapters = <PaperbackBackupChapter>[];
+        final chapters = <PaperbackBackupChapter>[];
         final List<PaperbackBackupLibraryManga> libraryManga =
             library
                 ?.map((AidokuBackupLibraryManga eachLibraryManga) => eachLibraryManga.toPaperbackBackupLibraryManga())
@@ -208,7 +208,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         final List<PaperbackBackupMangaInfo> mangaInfo =
             manga?.map((AidokuBackupManga eachManga) => eachManga.toPaperbackMangaInfo()).toList() ??
             <PaperbackBackupMangaInfo>[];
-        final List<PaperbackBackupSourceManga> sourceManga = <PaperbackBackupSourceManga>[];
+        final sourceManga = <PaperbackBackupSourceManga>[];
         return PaperbackBackup(
           name: name,
           chapterProgressMarker: chapterProgressMarker,
@@ -241,7 +241,7 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
 }
 
 Set<AidokuBackupLibraryManga> _findDuplicates(AidokuBackup aidokuBackup, AidokuBackupLibraryManga libraryItem) {
-  final Set<AidokuBackupLibraryManga> duplicates = <AidokuBackupLibraryManga>{};
+  final duplicates = <AidokuBackupLibraryManga>{};
   for (final AidokuBackupLibraryManga otherLibraryItem in (aidokuBackup.library ?? <AidokuBackupLibraryManga>{})) {
     if (otherLibraryItem.mangaId == libraryItem.mangaId &&
         otherLibraryItem.sourceId == libraryItem.sourceId &&

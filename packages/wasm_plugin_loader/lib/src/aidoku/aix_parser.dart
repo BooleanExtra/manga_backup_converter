@@ -36,30 +36,30 @@ class AixParser {
 
     final ArchiveFile? sourceFile = archive.findFile('Payload/source.json');
     if (sourceFile == null) throw const AixParseException('Payload/source.json not found in .aix archive');
-    final Map<String, dynamic> sourceJson =
+    final sourceJson =
         jsonDecode(utf8.decode(sourceFile.content as List<int>)) as Map<String, dynamic>;
 
     // Support both flat format { "id": ..., "language": ... }
     // and nested format { "info": { "id": ..., "languages": [...] } }
     final Map<String, dynamic> infoJson = (sourceJson['info'] as Map<String, dynamic>?) ?? sourceJson;
-    final String? languageSelectType = sourceJson['languageSelectType'] as String?;
+    final languageSelectType = sourceJson['languageSelectType'] as String?;
 
-    final List<Object>? rawLangs = infoJson['languages'] as List<Object>?;
+    final rawLangs = infoJson['languages'] as List<dynamic>?;
     List<LanguageInfo> languageInfos = rawLangs != null
-        ? rawLangs.map(LanguageInfo.fromJson).toList()
+        ? rawLangs.map((e) => LanguageInfo.fromJson(e as Object)).toList()
         : <LanguageInfo>[];
     // Flat-format fallback: single 'language' string.
     if (languageInfos.isEmpty) {
-      final String? single = infoJson['language'] as String?;
+      final single = infoJson['language'] as String?;
       if (single != null) languageInfos = <LanguageInfo>[LanguageInfo.fromJson(single)];
     }
     final List<String> languages = languageInfos.map((LanguageInfo l) => l.effectiveValue).toList();
 
     // Listings may be at root level or inside the info block.
-    final List<Object>? listingsRaw = (sourceJson['listings'] ?? infoJson['listings']) as List<Object>?;
+    final listingsRaw = (sourceJson['listings'] ?? infoJson['listings']) as List<dynamic>?;
     final List<SourceListing> listings =
-        listingsRaw?.map((Object l) {
-          final Map<String, dynamic> m = l as Map<String, dynamic>;
+        listingsRaw?.map((l) {
+          final m = l as Map<String, dynamic>;
           return SourceListing(
             id: m['id'] as String,
             name: m['name'] as String,
@@ -68,7 +68,7 @@ class AixParser {
         }).toList() ??
         const <SourceListing>[];
 
-    final SourceInfo info = SourceInfo(
+    final info = SourceInfo(
       id: infoJson['id'] as String,
       name: infoJson['name'] as String,
       version: (infoJson['version'] as num?)?.toInt() ?? 0,
@@ -87,13 +87,13 @@ class AixParser {
 
     List<FilterInfo>? filters;
     if (filtersFile != null) {
-      final List<dynamic> rawFilters = jsonDecode(utf8.decode(filtersFile.content as List<int>)) as List<dynamic>;
+      final rawFilters = jsonDecode(utf8.decode(filtersFile.content as List<int>)) as List<dynamic>;
       filters = rawFilters.whereType<Map<String, dynamic>>().map(FilterInfo.fromJson).toList();
     }
 
     List<SettingItem>? settings;
     if (settingsFile != null) {
-      final List<dynamic> rawSettings = jsonDecode(utf8.decode(settingsFile.content as List<int>)) as List<dynamic>;
+      final rawSettings = jsonDecode(utf8.decode(settingsFile.content as List<int>)) as List<dynamic>;
       settings = rawSettings.whereType<Map<String, dynamic>>().map(SettingItem.fromJson).toList();
     }
 

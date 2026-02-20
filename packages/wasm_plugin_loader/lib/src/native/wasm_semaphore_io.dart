@@ -71,13 +71,13 @@ class WasmSemaphore {
     if (_initialized) return;
     _initialized = true;
     if (Platform.isWindows) {
-      final ffi.DynamicLibrary lib = ffi.DynamicLibrary.open('kernel32.dll');
+      final lib = ffi.DynamicLibrary.open('kernel32.dll');
       _createSemaphore = lib.lookupFunction<_CreateSemaphoreC, _CreateSemaphoreDart>('CreateSemaphoreA');
       _waitForSingleObject = lib.lookupFunction<_WaitForSingleObjectC, _WaitForSingleObjectDart>('WaitForSingleObject');
       _releaseSemaphore = lib.lookupFunction<_ReleaseSemaphoreC, _ReleaseSemaphoreDart>('ReleaseSemaphore');
       _closeHandle = lib.lookupFunction<_CloseHandleC, _CloseHandleDart>('CloseHandle');
     } else {
-      final ffi.DynamicLibrary lib = ffi.DynamicLibrary.process();
+      final lib = ffi.DynamicLibrary.process();
       _semInit = lib.lookupFunction<_SemInitC, _SemInitDart>('sem_init');
       _semWait = lib.lookupFunction<_SemWaitC, _SemWaitDart>('sem_wait');
       _semPost = lib.lookupFunction<_SemPostC, _SemPostDart>('sem_post');
@@ -112,7 +112,7 @@ class WasmSemaphore {
   /// Block the calling thread until [signal] is called.
   void wait() {
     if (_isWindows) {
-      const int infinite = 0xFFFFFFFF;
+      const infinite = 0xFFFFFFFF;
       _waitForSingleObject!(_ptr, infinite);
     } else {
       _semWait!(_ptr);

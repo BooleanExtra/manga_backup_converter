@@ -17,7 +17,7 @@ import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 bool _hasWasmer() {
   final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final String lib = Platform.isWindows
+  final lib = Platform.isWindows
       ? '$home\\.wasmer\\lib\\wasmer.dll'
       : Platform.isMacOS
       ? '$home/.wasmer/lib/libwasmer.dylib'
@@ -26,8 +26,8 @@ bool _hasWasmer() {
 }
 
 void main() {
-  const String fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final File fixture = File(fixturePath).existsSync()
+  const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
+  final fixture = File(fixturePath).existsSync()
       ? File(fixturePath)
       : File('packages/wasm_plugin_loader/$fixturePath');
 
@@ -41,7 +41,7 @@ void main() {
     () {
       test('loads .aix and returns source info', () async {
         final Uint8List aixBytes = fixture.readAsBytesSync();
-        final WasmPluginLoader loader = WasmPluginLoader();
+        final loader = WasmPluginLoader();
         final AidokuPlugin plugin = await loader.load(aixBytes);
         check(plugin.sourceInfo.id).equals('multi.mangadex');
         check(plugin.sourceInfo.name).equals('MangaDex');

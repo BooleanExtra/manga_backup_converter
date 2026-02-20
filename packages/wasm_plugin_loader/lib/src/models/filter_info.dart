@@ -21,7 +21,7 @@ class FilterInfo {
 
   factory FilterInfo.fromJson(Map<String, dynamic> json) {
     final String type = json['type'] as String? ?? '';
-    final String? name = json['name'] as String?;
+    final name = json['name'] as String?;
     final bool canExclude = json['canExclude'] as bool? ?? false;
     final bool canAscend = json['canAscend'] as bool? ?? false;
     final List<String> options = _stringList(json['options'] ?? json['cases'] ?? json['values']);

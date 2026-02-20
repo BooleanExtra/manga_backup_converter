@@ -11,7 +11,7 @@ import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 const String _wasmSkip = 'Requires web platform (dart:js_interop + browser WebAssembly API).';
 
 Uint8List _buildFakeAix(String id) {
-  final Archive archive = Archive();
+  final archive = Archive();
   final Uint8List meta = utf8.encode(
     jsonEncode(<String, Object>{
       'id': id,
@@ -22,31 +22,31 @@ Uint8List _buildFakeAix(String id) {
     }),
   );
   archive.addFile(ArchiveFile('Payload/source.json', meta.length, meta));
-  final Uint8List wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
+  final wasm = Uint8List.fromList(<int>[0x00, 0x61, 0x73, 0x6D, 0x01, 0x00, 0x00, 0x00]);
   archive.addFile(ArchiveFile('$id.wasm', wasm.length, wasm));
   return Uint8List.fromList(ZipEncoder().encode(archive));
 }
 
 void main() {
   test('starts empty', () {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     check(loader.loadedSources).isEmpty();
     check(loader.findBySourceId('multi.mangadex')).isNull();
   });
 
   test('unload() is idempotent for unknown source id', () {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     check(() => loader.unload('unknown.source')).returnsNormally();
     check(loader.loadedSources).isEmpty();
   });
 
   test('findBySourceId returns null for unknown id', () {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     check(loader.findBySourceId('unknown.source')).isNull();
   });
 
   test('load() registers plugin by source id', skip: _wasmSkip, () async {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     final AidokuPlugin plugin = await loader.load(_buildFakeAix('en.testsource'));
     check(plugin.sourceInfo.id).equals('en.testsource');
     check(loader.loadedSources).length.equals(1);
@@ -54,14 +54,14 @@ void main() {
   });
 
   test('load() can register multiple plugins', skip: _wasmSkip, () async {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     await loader.load(_buildFakeAix('en.source1'));
     await loader.load(_buildFakeAix('en.source2'));
     check(loader.loadedSources).length.equals(2);
   });
 
   test('load() replaces plugin with same id', skip: _wasmSkip, () async {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     await loader.load(_buildFakeAix('en.source'));
     final AidokuPlugin second = await loader.load(_buildFakeAix('en.source'));
     check(loader.loadedSources).length.equals(1);
@@ -69,7 +69,7 @@ void main() {
   });
 
   test('unload() removes plugin', skip: _wasmSkip, () async {
-    final WasmPluginLoader loader = WasmPluginLoader();
+    final loader = WasmPluginLoader();
     await loader.load(_buildFakeAix('en.source'));
     loader.unload('en.source');
     check(loader.loadedSources).isEmpty();

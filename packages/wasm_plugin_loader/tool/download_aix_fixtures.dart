@@ -14,8 +14,8 @@ const Set<String> _targetIds = <String>{'en.asurascans', 'en.weebcentral', 'mult
 const String _outputDir = 'test/aidoku/fixtures';
 
 Future<void> main() async {
-  final http.Client client = http.Client();
-  final SourceListManager mgr = SourceListManager(httpClient: client);
+  final client = http.Client();
+  final mgr = SourceListManager(httpClient: client);
 
   print('Fetching source list...');
   final RemoteSourceList? list = await mgr.fetchSourceList(kAidokuCommunitySourceListUrl);
@@ -37,10 +37,10 @@ Future<void> main() async {
     exit(1);
   }
 
-  for (final SourceEntry source in targets) {
-    final String url = '$baseUrl${source.downloadUrl}';
+  for (final source in targets) {
+    final url = '$baseUrl${source.downloadUrl}';
     final String filename = source.downloadUrl.split('/').last;
-    final File outFile = File('$_outputDir/$filename');
+    final outFile = File('$_outputDir/$filename');
 
     if (outFile.existsSync()) {
       print('[$filename] already exists, skipping');

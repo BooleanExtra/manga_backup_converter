@@ -35,7 +35,7 @@ class App extends ConsumerWidget {
 
     final Settings settings = ref.watch(settingsServiceProvider);
 
-    final RouterWidget materialApp = RouterWidget(
+    final materialApp = RouterWidget(
       builder: (BuildContext context, RouterConfig<Object> router) {
         return AppSettings(
           settings: settings,

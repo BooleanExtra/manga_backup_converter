@@ -44,7 +44,7 @@ class WasmSharedState {
       return;
     }
     final ffi.Pointer<ffi.Uint8> buf = calloc<ffi.Uint8>(body.length);
-    for (int i = 0; i < body.length; i++) {
+    for (var i = 0; i < body.length; i++) {
       (buf + i).value = body[i];
     }
     _bufferPtrSlot.value = buf.address;
@@ -71,7 +71,7 @@ class WasmSharedState {
     final int ptr = ffi.Pointer<ffi.Int64>.fromAddress(bufferPtrSlotAddress).value;
     final int len = ffi.Pointer<ffi.Int64>.fromAddress(bufferLenSlotAddress).value;
     if (ptr == 0 || len == 0) return Uint8List(0);
-    final ffi.Pointer<ffi.Uint8> nativePtr = ffi.Pointer<ffi.Uint8>.fromAddress(ptr);
+    final nativePtr = ffi.Pointer<ffi.Uint8>.fromAddress(ptr);
     return Uint8List.fromList(List<int>.generate(len, (int i) => (nativePtr + i).value));
   }
 

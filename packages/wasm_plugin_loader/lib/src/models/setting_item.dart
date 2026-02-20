@@ -22,12 +22,12 @@ sealed class SettingItem {
 
   factory SettingItem.fromJson(Map<String, dynamic> json) {
     final String type = json['type'] as String? ?? '';
-    final String? key = json['key'] as String?;
-    final String? title = json['title'] as String?;
-    final String? subtitle = json['subtitle'] as String?;
-    final String? footer = json['footer'] as String?;
-    final String? requires = json['requires'] as String?;
-    final String? requiresFalse = json['requiresFalse'] as String?;
+    final key = json['key'] as String?;
+    final title = json['title'] as String?;
+    final subtitle = json['subtitle'] as String?;
+    final footer = json['footer'] as String?;
+    final requires = json['requires'] as String?;
+    final requiresFalse = json['requiresFalse'] as String?;
 
     switch (type) {
       case 'switch':
@@ -343,8 +343,8 @@ Map<String, Object> flattenSettingDefaults(
   List<SettingItem> items, {
   String? sourceId,
 }) {
-  final Map<String, Object> result = <String, Object>{};
-  for (final SettingItem item in items) {
+  final result = <String, Object>{};
+  for (final item in items) {
     final ({String key, Object value})? entry = item.defaultEntry;
     if (entry != null) {
       final String key = sourceId != null ? '$sourceId.${entry.key}' : entry.key;
@@ -370,7 +370,7 @@ List<SettingItem> _parseItems(Object? raw) {
 }
 
 Uint8List _postcardEncodeStringList(List<String> values) {
-  final PostcardWriter writer = PostcardWriter();
+  final writer = PostcardWriter();
   writer.writeList(values, (String s, PostcardWriter w) => w.writeString(s));
   return writer.bytes;
 }

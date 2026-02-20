@@ -37,8 +37,8 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
     final String backupName = p.basenameWithoutExtension(backupJsonFile.name);
-    final String backupJson = String.fromCharCodes(backupJsonFile.content);
-    final Map<String, dynamic>? backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
+    final backupJson = String.fromCharCodes(backupJsonFile.content);
+    final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
     if (backupMap == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
@@ -77,7 +77,7 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
 
   @override
   Future<Uint8List> toData() async {
-    final Archive archive = Archive();
+    final archive = Archive();
     final List<int> dbJson = jsonEncode(db.toMap()).codeUnits;
     archive.addFile(ArchiveFile('$name.db', dbJson.length, dbJson));
     return ZipEncoder().encodeBytes(archive);

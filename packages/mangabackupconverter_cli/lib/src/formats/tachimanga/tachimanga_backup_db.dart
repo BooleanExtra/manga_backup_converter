@@ -59,7 +59,7 @@ class TachimangaBackupDb with TachimangaBackupDbMappable {
       await databaseFactory.writeDatabaseBytes('tachimanga.db', dbContent);
       db = await databaseFactory.openDatabase('tachimanga.db');
     }
-    final TachimangaBackupDbManager backupDbManager = TachimangaBackupDbManager(
+    final backupDbManager = TachimangaBackupDbManager(
       db: db,
       databaseFactory: databaseFactory,
     );
@@ -124,7 +124,7 @@ class TachimangaBackupDb with TachimangaBackupDbMappable {
       databaseFactory = databaseFactoryFfi;
       db = await databaseFactory.openDatabase('tachimanga.db');
     }
-    final TachimangaBackupDbManager backupDbManager = TachimangaBackupDbManager(
+    final backupDbManager = TachimangaBackupDbManager(
       db: db,
       databaseFactory: databaseFactory,
     );

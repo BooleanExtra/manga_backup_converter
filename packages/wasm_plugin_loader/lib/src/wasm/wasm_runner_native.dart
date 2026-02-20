@@ -58,14 +58,14 @@ class WasmRunner {
     Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
   }) async {
     final ffi.DynamicLibrary lib = _openWasmer();
-    final WasmerBindings bindings = WasmerBindings(lib);
+    final bindings = WasmerBindings(lib);
 
     final ffi.Pointer<WasmEngineT> engine = bindings.engineNew();
     final ffi.Pointer<WasmStoreT> store = bindings.storeNew(engine);
 
     // Copy WASM bytes into native buffer and compile
     final ffi.Pointer<ffi.Uint8> nativeBuf = calloc<ffi.Uint8>(wasmBytes.length);
-    for (int i = 0; i < wasmBytes.length; i++) {
+    for (var i = 0; i < wasmBytes.length; i++) {
       (nativeBuf + i).value = wasmBytes[i];
     }
     final ffi.Pointer<WasmByteVec> byteVec = calloc<WasmByteVec>();
@@ -84,7 +84,7 @@ class WasmRunner {
     final ffi.Pointer<WasmExporttypeVec> exportTypeVec = calloc<WasmExporttypeVec>();
     bindings.exporttypeVecNewEmpty(exportTypeVec);
     bindings.moduleExports(module, exportTypeVec);
-    final List<String> exportNames = <String>[
+    final exportNames = <String>[
       for (int i = 0; i < exportTypeVec.ref.size; i++)
         WasmerBindings.readByteVec(
           bindings.exporttypeName((exportTypeVec.ref.data + i).value),
@@ -98,10 +98,10 @@ class WasmRunner {
     bindings.importtypeVecNewEmpty(importTypeVec);
     bindings.moduleImports(module, importTypeVec);
 
-    final List<ffi.NativeCallable<WasmFuncCallbackC>> nativeCallables = <ffi.NativeCallable<WasmFuncCallbackC>>[];
-    final List<ffi.Pointer<WasmExternT>> externPtrs = <ffi.Pointer<WasmExternT>>[];
+    final nativeCallables = <ffi.NativeCallable<WasmFuncCallbackC>>[];
+    final externPtrs = <ffi.Pointer<WasmExternT>>[];
 
-    for (int i = 0; i < importTypeVec.ref.size; i++) {
+    for (var i = 0; i < importTypeVec.ref.size; i++) {
       final ffi.Pointer<wasm_importtype_t> it = (importTypeVec.ref.data + i).value;
       final String modName = WasmerBindings.readByteVec(bindings.importtypeModule(it));
       final String fnName = WasmerBindings.readByteVec(bindings.importtypeName(it));
@@ -127,7 +127,7 @@ class WasmRunner {
       bindings.externVecNewEmpty(externVec);
     } else {
       final ffi.Pointer<ffi.Pointer<WasmExternT>> buf = calloc<ffi.Pointer<WasmExternT>>(externPtrs.length);
-      for (int i = 0; i < externPtrs.length; i++) {
+      for (var i = 0; i < externPtrs.length; i++) {
         (buf + i).value = externPtrs[i];
       }
       bindings.externVecNew(externVec, externPtrs.length, buf);
@@ -152,10 +152,10 @@ class WasmRunner {
     bindings.externVecNewEmpty(exportVec);
     bindings.instanceExports(instance, exportVec);
 
-    final Map<String, ffi.Pointer<WasmExternT>> exportMap = <String, ffi.Pointer<WasmExternT>>{};
-    ffi.Pointer<WasmMemoryT> memory = ffi.nullptr as ffi.Pointer<WasmMemoryT>;
+    final exportMap = <String, ffi.Pointer<WasmExternT>>{};
+    var memory = ffi.nullptr as ffi.Pointer<WasmMemoryT>;
     final int count = exportVec.ref.size < exportNames.length ? exportVec.ref.size : exportNames.length;
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       final ffi.Pointer<wasm_extern_t> extern = (exportVec.ref.data + i).value;
       exportMap[exportNames[i]] = extern;
       if (exportNames[i] == 'memory') {
@@ -192,12 +192,12 @@ class WasmRunner {
     Uint8List wasmBytes,
   ) {
     final ffi.DynamicLibrary lib = _openWasmer();
-    final WasmerBindings bindings = WasmerBindings(lib);
+    final bindings = WasmerBindings(lib);
     final ffi.Pointer<WasmEngineT> engine = bindings.engineNew();
     final ffi.Pointer<WasmStoreT> store = bindings.storeNew(engine);
 
     final ffi.Pointer<ffi.Uint8> nativeBuf = calloc<ffi.Uint8>(wasmBytes.length);
-    for (int i = 0; i < wasmBytes.length; i++) {
+    for (var i = 0; i < wasmBytes.length; i++) {
       (nativeBuf + i).value = wasmBytes[i];
     }
     final ffi.Pointer<WasmByteVec> byteVec = calloc<WasmByteVec>();
@@ -216,9 +216,9 @@ class WasmRunner {
     bindings.importtypeVecNewEmpty(importTypeVec);
     bindings.moduleImports(module, importTypeVec);
 
-    final List<({String module, String name, int resultKind})> result =
+    final result =
         <({String module, String name, int resultKind})>[];
-    for (int i = 0; i < importTypeVec.ref.size; i++) {
+    for (var i = 0; i < importTypeVec.ref.size; i++) {
       final ffi.Pointer<wasm_importtype_t> it = (importTypeVec.ref.data + i).value;
       final String mod = WasmerBindings.readByteVec(bindings.importtypeModule(it));
       final String nm = WasmerBindings.readByteVec(bindings.importtypeName(it));
@@ -252,7 +252,7 @@ class WasmRunner {
       _bindings.valVecNewEmpty(argsVec);
     } else {
       _bindings.valVecNewUninitialized(argsVec, args.length);
-      for (int i = 0; i < args.length; i++) {
+      for (var i = 0; i < args.length; i++) {
         _setVal(argsVec.ref.data + i, args[i]);
       }
     }
@@ -290,7 +290,7 @@ class WasmRunner {
   void writeMemory(int offset, Uint8List bytes) {
     if (_memory.address == 0) throw StateError('No memory export');
     final ffi.Pointer<ffi.Uint8> data = _bindings.memoryData(_memory);
-    for (int i = 0; i < bytes.length; i++) {
+    for (var i = 0; i < bytes.length; i++) {
       (data + offset + i).value = bytes[i];
     }
   }
@@ -351,7 +351,7 @@ class WasmRunner {
             if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
             return ffi.nullptr;
           }
-          final List<Object?> dartArgs = <Object?>[
+          final dartArgs = <Object?>[
             for (int i = 0; i < args.ref.size; i++) _getVal(args.ref.data + i),
           ];
           final Object? result = Function.apply(dartFn, dartArgs);
@@ -365,7 +365,7 @@ class WasmRunner {
               _setDefaultVal(results.ref.data, resultKind);
             }
           }
-        } catch (e, st) {
+        } on Exception catch (e, st) {
           if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
           // ignore: avoid_print
           print('[CB] exception in host import $debugName: $e\n$st');

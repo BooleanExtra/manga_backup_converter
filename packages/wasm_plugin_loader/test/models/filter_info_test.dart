@@ -6,7 +6,7 @@ import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 void main() {
   group('FilterInfo.fromJson', () {
     test('check type', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{
+      final fi = FilterInfo.fromJson(<String, dynamic>{
         'type': 'check',
         'name': 'Has chapters',
         'default': true,
@@ -17,12 +17,12 @@ void main() {
     });
 
     test('check type default false when omitted', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'Foo'});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'Foo'});
       check(fi.defaultValue).equals(false);
     });
 
     test('select type with options', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{
+      final fi = FilterInfo.fromJson(<String, dynamic>{
         'type': 'select',
         'name': 'Sort by',
         'values': <String>['relevance', 'latest', 'rating'],
@@ -34,13 +34,13 @@ void main() {
     });
 
     test('sort type', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'sort', 'name': 'Order', 'default': 2});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'sort', 'name': 'Order', 'default': 2});
       check(fi.type).equals('sort');
       check(fi.defaultValue).equals(2);
     });
 
     test('group type with nested items', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{
+      final fi = FilterInfo.fromJson(<String, dynamic>{
         'type': 'group',
         'name': 'Content',
         'filters': <Map<String, Object>>[
@@ -53,13 +53,13 @@ void main() {
     });
 
     test('text type has no default', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'text', 'name': 'Search'});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'text', 'name': 'Search'});
       check(fi.type).equals('text');
       check(fi.defaultValue).isNull();
     });
 
     test('canExclude and canAscend parsed', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{
+      final fi = FilterInfo.fromJson(<String, dynamic>{
         'type': 'sort',
         'name': 'S',
         'canExclude': true,
@@ -72,47 +72,50 @@ void main() {
 
   group('FilterInfo.toDefaultFilterValue', () {
     test('check → FilterValue with bool value', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'NSFW', 'default': true});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'NSFW', 'default': true});
       final FilterValue? fv = fi.toDefaultFilterValue();
       check(fv).isNotNull();
-      check(fv!.type).equals(FilterType.check);
+      if (fv == null) throw Exception('fv is null');
+      check(fv.type).equals(FilterType.check);
       check(fv.name).equals('NSFW');
       check(fv.value).equals(true);
     });
 
     test('check false → FilterValue false', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'X', 'default': false});
-      check(fi.toDefaultFilterValue()!.value).equals(false);
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'check', 'name': 'X', 'default': false});
+      check(fi.toDefaultFilterValue()?.value).equals(false);
     });
 
     test('select → FilterValue with int index', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'select', 'name': 'Sort', 'default': 2});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'select', 'name': 'Sort', 'default': 2});
       final FilterValue? fv = fi.toDefaultFilterValue();
       check(fv).isNotNull();
-      check(fv!.type).equals(FilterType.select);
+      if (fv == null) throw Exception('fv is null');
+      check(fv.type).equals(FilterType.select);
       check(fv.value).equals(2);
     });
 
     test('sort → FilterValue with int index', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'sort', 'name': 'Order', 'default': 1});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'sort', 'name': 'Order', 'default': 1});
       final FilterValue? fv = fi.toDefaultFilterValue();
       check(fv).isNotNull();
-      check(fv!.type).equals(FilterType.sort);
+      if (fv == null) throw Exception('fv is null');
+      check(fv.type).equals(FilterType.sort);
       check(fv.value).equals(1);
     });
 
     test('text → null (no meaningful default)', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'text', 'name': 'Q'});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'text', 'name': 'Q'});
       check(fi.toDefaultFilterValue()).isNull();
     });
 
     test('group → null', () {
-      final FilterInfo fi = FilterInfo.fromJson(<String, dynamic>{'type': 'group', 'name': 'G'});
+      final fi = FilterInfo.fromJson(<String, dynamic>{'type': 'group', 'name': 'G'});
       check(fi.toDefaultFilterValue()).isNull();
     });
 
     test('check without name → null', () {
-      const FilterInfo fi = FilterInfo(type: 'check', defaultValue: true);
+      const fi = FilterInfo(type: 'check', defaultValue: true);
       check(fi.toDefaultFilterValue()).isNull();
     });
   });

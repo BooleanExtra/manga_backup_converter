@@ -22,7 +22,7 @@ import 'package:wasm_plugin_loader/src/wasm/wasm_runner_native.dart';
 
 bool _hasWasmer() {
   final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final String lib = Platform.isWindows
+  final lib = Platform.isWindows
       ? '$home\\.wasmer\\lib\\wasmer.dll'
       : Platform.isMacOS
       ? '$home/.wasmer/lib/libwasmer.dylib'
@@ -31,7 +31,7 @@ bool _hasWasmer() {
 }
 
 File _findFixture(String relPath) {
-  final File a = File(relPath);
+  final a = File(relPath);
   if (a.existsSync()) return a;
   return File('packages/wasm_plugin_loader/$relPath');
 }
@@ -142,10 +142,10 @@ void _printTable(
   print('\n=== $fixtureName (${imports.length} imports) ===');
   print('| module       | name                   | result | registered |');
   print('|--------------|------------------------|--------|------------|');
-  for (final ({String module, String name, int resultKind}) imp in imports) {
-    final String key = '${imp.module}::${imp.name}';
+  for (final imp in imports) {
+    final key = '${imp.module}::${imp.name}';
     final bool isStubModule = _knownStubModules.contains(imp.module);
-    final String status = _registeredImports.contains(key)
+    final status = _registeredImports.contains(key)
         ? 'yes'
         : isStubModule
         ? 'stub'
@@ -188,7 +188,7 @@ void main() {
     skip: skipReason,
     () {
       // Collect imports per fixture once for the summary table.
-      final Map<String, List<({String module, String name, int resultKind})>> allImports =
+      final allImports =
           <String, List<({String module, String name, int resultKind})>>{};
 
       setUpAll(() {
@@ -213,7 +213,7 @@ void main() {
           final List<({String module, String name, int resultKind})> unexpected = imports.where((
             ({String module, String name, int resultKind}) imp,
           ) {
-            final String key = '${imp.module}::${imp.name}';
+            final key = '${imp.module}::${imp.name}';
             return !_registeredImports.contains(key) && !_knownStubModules.contains(imp.module);
           }).toList();
 
@@ -228,12 +228,12 @@ void main() {
       }
 
       test('aggregate — print unique imports across all fixtures', () {
-        final Map<String, ({List<String> fixtures, int resultKind})> unique =
+        final unique =
             <String, ({int resultKind, List<String> fixtures})>{};
         for (final ({String label, String wasmPath}) f in _fixtures) {
           for (final ({String module, String name, int resultKind}) imp
               in allImports[f.label] ?? <({String module, String name, int resultKind})>[]) {
-            final String key = '${imp.module}::${imp.name}';
+            final key = '${imp.module}::${imp.name}';
             final ({List<String> fixtures, int resultKind})? entry = unique[key];
             if (entry == null) {
               unique[key] = (resultKind: imp.resultKind, fixtures: <String>[f.label]);
@@ -254,15 +254,15 @@ void main() {
         print('\n=== Aggregate: ${sorted.length} unique imports across all fixtures ===');
         print('| module       | name                   | result | mangadex | asurascans | weebcentral | mangafire |');
         print('|--------------|------------------------|--------|----------|------------|-------------|-----------|');
-        for (final MapEntry<String, ({List<String> fixtures, int resultKind})> e in sorted) {
+        for (final e in sorted) {
           final List<String> parts = e.key.split('::');
           final String mod = parts[0];
           final String nm = parts[1];
           final List<String> fixtures = e.value.fixtures;
-          final String md = fixtures.contains('multi.mangadex-v12') ? 'yes' : '-';
-          final String as_ = fixtures.contains('en.asurascans-v11') ? 'yes' : '-';
-          final String wc = fixtures.contains('en.weebcentral-v6') ? 'yes' : '-';
-          final String mf = fixtures.contains('multi.mangafire-v5') ? 'yes' : '-';
+          final md = fixtures.contains('multi.mangadex-v12') ? 'yes' : '-';
+          final as_ = fixtures.contains('en.asurascans-v11') ? 'yes' : '-';
+          final wc = fixtures.contains('en.weebcentral-v6') ? 'yes' : '-';
+          final mf = fixtures.contains('multi.mangafire-v5') ? 'yes' : '-';
           print(
             '| ${mod.padRight(12)} | ${nm.padRight(22)} | ${_kindStr(e.value.resultKind).padRight(6)} | ${md.padRight(8)} | ${as_.padRight(10)} | ${wc.padRight(11)} | ${mf.padRight(9)} |',
           );

@@ -13,7 +13,7 @@ class PostcardWriter {
 
   /// Encode an unsigned integer as a variable-length LEB128 value.
   void writeVarInt(int v) {
-    int temp = v;
+    var temp = v;
     while (temp >= 0x80) {
       _buf.add((temp & 0x7F) | 0x80);
       temp >>= 7;
@@ -27,17 +27,17 @@ class PostcardWriter {
   }
 
   void writeF32(double v) {
-    final ByteData bd = ByteData(4)..setFloat32(0, v, Endian.little);
+    final bd = ByteData(4)..setFloat32(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
   void writeF64(double v) {
-    final ByteData bd = ByteData(8)..setFloat64(0, v, Endian.little);
+    final bd = ByteData(8)..setFloat64(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
   void writeI64(int v) {
-    final ByteData bd = ByteData(8)..setInt64(0, v, Endian.little);
+    final bd = ByteData(8)..setInt64(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
@@ -63,7 +63,7 @@ class PostcardWriter {
 
   void writeList<T>(List<T> list, void Function(T, PostcardWriter) writeFn) {
     writeVarInt(list.length);
-    for (final T item in list) {
+    for (final item in list) {
       writeFn(item, this);
     }
   }

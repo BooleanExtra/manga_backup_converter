@@ -19,14 +19,14 @@ class TachimangaBackupDbManager {
 
   Future<void> insert<T>(TachimangaBackupTable<T> table, List<T> categories) async {
     tachimanga_init.initializeMappers();
-    for (final T category in categories) {
+    for (final category in categories) {
       await db.insert(table.name, MapperContainer.globals.toMap(category));
     }
   }
 
   Future<void> initDb() async {
     tachimanga_init.initializeMappers();
-    final List<String> tableQueries = <String>[
+    final tableQueries = <String>[
       'CREATE TABLE Category (id INTEGER PRIMARY KEY AUTOINCREMENT, "name" VARCHAR(64) NOT NULL, "order" INT DEFAULT 0 NOT NULL, is_default BOOLEAN DEFAULT 0 NOT NULL)',
       'CREATE TABLE CategoryManga (id INTEGER PRIMARY KEY AUTOINCREMENT, category INT NOT NULL, manga INT NOT NULL, CONSTRAINT fk_CategoryManga_category__id FOREIGN KEY (category) REFERENCES Category(id) ON DELETE RESTRICT ON UPDATE RESTRICT, CONSTRAINT fk_CategoryManga_manga__id FOREIGN KEY (manga) REFERENCES Manga(id) ON DELETE RESTRICT ON UPDATE RESTRICT)',
       'CREATE TABLE CategoryMeta (id INTEGER PRIMARY KEY AUTOINCREMENT, "key" VARCHAR(256) NOT NULL, "value" VARCHAR(4096) NOT NULL, category_ref INT NOT NULL, CONSTRAINT fk_CategoryMeta_category_ref__id FOREIGN KEY (category_ref) REFERENCES Category(id) ON DELETE CASCADE ON UPDATE RESTRICT)',
@@ -81,11 +81,11 @@ CREATE TABLE TrackRecord(
 ''',
       'CREATE TABLE sqlite_sequence(name,seq)',
     ];
-    final List<String> indexQueries = <String>[
+    final indexQueries = <String>[
       'CREATE UNIQUE INDEX Migrations_name ON Migrations ("name")',
       'CREATE INDEX idx_last_read_at ON History (last_read_at)',
     ];
-    for (final String query in <String>[...tableQueries, ...indexQueries]) {
+    for (final query in <String>[...tableQueries, ...indexQueries]) {
       await db.execute(query);
     }
   }

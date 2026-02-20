@@ -27,12 +27,12 @@ class _SleepResult {
 ///   2. Block on WasmSemaphore.wait().
 ///   3. Send elapsed time back.
 Future<void> _sleepIsolateMain(List<Object> args) async {
-  final SendPort resultPort = args[0] as SendPort;
-  final int semaphoreAddress = args[1] as int;
+  final resultPort = args[0] as SendPort;
+  final semaphoreAddress = args[1] as int;
 
   final WasmSemaphore semaphore = WasmSemaphore.fromAddress(semaphoreAddress);
 
-  final Stopwatch sw = Stopwatch()..start();
+  final sw = Stopwatch()..start();
   // Tell main we're about to block.
   resultPort.send('waiting');
   // This blocks the isolate thread — exactly what asyncSleep does.
@@ -46,7 +46,7 @@ void main() {
   group('asyncSleep semaphore round-trip', () {
     test('blocks isolate for ~1 second', () async {
       final WasmSemaphore semaphore = WasmSemaphore.create();
-      final ReceivePort resultPort = ReceivePort();
+      final resultPort = ReceivePort();
 
       await Isolate.spawn(
         _sleepIsolateMain,
@@ -63,7 +63,7 @@ void main() {
       semaphore.signal();
 
       // Receive the elapsed time from the helper isolate.
-      final _SleepResult result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 
@@ -75,7 +75,7 @@ void main() {
 
     test('sleep(0) returns near-immediately', () async {
       final WasmSemaphore semaphore = WasmSemaphore.create();
-      final ReceivePort resultPort = ReceivePort();
+      final resultPort = ReceivePort();
 
       await Isolate.spawn(
         _sleepIsolateMain,
@@ -89,7 +89,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       semaphore.signal();
 
-      final _SleepResult result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 
@@ -101,7 +101,7 @@ void main() {
       // Proves the isolate stays blocked until signal() is called,
       // not just for some fixed duration.
       final WasmSemaphore semaphore = WasmSemaphore.create();
-      final ReceivePort resultPort = ReceivePort();
+      final resultPort = ReceivePort();
 
       await Isolate.spawn(
         _sleepIsolateMain,
@@ -116,7 +116,7 @@ void main() {
       await Future<void>.delayed(const Duration(seconds: 2));
       semaphore.signal();
 
-      final _SleepResult result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((Object? msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 

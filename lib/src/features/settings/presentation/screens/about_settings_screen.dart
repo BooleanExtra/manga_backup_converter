@@ -32,7 +32,7 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
     final AsyncValue<PackageInfo> packageInfo = ref.watch(packageInfoProvider);
     final String version = packageInfo.requireValue.version;
     final String buildNumber = packageInfo.requireValue.buildNumber;
-    final String versionId =
+    final versionId =
         'v$version${((!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && version == buildNumber) || buildNumber.isEmpty) ? '' : '+$buildNumber'}';
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
@@ -46,9 +46,9 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
               onTap: clipboard == null
                   ? null
                   : () async {
-                      final DataWriterItem item = DataWriterItem();
+                      final item = DataWriterItem();
                       item.add(Formats.plainText(versionId));
-                      await clipboard!.write(<DataWriterItem>[item]);
+                      await clipboard?.write(<DataWriterItem>[item]);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

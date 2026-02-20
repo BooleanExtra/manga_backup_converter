@@ -83,27 +83,29 @@ void main() {
     });
 
     test('initialUrls seeded via constructor', () {
-      final SourceListManager m = SourceListManager(initialUrls: <String>['https://x.example.com']);
+      final m = SourceListManager(initialUrls: <String>['https://x.example.com']);
       check(m.sourceListUrls).deepEquals(<Object?>['https://x.example.com']);
     });
   });
 
   group('SourceListManager.fetchSourceList', () {
     test('success — parses list name and sources', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
       check(list).isNotNull();
-      check(list!.url).equals('https://example.com/index.json');
+      if (list == null) throw Exception('list is null');
+      check(list.url).equals('https://example.com/index.json');
       check(list.name).equals('Test List');
       check(list.sources).length.equals(2);
     });
 
     test('success — first source fields parsed correctly', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
-      final SourceEntry entry = list!.sources[0];
+      if (list == null) throw Exception('list is null');
+      final SourceEntry entry = list.sources[0];
       check(entry.id).equals('mangadex');
       check(entry.name).equals('MangaDex');
       check(entry.version).equals(12);
@@ -116,17 +118,18 @@ void main() {
     });
 
     test('success — optional fields default when absent', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
-      final SourceEntry entry = list!.sources[1]; // safe_source — no contentRating/baseURL/altNames
+      if (list == null) throw Exception('list is null');
+      final SourceEntry entry = list.sources[1]; // safe_source — no contentRating/baseURL/altNames
       check(entry.contentRating).equals(0);
       check(entry.baseUrl).isNull();
       check(entry.altNames).isEmpty();
     });
 
     test('HTTP error status returns null', () async {
-      final SourceListManager mgr = SourceListManager(
+      final mgr = SourceListManager(
         httpClient: _mockClient('Not Found', statusCode: 404),
       );
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
@@ -134,13 +137,13 @@ void main() {
     });
 
     test('malformed JSON returns null', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _mockClient('{invalid'));
+      final mgr = SourceListManager(httpClient: _mockClient('{invalid'));
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
       check(list).isNull();
     });
 
     test('timeout returns null', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _timeoutClient());
+      final mgr = SourceListManager(httpClient: _timeoutClient());
       final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
       check(list).isNull();
     }, timeout: const Timeout(Duration(seconds: 30)));
@@ -148,7 +151,7 @@ void main() {
 
   group('SourceListManager.fetchAllSourceLists', () {
     test('returns all successful lists', () async {
-      final SourceListManager mgr = SourceListManager(
+      final mgr = SourceListManager(
         initialUrls: <String>[
           'https://example.com/a.json',
           'https://example.com/b.json',
@@ -160,13 +163,13 @@ void main() {
     });
 
     test('drops failing lists, returns successful ones', () async {
-      int callCount = 0;
-      final MockClient client = MockClient((_) async {
+      var callCount = 0;
+      final client = MockClient((_) async {
         callCount++;
         if (callCount == 1) return http.Response('bad json{', 200);
         return http.Response(_kSampleJson, 200);
       });
-      final SourceListManager mgr = SourceListManager(
+      final mgr = SourceListManager(
         initialUrls: <String>[
           'https://example.com/bad.json',
           'https://example.com/good.json',
@@ -179,13 +182,13 @@ void main() {
     });
 
     test('returns empty list when no URLs configured', () async {
-      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
       final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
       check(lists).isEmpty();
     });
 
     test('returns empty list when all URLs fail', () async {
-      final SourceListManager mgr = SourceListManager(
+      final mgr = SourceListManager(
         initialUrls: <String>['https://example.com/a.json'],
         httpClient: _mockClient('', statusCode: 500),
       );

@@ -107,7 +107,7 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
-        } catch (_) {
+        } on Exception catch (_) {
           return -1.0;
         }
       },
@@ -127,7 +127,7 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
-        } catch (_) {
+        } on Exception catch (_) {
           return -1.0;
         }
       },
@@ -184,7 +184,7 @@ Map<String, Function> _envImports(
         final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
-    } catch (_) {}
+    } on Exception catch (_) {}
   },
   // Alias without leading underscore (used by newer compiled plugins).
   'send_partial_result': (int ptr) {
@@ -195,7 +195,7 @@ Map<String, Function> _envImports(
         final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
-    } catch (_) {}
+    } on Exception catch (_) {}
   },
 };
 
@@ -256,7 +256,7 @@ Map<String, Function> _netImports(
     },
     'send_all': (int ridsPtr, int count) {
       if (asyncHttp == null) return -1;
-      for (int i = 0; i < count; i++) {
+      for (var i = 0; i < count; i++) {
         final Uint8List ridBytes = runner.readMemory(ridsPtr + i * 4, 4);
         final int rid = ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
         final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
@@ -278,8 +278,8 @@ Map<String, Function> _netImports(
     },
     'read_data': (int rid, int ptr, int len) {
       final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
-      if (req?.responseBody == null) return -1;
-      final Uint8List body = req!.responseBody!;
+      final Uint8List? body = req?.responseBody;
+      if (body == null) return -1;
       final int n = len < body.length ? len : body.length;
       runner.writeMemory(ptr, body.sublist(0, n));
       return n;
@@ -297,15 +297,17 @@ Map<String, Function> _netImports(
     },
     'html': (int rid) {
       final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
-      if (req?.responseBody == null) return -1;
-      final String htmlStr = utf8.decode(req!.responseBody!);
+      final Uint8List? body = req?.responseBody;
+      if (body == null) return -1;
+      final String htmlStr = utf8.decode(body);
       final html_dom.Document doc = html_parser.parse(htmlStr);
       return store.add(HtmlDocumentResource(doc));
     },
     'get_image': (int rid) {
       final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
-      if (req?.responseBody == null) return -1;
-      return store.addBytes(req!.responseBody!);
+      final Uint8List? body = req?.responseBody;
+      if (body == null) return -1;
+      return store.addBytes(body);
     },
     'net_set_rate_limit': (int permits, int period, int unit) {
       // Rate limiting stored; enforcement happens at the application layer.
@@ -326,12 +328,12 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     try {
       final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
       final html_dom.Document doc = html_parser.parse(htmlStr);
-      String baseUri = '';
+      var baseUri = '';
       if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
         baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
       }
       return store.add(HtmlDocumentResource(doc, baseUri: baseUri));
-    } catch (_) {
+    } on Exception catch (_) {
       return -1;
     }
   },
@@ -341,7 +343,7 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
       final html_dom.DocumentFragment nodes = html_parser.parseFragment(htmlStr);
       final List<html_dom.Element> elements = nodes.children.whereType<html_dom.Element>().toList();
       return store.add(HtmlNodeListResource(elements));
-    } catch (_) {
+    } on Exception catch (_) {
       return -1;
     }
   },
@@ -447,8 +449,9 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
   },
   'parent': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
-    if (el?.parent == null) return -1;
-    return store.add(HtmlDocumentResource(el!.parent!));
+    final html_dom.Element? parent = el?.parent;
+    if (parent == null) return -1;
+    return store.add(HtmlDocumentResource(parent));
   },
   'children': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
@@ -473,8 +476,9 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
   },
   'siblings': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
-    if (el?.parent == null) return -1;
-    final List<html_dom.Element> sibs = el!.parent!.children.where((html_dom.Element c) => c != el).toList();
+    final html_dom.Element? parent = el?.parent;
+    if (parent == null) return -1;
+    final List<html_dom.Element> sibs = parent.children.where((html_dom.Element c) => c != el).toList();
     return store.add(HtmlNodeListResource(sibs.cast<Object>()));
   },
   'set_text': (int rid, int ptr, int len) {
@@ -568,7 +572,7 @@ Map<String, Function> _defaultsImports(
   String sourceId,
 ) => <String, Function>{
   'get': (int keyPtr, int keyLen) {
-    final String key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
+    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
     final Object? stored = store.defaults[key];
     if (stored == null) return 0;
     if (stored is int) return stored;
@@ -578,7 +582,7 @@ Map<String, Function> _defaultsImports(
   // Aidoku SDK DefaultValue kinds: 1=Bool, 2=Int, 3=Float, 4=String, 5=StringArray, 6=Null.
   // For all non-null kinds, `value` is an RID pointing to postcard-encoded bytes.
   'set': (int keyPtr, int keyLen, int kind, int value) {
-    final String key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
+    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
     if (kind == 6 || value == 0) {
       // DefaultValue::Null → clear the stored value.
       store.defaults.remove(key);
@@ -700,7 +704,7 @@ List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selec
   try {
     if (doc is html_dom.Element) return doc.querySelectorAll(selector);
     if (doc is html_dom.Document) return doc.querySelectorAll(selector);
-  } catch (_) {}
+  } on Exception catch (_) {}
   return null;
 }
 
@@ -711,7 +715,7 @@ html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
   try {
     if (doc is html_dom.Element) return doc.querySelector(selector);
     if (doc is html_dom.Document) return doc.querySelector(selector);
-  } catch (_) {}
+  } on Exception catch (_) {}
   return null;
 }
 

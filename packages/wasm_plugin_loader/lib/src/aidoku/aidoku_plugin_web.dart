@@ -55,7 +55,7 @@ class AidokuPlugin {
     final List<SettingItem> settings = bundle.settings ?? const <SettingItem>[];
     final List<FilterInfo> filterDefinitions = bundle.filters ?? const <FilterInfo>[];
     final String sourceId = bundle.sourceInfo.id;
-    final Map<String, Object> initialDefaults = Map<String, Object>.from(
+    final initialDefaults = Map<String, Object>.from(
       flattenSettingDefaults(settings, sourceId: sourceId),
     );
     // Mirror Swift Source.loadSettings() defaultLanguages selection.
@@ -75,7 +75,7 @@ class AidokuPlugin {
 
     if (defaults != null) {
       for (final MapEntry<String, dynamic> entry in defaults.entries) {
-        final String key = '$sourceId.${entry.key}';
+        final key = '$sourceId.${entry.key}';
         final Object? value = entry.value;
         if (value == null) {
           // skip
@@ -94,11 +94,11 @@ class AidokuPlugin {
       }
     }
 
-    final HostStore store = HostStore();
+    final store = HostStore();
     // Seed defaults from settings.json before WASM starts.
     store.defaults.addAll(initialDefaults);
 
-    final _LazyRunner lazyRunner = _LazyRunner();
+    final lazyRunner = _LazyRunner();
 
     // No asyncHttp/asyncSleep on web — HTTP imports return -1 (stub).
     final Map<String, Map<String, Function>> imports = buildAidokuHostImports(lazyRunner, store, sourceId: sourceId);
@@ -107,7 +107,7 @@ class AidokuPlugin {
 
     try {
       runner.call('start', <Object?>[]);
-    } catch (_) {
+    } on Exception catch (_) {
       // Some sources may not export start.
     }
 
@@ -415,14 +415,14 @@ class AidokuPlugin {
     if (totalLen < 0) {
       try {
         _runner.call('free_result', <Object?>[ptr]);
-      } catch (_) {}
+      } on Exception catch (_) {}
       throw const FormatException('AidokuError from WASM result buffer');
     }
     final int payloadLen = totalLen - 8;
     final Uint8List data = _runner.readMemory(ptr + 8, payloadLen);
     try {
       _runner.call('free_result', <Object?>[ptr]);
-    } catch (_) {}
+    } on Exception catch (_) {}
     return data;
   }
 
