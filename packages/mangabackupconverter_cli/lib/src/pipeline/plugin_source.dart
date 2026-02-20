@@ -1,9 +1,6 @@
-import 'package:mangabackupconverter_cli/src/common/extensions.dart';
-
 abstract interface class PluginSource {
   String get sourceId;
   String get sourceName;
-  ExtensionType get extensionType;
   Future<PluginSearchPageResult> search(String query, int page);
   void dispose();
 }

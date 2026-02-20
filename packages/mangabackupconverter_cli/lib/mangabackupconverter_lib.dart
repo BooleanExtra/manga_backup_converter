@@ -1,9 +1,7 @@
 export 'src/common/convertable.dart';
-export 'src/common/extensions.dart';
 export 'src/converter.dart';
 export 'src/exceptions/aidoku_exception.dart';
 export 'src/exceptions/base_exeption.dart';
-export 'src/exceptions/extension_exception.dart';
 export 'src/exceptions/mangayomi_exception.dart';
 export 'src/exceptions/migration_exception.dart';
 export 'src/exceptions/paperback_exception.dart';
@@ -48,6 +46,7 @@ export 'src/pipeline/backup_format.dart';
 export 'src/pipeline/conversion_strategy.dart';
 export 'src/pipeline/manga_details.dart';
 export 'src/pipeline/migration_pipeline.dart';
+export 'src/pipeline/plugin_loader.dart';
 export 'src/pipeline/plugin_source.dart';
 export 'src/pipeline/plugin_source_aidoku.dart';
 export 'src/pipeline/plugin_source_stub.dart';

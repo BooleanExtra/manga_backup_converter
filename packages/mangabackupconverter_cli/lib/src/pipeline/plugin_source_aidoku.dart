@@ -1,4 +1,3 @@
-import 'package:mangabackupconverter_cli/src/common/extensions.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
@@ -12,9 +11,6 @@ class AidokuPluginSource implements PluginSource {
 
   @override
   String get sourceName => _plugin.sourceInfo.name;
-
-  @override
-  ExtensionType get extensionType => ExtensionType.aidoku;
 
   @override
   Future<PluginSearchPageResult> search(String query, int page) async {

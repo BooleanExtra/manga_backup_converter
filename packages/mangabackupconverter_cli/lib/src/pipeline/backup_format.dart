@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:mangabackupconverter_cli/src/common/extensions.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/plugin_loader.dart';
 import 'package:meta/meta.dart';
 
 part 'backup_format.mapper.dart';
@@ -11,7 +11,7 @@ sealed class BackupFormat with BackupFormatMappable {
 
   String get alias;
   List<String> get extensions;
-  ExtensionType get extensionType;
+  PluginLoader get pluginLoader;
 
   static const List<BackupFormat> values = <BackupFormat>[
     Aidoku(),
@@ -54,7 +54,7 @@ class Aidoku extends BackupFormat with AidokuMappable {
   List<String> get extensions => const <String>['.aib'];
 
   @override
-  ExtensionType get extensionType => ExtensionType.aidoku;
+  PluginLoader get pluginLoader => const AidokuPluginLoader();
 
   @override
   bool operator ==(Object other) => other is Aidoku;
@@ -78,7 +78,7 @@ class Paperback extends BackupFormat with PaperbackMappable {
   List<String> get extensions => const <String>['.pas4'];
 
   @override
-  ExtensionType get extensionType => ExtensionType.paperback;
+  PluginLoader get pluginLoader => const PaperbackPluginLoader();
 
   @override
   bool operator ==(Object other) => other is Paperback;
@@ -98,7 +98,7 @@ sealed class Tachiyomi extends BackupFormat with TachiyomiMappable {
   List<String> get extensions => const <String>['.tachibk', '.proto.gz'];
 
   @override
-  ExtensionType get extensionType => ExtensionType.tachi;
+  PluginLoader get pluginLoader => const TachiPluginLoader();
 }
 
 @MappableClass(discriminatorValue: 'mihon')
@@ -203,7 +203,7 @@ class Tachimanga extends BackupFormat with TachimangaMappable {
   List<String> get extensions => const <String>['.tmb'];
 
   @override
-  ExtensionType get extensionType => ExtensionType.tachi;
+  PluginLoader get pluginLoader => const TachiPluginLoader();
 
   @override
   bool operator ==(Object other) => other is Tachimanga;
@@ -227,7 +227,7 @@ class Mangayomi extends BackupFormat with MangayomiMappable {
   List<String> get extensions => const <String>['.backup'];
 
   @override
-  ExtensionType get extensionType => ExtensionType.mangayomi;
+  PluginLoader get pluginLoader => const MangayomiPluginLoader();
 
   @override
   bool operator ==(Object other) => other is Mangayomi;

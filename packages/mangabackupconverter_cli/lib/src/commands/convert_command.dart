@@ -92,7 +92,7 @@ class ConvertCommand extends Command<void> {
     }
 
     final pipeline = MigrationPipeline(
-      onSelectRepos: (ExtensionType targetType, List<ExtensionRepo> available) async => available,
+      repoUrls: const <String>[],
       onSelectExtensions: (extensions) async => extensions,
       onConfirmMatches: (List<MangaMatchProposal> proposals) async {
         for (final proposal in proposals) {
