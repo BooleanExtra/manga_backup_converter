@@ -120,5 +120,4 @@ class WasmRunner {
     _refreshMemory();
     return _memBytes.length;
   }
-
 }

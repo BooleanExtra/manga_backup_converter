@@ -229,9 +229,7 @@ Chapter decodeChapter(PostcardReader r) {
     title: title,
     chapterNumber: chapterNum,
     volumeNumber: volumeNum,
-    dateUploaded: dateUploadedSecs != null
-        ? DateTime.fromMillisecondsSinceEpoch(dateUploadedSecs * 1000)
-        : null,
+    dateUploaded: dateUploadedSecs != null ? DateTime.fromMillisecondsSinceEpoch(dateUploadedSecs * 1000) : null,
     scanlators: scanlators ?? [],
     language: language,
     url: url,
@@ -677,7 +675,6 @@ AidokuFilterValue _decodeAidokuFilterValue(PostcardReader r) {
   }
   return AidokuFilterValue(id: id, discriminant: discriminant, raw: raw);
 }
-
 
 // ---------------------------------------------------------------------------
 // Result-buffer entry points (strip 8-byte header, then decode)

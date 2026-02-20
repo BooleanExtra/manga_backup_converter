@@ -177,9 +177,9 @@ class WasmRunner {
   /// Returns all imports declared by [wasmBytes] without instantiating the module.
   ///
   /// Each entry is a record:
-  /// - [module]: import module name (e.g. `'std'`, `'net'`)
-  /// - [name]: function name within that module
-  /// - [resultKind]: wasm_valkind of the first result type
+  /// - `module`: import module name (e.g. `'std'`, `'net'`)
+  /// - `name`: function name within that module
+  /// - `resultKind`: wasm_valkind of the first result type
   ///   (0=i32, 1=i64, 2=f32, 3=f64, -1=void or non-function import)
   ///
   /// Safe to call with no import implementations — compiles but never instantiates.

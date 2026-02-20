@@ -63,8 +63,7 @@ void main() {
       semaphore.signal();
 
       // Receive the elapsed time from the helper isolate.
-      final result =
-          await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 
@@ -90,8 +89,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       semaphore.signal();
 
-      final result =
-          await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 
@@ -118,8 +116,7 @@ void main() {
       await Future<void>.delayed(const Duration(seconds: 2));
       semaphore.signal();
 
-      final result =
-          await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
+      final result = await stream.firstWhere((msg) => msg is _SleepResult) as _SleepResult;
       resultPort.close();
       semaphore.dispose();
 

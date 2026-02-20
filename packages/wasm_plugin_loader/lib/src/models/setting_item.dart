@@ -366,10 +366,7 @@ List<String> _stringList(Object? raw) {
 
 List<SettingItem> _parseItems(Object? raw) {
   if (raw is! List) return const [];
-  return raw
-      .whereType<Map<String, dynamic>>()
-      .map(SettingItem.fromJson)
-      .toList();
+  return raw.whereType<Map<String, dynamic>>().map(SettingItem.fromJson).toList();
 }
 
 Uint8List _postcardEncodeStringList(List<String> values) {

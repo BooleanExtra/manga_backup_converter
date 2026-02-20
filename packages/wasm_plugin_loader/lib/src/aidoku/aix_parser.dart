@@ -56,16 +56,15 @@ class AixParser {
 
     // Listings may be at root level or inside the info block.
     final listingsRaw = (sourceJson['listings'] ?? infoJson['listings']) as List<dynamic>?;
-    final listings = listingsRaw
-            ?.map((l) {
-              final m = l as Map<String, dynamic>;
-              return SourceListing(
-                id: m['id'] as String,
-                name: m['name'] as String,
-                kind: (m['kind'] as int?) ?? 0,
-              );
-            })
-            .toList() ??
+    final listings =
+        listingsRaw?.map((l) {
+          final m = l as Map<String, dynamic>;
+          return SourceListing(
+            id: m['id'] as String,
+            name: m['name'] as String,
+            kind: (m['kind'] as int?) ?? 0,
+          );
+        }).toList() ??
         const [];
 
     final info = SourceInfo(

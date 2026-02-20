@@ -9,7 +9,6 @@
 // Run: dart test packages/wasm_plugin_loader/test/wasm/wasm_imports_audit_test.dart --reporter expanded
 // ignore_for_file: avoid_print
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
@@ -150,7 +149,9 @@ void _printTable(
         : isStubModule
         ? 'stub'
         : '*** MISSING ***';
-    print('| ${imp.module.padRight(12)} | ${imp.name.padRight(22)} | ${_kindStr(imp.resultKind).padRight(6)} | $status |');
+    print(
+      '| ${imp.module.padRight(12)} | ${imp.name.padRight(22)} | ${_kindStr(imp.resultKind).padRight(6)} | $status |',
+    );
   }
 }
 
@@ -211,7 +212,8 @@ void main() {
 
           check(
             unexpected,
-            because: 'These imports are silently stubbed with -1.\n'
+            because:
+                'These imports are silently stubbed with -1.\n'
                 'Add handlers in aidoku_host.dart or add module to _knownStubModules:\n'
                 '  ${unexpected.map((i) => '${i.module}::${i.name} (→${_kindStr(i.resultKind)})').join(', ')}',
           ).isEmpty();
@@ -246,7 +248,9 @@ void main() {
           final as_ = fixtures.contains('en.asurascans-v11') ? 'yes' : '-';
           final wc = fixtures.contains('en.weebcentral-v6') ? 'yes' : '-';
           final mf = fixtures.contains('multi.mangafire-v5') ? 'yes' : '-';
-          print('| ${mod.padRight(12)} | ${nm.padRight(22)} | ${_kindStr(e.value.resultKind).padRight(6)} | ${md.padRight(8)} | ${as_.padRight(10)} | ${wc.padRight(11)} | ${mf.padRight(9)} |');
+          print(
+            '| ${mod.padRight(12)} | ${nm.padRight(22)} | ${_kindStr(e.value.resultKind).padRight(6)} | ${md.padRight(8)} | ${as_.padRight(10)} | ${wc.padRight(11)} | ${mf.padRight(9)} |',
+          );
         }
       });
     },

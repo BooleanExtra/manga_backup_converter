@@ -14,9 +14,7 @@ void main() {
 
   setUpAll(() {
     const fixturePath = 'test/aidoku/fixtures/index.json';
-    final file = File(fixturePath).existsSync()
-        ? File(fixturePath)
-        : File('packages/wasm_plugin_loader/$fixturePath');
+    final file = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/wasm_plugin_loader/$fixturePath');
     fixtureJson = file.readAsStringSync();
   });
 
