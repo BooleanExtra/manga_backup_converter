@@ -12,6 +12,7 @@
 ## Exports (functions Dart calls on the plugin)
 
 All exports return `i32`:
+
 - **Positive** → pointer to a result buffer in WASM linear memory (8-byte header + postcard payload)
 - **Negative** → error code (-1: general, -2: not supported, -3: login required)
 - **Zero** → success with no payload
@@ -40,6 +41,7 @@ All exports return `i32`:
 | `handle_key_migration`         | `manga_key_rid, chapter_key_rid`       | (optional) Migrate key → new key `String?`  |
 
 **Result buffer layout** (at the returned pointer in WASM memory):
+
 ```
 [u32 length LE][u32 capacity LE][<length> bytes of postcard-encoded payload]
 ```
@@ -200,6 +202,7 @@ must be postcard-encoded `String(json_text)` — e.g. for `"{}"`:  `[0x02, 0x7B,
 ## String/RID read pattern (inside WASM)
 
 When WASM receives a RID for a string parameter, it does:
+
 ```rust
 let len = unsafe { std::buffer_len(rid) } as usize;
 let mut buf = vec![0u8; len];
