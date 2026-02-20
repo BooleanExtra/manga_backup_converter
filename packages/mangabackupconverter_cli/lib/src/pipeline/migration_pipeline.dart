@@ -1,5 +1,9 @@
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/migration_exception.dart';
+import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
@@ -110,11 +114,19 @@ class MigrationPipeline {
 
   ConvertableBackup _buildTargetBackup(
     ConvertableBackup sourceBackup,
-    BackupFormat target,
+    BackupFormat targetFormat,
     List<MangaMatchConfirmation> confirmations,
   ) {
     // TODO: Construct the target backup from confirmed matches.
-    throw UnimplementedError('Target backup construction not yet implemented');
+    // ignore: unused_local_variable
+    final ConvertableBackup targetBackup = switch (targetFormat) {
+      // Aidoku() => AidokuBackup.fromConfirmedMatches(confirmedMatches),
+      // Paperback() => PaperbackBackup.fromConfirmedMatches(confirmedMatches),
+      // Tachiyomi() => TachiBackup.fromConfirmedMatches(confirmedMatches),
+      // Tachimanga() => TachimangaBackup.fromConfirmedMatches(confirmedMatches),
+      // Mangayomi() => MangayomiBackup.fromConfirmedMatches(confirmedMatches),
+      _ => throw UnimplementedError('Target backup construction not yet implemented'),
+    };
   }
 }
 
