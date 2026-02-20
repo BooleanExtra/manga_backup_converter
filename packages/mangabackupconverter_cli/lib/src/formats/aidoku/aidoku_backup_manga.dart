@@ -1,13 +1,15 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 
 part 'aidoku_backup_manga.mapper.dart';
 
 @MappableClass(ignoreNull: true)
-class AidokuBackupManga with AidokuBackupMangaMappable {
+class AidokuBackupManga with AidokuBackupMangaMappable implements MangaDetails {
   final String id;
   final String sourceId;
+  @override
   final String title;
   final String? author;
   final String? artist;
@@ -56,6 +58,33 @@ class AidokuBackupManga with AidokuBackupMangaMappable {
       status: PaperbackBackupMangaInfo.statusFromAidoku(status),
     );
   }
+
+  @override
+  List<String> get altTitles => const <String>[];
+
+  @override
+  List<String> get authors => <String>[if (author != null) author!];
+
+  @override
+  List<String> get artists => <String>[if (artist != null) artist!];
+
+  @override
+  List<String> get tagNames => tags ?? const <String>[];
+
+  @override
+  String? get description => desc;
+
+  @override
+  int? get chaptersCount => null;
+
+  @override
+  double? get latestChapterNum => null;
+
+  @override
+  String? get coverImageUrl => cover;
+
+  @override
+  List<String> get languages => const <String>[];
 
   static const AidokuBackupManga Function(Map<String, dynamic> map) fromMap = AidokuBackupMangaMapper.fromMap;
   static const AidokuBackupManga Function(String json) fromJson = AidokuBackupMangaMapper.fromJson;

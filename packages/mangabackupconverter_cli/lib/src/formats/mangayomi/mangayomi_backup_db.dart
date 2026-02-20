@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_settings.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 
 part 'mangayomi_backup_db.mapper.dart';
 
@@ -41,12 +42,13 @@ class MangayomiBackupDb with MangayomiBackupDbMappable {
 }
 
 @MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
-class MangayomiBackupManga with MangayomiBackupMangaMappable {
+class MangayomiBackupManga with MangayomiBackupMangaMappable implements MangaDetails {
   final String? author;
   final String? artist;
   final String? categories;
   final String? customCoverImage;
   final int? dateAdded;
+  @override
   final String? description;
   final bool? favorite;
   final List<String>? genres;
@@ -89,6 +91,33 @@ class MangayomiBackupManga with MangayomiBackupMangaMappable {
     this.customCoverImage,
     this.customCoverFromTracker,
   });
+
+  @override
+  String get title => name ?? '';
+
+  @override
+  List<String> get altTitles => const <String>[];
+
+  @override
+  List<String> get authors => <String>[if (author != null) author!];
+
+  @override
+  List<String> get artists => <String>[if (artist != null) artist!];
+
+  @override
+  List<String> get tagNames => genre ?? genres ?? const <String>[];
+
+  @override
+  int? get chaptersCount => null;
+
+  @override
+  double? get latestChapterNum => null;
+
+  @override
+  String? get coverImageUrl => imageUrl;
+
+  @override
+  List<String> get languages => const <String>[];
 
   static const MangayomiBackupManga Function(Map<String, dynamic> map) fromMap = MangayomiBackupMangaMapper.fromMap;
   static const MangayomiBackupManga Function(String json) fromJson = MangayomiBackupMangaMapper.fromJson;

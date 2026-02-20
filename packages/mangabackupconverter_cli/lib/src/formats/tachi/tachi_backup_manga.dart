@@ -5,6 +5,7 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_chapter.
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_history.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_tracking.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_update_strategy.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
 import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
 import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
@@ -14,12 +15,14 @@ import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/sche
 part 'tachi_backup_manga.mapper.dart';
 
 @MappableClass()
-class TachiBackupManga with TachiBackupMangaMappable {
+class TachiBackupManga with TachiBackupMangaMappable implements MangaDetails {
   final int source;
   final String url;
+  @override
   final String title;
   final String artist;
   final String author;
+  @override
   final String description;
   final List<String> genre;
   final int status;
@@ -258,6 +261,30 @@ class TachiBackupManga with TachiBackupMangaMappable {
       customGenre: backupManga.customGenre,
     );
   }
+
+  @override
+  List<String> get altTitles => const <String>[];
+
+  @override
+  List<String> get authors => <String>[customAuthor ?? author];
+
+  @override
+  List<String> get artists => <String>[customArtist ?? artist];
+
+  @override
+  List<String> get tagNames => customGenre ?? genre;
+
+  @override
+  int? get chaptersCount => chapters.length;
+
+  @override
+  double? get latestChapterNum => null;
+
+  @override
+  String? get coverImageUrl => customThumbnailUrl ?? thumbnailUrl;
+
+  @override
+  List<String> get languages => const <String>[];
 
   static const TachiBackupManga Function(Map<String, dynamic> map) fromMap = TachiBackupMangaMapper.fromMap;
   static const TachiBackupManga Function(String json) fromJson = TachiBackupMangaMapper.fromJson;

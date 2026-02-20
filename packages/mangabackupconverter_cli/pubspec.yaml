@@ -15,6 +15,7 @@ dependencies:
   collection: ^1.19.0
   dart_mappable: ^4.2.2
   fixnum: ^1.1.1
+  http: ^1.2.0
   meta: ^1.12.0
   path: ^1.9.0
   propertylistserialization: ^1.4.0
@@ -23,6 +24,8 @@ dependencies:
   sqflite_common_ffi: ^2.3.3
   sqflite_common_ffi_web: ^0.4.4
   uuid: ^4.5.1
+  wasm_plugin_loader:
+    path: ../wasm_plugin_loader
   xcode_parser: ^1.2.1
 dev_dependencies:
   app_lints:
