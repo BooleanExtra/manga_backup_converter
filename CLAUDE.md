@@ -25,6 +25,7 @@ git config core.hooksPath .githooks   # Enable .githooks/post-checkout for workt
 
 ```bash
 melos bootstrap                  # Install deps + generate env files + activate coverage
+                                 # If bare `melos` is not on PATH, use `dart run melos` as fallback
 melos run generate               # Run all code generation (assets, env, build_runner, format)
 melos run generate:pkg           # Run build_runner for a specific package (interactive)
 melos run watch:pkg              # Watch mode for build_runner in a specific package
@@ -59,13 +60,22 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 `packages/mangabackupconverter_cli/` is organized by format:
 
 - `lib/src/converter.dart` — `MangaBackupConverter` class with import methods per format
-- `lib/src/common/` — `BackupType` enum, `Convertable` interface, shared mappers
+- `lib/src/common/` — `Convertable` interface, shared mappers, extension repo index
 - `lib/src/formats/<format>/` — Format-specific backup models and parsers
 - `lib/src/pipeline/` — Migration pipeline API (BackupFormat, MangaSearchDetails, MigrationPipeline, plugin sources)
 - `lib/src/proto/` — Protocol buffer schemas for Tachi forks (mihon, j2k, neko, sy, yokai)
 - `lib/src/exceptions/` — Format-specific exception classes
 
 Each backup format class has a `fromData(Uint8List)` factory and conversion methods to other formats.
+
+## Pipeline & Backup Format
+
+- `BackupFormat` (sealed) is the single type for all format selection (CLI, pipeline, TachiBackup)
+- Aliases: `aidoku, paperback, mihon, sy, j2k, yokai, neko, tachimanga, mangayomi`
+- `BackupType` enum and `TachiFork` enum have been deleted — do not recreate
+- `TachiBackup.format` is `Tachiyomi` (sealed subtype of `BackupFormat`), not an enum
+- `Mangayomi` extends `BackupFormat` directly, not `Tachiyomi`
+- `BackupFormat` hierarchy uses dart_mappable `discriminatorKey`/`discriminatorValue` for serialization
 
 ## Code Generation
 
