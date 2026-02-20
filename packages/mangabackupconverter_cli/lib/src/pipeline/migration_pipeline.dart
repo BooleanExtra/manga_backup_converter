@@ -4,11 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/extensions.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/migration_exception.dart';
-import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
@@ -55,7 +50,7 @@ class MigrationPipeline {
     final List<PluginSource> plugins = await _loadPlugins(target.extensionType, selectedExtensions, selectedRepos);
 
     try {
-      final List<MangaDetails> mangaList = _extractManga(sourceBackup);
+      final List<MangaSearchDetails> mangaList = _extractManga(sourceBackup);
       final proposals = <MangaMatchProposal>[];
 
       for (var i = 0; i < mangaList.length; i++) {
@@ -81,7 +76,7 @@ class MigrationPipeline {
       final entries = <SourceEntry>[];
       for (final repo in repos) {
         final manager = SourceListManager();
-        final RemoteSourceList? sourceList = await manager.fetchSourceList(repo.url);
+        final RemoteSourceList? sourceList = await manager.fetchRemoteSourceList(repo.url);
         if (sourceList != null) entries.addAll(sourceList.sources);
       }
       return entries;
@@ -95,12 +90,12 @@ class MigrationPipeline {
     List<ExtensionRepo> repos,
   ) async {
     if (extensionType == ExtensionType.aidoku) {
-      final loader = WasmPluginLoader();
+      final loader = AidokuPluginMemoryStore();
       final plugins = <PluginSource>[];
       for (final entry in extensions) {
         final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
         if (response.statusCode != 200) continue;
-        final AidokuPlugin plugin = await loader.load(Uint8List.fromList(response.bodyBytes));
+        final AidokuPlugin plugin = await loader.loadAixBytes(Uint8List.fromList(response.bodyBytes));
         plugins.add(AidokuPluginSource(plugin: plugin));
       }
       return plugins;
@@ -116,18 +111,11 @@ class MigrationPipeline {
         .toList();
   }
 
-  List<MangaDetails> _extractManga(ConvertableBackup backup) {
-    return switch (backup) {
-      AidokuBackup() => backup.manga?.toList() ?? <MangaDetails>[],
-      TachiBackup() => backup.backupManga,
-      PaperbackBackup() => backup.mangaInfo ?? <MangaDetails>[],
-      MangayomiBackup() => backup.db.manga ?? <MangaDetails>[],
-      TachimangaBackup() => backup.db.mangaTable,
-      _ => throw MigrationException('Unsupported backup type: ${backup.runtimeType}'),
-    };
+  List<MangaSearchDetails> _extractManga(ConvertableBackup backup) {
+    return backup.mangaSearchEntries.map((MangaSearchEntry m) => m.toMangaSearchDetails()).toList();
   }
 
-  Future<MangaMatchProposal> _searchForManga(MangaDetails manga, List<PluginSource> plugins) async {
+  Future<MangaMatchProposal> _searchForManga(MangaSearchDetails manga, List<PluginSource> plugins) async {
     final allCandidates = <PluginSearchResult>[];
     for (final plugin in plugins) {
       try {

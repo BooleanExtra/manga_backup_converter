@@ -6,7 +6,7 @@ import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
-/// Tests that invoke [WasmPluginLoader.load] require actual WASM instantiation,
+/// Tests that invoke [AidokuPluginMemoryStore.loadAixBytes] require actual WASM instantiation,
 /// which is only supported on web. Skip them on native platforms.
 const String _wasmSkip = 'Requires web platform (dart:js_interop + browser WebAssembly API).';
 
@@ -29,48 +29,48 @@ Uint8List _buildFakeAix(String id) {
 
 void main() {
   test('starts empty', () {
-    final loader = WasmPluginLoader();
+    final loader = AidokuPluginMemoryStore();
     check(loader.loadedSources).isEmpty();
     check(loader.findBySourceId('multi.mangadex')).isNull();
   });
 
   test('unload() is idempotent for unknown source id', () {
-    final loader = WasmPluginLoader();
+    final loader = AidokuPluginMemoryStore();
     check(() => loader.unload('unknown.source')).returnsNormally();
     check(loader.loadedSources).isEmpty();
   });
 
   test('findBySourceId returns null for unknown id', () {
-    final loader = WasmPluginLoader();
+    final loader = AidokuPluginMemoryStore();
     check(loader.findBySourceId('unknown.source')).isNull();
   });
 
-  test('load() registers plugin by source id', skip: _wasmSkip, () async {
-    final loader = WasmPluginLoader();
-    final AidokuPlugin plugin = await loader.load(_buildFakeAix('en.testsource'));
+  test('loadAixBytes() registers plugin by source id', skip: _wasmSkip, () async {
+    final loader = AidokuPluginMemoryStore();
+    final AidokuPlugin plugin = await loader.loadAixBytes(_buildFakeAix('en.testsource'));
     check(plugin.sourceInfo.id).equals('en.testsource');
     check(loader.loadedSources).length.equals(1);
     check(loader.findBySourceId('en.testsource')).identicalTo(plugin);
   });
 
-  test('load() can register multiple plugins', skip: _wasmSkip, () async {
-    final loader = WasmPluginLoader();
-    await loader.load(_buildFakeAix('en.source1'));
-    await loader.load(_buildFakeAix('en.source2'));
+  test('loadAixBytes() can register multiple plugins', skip: _wasmSkip, () async {
+    final loader = AidokuPluginMemoryStore();
+    await loader.loadAixBytes(_buildFakeAix('en.source1'));
+    await loader.loadAixBytes(_buildFakeAix('en.source2'));
     check(loader.loadedSources).length.equals(2);
   });
 
-  test('load() replaces plugin with same id', skip: _wasmSkip, () async {
-    final loader = WasmPluginLoader();
-    await loader.load(_buildFakeAix('en.source'));
-    final AidokuPlugin second = await loader.load(_buildFakeAix('en.source'));
+  test('loadAixBytes() replaces plugin with same id', skip: _wasmSkip, () async {
+    final loader = AidokuPluginMemoryStore();
+    await loader.loadAixBytes(_buildFakeAix('en.source'));
+    final AidokuPlugin second = await loader.loadAixBytes(_buildFakeAix('en.source'));
     check(loader.loadedSources).length.equals(1);
     check(loader.findBySourceId('en.source')).identicalTo(second);
   });
 
   test('unload() removes plugin', skip: _wasmSkip, () async {
-    final loader = WasmPluginLoader();
-    await loader.load(_buildFakeAix('en.source'));
+    final loader = AidokuPluginMemoryStore();
+    await loader.loadAixBytes(_buildFakeAix('en.source'));
     loader.unload('en.source');
     check(loader.loadedSources).isEmpty();
   });

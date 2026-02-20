@@ -42,13 +42,12 @@ class MangayomiBackupDb with MangayomiBackupDbMappable {
 }
 
 @MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
-class MangayomiBackupManga with MangayomiBackupMangaMappable implements MangaDetails {
+class MangayomiBackupManga with MangayomiBackupMangaMappable, MangaSearchEntry {
   final String? author;
   final String? artist;
   final String? categories;
   final String? customCoverImage;
   final int? dateAdded;
-  @override
   final String? description;
   final bool? favorite;
   final List<String>? genres;
@@ -93,31 +92,16 @@ class MangayomiBackupManga with MangayomiBackupMangaMappable implements MangaDet
   });
 
   @override
-  String get title => name ?? '';
-
-  @override
-  List<String> get altTitles => const <String>[];
-
-  @override
-  List<String> get authors => <String>[if (author != null) author!];
-
-  @override
-  List<String> get artists => <String>[if (artist != null) artist!];
-
-  @override
-  List<String> get tagNames => genre ?? genres ?? const <String>[];
-
-  @override
-  int? get chaptersCount => null;
-
-  @override
-  double? get latestChapterNum => null;
-
-  @override
-  String? get coverImageUrl => imageUrl;
-
-  @override
-  List<String> get languages => const <String>[];
+  MangaSearchDetails toMangaSearchDetails() {
+    return MangaSearchDetails(
+      title: name ?? '',
+      authors: <String>[if (author != null) author!],
+      artists: <String>[if (artist != null) artist!],
+      tagNames: genre ?? genres ?? const <String>[],
+      description: description,
+      coverImageUrl: imageUrl,
+    );
+  }
 
   static const MangayomiBackupManga Function(Map<String, dynamic> map) fromMap = MangayomiBackupMangaMapper.fromMap;
   static const MangayomiBackupManga Function(String json) fromJson = MangayomiBackupMangaMapper.fromJson;

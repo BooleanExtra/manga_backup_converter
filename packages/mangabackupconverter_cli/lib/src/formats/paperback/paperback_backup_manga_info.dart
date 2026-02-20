@@ -5,7 +5,7 @@ import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 part 'paperback_backup_manga_info.mapper.dart';
 
 @MappableClass()
-class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable implements MangaDetails {
+class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable, MangaSearchEntry {
   final List<PaperbackBackupMangaTag> tags;
   final String desc;
   final String? rating;
@@ -48,34 +48,17 @@ class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable implements 
   }
 
   @override
-  String get title => titles.first;
-
-  @override
-  List<String> get altTitles => titles.length > 1 ? titles.sublist(1) : const <String>[];
-
-  @override
-  List<String> get authors => <String>[author];
-
-  @override
-  List<String> get artists => <String>[artist];
-
-  @override
-  List<String> get tagNames => tags.map((PaperbackBackupMangaTag t) => t.label).toList();
-
-  @override
-  String? get description => desc;
-
-  @override
-  int? get chaptersCount => null;
-
-  @override
-  double? get latestChapterNum => null;
-
-  @override
-  String? get coverImageUrl => image;
-
-  @override
-  List<String> get languages => const <String>[];
+  MangaSearchDetails toMangaSearchDetails() {
+    return MangaSearchDetails(
+      title: titles.first,
+      altTitles: titles.length > 1 ? titles.sublist(1) : const <String>[],
+      authors: <String>[author],
+      artists: <String>[artist],
+      tagNames: tags.map((PaperbackBackupMangaTag t) => t.label).toList(),
+      description: desc,
+      coverImageUrl: image,
+    );
+  }
 
   static const PaperbackBackupMangaInfo Function(Map<String, dynamic> map) fromMap =
       PaperbackBackupMangaInfoMapper.fromMap;

@@ -27,9 +27,7 @@ bool _hasWasmer() {
 
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync()
-      ? File(fixturePath)
-      : File('packages/wasm_plugin_loader/$fixturePath');
+  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/wasm_plugin_loader/$fixturePath');
 
   group(
     'WasmRunner native integration',
@@ -41,8 +39,8 @@ void main() {
     () {
       test('loads .aix and returns source info', () async {
         final Uint8List aixBytes = fixture.readAsBytesSync();
-        final loader = WasmPluginLoader();
-        final AidokuPlugin plugin = await loader.load(aixBytes);
+        final loader = AidokuPluginMemoryStore();
+        final AidokuPlugin plugin = await loader.loadAixBytes(aixBytes);
         check(plugin.sourceInfo.id).equals('multi.mangadex');
         check(plugin.sourceInfo.name).equals('MangaDex');
         check(plugin.sourceInfo.languages).contains('en');

@@ -15,14 +15,12 @@ import 'package:mangabackupconverter_cli/src/proto/schema_yokai.proto/proto/sche
 part 'tachi_backup_manga.mapper.dart';
 
 @MappableClass()
-class TachiBackupManga with TachiBackupMangaMappable implements MangaDetails {
+class TachiBackupManga with TachiBackupMangaMappable, MangaSearchEntry {
   final int source;
   final String url;
-  @override
   final String title;
   final String artist;
   final String author;
-  @override
   final String description;
   final List<String> genre;
   final int status;
@@ -263,28 +261,17 @@ class TachiBackupManga with TachiBackupMangaMappable implements MangaDetails {
   }
 
   @override
-  List<String> get altTitles => const <String>[];
-
-  @override
-  List<String> get authors => <String>[customAuthor ?? author];
-
-  @override
-  List<String> get artists => <String>[customArtist ?? artist];
-
-  @override
-  List<String> get tagNames => customGenre ?? genre;
-
-  @override
-  int? get chaptersCount => chapters.length;
-
-  @override
-  double? get latestChapterNum => null;
-
-  @override
-  String? get coverImageUrl => customThumbnailUrl ?? thumbnailUrl;
-
-  @override
-  List<String> get languages => const <String>[];
+  MangaSearchDetails toMangaSearchDetails() {
+    return MangaSearchDetails(
+      title: customTitle ?? title,
+      authors: <String>[customAuthor ?? author],
+      artists: <String>[customArtist ?? artist],
+      tagNames: customGenre ?? genre,
+      description: customDescription ?? description,
+      chaptersCount: chapters.length,
+      coverImageUrl: customThumbnailUrl ?? thumbnailUrl,
+    );
+  }
 
   static const TachiBackupManga Function(Map<String, dynamic> map) fromMap = TachiBackupMangaMapper.fromMap;
   static const TachiBackupManga Function(String json) fromJson = TachiBackupMangaMapper.fromJson;

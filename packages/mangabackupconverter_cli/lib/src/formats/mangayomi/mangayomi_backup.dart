@@ -51,6 +51,9 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
   static const MangayomiBackup Function(String json) fromJson = MangayomiBackupMapper.fromJson;
 
   @override
+  List<MangayomiBackupManga> get mangaSearchEntries => db.manga ?? const <MangayomiBackupManga>[];
+
+  @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
     return switch (type) {

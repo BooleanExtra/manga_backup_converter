@@ -138,6 +138,9 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   }
 
   @override
+  List<TachimangaBackupManga> get mangaSearchEntries => db.mangaTable;
+
+  @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
     return switch (type) {

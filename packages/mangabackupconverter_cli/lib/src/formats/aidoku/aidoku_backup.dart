@@ -225,6 +225,9 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   }
 
   @override
+  List<AidokuBackupManga> get mangaSearchEntries => manga?.toList() ?? const <AidokuBackupManga>[];
+
+  @override
   void verbosePrint(bool verbose) {
     if (!verbose) return;
 

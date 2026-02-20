@@ -21,7 +21,7 @@ abstract interface class MigrationCallbacks {
 class MangaMatchProposal {
   const MangaMatchProposal({required this.sourceManga, required this.candidates, this.bestMatch});
 
-  final MangaDetails sourceManga;
+  final MangaSearchDetails sourceManga;
   final List<PluginSearchResult> candidates;
   final PluginSearchResult? bestMatch;
 }
@@ -29,6 +29,6 @@ class MangaMatchProposal {
 class MangaMatchConfirmation {
   const MangaMatchConfirmation({required this.sourceManga, this.confirmedMatch});
 
-  final MangaDetails sourceManga;
+  final MangaSearchDetails sourceManga;
   final PluginSearchResult? confirmedMatch;
 }

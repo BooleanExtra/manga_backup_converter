@@ -89,6 +89,9 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
   static const PaperbackBackup Function(String json) fromJson = PaperbackBackupMapper.fromJson;
 
   @override
+  List<PaperbackBackupMangaInfo> get mangaSearchEntries => mangaInfo ?? const <PaperbackBackupMangaInfo>[];
+
+  @override
   ConvertableBackup toBackup(BackupType type) {
     // TODO: implement toBackup
     return switch (type) {

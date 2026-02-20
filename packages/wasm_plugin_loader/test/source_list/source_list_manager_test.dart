@@ -88,10 +88,10 @@ void main() {
     });
   });
 
-  group('SourceListManager.fetchSourceList', () {
+  group('SourceListManager.fetchRemoteSourceList', () {
     test('success — parses list name and sources', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
       check(list).isNotNull();
       if (list == null) throw Exception('list is null');
@@ -102,7 +102,7 @@ void main() {
 
     test('success — first source fields parsed correctly', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
       if (list == null) throw Exception('list is null');
       final SourceEntry entry = list.sources[0];
@@ -119,7 +119,7 @@ void main() {
 
     test('success — optional fields default when absent', () async {
       final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
 
       if (list == null) throw Exception('list is null');
       final SourceEntry entry = list.sources[1]; // safe_source — no contentRating/baseURL/altNames
@@ -132,19 +132,19 @@ void main() {
       final mgr = SourceListManager(
         httpClient: _mockClient('Not Found', statusCode: 404),
       );
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
       check(list).isNull();
     });
 
     test('malformed JSON returns null', () async {
       final mgr = SourceListManager(httpClient: _mockClient('{invalid'));
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
       check(list).isNull();
     });
 
     test('timeout returns null', () async {
       final mgr = SourceListManager(httpClient: _timeoutClient());
-      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchRemoteSourceList('https://example.com/index.json');
       check(list).isNull();
     }, timeout: const Timeout(Duration(seconds: 30)));
   });

@@ -128,6 +128,9 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     };
   }
 
+  @override
+  List<TachiBackupManga> get mangaSearchEntries => backupManga;
+
   static const TachiBackup Function(Map<String, dynamic> map) fromMap = TachiBackupMapper.fromMap;
   static const TachiBackup Function(String json) fromJson = TachiBackupMapper.fromJson;
 

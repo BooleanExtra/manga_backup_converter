@@ -33,7 +33,7 @@ class SourceListManager {
 
   /// Fetches and parses a single source list from [url].
   /// Returns `null` on any network or parse error.
-  Future<RemoteSourceList?> fetchSourceList(String url) async {
+  Future<RemoteSourceList?> fetchRemoteSourceList(String url) async {
     try {
       final Uri uri = Uri.parse(url);
       final http.Response response = await _client.get(uri).timeout(_kTimeout);
@@ -53,7 +53,7 @@ class SourceListManager {
   /// Fetches all configured source lists concurrently.
   /// Failed lists are silently dropped.
   Future<List<RemoteSourceList>> fetchAllSourceLists() async {
-    final List<RemoteSourceList?> results = await Future.wait(_urls.map(fetchSourceList));
+    final List<RemoteSourceList?> results = await Future.wait(_urls.map(fetchRemoteSourceList));
     return results.whereType<RemoteSourceList>().toList();
   }
 }

@@ -223,15 +223,13 @@ class TachimangaBackupHistory
 @MappableClass(caseStyle: CaseStyle.snakeCase)
 class TachimangaBackupManga
     with TachimangaBackupMangaMappable
-    implements ConvertableType<TachiBackupManga, TachimangaBackupDb>, MangaDetails {
+    implements ConvertableType<TachiBackupManga, TachimangaBackupDb>, MangaSearchEntry {
   final int id;
   final String url;
-  @override
   final String title;
   final bool initialized;
   final String? artist;
   final String? author;
-  @override
   final String? description;
   final String? genre;
   final int status;
@@ -298,28 +296,16 @@ class TachimangaBackupManga
   }
 
   @override
-  List<String> get altTitles => const <String>[];
-
-  @override
-  List<String> get authors => <String>[if (author != null) author!];
-
-  @override
-  List<String> get artists => <String>[if (artist != null) artist!];
-
-  @override
-  List<String> get tagNames => genre?.split(', ') ?? const <String>[];
-
-  @override
-  int? get chaptersCount => null;
-
-  @override
-  double? get latestChapterNum => null;
-
-  @override
-  String? get coverImageUrl => thumbnailUrl;
-
-  @override
-  List<String> get languages => const <String>[];
+  MangaSearchDetails toMangaSearchDetails() {
+    return MangaSearchDetails(
+      title: title,
+      authors: <String>[if (author != null) author!],
+      artists: <String>[if (artist != null) artist!],
+      tagNames: genre?.split(', ') ?? const <String>[],
+      description: description,
+      coverImageUrl: thumbnailUrl,
+    );
+  }
 
   static const TachimangaBackupManga Function(Map<String, dynamic> map) fromMap = TachimangaBackupMangaMapper.fromMap;
   static const TachimangaBackupManga Function(String json) fromJson = TachimangaBackupMangaMapper.fromJson;

@@ -31,11 +31,8 @@ melos run watch:pkg              # Watch mode for build_runner in a specific pac
 melos run test                   # Run all tests (flutter + dart) with coverage
 melos run flutter_test:pkg       # Flutter tests for a specific package
 melos run dart_test:pkg          # Dart tests for a specific package
-# For dart test directly: use --reporter expanded (not -v, which is invalid)
-# Native WASM tests skip automatically if wasmer or test fixture is absent
-# WASM_ABI.md in wasm_plugin_loader documents the Aidoku ABI; cross-check against aidoku-rs source if behavior doesn't match
-# IMPORTANT: Compiled .aix plugins may use older aidoku-rs versions — always verify enum/struct layouts against integration tests with real plugins, not just aidoku-rs source
-# WasmPluginLoader.load() accepts `defaults: Map<String,dynamic>` to pre-seed per-source defaults (e.g. auth tokens); keys are raw (no sourceId prefix); see WASM_ABI.md "defaults" section
+                                 # For dart test directly: use --reporter expanded (not -v, which is invalid)
+                                 # Native WASM tests skip automatically if wasmer or test fixture is absent
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
@@ -64,6 +61,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/converter.dart` — `MangaBackupConverter` class with import methods per format
 - `lib/src/common/` — `BackupType` enum, `Convertable` interface, shared mappers
 - `lib/src/formats/<format>/` — Format-specific backup models and parsers
+- `lib/src/pipeline/` — Migration pipeline API (BackupFormat, MangaSearchDetails, MigrationPipeline, plugin sources)
 - `lib/src/proto/` — Protocol buffer schemas for Tachi forks (mihon, j2k, neko, sy, yokai)
 - `lib/src/exceptions/` — Format-specific exception classes
 
@@ -90,7 +88,6 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - **State**: Riverpod + riverpod_generator + hooks_riverpod
 - **Models**: freezed (immutable), dart_mappable (serialization)
 - **Navigation**: go_router
-- **Data caching**: stock (Fetcher + SourceOfTruth pattern)
 - **Theme**: flex_color_scheme
 - **Testing**: mocktail, patrol (integration tests)
 - **CLI formats**: protobuf, archive, sqflite_common
@@ -102,3 +99,9 @@ GitHub Actions runs on all branches: format verification, analysis, tests with c
 ## Commits
 
 Do not commit changes with "Co-Authored-By: Claude" or similar in the description.
+
+## Other Instructions
+
+- WASM_ABI.md in wasm_plugin_loader documents the Aidoku ABI; cross-check against aidoku-rs source if behavior doesn't match
+- IMPORTANT: Compiled .aix plugins may use older aidoku-rs versions — always verify enum/struct layouts against integration tests with real plugins, not just aidoku-rs source
+- AidokuPluginMemoryStore.loadAixBytes() accepts `defaults: Map<String,dynamic>` to pre-seed per-source defaults (e.g. auth tokens); keys are raw (no sourceId prefix); see WASM_ABI.md "defaults" section

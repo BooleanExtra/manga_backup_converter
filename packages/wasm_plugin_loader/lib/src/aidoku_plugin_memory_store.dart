@@ -4,13 +4,13 @@ import 'package:wasm_plugin_loader/src/models/source_info.dart';
 
 /// Registry for loaded Aidoku WASM source plugins.
 /// Plugins are keyed by their source ID (e.g. 'multi.mangadex').
-class WasmPluginLoader {
-  WasmPluginLoader();
+class AidokuPluginMemoryStore {
+  AidokuPluginMemoryStore();
 
   final Map<String, AidokuPlugin> _plugins = <String, AidokuPlugin>{};
 
   /// Load a plugin from .aix bytes and register it.
-  Future<AidokuPlugin> load(Uint8List aixBytes, {Map<String, dynamic>? defaults}) async {
+  Future<AidokuPlugin> loadAixBytes(Uint8List aixBytes, {Map<String, dynamic>? defaults}) async {
     final AidokuPlugin plugin = await AidokuPlugin.fromAix(aixBytes, defaults: defaults);
     _plugins[plugin.sourceInfo.id] = plugin;
     return plugin;
