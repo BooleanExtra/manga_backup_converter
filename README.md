@@ -34,7 +34,6 @@ separate packages.
   - [Mason Bricks](#mason-bricks)
   - [JSON Serialization, Unions, Sealed Classes and copyWith](#json-serialization-unions-sealed-classes-and-copywith)
   - [State Management](#state-management)
-  - [Async Data Loading and Caching](#async-data-loading-and-caching)
   - [Native Splash Screen](#native-splash-screen)
   - [Native Platform Dialogs/Alerts](#native-platform-dialogsalerts)
   - [Bottom Sheets](#bottom-sheets)
@@ -297,15 +296,6 @@ It is recommend to run build_runner in watch mode to generate the code for River
 ```dart
 dart run build_runner watch -d
 ```
-
-### Async Data Loading and Caching
-
-The [stock](https://pub.dev/packages/stock) package is recommended for loading data from both remote and
-local sources. Its main goal is to prevent excessive calls to the network and disk cache. By
-utilizing it, you eliminate the possibility of flooding your network with the same request
-while, at the same time, adding layers of caching.
-
-Although you can use it without a local source, the greatest benefit comes from combining Stock with a local database such as Floor, Drift, Sqflite, Realm, etc. *(excerpt from the README)*
 
 ### Native Splash Screen
 
