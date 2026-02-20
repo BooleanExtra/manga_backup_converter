@@ -103,8 +103,8 @@ class ConvertCommand extends Command<void> {
     try {
       final ConvertableBackup convertedBackup = await pipeline.run(
         sourceBackup: importedBackup,
-        source: inputFormat,
-        target: outputFormat,
+        sourceFormat: inputFormat,
+        targetFormat: outputFormat,
       );
 
       if (verbose) {

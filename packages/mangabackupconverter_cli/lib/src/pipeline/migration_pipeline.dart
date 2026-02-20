@@ -1,9 +1,5 @@
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/migration_exception.dart';
-import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup.dart';
-import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
