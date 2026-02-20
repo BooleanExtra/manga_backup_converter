@@ -7,6 +7,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:path/path.dart' as p;
+import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 class ConvertCommand extends Command<void> {
   @override
@@ -93,24 +94,10 @@ class ConvertCommand extends Command<void> {
 
     final pipeline = MigrationPipeline(
       repoUrls: const <String>[],
-      onSelectExtensions: (extensions) async => extensions,
-      onConfirmMatches: (List<MangaMatchProposal> proposals) async {
-        for (final proposal in proposals) {
-          for (final PluginSearchFailure failure in proposal.failures) {
-            io.stderr.writeln('Warning: ${failure.pluginId} search failed: ${failure.error}');
-          }
-        }
-        return proposals
-            .map(
-              (MangaMatchProposal p) => MangaMatchConfirmation(sourceManga: p.sourceManga, confirmedMatch: p.bestMatch),
-            )
-            .toList();
-      },
-      onProgress: (int current, int total, String message) {
-        if (verbose) {
-          print('[$current/$total] $message');
-        }
-      },
+      onSelectExtensions: (List<SourceEntry> extensions) async => extensions,
+      onConfirmMatch: (MangaMatchProposal proposal) async =>
+          MangaMatchConfirmation(sourceManga: proposal.sourceManga, confirmedMatch: proposal.bestMatch),
+      onProgress: (int current, int total, String message) => verbose ? print('[$current/$total] $message') : null,
     );
 
     try {

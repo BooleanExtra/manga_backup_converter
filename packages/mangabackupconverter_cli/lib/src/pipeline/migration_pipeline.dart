@@ -12,13 +12,13 @@ class MigrationPipeline {
   const MigrationPipeline({
     required this.repoUrls,
     required this.onSelectExtensions,
-    required this.onConfirmMatches,
+    required this.onConfirmMatch,
     required this.onProgress,
   });
 
   final List<String> repoUrls;
   final Future<List<SourceEntry>> Function(List<SourceEntry> extensions) onSelectExtensions;
-  final Future<List<MangaMatchConfirmation>> Function(List<MangaMatchProposal> proposals) onConfirmMatches;
+  final Future<MangaMatchConfirmation> Function(MangaMatchProposal proposal) onConfirmMatch;
   final void Function(int current, int total, String message) onProgress;
 
   Future<ConvertableBackup> run({
@@ -61,15 +61,14 @@ class MigrationPipeline {
 
     try {
       final List<MangaSearchDetails> mangaList = _extractManga(sourceBackup);
-      final proposals = <MangaMatchProposal>[];
-
-      for (var i = 0; i < mangaList.length; i++) {
-        onProgress(i + 1, mangaList.length, 'Searching for: ${mangaList[i].title}');
-        final MangaMatchProposal proposal = await _searchForManga(mangaList[i], plugins);
-        proposals.add(proposal);
+      final List<MangaMatchConfirmation> confirmations = [];
+      for (final (int i, MangaSearchDetails manga) in mangaList.indexed) {
+        onProgress(i + 1, mangaList.length, 'Searching for: ${manga.title}');
+        final MangaMatchProposal proposal = await _searchForManga(manga, plugins);
+        final MangaMatchConfirmation confirmation = await onConfirmMatch(proposal);
+        confirmations.add(confirmation);
       }
 
-      final List<MangaMatchConfirmation> confirmations = await onConfirmMatches(proposals);
       return _buildTargetBackup(target, confirmations);
     } finally {
       for (final plugin in plugins) {
