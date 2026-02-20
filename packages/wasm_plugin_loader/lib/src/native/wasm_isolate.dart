@@ -26,7 +26,7 @@ class WasmIsolateInit {
     required this.bufferPtrSlotAddress,
     required this.bufferLenSlotAddress,
     required this.sourceId,
-    this.initialDefaults = const {},
+    this.initialDefaults = const <String, Object>{},
   });
 
   /// The isolate sends its own command [SendPort] back on this port.
@@ -267,14 +267,14 @@ class WasmPartialResultMsg {
 /// results to shared native memory, and signals the semaphore to wake this
 /// isolate's thread.
 Future<void> wasmIsolateMain(WasmIsolateInit init) async {
-  final cmdPort = ReceivePort();
+  final ReceivePort cmdPort = ReceivePort();
   // Let the main isolate know where to send commands.
   init.handshakePort.send(cmdPort.sendPort);
 
-  final store = HostStore();
+  final HostStore store = HostStore();
 
   // Forward partial results from the WASM isolate to the main isolate.
-  store.partialResults.listen((bytes) => init.asyncPort.send(WasmPartialResultMsg(bytes)));
+  store.partialResults.listen((Uint8List bytes) => init.asyncPort.send(WasmPartialResultMsg(bytes)));
 
   // Seed defaults from settings.json before WASM starts.
   store.defaults.addAll(init.initialDefaults);
@@ -303,18 +303,18 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
         statusSlotAddress: init.statusSlotAddress,
         bufferPtrSlotAddress: init.bufferPtrSlotAddress,
         bufferLenSlotAddress: init.bufferLenSlotAddress,
-        body: body != null ? List.from(body) : null,
+        body: body != null ? List<int>.from(body) : null,
       ),
     );
     // 2. Block this thread until the main isolate signals.
     WasmSemaphore.fromAddress(init.semaphoreAddress).wait();
     // 3. Read result from shared native memory.
-    final result = WasmSharedState.readResult(init.resultSlotAddress);
+    final int result = WasmSharedState.readResult(init.resultSlotAddress);
     if (result != 0) {
       return (statusCode: -1, body: null);
     }
-    final statusCode = WasmSharedState.readStatus(init.statusSlotAddress);
-    final respBody = WasmSharedState.readResponse(init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
+    final int statusCode = WasmSharedState.readStatus(init.statusSlotAddress);
+    final Uint8List respBody = WasmSharedState.readResponse(init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
     return (statusCode: statusCode, body: respBody);
   }
 
@@ -329,8 +329,8 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   }
 
   // Lazy runner proxy (breaks circular dep between imports and runner).
-  final lazyRunner = _LazyRunner();
-  final imports = buildAidokuHostImports(
+  final _LazyRunner lazyRunner = _LazyRunner();
+  final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
     sourceId: init.sourceId,
@@ -350,15 +350,15 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
 
   // Initialize the source.
   try {
-    runner.call('start', []);
+    runner.call('start', <Object?>[]);
   } catch (_) {
     // Some sources may not export start.
   }
 
   // Process commands until shutdown.
-  await for (final cmd in cmdPort) {
+  await for (final Object? cmd in cmdPort) {
     if (cmd is WasmShutdownCmd) break;
-    _processCmd(cmd as Object, runner, store, init.asyncPort);
+    _processCmd(cmd!, runner, store, init.asyncPort);
   }
 
   store.dispose();
@@ -377,10 +377,10 @@ void _processCmd(
 ) {
   if (cmd is WasmSearchCmd) {
     Uint8List? result;
-    final queryRid = store.addBytes(cmd.queryBytes);
-    final filtersRid = store.addBytes(cmd.filtersBytes);
+    final int queryRid = store.addBytes(cmd.queryBytes);
+    final int filtersRid = store.addBytes(cmd.filtersBytes);
     try {
-      final ptr = (runner.call('get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
+      final int ptr = (runner.call('get_search_manga_list', <Object?>[queryRid, cmd.page, filtersRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
@@ -397,9 +397,9 @@ void _processCmd(
     Uint8List? result;
     // v2 ABI: get_manga_update(manga_descriptor_rid, needs_details, needs_chapters)
     // manga_descriptor is postcard-encoded Manga struct with the key set.
-    final mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
+    final int mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
     try {
-      final ptr = (runner.call('get_manga_update', [mangaRid, 1, 0]) as num).toInt();
+      final int ptr = (runner.call('get_manga_update', <Object?>[mangaRid, 1, 0]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
@@ -415,10 +415,10 @@ void _processCmd(
     Uint8List? result;
     // ABI: get_page_list(manga_descriptor_rid, chapter_descriptor_rid)
     // Note: manga comes FIRST, chapter comes SECOND.
-    final mangaRid = store.addBytes(cmd.mangaBytes);
-    final chapterRid = store.addBytes(cmd.chapterBytes);
+    final int mangaRid = store.addBytes(cmd.mangaBytes);
+    final int chapterRid = store.addBytes(cmd.chapterBytes);
     try {
-      final ptr = (runner.call('get_page_list', [mangaRid, chapterRid]) as num).toInt();
+      final int ptr = (runner.call('get_page_list', <Object?>[mangaRid, chapterRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
@@ -436,9 +436,9 @@ void _processCmd(
 
     // Call get_manga_list with the pre-encoded Listing descriptor RID from the manifest.
     if (cmd.listingBytes != null) {
-      final listingRid = store.addBytes(cmd.listingBytes!);
+      final int listingRid = store.addBytes(cmd.listingBytes!);
       try {
-        final ptr = (runner.call('get_manga_list', [listingRid, cmd.page]) as num).toInt();
+        final int ptr = (runner.call('get_manga_list', <Object?>[listingRid, cmd.page]) as num).toInt();
         if (ptr > 0) result = _readResult(runner, ptr);
       } catch (e, st) {
         logPort.send(WasmLogMsg(message: 'get_manga_list: $e', stackTrace: st.toString()));
@@ -449,10 +449,11 @@ void _processCmd(
 
     if (result == null) {
       // No listing provided or get_manga_list failed — fall back to empty-query search.
-      final queryRid = store.addBytes(Uint8List(0)); // empty UTF-8 string
-      final filtersRid = store.addBytes(Uint8List.fromList([0])); // postcard empty list
+      final int queryRid = store.addBytes(Uint8List(0)); // empty UTF-8 string
+      final int filtersRid = store.addBytes(Uint8List.fromList(<int>[0])); // postcard empty list
       try {
-        final ptr = (runner.call('get_search_manga_list', [queryRid, cmd.page, filtersRid]) as num).toInt();
+        final int ptr = (runner.call('get_search_manga_list', <Object?>[queryRid, cmd.page, filtersRid]) as num)
+            .toInt();
         if (ptr > 0) result = _readResult(runner, ptr);
       } catch (e, st) {
         logPort.send(WasmLogMsg(message: 'get_search_manga_list (fallback): $e', stackTrace: st.toString()));
@@ -469,7 +470,7 @@ void _processCmd(
   if (cmd is WasmRawGetCmd) {
     Uint8List? result;
     try {
-      final ptr = (runner.call(cmd.funcName, []) as num).toInt();
+      final int ptr = (runner.call(cmd.funcName, <Object?>[]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       result = null;
@@ -481,9 +482,9 @@ void _processCmd(
 
   if (cmd is WasmAlternateCoversCmd) {
     Uint8List? result;
-    final mangaRid = store.addBytes(cmd.mangaBytes);
+    final int mangaRid = store.addBytes(cmd.mangaBytes);
     try {
-      final ptr = (runner.call('get_alternate_covers', [mangaRid]) as num).toInt();
+      final int ptr = (runner.call('get_alternate_covers', <Object?>[mangaRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_alternate_covers: $e', stackTrace: st.toString()));
@@ -496,10 +497,10 @@ void _processCmd(
 
   if (cmd is WasmImageRequestCmd) {
     Uint8List? result;
-    final urlRid = store.addBytes(cmd.urlBytes);
-    final contextRid = store.addBytes(cmd.contextBytes);
+    final int urlRid = store.addBytes(cmd.urlBytes);
+    final int contextRid = store.addBytes(cmd.contextBytes);
     try {
-      final ptr = (runner.call('get_image_request', [urlRid, contextRid]) as num).toInt();
+      final int ptr = (runner.call('get_image_request', <Object?>[urlRid, contextRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_image_request: $e', stackTrace: st.toString()));
@@ -514,7 +515,7 @@ void _processCmd(
   if (cmd is WasmBaseUrlCmd) {
     Uint8List? result;
     try {
-      final ptr = (runner.call('get_base_url', []) as num).toInt();
+      final int ptr = (runner.call('get_base_url', <Object?>[]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_base_url: $e', stackTrace: st.toString()));
@@ -525,9 +526,9 @@ void _processCmd(
 
   if (cmd is WasmPageDescriptionCmd) {
     Uint8List? result;
-    final pageRid = store.addBytes(cmd.pageBytes);
+    final int pageRid = store.addBytes(cmd.pageBytes);
     try {
-      final ptr = (runner.call('get_page_description', [pageRid]) as num).toInt();
+      final int ptr = (runner.call('get_page_description', <Object?>[pageRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_page_description: $e', stackTrace: st.toString()));
@@ -540,10 +541,10 @@ void _processCmd(
 
   if (cmd is WasmProcessPageImageCmd) {
     Uint8List? result;
-    final imageRid = store.addBytes(cmd.imageBytes);
-    final contextRid = store.addBytes(cmd.contextBytes);
+    final int imageRid = store.addBytes(cmd.imageBytes);
+    final int contextRid = store.addBytes(cmd.contextBytes);
     try {
-      final ptr = (runner.call('process_page_image', [imageRid, contextRid]) as num).toInt();
+      final int ptr = (runner.call('process_page_image', <Object?>[imageRid, contextRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'process_page_image: $e', stackTrace: st.toString()));
@@ -556,9 +557,9 @@ void _processCmd(
   }
 
   if (cmd is WasmNotificationCmd) {
-    final rid = store.addBytes(cmd.notifBytes);
+    final int rid = store.addBytes(cmd.notifBytes);
     try {
-      runner.call('handle_notification', [rid]);
+      runner.call('handle_notification', <Object?>[rid]);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_notification: $e', stackTrace: st.toString()));
     } finally {
@@ -570,9 +571,9 @@ void _processCmd(
 
   if (cmd is WasmDeepLinkCmd) {
     Uint8List? result;
-    final rid = store.addBytes(cmd.urlBytes);
+    final int rid = store.addBytes(cmd.urlBytes);
     try {
-      final ptr = (runner.call('handle_deep_link', [rid]) as num).toInt();
+      final int ptr = (runner.call('handle_deep_link', <Object?>[rid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_deep_link: $e', stackTrace: st.toString()));
@@ -584,12 +585,12 @@ void _processCmd(
   }
 
   if (cmd is WasmBasicLoginCmd) {
-    final keyRid = store.addBytes(cmd.keyBytes);
-    final userRid = store.addBytes(cmd.usernameBytes);
-    final passRid = store.addBytes(cmd.passwordBytes);
+    final int keyRid = store.addBytes(cmd.keyBytes);
+    final int userRid = store.addBytes(cmd.usernameBytes);
+    final int passRid = store.addBytes(cmd.passwordBytes);
     bool success = false;
     try {
-      final result = (runner.call('handle_basic_login', [keyRid, userRid, passRid]) as num).toInt();
+      final int result = (runner.call('handle_basic_login', <Object?>[keyRid, userRid, passRid]) as num).toInt();
       success = result >= 0;
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_basic_login: $e', stackTrace: st.toString()));
@@ -603,11 +604,11 @@ void _processCmd(
   }
 
   if (cmd is WasmWebLoginCmd) {
-    final keyRid = store.addBytes(cmd.keyBytes);
-    final cookiesRid = store.addBytes(cmd.cookiesBytes);
+    final int keyRid = store.addBytes(cmd.keyBytes);
+    final int cookiesRid = store.addBytes(cmd.cookiesBytes);
     bool success = false;
     try {
-      final result = (runner.call('handle_web_login', [keyRid, cookiesRid]) as num).toInt();
+      final int result = (runner.call('handle_web_login', <Object?>[keyRid, cookiesRid]) as num).toInt();
       success = result >= 0;
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_web_login: $e', stackTrace: st.toString()));
@@ -621,9 +622,9 @@ void _processCmd(
 
   if (cmd is WasmMangaMigrationCmd) {
     Uint8List? result;
-    final keyRid = store.addBytes(cmd.keyBytes);
+    final int keyRid = store.addBytes(cmd.keyBytes);
     try {
-      final ptr = (runner.call('handle_key_migration', [keyRid, -1]) as num).toInt();
+      final int ptr = (runner.call('handle_key_migration', <Object?>[keyRid, -1]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_key_migration (manga): $e', stackTrace: st.toString()));
@@ -636,10 +637,10 @@ void _processCmd(
 
   if (cmd is WasmChapterMigrationCmd) {
     Uint8List? result;
-    final mangaRid = store.addBytes(cmd.mangaKeyBytes);
-    final chapterRid = store.addBytes(cmd.chapterKeyBytes);
+    final int mangaRid = store.addBytes(cmd.mangaKeyBytes);
+    final int chapterRid = store.addBytes(cmd.chapterKeyBytes);
     try {
-      final ptr = (runner.call('handle_key_migration', [mangaRid, chapterRid]) as num).toInt();
+      final int ptr = (runner.call('handle_key_migration', <Object?>[mangaRid, chapterRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_key_migration (chapter): $e', stackTrace: st.toString()));
@@ -663,28 +664,28 @@ void _processCmd(
 /// All other negative return codes (−1, −2, −3) arrive as a negative i32
 /// ptr directly (not as a buffer), so they never reach this function.
 Uint8List _readResult(WasmRunner runner, int ptr) {
-  final lenBytes = runner.readMemory(ptr, 4);
-  final totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
+  final Uint8List lenBytes = runner.readMemory(ptr, 4);
+  final int totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
   if (totalLen < 0) {
     // AidokuError::Message: bytes[8..12] = total buffer length, bytes[12+] = UTF-8 message.
     String message = 'AidokuError from WASM result buffer';
     try {
-      final msgLenBytes = runner.readMemory(ptr + 8, 4);
-      final msgBufLen = ByteData.sublistView(msgLenBytes).getInt32(0, Endian.little);
+      final Uint8List msgLenBytes = runner.readMemory(ptr + 8, 4);
+      final int msgBufLen = ByteData.sublistView(msgLenBytes).getInt32(0, Endian.little);
       if (msgBufLen > 12) {
-        final msgBytes = runner.readMemory(ptr + 12, msgBufLen - 12);
+        final Uint8List msgBytes = runner.readMemory(ptr + 12, msgBufLen - 12);
         message = 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}';
       }
     } catch (_) {}
     try {
-      runner.call('free_result', [ptr]);
+      runner.call('free_result', <Object?>[ptr]);
     } catch (_) {}
     throw FormatException(message);
   }
-  final payloadLen = totalLen - 8;
-  final data = runner.readMemory(ptr + 8, payloadLen);
+  final int payloadLen = totalLen - 8;
+  final Uint8List data = runner.readMemory(ptr + 8, payloadLen);
   try {
-    runner.call('free_result', [ptr]);
+    runner.call('free_result', <Object?>[ptr]);
   } catch (_) {}
   return data;
 }

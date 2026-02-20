@@ -30,7 +30,7 @@ class OpenWeatherMapAPI {
     );
   }
 
-  Map<String, dynamic> cityQueryParameters(String city) => {
+  Map<String, dynamic> cityQueryParameters(String city) => <String, dynamic>{
     'q': city,
     'appid': apiKey,
     'units': 'metric',

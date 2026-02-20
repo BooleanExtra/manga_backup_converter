@@ -12,8 +12,10 @@ import 'package:wasm_plugin_loader/src/models/filter_info.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
 
 void main() {
-  const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/wasm_plugin_loader/$fixturePath');
+  const String fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
+  final File fixture = File(fixturePath).existsSync()
+      ? File(fixturePath)
+      : File('packages/wasm_plugin_loader/$fixturePath');
 
   group(
     'AixParser with real .aix fixture',
@@ -74,7 +76,7 @@ void main() {
         });
 
         test('each filter is a FilterInfo with a non-empty type', () {
-          for (final fi in bundle.filters!) {
+          for (final FilterInfo fi in bundle.filters!) {
             expect(fi, isA<FilterInfo>());
             expect(fi.type, isA<String>());
             expect(fi.type, isNotEmpty);
@@ -92,7 +94,7 @@ void main() {
         });
 
         test('each setting is a SettingItem subtype', () {
-          for (final s in bundle.settings!) {
+          for (final SettingItem s in bundle.settings!) {
             expect(s, isA<SettingItem>());
           }
         });

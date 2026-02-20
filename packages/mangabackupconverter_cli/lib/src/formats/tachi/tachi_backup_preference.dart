@@ -25,8 +25,8 @@ class TachiBackupPreference with TachiBackupPreferenceMappable {
     );
   }
 
-  static const fromMap = TachiBackupPreferenceMapper.fromMap;
-  static const fromJson = TachiBackupPreferenceMapper.fromJson;
+  static const TachiBackupPreference Function(Map<String, dynamic> map) fromMap = TachiBackupPreferenceMapper.fromMap;
+  static const TachiBackupPreference Function(String json) fromJson = TachiBackupPreferenceMapper.fromJson;
 }
 
 @MappableClass()
@@ -44,6 +44,7 @@ class TachiBackupPreferenceValue with TachiBackupPreferenceValueMappable {
     return TachiBackupPreferenceValue(type: value.type, truevalue: value.truevalue);
   }
 
-  static const fromMap = TachiBackupPreferenceValueMapper.fromMap;
-  static const fromJson = TachiBackupPreferenceValueMapper.fromJson;
+  static const TachiBackupPreferenceValue Function(Map<String, dynamic> map) fromMap =
+      TachiBackupPreferenceValueMapper.fromMap;
+  static const TachiBackupPreferenceValue Function(String json) fromJson = TachiBackupPreferenceValueMapper.fromJson;
 }

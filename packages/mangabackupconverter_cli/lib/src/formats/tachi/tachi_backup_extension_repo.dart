@@ -40,6 +40,7 @@ class TachiBackupExtensionRepo with TachiBackupExtensionRepoMappable {
     );
   }
 
-  static const fromMap = TachiBackupExtensionRepoMapper.fromMap;
-  static const fromJson = TachiBackupExtensionRepoMapper.fromJson;
+  static const TachiBackupExtensionRepo Function(Map<String, dynamic> map) fromMap =
+      TachiBackupExtensionRepoMapper.fromMap;
+  static const TachiBackupExtensionRepo Function(String json) fromJson = TachiBackupExtensionRepoMapper.fromJson;
 }

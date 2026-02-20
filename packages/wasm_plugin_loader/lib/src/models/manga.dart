@@ -9,13 +9,13 @@ class Manga {
     required this.key,
     required this.title,
     this.coverUrl,
-    this.authors = const [],
-    this.artists = const [],
+    this.authors = const <String>[],
+    this.artists = const <String>[],
     this.description,
-    this.tags = const [],
+    this.tags = const <String>[],
     this.status = MangaStatus.unknown,
     this.contentRating = ContentRating.safe,
-    this.chapters = const [],
+    this.chapters = const <Chapter>[],
     this.url,
   });
 

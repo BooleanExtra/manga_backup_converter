@@ -3,7 +3,7 @@ import 'package:mangabackupconverter_cli/src/common/aidoku_date_time_mapper.dart
 
 part 'aidoku_backup_chapter.mapper.dart';
 
-@MappableClass(includeCustomMappers: [AidokuDateTimeMapper()], ignoreNull: true)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[AidokuDateTimeMapper()], ignoreNull: true)
 class AidokuBackupChapter with AidokuBackupChapterMappable {
   final String sourceId;
   final String mangaId;
@@ -29,6 +29,6 @@ class AidokuBackupChapter with AidokuBackupChapterMappable {
     required this.sourceOrder,
   });
 
-  static const fromMap = AidokuBackupChapterMapper.fromMap;
-  static const fromJson = AidokuBackupChapterMapper.fromJson;
+  static const AidokuBackupChapter Function(Map<String, dynamic> map) fromMap = AidokuBackupChapterMapper.fromMap;
+  static const AidokuBackupChapter Function(String json) fromJson = AidokuBackupChapterMapper.fromJson;
 }

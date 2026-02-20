@@ -10,6 +10,7 @@ import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/language_info.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
 import 'package:wasm_plugin_loader/src/models/page.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
@@ -42,7 +43,7 @@ class AidokuPlugin {
   final WasmSemaphore _semaphore;
   final WasmSharedState _sharedState;
 
-  final _partialResultsController = StreamController<Uint8List>.broadcast();
+  final StreamController<Uint8List> _partialResultsController = StreamController<Uint8List>.broadcast();
 
   final SourceInfo sourceInfo;
 
@@ -54,13 +55,13 @@ class AidokuPlugin {
 
   /// Default filters derived from `filters.json` default values.
   List<FilterValue> get defaultFilters => filterDefinitions
-      .expand((f) => f.type == 'group' ? f.items : [f])
-      .map((f) => f.toDefaultFilterValue())
+      .expand((FilterInfo f) => f.type == 'group' ? f.items : <FilterInfo>[f])
+      .map((FilterInfo f) => f.toDefaultFilterValue())
       .whereType<FilterValue>()
       .toList();
 
   // Shared HTTP client reused for the plugin's lifetime.
-  static final _httpClient = http.Client();
+  static final http.Client _httpClient = http.Client();
 
   // ---------------------------------------------------------------------------
   // Factory
@@ -71,33 +72,33 @@ class AidokuPlugin {
     Uint8List aixBytes, {
     Map<String, dynamic>? defaults,
   }) async {
-    final bundle = AixParser.parse(aixBytes);
+    final AixBundle bundle = AixParser.parse(aixBytes);
 
-    final settings = bundle.settings ?? const [];
-    final filterDefinitions = bundle.filters ?? const [];
-    final sourceId = bundle.sourceInfo.id;
-    final initialDefaults = Map<String, Object>.from(
+    final List<SettingItem> settings = bundle.settings ?? const <SettingItem>[];
+    final List<FilterInfo> filterDefinitions = bundle.filters ?? const <FilterInfo>[];
+    final String sourceId = bundle.sourceInfo.id;
+    final Map<String, Object> initialDefaults = Map<String, Object>.from(
       flattenSettingDefaults(settings, sourceId: sourceId),
     );
     // Mirror Swift Source.loadSettings() defaultLanguages selection.
-    var defaultLanguages = bundle.languageInfos
-        .where((l) => l.isDefault ?? false)
-        .map((l) => l.effectiveValue)
+    List<String> defaultLanguages = bundle.languageInfos
+        .where((LanguageInfo l) => l.isDefault ?? false)
+        .map((LanguageInfo l) => l.effectiveValue)
         .toList();
     if (defaultLanguages.isEmpty && bundle.languageInfos.isNotEmpty) {
-      defaultLanguages = [bundle.languageInfos.first.effectiveValue];
+      defaultLanguages = <String>[bundle.languageInfos.first.effectiveValue];
     }
     if (bundle.languageSelectType == 'single' && defaultLanguages.length > 1) {
-      defaultLanguages = [defaultLanguages.first];
+      defaultLanguages = <String>[defaultLanguages.first];
     }
     if (defaultLanguages.isNotEmpty) {
       initialDefaults['$sourceId.languages'] = encodeStringList(defaultLanguages);
     }
 
     if (defaults != null) {
-      for (final entry in defaults.entries) {
-        final key = '$sourceId.${entry.key}';
-        final value = entry.value;
+      for (final MapEntry<String, dynamic> entry in defaults.entries) {
+        final String key = '$sourceId.${entry.key}';
+        final Object? value = entry.value;
         if (value == null) {
           // skip
         } else if (value is bool) {
@@ -115,13 +116,13 @@ class AidokuPlugin {
       }
     }
 
-    final semaphore = WasmSemaphore.create();
-    final sharedState = WasmSharedState();
+    final WasmSemaphore semaphore = WasmSemaphore.create();
+    final WasmSharedState sharedState = WasmSharedState();
 
     // asyncPort: receives WasmHttpMsg / WasmSleepMsg from the WASM isolate.
-    final asyncPort = ReceivePort();
+    final ReceivePort asyncPort = ReceivePort();
     // handshakePort: receives the WASM isolate's command port on startup.
-    final handshakePort = ReceivePort();
+    final ReceivePort handshakePort = ReceivePort();
 
     await Isolate.spawn(
       wasmIsolateMain,
@@ -139,10 +140,10 @@ class AidokuPlugin {
       ),
     );
 
-    final wasmCmdPort = await handshakePort.first as SendPort;
+    final SendPort wasmCmdPort = await handshakePort.first as SendPort;
     handshakePort.close();
 
-    final plugin = AidokuPlugin._(
+    final AidokuPlugin plugin = AidokuPlugin._(
       wasmCmdPort: wasmCmdPort,
       asyncPort: asyncPort,
       semaphore: semaphore,
@@ -152,7 +153,7 @@ class AidokuPlugin {
       filterDefinitions: filterDefinitions,
     );
 
-    asyncPort.listen((msg) async {
+    asyncPort.listen((Object? msg) async {
       if (msg is WasmHttpMsg) {
         await plugin._handleHttpMsg(msg);
       } else if (msg is WasmSleepMsg) {
@@ -171,17 +172,19 @@ class AidokuPlugin {
 
   Future<void> _handleHttpMsg(WasmHttpMsg msg) async {
     try {
-      final uri = Uri.parse(msg.url);
-      final methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
+      final Uri uri = Uri.parse(msg.url);
+      final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
       // ignore: avoid_print
       print('[wasm/net] $methodStr ${msg.url}');
-      final request = http.Request(methodStr, uri);
+      final http.Request request = http.Request(methodStr, uri);
       request.headers.addAll(msg.headers);
       if (msg.body != null) {
         request.bodyBytes = Uint8List.fromList(msg.body!);
       }
-      final response = await _httpClient.send(request).timeout(Duration(seconds: msg.timeout.toInt()));
-      final body = await response.stream.toBytes();
+      final http.StreamedResponse response = await _httpClient
+          .send(request)
+          .timeout(Duration(seconds: msg.timeout.toInt()));
+      final Uint8List body = await response.stream.toBytes();
       // ignore: avoid_print
       print('[wasm/net] ${response.statusCode} ${body.length}b');
       _sharedState.writeResponse(statusCode: response.statusCode, body: body);
@@ -201,9 +204,9 @@ class AidokuPlugin {
   Future<MangaPageResult> searchManga(
     String query,
     int page, {
-    List<FilterValue> filters = const [],
+    List<FilterValue> filters = const <FilterValue>[],
   }) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmSearchCmd(
         queryBytes: Uint8List.fromList(utf8.encode(query)),
@@ -212,26 +215,26 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
-    if (data == null) return const MangaPageResult(manga: [], hasNextPage: false);
+    if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
       return decodeMangaPageResult(PostcardReader(data));
     } on Object {
-      return const MangaPageResult(manga: [], hasNextPage: false);
+      return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }
 
   /// Fetch updated manga details. Returns null on error or no data.
   Future<Manga?> getMangaDetails(String key) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmMangaDetailsCmd(
         keyBytes: Uint8List.fromList(utf8.encode(key)),
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     try {
@@ -243,7 +246,7 @@ class AidokuPlugin {
 
   /// Fetch page image URLs for a chapter.
   Future<List<Page>> getPageList(Manga manga, Chapter chapter) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmPageListCmd(
         mangaBytes: encodeManga(manga),
@@ -251,30 +254,30 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
-    if (data == null) return [];
+    if (data == null) return <Page>[];
     try {
       return decodePageList(PostcardReader(data));
     } on Object {
-      return [];
+      return <Page>[];
     }
   }
 
   /// Browse manga listing (page is 1-based, listing selects the source's listing).
   Future<MangaPageResult> getMangaList(int page, {SourceListing? listing}) async {
-    final listingBytes = listing != null
+    final Uint8List? listingBytes = listing != null
         ? encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind))
         : null;
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(WasmMangaListCmd(listingBytes: listingBytes, page: page, replyPort: port.sendPort));
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
-    if (data == null) return const MangaPageResult(manga: [], hasNextPage: false);
+    if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
       return decodeMangaPageResult(PostcardReader(data));
     } on Object {
-      return const MangaPageResult(manga: [], hasNextPage: false);
+      return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }
 
@@ -286,37 +289,37 @@ class AidokuPlugin {
 
   /// Decoded home layout from `get_home`, or null if not supported.
   Future<HomeLayout?> getHome() async {
-    final bytes = await _rawGet('get_home');
+    final Uint8List? bytes = await _rawGet('get_home');
     if (bytes == null) return null;
     return decodeHomeLayoutResult(bytes);
   }
 
   /// Available source listings from `get_listings`.
   Future<List<AidokuListing>> getListings() async {
-    final bytes = await _rawGet('get_listings');
-    if (bytes == null) return const [];
+    final Uint8List? bytes = await _rawGet('get_listings');
+    if (bytes == null) return const <AidokuListing>[];
     try {
       return decodeListings(PostcardReader(bytes));
     } on Object {
-      return const [];
+      return const <AidokuListing>[];
     }
   }
 
   /// Alternate cover URLs for a manga from `get_alternate_covers`.
   Future<List<String>> getAlternateCovers(Manga manga) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmAlternateCoversCmd(mangaBytes: encodeManga(manga), replyPort: port.sendPort),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
-    if (data == null) return const [];
+    if (data == null) return const <String>[];
     return decodeStringVecResult(data);
   }
 
   /// Custom image request for a URL from `get_image_request`.
   Future<ImageRequest?> getImageRequest(String url, {Map<String, String>? context}) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmImageRequestCmd(
         urlBytes: encodeStringBytes(url),
@@ -324,7 +327,7 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     return decodeImageRequestResult(data);
@@ -332,18 +335,18 @@ class AidokuPlugin {
 
   /// Source base URL from `get_base_url`.
   Future<String?> getBaseUrl() async {
-    final bytes = await _rawGet('get_base_url');
+    final Uint8List? bytes = await _rawGet('get_base_url');
     if (bytes == null) return null;
     return decodeStringResult(bytes);
   }
 
   /// Page description string from `get_page_description`.
   Future<String?> getPageDescription(Page page) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmPageDescriptionCmd(pageBytes: encodePage(page), replyPort: port.sendPort),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     return decodeStringResult(data);
@@ -351,7 +354,7 @@ class AidokuPlugin {
 
   /// Process a page image (e.g. descramble) via `process_page_image`.
   Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmProcessPageImageCmd(
         imageBytes: encodeImageResponse(imageBytes),
@@ -359,14 +362,14 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     return data;
   }
 
   /// Deliver a notification string to the plugin via `handle_notification`.
   Future<void> handleNotification(String notification) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmNotificationCmd(notifBytes: encodeStringBytes(notification), replyPort: port.sendPort),
     );
@@ -376,9 +379,9 @@ class AidokuPlugin {
 
   /// Handle a deep link URL via `handle_deep_link`.
   Future<DeepLinkResult?> handleDeepLink(String url) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(WasmDeepLinkCmd(urlBytes: encodeStringBytes(url), replyPort: port.sendPort));
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     return decodeDeepLinkResultFromBytes(data);
@@ -386,7 +389,7 @@ class AidokuPlugin {
 
   /// Perform basic (username/password) login via `handle_basic_login`.
   Future<bool> handleBasicLogin(String key, String username, String password) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmBasicLoginCmd(
         keyBytes: encodeStringBytes(key),
@@ -395,14 +398,14 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final result = await port.first;
+    final Object? result = await port.first;
     port.close();
     return result is bool && result;
   }
 
   /// Perform web (cookie) login via `handle_web_login`.
   Future<bool> handleWebLogin(String key, Map<String, String> cookies) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmWebLoginCmd(
         keyBytes: encodeStringBytes(key),
@@ -410,18 +413,18 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final result = await port.first;
+    final Object? result = await port.first;
     port.close();
     return result is bool && result;
   }
 
   /// Migrate a manga key via `handle_key_migration`.
   Future<String?> handleMangaMigration(String key) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmMangaMigrationCmd(keyBytes: encodeStringBytes(key), replyPort: port.sendPort),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     return decodeStringResult(data);
@@ -429,7 +432,7 @@ class AidokuPlugin {
 
   /// Migrate a chapter key via `handle_key_migration`.
   Future<String?> handleChapterMigration(String mangaKey, String chapterKey) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(
       WasmChapterMigrationCmd(
         mangaKeyBytes: encodeStringBytes(mangaKey),
@@ -437,7 +440,7 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     if (data == null) return null;
     return decodeStringResult(data);
@@ -461,12 +464,12 @@ class AidokuPlugin {
   // ---------------------------------------------------------------------------
 
   Future<Uint8List?> _rawGet(String funcName) async {
-    final port = ReceivePort();
+    final ReceivePort port = ReceivePort();
     _wasmCmdPort.send(WasmRawGetCmd(funcName: funcName, replyPort: port.sendPort));
-    final data = await port.first as Uint8List?;
+    final Uint8List? data = await port.first as Uint8List?;
     port.close();
     return data;
   }
 }
 
-const _httpMethodNames = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'];
+const List<String> _httpMethodNames = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'];

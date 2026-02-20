@@ -5,7 +5,9 @@ import 'package:mangabackupconverter/src/features/settings/data/dto/theme_type.d
 
 part 'settings.mapper.dart';
 
-@MappableClass(includeCustomMappers: [FlexSchemeDataMapper()])
+@MappableClass(
+  includeCustomMappers: <MapperBase<Object>>[FlexSchemeDataMapper()],
+)
 class Settings with SettingsMappable {
   @MappableField()
   final bool bannerEnabled;
@@ -27,9 +29,11 @@ class Settings with SettingsMappable {
     this.themeType = ThemeType.system,
     this.lightTheme = FlexColor.flutterDash,
     this.darkTheme = FlexColor.bahamaBlue,
-    this.customThemes = const [],
+    this.customThemes = const <FlexSchemeData>[],
   });
 
-  static const fromMap = SettingsMapper.fromMap;
-  static const fromJson = SettingsMapper.fromJson;
+  static const Settings Function(Map<String, dynamic> map) fromMap =
+      SettingsMapper.fromMap;
+  static const Settings Function(String json) fromJson =
+      SettingsMapper.fromJson;
 }

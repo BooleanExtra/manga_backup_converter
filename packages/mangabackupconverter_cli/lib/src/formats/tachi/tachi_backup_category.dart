@@ -63,6 +63,6 @@ class TachiBackupCategory with TachiBackupCategoryMappable {
     );
   }
 
-  static const fromMap = TachiBackupCategoryMapper.fromMap;
-  static const fromJson = TachiBackupCategoryMapper.fromJson;
+  static const TachiBackupCategory Function(Map<String, dynamic> map) fromMap = TachiBackupCategoryMapper.fromMap;
+  static const TachiBackupCategory Function(String json) fromJson = TachiBackupCategoryMapper.fromJson;
 }

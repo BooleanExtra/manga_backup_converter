@@ -43,8 +43,8 @@ class WasmSharedState {
       _resultSlot.value = 0;
       return;
     }
-    final buf = calloc<ffi.Uint8>(body.length);
-    for (var i = 0; i < body.length; i++) {
+    final ffi.Pointer<ffi.Uint8> buf = calloc<ffi.Uint8>(body.length);
+    for (int i = 0; i < body.length; i++) {
       (buf + i).value = body[i];
     }
     _bufferPtrSlot.value = buf.address;
@@ -68,15 +68,15 @@ class WasmSharedState {
 
   /// Copy response bytes out of native heap into a Dart [Uint8List].
   static Uint8List readResponse(int bufferPtrSlotAddress, int bufferLenSlotAddress) {
-    final ptr = ffi.Pointer<ffi.Int64>.fromAddress(bufferPtrSlotAddress).value;
-    final len = ffi.Pointer<ffi.Int64>.fromAddress(bufferLenSlotAddress).value;
+    final int ptr = ffi.Pointer<ffi.Int64>.fromAddress(bufferPtrSlotAddress).value;
+    final int len = ffi.Pointer<ffi.Int64>.fromAddress(bufferLenSlotAddress).value;
     if (ptr == 0 || len == 0) return Uint8List(0);
-    final nativePtr = ffi.Pointer<ffi.Uint8>.fromAddress(ptr);
-    return Uint8List.fromList(List.generate(len, (i) => (nativePtr + i).value));
+    final ffi.Pointer<ffi.Uint8> nativePtr = ffi.Pointer<ffi.Uint8>.fromAddress(ptr);
+    return Uint8List.fromList(List<int>.generate(len, (int i) => (nativePtr + i).value));
   }
 
   void _freeBuffer() {
-    final prevPtr = _bufferPtrSlot.value;
+    final int prevPtr = _bufferPtrSlot.value;
     if (prevPtr != 0) {
       calloc.free(ffi.Pointer<ffi.Uint8>.fromAddress(prevPtr));
       _bufferPtrSlot.value = 0;

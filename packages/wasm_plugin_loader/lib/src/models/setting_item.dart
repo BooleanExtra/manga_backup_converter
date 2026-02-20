@@ -21,13 +21,13 @@ sealed class SettingItem {
   final String? requiresFalse;
 
   factory SettingItem.fromJson(Map<String, dynamic> json) {
-    final type = json['type'] as String? ?? '';
-    final key = json['key'] as String?;
-    final title = json['title'] as String?;
-    final subtitle = json['subtitle'] as String?;
-    final footer = json['footer'] as String?;
-    final requires = json['requires'] as String?;
-    final requiresFalse = json['requiresFalse'] as String?;
+    final String type = json['type'] as String? ?? '';
+    final String? key = json['key'] as String?;
+    final String? title = json['title'] as String?;
+    final String? subtitle = json['subtitle'] as String?;
+    final String? footer = json['footer'] as String?;
+    final String? requires = json['requires'] as String?;
+    final String? requiresFalse = json['requiresFalse'] as String?;
 
     switch (type) {
       case 'switch':
@@ -42,8 +42,8 @@ sealed class SettingItem {
           requiresFalse: requiresFalse,
         );
       case 'select':
-        final values = _stringList(json['values']);
-        final titles = _stringList(json['titles'] ?? json['cases']);
+        final List<String> values = _stringList(json['values']);
+        final List<String> titles = _stringList(json['titles'] ?? json['cases']);
         return SelectSetting(
           values: values,
           titles: titles,
@@ -56,8 +56,8 @@ sealed class SettingItem {
           defaultValue: json['default'] as String?,
         );
       case 'segment':
-        final values = _stringList(json['values']);
-        final titles = _stringList(json['titles'] ?? json['cases']);
+        final List<String> values = _stringList(json['values']);
+        final List<String> titles = _stringList(json['titles'] ?? json['cases']);
         return SegmentSetting(
           values: values,
           titles: titles,
@@ -160,7 +160,7 @@ class SwitchSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
     return (key: k, value: defaultValue ? 1 : 0);
   }
@@ -185,9 +185,9 @@ class SelectSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
-    final idx = defaultValue != null ? values.indexOf(defaultValue!) : -1;
+    final int idx = defaultValue != null ? values.indexOf(defaultValue!) : -1;
     return (key: k, value: idx >= 0 ? idx : 0);
   }
 }
@@ -211,7 +211,7 @@ class SegmentSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
     return (key: k, value: defaultValue);
   }
@@ -234,7 +234,7 @@ class MultiSelectSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
     return (key: k, value: _postcardEncodeStringList(defaultValue));
   }
@@ -261,7 +261,7 @@ class StepperSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
     return (key: k, value: defaultValue.round());
   }
@@ -282,7 +282,7 @@ class TextSetting extends SettingItem {
 
   @override
   ({String key, Object value})? get defaultEntry {
-    final k = key;
+    final String? k = key;
     if (k == null) return null;
     return (key: k, value: Uint8List.fromList(utf8.encode(defaultValue)));
   }
@@ -343,11 +343,11 @@ Map<String, Object> flattenSettingDefaults(
   List<SettingItem> items, {
   String? sourceId,
 }) {
-  final result = <String, Object>{};
-  for (final item in items) {
-    final entry = item.defaultEntry;
+  final Map<String, Object> result = <String, Object>{};
+  for (final SettingItem item in items) {
+    final ({String key, Object value})? entry = item.defaultEntry;
     if (entry != null) {
-      final key = sourceId != null ? '$sourceId.${entry.key}' : entry.key;
+      final String key = sourceId != null ? '$sourceId.${entry.key}' : entry.key;
       result[key] = entry.value;
     }
     if (item is GroupSetting) {
@@ -361,16 +361,16 @@ Map<String, Object> flattenSettingDefaults(
 
 List<String> _stringList(Object? raw) {
   if (raw is List) return raw.cast<String>();
-  return const [];
+  return const <String>[];
 }
 
 List<SettingItem> _parseItems(Object? raw) {
-  if (raw is! List) return const [];
+  if (raw is! List) return const <SettingItem>[];
   return raw.whereType<Map<String, dynamic>>().map(SettingItem.fromJson).toList();
 }
 
 Uint8List _postcardEncodeStringList(List<String> values) {
-  final writer = PostcardWriter();
-  writer.writeList(values, (s, w) => w.writeString(s));
+  final PostcardWriter writer = PostcardWriter();
+  writer.writeList(values, (String s, PostcardWriter w) => w.writeString(s));
   return writer.bytes;
 }

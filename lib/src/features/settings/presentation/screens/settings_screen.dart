@@ -18,9 +18,10 @@ class SettingsScreen extends StatefulHookConsumerWidget {
 class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsServiceProvider);
-    final developerSettings = _buildDeveloperSettings(settings: settings);
-    final theme = Theme.of(context);
+    final Settings settings = ref.watch(settingsServiceProvider);
+    final List<AbstractSettingsTile> developerSettings =
+        _buildDeveloperSettings(settings: settings);
+    final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SettingsList(
@@ -36,26 +37,26 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
         ),
         brightness: theme.brightness,
         platform: DevicePlatform.android,
-        sections: [
+        sections: <AbstractSettingsSection>[
           SettingsSection(
-            tiles: [
+            tiles: <AbstractSettingsTile>[
               SettingsTile.navigation(
                 title: const Text('Appearance'),
                 leading: const Icon(Icons.colorize),
-                onPressed: (context) {
+                onPressed: (BuildContext context) {
                   context.goNamed(
                     RouteName.settingDetails.name,
-                    pathParameters: {'id': 'appearance'},
+                    pathParameters: <String, String>{'id': 'appearance'},
                   );
                 },
               ),
               SettingsTile.navigation(
                 title: const Text('About'),
                 leading: const Icon(Icons.info),
-                onPressed: (context) {
+                onPressed: (BuildContext context) {
                   context.goNamed(
                     RouteName.settingDetails.name,
-                    pathParameters: {'id': 'about'},
+                    pathParameters: <String, String>{'id': 'about'},
                   );
                 },
               ),
@@ -75,21 +76,21 @@ class _SettingsWidgetState extends ConsumerState<SettingsScreen> {
   SettingsSection buildAdvancedSection() {
     return SettingsSection(
       title: const Text('Advanced'),
-      tiles: [
+      tiles: <AbstractSettingsTile>[
         SettingsTile(
           title: const Text('Reset settings'),
           leading: const Icon(Icons.restore),
-          onPressed: (context) async {
+          onPressed: (BuildContext context) async {
             await showAdaptiveDialog<dynamic>(
               context: context,
-              builder: (context) {
-                final colorScheme = Theme.of(context).colorScheme;
+              builder: (BuildContext context) {
+                final ColorScheme colorScheme = Theme.of(context).colorScheme;
                 return AlertDialog.adaptive(
                   title: const Text('Reset settings'),
                   content: const Text(
                     'Are you sure you want to reset your settings to default? This action cannot be undone.',
                   ),
-                  actions: [
+                  actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Text('Cancel'),
@@ -133,7 +134,7 @@ class _ToggleBannerButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsServiceProvider);
+    final Settings settings = ref.watch(settingsServiceProvider);
     return ListTile(
       leading: const Icon(Icons.bug_report),
       title: const Text('Enable banner'),
@@ -144,7 +145,7 @@ class _ToggleBannerButton extends ConsumerWidget {
         label: 'Toggle debug banner',
         child: Switch(
           value: settings.bannerEnabled,
-          onChanged: (value) {
+          onChanged: (bool value) {
             _toggleButton(ref, context);
           },
         ),
@@ -153,7 +154,7 @@ class _ToggleBannerButton extends ConsumerWidget {
   }
 
   void _toggleButton(WidgetRef ref, BuildContext context) {
-    final bannerEnabled = ref
+    final bool bannerEnabled = ref
         .read(settingsServiceProvider.notifier)
         .toggleBanner();
     context.showAccessibilitySnackBar(

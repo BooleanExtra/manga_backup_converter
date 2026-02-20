@@ -12,11 +12,16 @@ import 'package:mangabackupconverter_cli/src/exceptions/mangayomi_exception.dart
 import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_db.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_category.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_extension_repo.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_manga.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_preference.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source_preferences.dart';
 import 'package:path/path.dart' as p;
 
 part 'mangayomi_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup {
   final String? name;
   final MangayomiBackupDb db;
@@ -24,24 +29,26 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
   const MangayomiBackup({required this.db, this.name});
 
   factory MangayomiBackup.fromData(Uint8List bytes, {String? overrideName}) {
-    final backupArchive = ZipDecoder().decodeBytes(bytes);
-    final backupJsonFile = backupArchive.files.where((file) => file.name.endsWith('.db')).firstOrNull;
+    final Archive backupArchive = ZipDecoder().decodeBytes(bytes);
+    final ArchiveFile? backupJsonFile = backupArchive.files
+        .where((ArchiveFile file) => file.name.endsWith('.db'))
+        .firstOrNull;
     if (backupJsonFile == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
-    final backupName = p.basenameWithoutExtension(backupJsonFile.name);
-    final backupJson = String.fromCharCodes(backupJsonFile.content);
-    final backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
+    final String backupName = p.basenameWithoutExtension(backupJsonFile.name);
+    final String backupJson = String.fromCharCodes(backupJsonFile.content);
+    final Map<String, dynamic>? backupMap = jsonDecode(backupJson) as Map<String, dynamic>?;
     if (backupMap == null) {
       throw const MangayomiException('Could not decode Mangayomi backup');
     }
-    final db = MangayomiBackupDb.fromMap(backupMap);
+    final MangayomiBackupDb db = MangayomiBackupDb.fromMap(backupMap);
 
     return MangayomiBackup(name: overrideName ?? backupName, db: db);
   }
 
-  static const fromMap = MangayomiBackupMapper.fromMap;
-  static const fromJson = MangayomiBackupMapper.fromJson;
+  static const MangayomiBackup Function(Map<String, dynamic> map) fromMap = MangayomiBackupMapper.fromMap;
+  static const MangayomiBackup Function(String json) fromJson = MangayomiBackupMapper.fromJson;
 
   @override
   ConvertableBackup toBackup(BackupType type) {
@@ -49,17 +56,18 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
     return switch (type) {
       BackupType.mangayomi => this,
       BackupType.tachi => TachiBackup(
-        backupCategories: (db.categories ?? [])
+        backupCategories: (db.categories ?? <MangayomiBackupCategory>[])
             .map(
-              (category) => TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
+              (MangayomiBackupCategory category) =>
+                  TachiBackupCategory(name: category.name ?? 'Default', order: category.pos ?? 0, flags: 0),
             )
             .toList(),
-        backupManga: [],
-        backupBrokenSources: [],
-        backupSources: [],
-        backupExtensionRepo: [],
-        backupPreferences: [],
-        backupSourcePreferences: [],
+        backupManga: <TachiBackupManga>[],
+        backupBrokenSources: <TachiBackupSource>[],
+        backupSources: <TachiBackupSource>[],
+        backupExtensionRepo: <TachiBackupExtensionRepo>[],
+        backupPreferences: <TachiBackupPreference>[],
+        backupSourcePreferences: <TachiBackupSourcePreferences>[],
       ),
       BackupType.aidoku => throw const MangayomiException('Mangayomi backup cannot be converted to Aidoku'),
       BackupType.paperback => throw const MangayomiException('Mangayomi backup cannot be converted to Paperback'),
@@ -69,8 +77,8 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
 
   @override
   Future<Uint8List> toData() async {
-    final archive = Archive();
-    final dbJson = jsonEncode(db.toMap()).codeUnits;
+    final Archive archive = Archive();
+    final List<int> dbJson = jsonEncode(db.toMap()).codeUnits;
     archive.addFile(ArchiveFile('$name.db', dbJson.length, dbJson));
     return ZipEncoder().encodeBytes(archive);
   }

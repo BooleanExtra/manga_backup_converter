@@ -11,9 +11,9 @@ import 'package:path/path.dart' as p;
 /// A command to merge two Aidoku backups.
 class MergeCommand extends Command<void> {
   @override
-  final name = 'merge';
+  final String name = 'merge';
   @override
-  final description = 'Merge an Aidoku manga backup with another.';
+  final String description = 'Merge an Aidoku manga backup with another.';
 
   MergeCommand() {
     argParser
@@ -25,7 +25,7 @@ class MergeCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final results = argResults!;
+    final ArgResults results = argResults!;
     final bool verbose = results.flag('verbose');
 
     if (verbose) {
@@ -35,8 +35,8 @@ class MergeCommand extends Command<void> {
     final io.File backupFile = _parseFile(results, 'backup');
     final io.File otherBackupFile = _parseFile(results, 'other');
 
-    final backupFileExtension = p.extension(backupFile.uri.toString());
-    final otherBackupFileExtension = p.extension(otherBackupFile.uri.toString());
+    final String backupFileExtension = p.extension(backupFile.uri.toString());
+    final String otherBackupFileExtension = p.extension(otherBackupFile.uri.toString());
     if (backupFileExtension != '.aib') {
       throw UsageException('Backup file format "$backupFileExtension" not supported', usage);
     }
@@ -44,7 +44,7 @@ class MergeCommand extends Command<void> {
       throw UsageException('Other backup file format "$otherBackupFileExtension" not supported', usage);
     }
 
-    final outputFolder = results.wasParsed('output') ? results.option('output')! : '.';
+    final String outputFolder = results.wasParsed('output') ? results.option('output')! : '.';
     io.Directory(outputFolder).createSync(recursive: true);
     final String outputPath = p.join(
       outputFolder,
@@ -67,7 +67,7 @@ class MergeCommand extends Command<void> {
   }
 
   io.File _parseFile(ArgResults results, String optionName) {
-    final file = io.File(results.option(optionName)!);
+    final io.File file = io.File(results.option(optionName)!);
     if (!file.existsSync()) {
       throw UsageException('$optionName file does not exist: ${file.path}', usage);
     }

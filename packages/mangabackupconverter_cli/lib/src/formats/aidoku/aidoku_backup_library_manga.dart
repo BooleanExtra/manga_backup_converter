@@ -9,7 +9,7 @@ import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_
 
 part 'aidoku_backup_library_manga.mapper.dart';
 
-@MappableClass(includeCustomMappers: [AidokuDateTimeMapper()], ignoreNull: true)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[AidokuDateTimeMapper()], ignoreNull: true)
 class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
   final DateTime lastOpened;
   final DateTime lastUpdated;
@@ -29,19 +29,21 @@ class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
     required this.sourceId,
   });
 
-  static const fromMap = AidokuBackupLibraryMangaMapper.fromMap;
-  static const fromJson = AidokuBackupLibraryMangaMapper.fromJson;
+  static const AidokuBackupLibraryManga Function(Map<String, dynamic> map) fromMap =
+      AidokuBackupLibraryMangaMapper.fromMap;
+  static const AidokuBackupLibraryManga Function(String json) fromJson = AidokuBackupLibraryMangaMapper.fromJson;
 
   PaperbackBackupLibraryManga toPaperbackBackupLibraryManga() {
-    final extensionRepo = ExtensionRepoIndex.parseExtensionRepoIndex();
-    final categoriesSorted = categories.sorted();
-    final libraryTabs = categoriesSorted
+    final ExtensionRepoIndex extensionRepo = ExtensionRepoIndex.parseExtensionRepoIndex();
+    final List<String> categoriesSorted = categories.sorted();
+    final List<PaperbackBackupLibraryTab> libraryTabs = categoriesSorted
         .mapIndexed(
-          (index, category) => PaperbackBackupLibraryTab(id: index.toString(), name: category, sortOrder: index),
+          (int index, String category) =>
+              PaperbackBackupLibraryTab(id: index.toString(), name: category, sortOrder: index),
         )
         .toList();
 
-    final primarySource = PaperbackBackupItemReference(
+    final PaperbackBackupItemReference primarySource = PaperbackBackupItemReference(
       id: extensionRepo
           .convertExtension(Extension(name: sourceId, id: sourceId), ExtensionType.aidoku, ExtensionType.paperback)
           .first
@@ -55,9 +57,9 @@ class AidokuBackupLibraryManga with AidokuBackupLibraryMangaMappable {
       lastRead: lastRead,
       primarySource: primarySource,
       dateBookmarked: dateAdded,
-      trackedSources: [],
+      trackedSources: <PaperbackBackupItemReference>[],
       id: mangaId,
-      secondarySources: [],
+      secondarySources: <PaperbackBackupItemReference>[],
     );
   }
 }

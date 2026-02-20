@@ -37,14 +37,14 @@ class WasmSemaphore {
   JSObject get sharedBuffer => _sab;
 
   static WasmSemaphore create() {
-    final sab = _SharedArrayBuffer(4);
-    final arr = _Int32Array(sab);
+    final _SharedArrayBuffer sab = _SharedArrayBuffer(4);
+    final _Int32Array arr = _Int32Array(sab);
     _atomicsStore(arr, 0, 0);
     return WasmSemaphore._(sab, arr);
   }
 
   static WasmSemaphore fromBuffer(JSObject sab) {
-    final arr = _Int32Array(sab);
+    final _Int32Array arr = _Int32Array(sab);
     return WasmSemaphore._(sab as _SharedArrayBuffer, arr);
   }
 
@@ -55,8 +55,8 @@ class WasmSemaphore {
   /// Throws on the main thread (Atomics.wait is disallowed there).
   void wait() {
     while (true) {
-      final r = _atomicsWait(_arr, 0, 0);
-      final s = r.toDart;
+      final JSString r = _atomicsWait(_arr, 0, 0);
+      final String s = r.toDart;
       if (s == 'ok' || s == 'not-equal') break;
     }
     _atomicsStore(_arr, 0, 0);

@@ -17,7 +17,7 @@ class LanguageInfo {
 
   factory LanguageInfo.fromJson(Object raw) {
     if (raw is String) return LanguageInfo(code: raw, value: raw);
-    final m = raw as Map<String, dynamic>;
+    final Map<String, dynamic> m = raw as Map<String, dynamic>;
     return LanguageInfo(
       code: m['code'] as String,
       value: m['value'] as String?,

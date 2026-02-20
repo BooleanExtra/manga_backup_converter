@@ -29,6 +29,6 @@ class TachiBackupSource with TachiBackupSourceMappable {
     return TachiBackupSource(name: backupSource.name, sourceId: backupSource.sourceId.toInt());
   }
 
-  static const fromMap = TachiBackupSourceMapper.fromMap;
-  static const fromJson = TachiBackupSourceMapper.fromJson;
+  static const TachiBackupSource Function(Map<String, dynamic> map) fromMap = TachiBackupSourceMapper.fromMap;
+  static const TachiBackupSource Function(String json) fromJson = TachiBackupSourceMapper.fromJson;
 }

@@ -65,26 +65,27 @@ class ConstrainedScrollableChild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        controller: controller,
-        primary: primary,
-        physics: physics,
-        dragStartBehavior: dragStartBehavior,
-        clipBehavior: clipBehavior,
-        restorationId: restorationId,
-        keyboardDismissBehavior: keyboardDismissBehavior,
-        scrollDirection: scrollDirection,
-        child: switch (scrollDirection) {
-          Axis.vertical => ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(child: child),
+      builder: (BuildContext context, BoxConstraints constraints) =>
+          SingleChildScrollView(
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            dragStartBehavior: dragStartBehavior,
+            clipBehavior: clipBehavior,
+            restorationId: restorationId,
+            keyboardDismissBehavior: keyboardDismissBehavior,
+            scrollDirection: scrollDirection,
+            child: switch (scrollDirection) {
+              Axis.vertical => ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(child: child),
+              ),
+              Axis.horizontal => ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: IntrinsicWidth(child: child),
+              ),
+            },
           ),
-          Axis.horizontal => ConstrainedBox(
-            constraints: BoxConstraints(minWidth: constraints.maxWidth),
-            child: IntrinsicWidth(child: child),
-          ),
-        },
-      ),
     );
   }
 }

@@ -8,7 +8,7 @@ void main() {
   patrolTest(
     'counter state is the same after going to home and going back',
     skip: true,
-    ($) async {
+    (PatrolIntegrationTester $) async {
       await $.pumpWidgetAndSettle(const ProviderScope(child: App()));
 
       await $(FloatingActionButton).tap();

@@ -13,13 +13,13 @@ class HttpRequestResource extends HostResource {
   HttpRequestResource({required this.method});
   final int method; // HttpMethod enum value
   String? url;
-  final Map<String, String> headers = {};
+  final Map<String, String> headers = <String, String>{};
   Uint8List? body;
   double timeout = 30.0;
   // Populated after send()
   int? statusCode;
   Uint8List? responseBody;
-  final Map<String, String> responseHeaders = {};
+  final Map<String, String> responseHeaders = <String, String>{};
 }
 
 class HtmlDocumentResource extends HostResource {
@@ -39,15 +39,15 @@ class HtmlNodeListResource extends HostResource {
 class HostStore {
   HostStore();
 
-  final _map = <int, HostResource>{};
+  final Map<int, HostResource> _map = <int, HostResource>{};
   int _nextId = 1;
 
   /// Per-source preference values managed by `defaults::set` / `defaults::get`.
   /// Values are either [int] (numeric/bool prefs) or [Uint8List] (string/multi-select prefs).
-  final defaults = <String, Object>{};
+  final Map<String, Object> defaults = <String, Object>{};
 
   /// Partial results pushed by `env::_send_partial_result`.
-  late final _partialResultsController = StreamController<Uint8List>.broadcast();
+  late final StreamController<Uint8List> _partialResultsController = StreamController<Uint8List>.broadcast();
 
   Stream<Uint8List> get partialResults => _partialResultsController.stream;
 
@@ -57,7 +57,7 @@ class HostStore {
 
   /// Register a resource and return its Rid.
   int add(HostResource resource) {
-    final id = _nextId++;
+    final int id = _nextId++;
     _map[id] = resource;
     return id;
   }
@@ -67,7 +67,7 @@ class HostStore {
 
   /// Retrieve a resource by Rid, or null if not found.
   T? get<T extends HostResource>(int rid) {
-    final r = _map[rid];
+    final HostResource? r = _map[rid];
     return r is T ? r : null;
   }
 

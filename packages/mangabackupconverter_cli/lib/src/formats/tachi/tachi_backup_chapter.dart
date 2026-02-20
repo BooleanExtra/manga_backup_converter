@@ -122,6 +122,6 @@ class TachiBackupChapter with TachiBackupChapterMappable {
     );
   }
 
-  static const fromMap = TachiBackupChapterMapper.fromMap;
-  static const fromJson = TachiBackupChapterMapper.fromJson;
+  static const TachiBackupChapter Function(Map<String, dynamic> map) fromMap = TachiBackupChapterMapper.fromMap;
+  static const TachiBackupChapter Function(String json) fromJson = TachiBackupChapterMapper.fromJson;
 }

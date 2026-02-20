@@ -3,7 +3,7 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'paperback_backup_library_tab.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackupLibraryTab with PaperbackBackupLibraryTabMappable {
   final int sortOrder;
   final String id;
@@ -11,6 +11,7 @@ class PaperbackBackupLibraryTab with PaperbackBackupLibraryTabMappable {
 
   PaperbackBackupLibraryTab({required this.sortOrder, required this.id, required this.name});
 
-  static const fromMap = PaperbackBackupLibraryTabMapper.fromMap;
-  static const fromJson = PaperbackBackupLibraryTabMapper.fromJson;
+  static const PaperbackBackupLibraryTab Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupLibraryTabMapper.fromMap;
+  static const PaperbackBackupLibraryTab Function(String json) fromJson = PaperbackBackupLibraryTabMapper.fromJson;
 }

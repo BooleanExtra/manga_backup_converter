@@ -45,7 +45,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
   AsyncHttpDispatch? asyncHttp,
   AsyncSleepDispatch? asyncSleep,
 }) {
-  return {
+  return <String, Map<String, Function>>{
     'std': _stdImports(runner, store),
     'env': _envImports(runner, store, asyncSleep),
     'net': _netImports(runner, store, asyncHttp),
@@ -60,28 +60,28 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
 // std module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
+Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String, Function>{
   'destroy': (int rid) {
     store.remove(rid);
   },
   'buffer_len': (int rid) {
-    final r = store.get<BytesResource>(rid);
+    final BytesResource? r = store.get<BytesResource>(rid);
     if (r == null) return -1;
     return r.bytes.length;
   },
   // ABI canonical name has a leading underscore.
   '_read_buffer': (int rid, int ptr, int len) {
-    final r = store.get<BytesResource>(rid);
+    final BytesResource? r = store.get<BytesResource>(rid);
     if (r == null) return -1;
-    final bytes = r.bytes.length <= len ? r.bytes : r.bytes.sublist(0, len);
+    final Uint8List bytes = r.bytes.length <= len ? r.bytes : r.bytes.sublist(0, len);
     runner.writeMemory(ptr, bytes);
     return 0;
   },
   // Alias for older plugins that omit the leading underscore.
   'read_buffer': (int rid, int ptr, int len) {
-    final r = store.get<BytesResource>(rid);
+    final BytesResource? r = store.get<BytesResource>(rid);
     if (r == null) return -1;
-    final bytes = r.bytes.length <= len ? r.bytes : r.bytes.sublist(0, len);
+    final Uint8List bytes = r.bytes.length <= len ? r.bytes : r.bytes.sublist(0, len);
     runner.writeMemory(ptr, bytes);
     return 0;
   },
@@ -104,8 +104,8 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
         int tzLen,
       ) {
         try {
-          final dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
-          final parsed = _tryParseDate(dateStr);
+          final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
+          final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
         } catch (_) {
           return -1.0;
@@ -124,8 +124,8 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
         int tzLen,
       ) {
         try {
-          final dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
-          final parsed = _tryParseDate(dateStr);
+          final String dateStr = utf8.decode(runner.readMemory(strPtr, strLen));
+          final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
         } catch (_) {
           return -1.0;
@@ -135,12 +135,12 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => {
 
 /// Try to parse a date string using ISO 8601 and common fallback formats.
 DateTime? _tryParseDate(String s) {
-  final trimmed = s.trim();
+  final String trimmed = s.trim();
   if (trimmed.isEmpty) return null;
-  final iso = DateTime.tryParse(trimmed);
+  final DateTime? iso = DateTime.tryParse(trimmed);
   if (iso != null) return iso;
   // Strip trailing timezone abbreviation / extra text and retry.
-  final cleaned = trimmed.replaceAll(RegExp(r'\s+\w+$'), '');
+  final String cleaned = trimmed.replaceAll(RegExp(r'\s+\w+$'), '');
   return DateTime.tryParse(cleaned);
 }
 
@@ -152,7 +152,7 @@ Map<String, Function> _envImports(
   WasmRunner runner,
   HostStore store,
   AsyncSleepDispatch? asyncSleep,
-) => {
+) => <String, Function>{
   '_print': (int ptr, int len) {
     if (len > 0) {
       print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
@@ -178,10 +178,10 @@ Map<String, Function> _envImports(
   '_send_partial_result': (int ptr) {
     try {
       // Layout: [u32 length LE][u32 capacity LE][<length> bytes postcard]
-      final lenBytes = runner.readMemory(ptr, 4);
-      final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
+      final Uint8List lenBytes = runner.readMemory(ptr, 4);
+      final int length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
       if (length > 0) {
-        final data = runner.readMemory(ptr + 8, length);
+        final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
     } catch (_) {}
@@ -189,10 +189,10 @@ Map<String, Function> _envImports(
   // Alias without leading underscore (used by newer compiled plugins).
   'send_partial_result': (int ptr) {
     try {
-      final lenBytes = runner.readMemory(ptr, 4);
-      final length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
+      final Uint8List lenBytes = runner.readMemory(ptr, 4);
+      final int length = ByteData.sublistView(lenBytes).getUint32(0, Endian.little);
       if (length > 0) {
-        final data = runner.readMemory(ptr + 8, length);
+        final Uint8List data = runner.readMemory(ptr + 8, length);
         store.addPartialResult(data);
       }
     } catch (_) {}
@@ -208,45 +208,45 @@ Map<String, Function> _netImports(
   HostStore store,
   AsyncHttpDispatch? asyncHttp,
 ) {
-  return {
+  return <String, Function>{
     'init': (int method) {
       return store.add(HttpRequestResource(method: method));
     },
     'set_url': (int rid, int ptr, int len) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null) return -1;
       req.url = utf8.decode(runner.readMemory(ptr, len));
       return 0;
     },
     'set_header': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null) return -1;
-      final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-      final val = utf8.decode(runner.readMemory(valPtr, valLen));
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      final String val = utf8.decode(runner.readMemory(valPtr, valLen));
       req.headers[key] = val;
       return 0;
     },
     'set_body': (int rid, int ptr, int len) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null) return -1;
       req.body = Uint8List.fromList(runner.readMemory(ptr, len));
       return 0;
     },
     'set_timeout': (int rid, double timeout) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null) return -1;
       req.timeout = timeout;
       return 0;
     },
     'send': (int rid) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null || req.url == null) return -1;
       if (asyncHttp == null) return -1;
 
-      final resp = asyncHttp(
+      final ({Uint8List? body, int statusCode}) resp = asyncHttp(
         req.url!,
         req.method,
-        Map.from(req.headers),
+        Map<String, String>.from(req.headers),
         req.body,
         req.timeout,
       );
@@ -256,15 +256,15 @@ Map<String, Function> _netImports(
     },
     'send_all': (int ridsPtr, int count) {
       if (asyncHttp == null) return -1;
-      for (var i = 0; i < count; i++) {
-        final ridBytes = runner.readMemory(ridsPtr + i * 4, 4);
-        final rid = ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
-        final req = store.get<HttpRequestResource>(rid);
+      for (int i = 0; i < count; i++) {
+        final Uint8List ridBytes = runner.readMemory(ridsPtr + i * 4, 4);
+        final int rid = ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
+        final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
         if (req == null || req.url == null) continue;
-        final resp = asyncHttp(
+        final ({Uint8List? body, int statusCode}) resp = asyncHttp(
           req.url!,
           req.method,
-          Map.from(req.headers),
+          Map<String, String>.from(req.headers),
           req.body,
           req.timeout,
         );
@@ -277,10 +277,10 @@ Map<String, Function> _netImports(
       return store.get<HttpRequestResource>(rid)?.responseBody?.length ?? -1;
     },
     'read_data': (int rid, int ptr, int len) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req?.responseBody == null) return -1;
-      final body = req!.responseBody!;
-      final n = len < body.length ? len : body.length;
+      final Uint8List body = req!.responseBody!;
+      final int n = len < body.length ? len : body.length;
       runner.writeMemory(ptr, body.sublist(0, n));
       return n;
     },
@@ -288,22 +288,22 @@ Map<String, Function> _netImports(
       return store.get<HttpRequestResource>(rid)?.statusCode ?? -1;
     },
     'get_header': (int rid, int keyPtr, int keyLen) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req == null) return -1;
-      final key = utf8.decode(runner.readMemory(keyPtr, keyLen)).toLowerCase();
-      final val = req.responseHeaders[key];
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen)).toLowerCase();
+      final String? val = req.responseHeaders[key];
       if (val == null) return -1;
       return store.addBytes(_encodeString(val));
     },
     'html': (int rid) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req?.responseBody == null) return -1;
-      final htmlStr = utf8.decode(req!.responseBody!);
-      final doc = html_parser.parse(htmlStr);
+      final String htmlStr = utf8.decode(req!.responseBody!);
+      final html_dom.Document doc = html_parser.parse(htmlStr);
       return store.add(HtmlDocumentResource(doc));
     },
     'get_image': (int rid) {
-      final req = store.get<HttpRequestResource>(rid);
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
       if (req?.responseBody == null) return -1;
       return store.addBytes(req!.responseBody!);
     },
@@ -320,12 +320,12 @@ Map<String, Function> _netImports(
 // html module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
+Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <String, Function>{
   // ABI: html::parse(ptr: i32, len: i32 [, base_uri_ptr, base_uri_len]) -> rid
   'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
     try {
-      final htmlStr = utf8.decode(runner.readMemory(ptr, len));
-      final doc = html_parser.parse(htmlStr);
+      final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
+      final html_dom.Document doc = html_parser.parse(htmlStr);
       String baseUri = '';
       if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
         baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
@@ -337,98 +337,98 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
   },
   'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
     try {
-      final htmlStr = utf8.decode(runner.readMemory(ptr, len));
-      final nodes = html_parser.parseFragment(htmlStr);
-      final elements = nodes.children.whereType<html_dom.Element>().toList();
+      final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
+      final html_dom.DocumentFragment nodes = html_parser.parseFragment(htmlStr);
+      final List<html_dom.Element> elements = nodes.children.whereType<html_dom.Element>().toList();
       return store.add(HtmlNodeListResource(elements));
     } catch (_) {
       return -1;
     }
   },
   'select': (int rid, int selectorPtr, int selectorLen) {
-    final selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-    final elements = _querySelectorAll(store, rid, selector);
+    final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+    final List<html_dom.Element>? elements = _querySelectorAll(store, rid, selector);
     if (elements == null) return -1;
     return store.add(HtmlNodeListResource(elements));
   },
   'select_first': (int rid, int selectorPtr, int selectorLen) {
-    final selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-    final element = _querySelector(store, rid, selector);
+    final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+    final html_dom.Element? element = _querySelector(store, rid, selector);
     if (element == null) return -1;
     return store.add(HtmlDocumentResource(element));
   },
   'attr': (int rid, int keyPtr, int keyLen) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-    final el = _asElement(store, rid);
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    final val = el.attributes[key];
+    final String? val = el.attributes[key];
     if (val == null) return -1;
     return store.addBytes(_encodeString(val));
   },
   'has_attr': (int rid, int keyPtr, int keyLen) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-    final el = _asElement(store, rid);
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final html_dom.Element? el = _asElement(store, rid);
     return (el?.attributes.containsKey(key) ?? false) ? 1 : 0;
   },
   'text': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.text.trim()));
   },
   'own_text': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    final ownText = el.nodes.whereType<html_dom.Text>().map((n) => n.text).join().trim();
+    final String ownText = el.nodes.whereType<html_dom.Text>().map((html_dom.Text n) => n.text).join().trim();
     return store.addBytes(_encodeString(ownText));
   },
   'untrimmed_text': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.text));
   },
   'html': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.innerHtml));
   },
   'outer_html': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.outerHtml));
   },
   'tag_name': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.localName ?? ''));
   },
   'id': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    final id = el.id;
+    final String id = el.id;
     if (id.isEmpty) return -1;
     return store.addBytes(_encodeString(id));
   },
   'class_name': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.className));
   },
   'base_uri': (int rid) {
-    final r = store.get<HtmlDocumentResource>(rid);
+    final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
     return store.addBytes(_encodeString(r?.baseUri ?? ''));
   },
   'first': (int rid) {
-    final list = store.get<HtmlNodeListResource>(rid);
+    final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || list.nodes.isEmpty) return -1;
     return store.add(HtmlDocumentResource(list.nodes.first));
   },
   'last': (int rid) {
-    final list = store.get<HtmlNodeListResource>(rid);
+    final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || list.nodes.isEmpty) return -1;
     return store.add(HtmlDocumentResource(list.nodes.last));
   },
   'get': (int rid, int index) {
-    final list = store.get<HtmlNodeListResource>(rid);
+    final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || index < 0 || index >= list.nodes.length) {
       return -1;
     }
@@ -436,7 +436,7 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
   },
   // Alias kept for any legacy WASM binaries compiled with the old name.
   'html_get': (int rid, int index) {
-    final list = store.get<HtmlNodeListResource>(rid);
+    final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || index < 0 || index >= list.nodes.length) {
       return -1;
     }
@@ -446,45 +446,45 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
     return store.get<HtmlNodeListResource>(rid)?.nodes.length ?? -1;
   },
   'parent': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el?.parent == null) return -1;
     return store.add(HtmlDocumentResource(el!.parent!));
   },
   'children': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.add(HtmlNodeListResource(el.children.cast<Object>()));
   },
   'next': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    final siblings = el.parent?.children ?? [];
-    final idx = siblings.indexOf(el);
+    final List<html_dom.Element> siblings = el.parent?.children ?? <html_dom.Element>[];
+    final int idx = siblings.indexOf(el);
     if (idx < 0 || idx + 1 >= siblings.length) return -1;
     return store.add(HtmlDocumentResource(siblings[idx + 1]));
   },
   'previous': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    final siblings = el.parent?.children ?? [];
-    final idx = siblings.indexOf(el);
+    final List<html_dom.Element> siblings = el.parent?.children ?? <html_dom.Element>[];
+    final int idx = siblings.indexOf(el);
     if (idx <= 0) return -1;
     return store.add(HtmlDocumentResource(siblings[idx - 1]));
   },
   'siblings': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el?.parent == null) return -1;
-    final sibs = el!.parent!.children.where((c) => c != el).toList();
+    final List<html_dom.Element> sibs = el!.parent!.children.where((html_dom.Element c) => c != el).toList();
     return store.add(HtmlNodeListResource(sibs.cast<Object>()));
   },
   'set_text': (int rid, int ptr, int len) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     el.text = utf8.decode(runner.readMemory(ptr, len));
     return 0;
   },
   'set_html': (int rid, int ptr, int len) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     el.innerHtml = utf8.decode(runner.readMemory(ptr, len));
     return 0;
@@ -494,8 +494,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
     return 0;
   },
   'escape': (int ptr, int len) {
-    final str = utf8.decode(runner.readMemory(ptr, len));
-    final escaped = str
+    final String str = utf8.decode(runner.readMemory(ptr, len));
+    final String escaped = str
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
@@ -504,8 +504,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
     return store.addBytes(_encodeString(escaped));
   },
   'unescape': (int ptr, int len) {
-    final str = utf8.decode(runner.readMemory(ptr, len));
-    final unescaped = str
+    final String str = utf8.decode(runner.readMemory(ptr, len));
+    final String unescaped = str
         .replaceAll('&amp;', '&')
         .replaceAll('&lt;', '<')
         .replaceAll('&gt;', '>')
@@ -515,44 +515,44 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => {
     return store.addBytes(_encodeString(unescaped));
   },
   'has_class': (int rid, int classPtr, int classLen) {
-    final className = utf8.decode(runner.readMemory(classPtr, classLen));
+    final String className = utf8.decode(runner.readMemory(classPtr, classLen));
     return (_asElement(store, rid)?.classes.contains(className) ?? false) ? 1 : 0;
   },
   'add_class': (int rid, int classPtr, int classLen) {
-    final className = utf8.decode(runner.readMemory(classPtr, classLen));
+    final String className = utf8.decode(runner.readMemory(classPtr, classLen));
     _asElement(store, rid)?.classes.add(className);
     return 0;
   },
   'remove_class': (int rid, int classPtr, int classLen) {
-    final className = utf8.decode(runner.readMemory(classPtr, classLen));
+    final String className = utf8.decode(runner.readMemory(classPtr, classLen));
     _asElement(store, rid)?.classes.remove(className);
     return 0;
   },
   'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-    final val = utf8.decode(runner.readMemory(valPtr, valLen));
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final String val = utf8.decode(runner.readMemory(valPtr, valLen));
     _asElement(store, rid)?.attributes[key] = val;
     return 0;
   },
   'remove_attr': (int rid, int keyPtr, int keyLen) {
-    final key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
     _asElement(store, rid)?.attributes.remove(key);
     return 0;
   },
   'prepend': (int rid, int ptr, int len) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     el.innerHtml = utf8.decode(runner.readMemory(ptr, len)) + el.innerHtml;
     return 0;
   },
   'append': (int rid, int ptr, int len) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     el.innerHtml = el.innerHtml + utf8.decode(runner.readMemory(ptr, len));
     return 0;
   },
   'data': (int rid) {
-    final el = _asElement(store, rid);
+    final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
     return store.addBytes(_encodeString(el.text));
   },
@@ -566,10 +566,10 @@ Map<String, Function> _defaultsImports(
   WasmRunner runner,
   HostStore store,
   String sourceId,
-) => {
+) => <String, Function>{
   'get': (int keyPtr, int keyLen) {
-    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
-    final stored = store.defaults[key];
+    final String key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
+    final Object? stored = store.defaults[key];
     if (stored == null) return 0;
     if (stored is int) return stored;
     if (stored is Uint8List) return store.addBytes(stored);
@@ -578,13 +578,13 @@ Map<String, Function> _defaultsImports(
   // Aidoku SDK DefaultValue kinds: 1=Bool, 2=Int, 3=Float, 4=String, 5=StringArray, 6=Null.
   // For all non-null kinds, `value` is an RID pointing to postcard-encoded bytes.
   'set': (int keyPtr, int keyLen, int kind, int value) {
-    final key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
+    final String key = '$sourceId.${utf8.decode(runner.readMemory(keyPtr, keyLen))}';
     if (kind == 6 || value == 0) {
       // DefaultValue::Null → clear the stored value.
       store.defaults.remove(key);
     } else {
       // All other kinds: value is an RID with postcard-encoded bytes. Read and cache them.
-      final res = store.get<BytesResource>(value);
+      final BytesResource? res = store.get<BytesResource>(value);
       if (res != null) store.defaults[key] = Uint8List.fromList(res.bytes);
     }
     return 0;
@@ -596,7 +596,7 @@ Map<String, Function> _defaultsImports(
 // ---------------------------------------------------------------------------
 
 // TODO: implement canvas rendering
-Map<String, Function> _canvasImports() => {
+Map<String, Function> _canvasImports() => <String, Function>{
   'new_context': (double width, double height) => -1,
   'set_transform':
       (
@@ -659,7 +659,7 @@ Map<String, Function> _canvasImports() => {
 // js module (stub — embedded JS execution not implemented)
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _jsImports() => {
+Map<String, Function> _jsImports() => <String, Function>{
   'context_create': () {
     print('[aidoku] js module not implemented');
     return -1;
@@ -685,18 +685,18 @@ Map<String, Function> _jsImports() => {
 // ---------------------------------------------------------------------------
 
 html_dom.Element? _asElement(HostStore store, int rid) {
-  final r = store.get<HtmlDocumentResource>(rid);
+  final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
-  final doc = r.document;
+  final Object doc = r.document;
   if (doc is html_dom.Element) return doc;
   if (doc is html_dom.Document) return doc.documentElement;
   return null;
 }
 
 List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selector) {
-  final r = store.get<HtmlDocumentResource>(rid);
+  final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
-  final doc = r.document;
+  final Object doc = r.document;
   try {
     if (doc is html_dom.Element) return doc.querySelectorAll(selector);
     if (doc is html_dom.Document) return doc.querySelectorAll(selector);
@@ -705,9 +705,9 @@ List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selec
 }
 
 html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
-  final r = store.get<HtmlDocumentResource>(rid);
+  final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
-  final doc = r.document;
+  final Object doc = r.document;
   try {
     if (doc is html_dom.Element) return doc.querySelector(selector);
     if (doc is html_dom.Document) return doc.querySelector(selector);

@@ -11,10 +11,10 @@ class SourceInfo {
     required this.id,
     required this.name,
     required this.version,
-    this.languages = const [],
+    this.languages = const <String>[],
     this.url,
     this.contentRating = 0,
-    this.listings = const [],
+    this.listings = const <SourceListing>[],
   });
 
   final String id;

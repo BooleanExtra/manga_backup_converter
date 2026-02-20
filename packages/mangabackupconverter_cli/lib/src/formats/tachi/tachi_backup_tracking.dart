@@ -122,6 +122,6 @@ class TachiBackupTracking with TachiBackupTrackingMappable {
     );
   }
 
-  static const fromMap = TachiBackupTrackingMapper.fromMap;
-  static const fromJson = TachiBackupTrackingMapper.fromJson;
+  static const TachiBackupTracking Function(Map<String, dynamic> map) fromMap = TachiBackupTrackingMapper.fromMap;
+  static const TachiBackupTracking Function(String json) fromJson = TachiBackupTrackingMapper.fromJson;
 }

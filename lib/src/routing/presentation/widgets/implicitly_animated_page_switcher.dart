@@ -138,14 +138,15 @@ class ImplicitlyAnimatedPageSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemBuilder = this.itemBuilder;
-    final children = this.children;
+    final Widget Function(BuildContext context, int index)? itemBuilder =
+        this.itemBuilder;
+    final List<Widget>? children = this.children;
     assert(
       children != null || itemBuilder != null,
       "ImplicitlyAnimatedPageSwitcher's children and itemBuilder cannot both be null",
     );
 
-    final child = switch ((itemBuilder == null, children == null)) {
+    final Widget child = switch ((itemBuilder == null, children == null)) {
       _ when itemBuilder != null => itemBuilder(context, currentIndex),
       _ when children != null => children[currentIndex],
       _ => throw ArgumentError(

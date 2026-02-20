@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mangabackupconverter/src/routing/router/router.dart';
 
@@ -9,7 +10,7 @@ class RouterWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
+    final GoRouter router = ref.watch(routerProvider);
     return builder(context, router);
   }
 }

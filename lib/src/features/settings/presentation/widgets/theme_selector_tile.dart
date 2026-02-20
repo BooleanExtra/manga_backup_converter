@@ -48,7 +48,7 @@ class _ThemeSelectorTileState extends State<ThemeSelectorTile> {
         thumbVisibility: $deviceType.isDesktop,
         child: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {PointerDeviceKind.mouse}
+            dragDevices: <PointerDeviceKind>{PointerDeviceKind.mouse}
               ..addAll(ScrollConfiguration.of(context).dragDevices),
           ),
           child: ConstrainedBox(
@@ -105,9 +105,9 @@ class ThemeItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsetsDirectional.only(top: 8, bottom: 16),
       child: Stack(
-        children: [
+        children: <Widget>[
           Column(
-            children: [
+            children: <Widget>[
               FlexThemeModeOptionButton(
                 flexSchemeColor: colorProvider(schemes[index]),
                 semanticLabel: 'Select ${schemes[index].name} theme',

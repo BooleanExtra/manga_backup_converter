@@ -56,8 +56,8 @@ void _writeMinimalLink(PostcardWriter w, String title) {
 void main() {
   group('decodeHomeLayout', () {
     test('empty component list', () {
-      final w = PostcardWriter()..writeVarInt(0);
-      final layout = decodeHomeLayout(PostcardReader(w.bytes));
+      final PostcardWriter w = PostcardWriter()..writeVarInt(0);
+      final HomeLayout layout = decodeHomeLayout(PostcardReader(w.bytes));
       check(layout.components).isEmpty();
     });
 
@@ -68,7 +68,7 @@ void main() {
 
   group('HomeComponentValue — ImageScroller (discriminant 0)', () {
     test('empty links list', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0); // title: None
       w.writeU8(0); // subtitle: None
       w.writeVarInt(0); // discriminant = ImageScroller
@@ -77,9 +77,9 @@ void main() {
       w.writeU8(0); // width: None (Option<i32>)
       w.writeU8(0); // height: None (Option<i32>)
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.value).isA<ImageScrollerValue>();
-      final v = comp.value as ImageScrollerValue;
+      final ImageScrollerValue v = comp.value as ImageScrollerValue;
       check(v.links).isEmpty();
       check(v.autoScrollInterval).isNull();
       check(v.width).isNull();
@@ -87,7 +87,7 @@ void main() {
     });
 
     test('with one link, scroll interval, width, height', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0); // title: None
       w.writeU8(0); // subtitle: None
       w.writeVarInt(0); // discriminant = ImageScroller
@@ -100,8 +100,8 @@ void main() {
       w.writeU8(1); // height: Some(i32)
       w.writeVarInt(200);
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as ImageScrollerValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final ImageScrollerValue v = comp.value as ImageScrollerValue;
       check(v.links).length.equals(1);
       check(v.links[0].title).equals('cover-link');
       check(v.autoScrollInterval).isNotNull().isCloseTo(5.0, 0.001);
@@ -112,7 +112,7 @@ void main() {
 
   group('HomeComponentValue — BigScroller (discriminant 1)', () {
     test('two manga items, no autoScrollInterval', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0); // title: None
       w.writeU8(0); // subtitle: None
       w.writeVarInt(1); // BigScroller
@@ -121,9 +121,9 @@ void main() {
       _writeMinimalManga(w, key: 'b');
       w.writeU8(0); // autoScrollInterval: None (Option<f32>)
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.value).isA<BigScrollerValue>();
-      final v = comp.value as BigScrollerValue;
+      final BigScrollerValue v = comp.value as BigScrollerValue;
       check(v.items).length.equals(2);
       check(v.items[0].key).equals('a');
       check(v.items[1].key).equals('b');
@@ -131,7 +131,7 @@ void main() {
     });
 
     test('with autoScrollInterval', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(1); // BigScroller
@@ -139,30 +139,30 @@ void main() {
       w.writeU8(1); // autoScrollInterval: Some(f32)
       w.writeF32(2.5);
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as BigScrollerValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final BigScrollerValue v = comp.value as BigScrollerValue;
       check(v.autoScrollInterval).isNotNull().isCloseTo(2.5, 0.001);
     });
   });
 
   group('HomeComponentValue — Scroller (discriminant 2)', () {
     test('empty links, no listing', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(2); // Scroller
       w.writeVarInt(0); // 0 links (Vec<Link>)
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.value).isA<ScrollerValue>();
-      final v = comp.value as ScrollerValue;
+      final ScrollerValue v = comp.value as ScrollerValue;
       check(v.links).isEmpty();
       check(v.listing).isNull();
     });
 
     test('one link with listing', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(2); // Scroller
@@ -173,8 +173,8 @@ void main() {
       w.writeString('Latest');
       w.writeVarInt(0); // kind = Default
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as ScrollerValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final ScrollerValue v = comp.value as ScrollerValue;
       check(v.links).length.equals(1);
       check(v.links[0].title).equals('link1');
       check(v.listing).isNotNull();
@@ -184,7 +184,7 @@ void main() {
 
   group('HomeComponentValue — MangaList (discriminant 3)', () {
     test('unranked, no pageSize, no listing', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(3); // MangaList
@@ -194,8 +194,8 @@ void main() {
       _writeMinimalLink(w, 'manga-link');
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as MangaListValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final MangaListValue v = comp.value as MangaListValue;
       check(v.ranked).isFalse();
       check(v.pageSize).isNull();
       check(v.listing).isNull();
@@ -204,7 +204,7 @@ void main() {
     });
 
     test('ranked with pageSize', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(3);
@@ -214,8 +214,8 @@ void main() {
       w.writeVarInt(0); // 0 links (THIRD)
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as MangaListValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final MangaListValue v = comp.value as MangaListValue;
       check(v.ranked).isTrue();
       check(v.pageSize).equals(20);
       check(v.links).isEmpty();
@@ -224,7 +224,7 @@ void main() {
 
   group('HomeComponentValue — MangaChapterList (discriminant 4)', () {
     test('empty list, no pageSize', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(4); // MangaChapterList
@@ -232,15 +232,15 @@ void main() {
       w.writeVarInt(0); // 0 items (SECOND)
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.value).isA<MangaChapterListValue>();
-      final v = comp.value as MangaChapterListValue;
+      final MangaChapterListValue v = comp.value as MangaChapterListValue;
       check(v.items).isEmpty();
       check(v.pageSize).isNull();
     });
 
     test('one item with pageSize', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(4); // MangaChapterList
@@ -251,8 +251,8 @@ void main() {
       _writeMinimalChapter(w);
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as MangaChapterListValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final MangaChapterListValue v = comp.value as MangaChapterListValue;
       check(v.pageSize).equals(10);
       check(v.items).length.equals(1);
       check(v.items[0].manga.key).equals('mg1');
@@ -262,20 +262,20 @@ void main() {
 
   group('HomeComponentValue — Filters (discriminant 5)', () {
     test('empty filter list', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(5); // Filters
       w.writeVarInt(0); // 0 FilterItems
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.value).isA<FiltersValue>();
-      final v = comp.value as FiltersValue;
+      final FiltersValue v = comp.value as FiltersValue;
       check(v.filters).isEmpty();
     });
 
     test('one FilterItem with no filterValues', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(5); // Filters
@@ -283,15 +283,15 @@ void main() {
       w.writeString('Genre'); // title
       w.writeU8(0); // filterValues: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as FiltersValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final FiltersValue v = comp.value as FiltersValue;
       check(v.filters).length.equals(1);
       check(v.filters[0].title).equals('Genre');
       check(v.filters[0].filterValues).isNull();
     });
 
     test('one FilterItem with one Text filter value', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(5); // Filters
@@ -303,11 +303,11 @@ void main() {
       w.writeString('filter-id'); // id
       w.writeString('initial-text'); // value: String
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as FiltersValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final FiltersValue v = comp.value as FiltersValue;
       check(v.filters[0].filterValues).isNotNull();
       check(v.filters[0].filterValues!).length.equals(1);
-      final fv = v.filters[0].filterValues![0];
+      final AidokuFilterValue fv = v.filters[0].filterValues![0];
       check(fv.id).equals('filter-id');
       check(fv.discriminant).equals(0);
       check(fv.raw).equals('initial-text');
@@ -316,7 +316,7 @@ void main() {
 
   group('HomeComponentValue — Links (discriminant 6)', () {
     test('single URL link', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0);
       w.writeU8(0);
       w.writeVarInt(6); // Links
@@ -328,8 +328,8 @@ void main() {
       w.writeVarInt(0); // UrlHomeLinkValue
       w.writeString('https://example.com');
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
-      final v = comp.value as LinksValue;
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final LinksValue v = comp.value as LinksValue;
       check(v.links).length.equals(1);
       check(v.links[0].title).equals('Visit site');
       check(v.links[0].value).isA<UrlHomeLinkValue>();
@@ -339,16 +339,16 @@ void main() {
 
   group('HomePartialResult', () {
     test('discriminant 0 → HomePartialResultLayout', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeVarInt(0); // Layout
       w.writeVarInt(0); // empty component list
 
-      final result = decodeHomePartialResult(PostcardReader(w.bytes));
+      final HomePartialResult result = decodeHomePartialResult(PostcardReader(w.bytes));
       check(result).isA<HomePartialResultLayout>();
     });
 
     test('discriminant 1 → HomePartialResultComponent with Scroller', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeVarInt(1); // Component
       w.writeU8(0); // title: None
       w.writeU8(0); // subtitle: None
@@ -356,7 +356,7 @@ void main() {
       w.writeVarInt(0); // 0 links
       w.writeU8(0); // listing: None
 
-      final result = decodeHomePartialResult(PostcardReader(w.bytes));
+      final HomePartialResult result = decodeHomePartialResult(PostcardReader(w.bytes));
       check(result).isA<HomePartialResultComponent>();
     });
 
@@ -367,14 +367,14 @@ void main() {
 
   group('HomeComponent title and subtitle', () {
     test('both title and subtitle present', () {
-      final w = PostcardWriter();
-      w.writeOption<String>('My Section', (v, pw) => pw.writeString(v));
-      w.writeOption<String>('Sub', (v, pw) => pw.writeString(v));
+      final PostcardWriter w = PostcardWriter();
+      w.writeOption<String>('My Section', (String v, PostcardWriter pw) => pw.writeString(v));
+      w.writeOption<String>('Sub', (String v, PostcardWriter pw) => pw.writeString(v));
       w.writeVarInt(2); // Scroller
       w.writeVarInt(0); // 0 links
       w.writeU8(0); // listing: None
 
-      final comp = decodeHomeComponent(PostcardReader(w.bytes));
+      final HomeComponent comp = decodeHomeComponent(PostcardReader(w.bytes));
       check(comp.title).equals('My Section');
       check(comp.subtitle).equals('Sub');
     });

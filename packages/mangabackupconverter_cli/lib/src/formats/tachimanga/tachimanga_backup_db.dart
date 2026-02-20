@@ -59,23 +59,38 @@ class TachimangaBackupDb with TachimangaBackupDbMappable {
       await databaseFactory.writeDatabaseBytes('tachimanga.db', dbContent);
       db = await databaseFactory.openDatabase('tachimanga.db');
     }
-    final backupDbManager = TachimangaBackupDbManager(db: db, databaseFactory: databaseFactory);
-    final category = await backupDbManager.queryTable(TachimangaBackupTable.category);
-    final categoryManga = await backupDbManager.queryTable(TachimangaBackupTable.categoryManga);
-    final categoryMeta = await backupDbManager.queryTable(TachimangaBackupTable.categoryMeta);
-    final chapter = await backupDbManager.queryTable(TachimangaBackupTable.chapter);
-    final chapterMeta = await backupDbManager.queryTable(TachimangaBackupTable.chapterMeta);
-    final extension = await backupDbManager.queryTable(TachimangaBackupTable.extension);
-    final history = await backupDbManager.queryTable(TachimangaBackupTable.history);
-    final manga = await backupDbManager.queryTable(TachimangaBackupTable.manga);
-    final mangaMeta = await backupDbManager.queryTable(TachimangaBackupTable.mangaMeta);
-    final migrations = await backupDbManager.queryTable(TachimangaBackupTable.migrations);
-    final page = await backupDbManager.queryTable(TachimangaBackupTable.page);
-    final repo = await backupDbManager.queryTable(TachimangaBackupTable.repo);
-    final setting = await backupDbManager.queryTable(TachimangaBackupTable.setting);
-    final source = await backupDbManager.queryTable(TachimangaBackupTable.source);
-    final trackRecord = await backupDbManager.queryTable(TachimangaBackupTable.trackRecord);
-    final sqliteSequence = await backupDbManager.queryTable(TachimangaBackupTable.sqlite_sequence);
+    final TachimangaBackupDbManager backupDbManager = TachimangaBackupDbManager(
+      db: db,
+      databaseFactory: databaseFactory,
+    );
+    final List<TachimangaBackupCategory> category = await backupDbManager.queryTable(TachimangaBackupTable.category);
+    final List<TachimangaBackupCategoryManga> categoryManga = await backupDbManager.queryTable(
+      TachimangaBackupTable.categoryManga,
+    );
+    final List<TachimangaBackupCategoryMeta> categoryMeta = await backupDbManager.queryTable(
+      TachimangaBackupTable.categoryMeta,
+    );
+    final List<TachimangaBackupChapter> chapter = await backupDbManager.queryTable(TachimangaBackupTable.chapter);
+    final List<TachimangaBackupChapterMeta> chapterMeta = await backupDbManager.queryTable(
+      TachimangaBackupTable.chapterMeta,
+    );
+    final List<TachimangaBackupExtension> extension = await backupDbManager.queryTable(TachimangaBackupTable.extension);
+    final List<TachimangaBackupHistory> history = await backupDbManager.queryTable(TachimangaBackupTable.history);
+    final List<TachimangaBackupManga> manga = await backupDbManager.queryTable(TachimangaBackupTable.manga);
+    final List<TachimangaBackupMangaMeta> mangaMeta = await backupDbManager.queryTable(TachimangaBackupTable.mangaMeta);
+    final List<TachimangaBackupDbMigrations> migrations = await backupDbManager.queryTable(
+      TachimangaBackupTable.migrations,
+    );
+    final List<TachimangaBackupPage> page = await backupDbManager.queryTable(TachimangaBackupTable.page);
+    final List<TachimangaBackupRepo> repo = await backupDbManager.queryTable(TachimangaBackupTable.repo);
+    final List<TachimangaBackupSetting> setting = await backupDbManager.queryTable(TachimangaBackupTable.setting);
+    final List<TachimangaBackupSource> source = await backupDbManager.queryTable(TachimangaBackupTable.source);
+    final List<TachimangaBackupTrackRecord> trackRecord = await backupDbManager.queryTable(
+      TachimangaBackupTable.trackRecord,
+    );
+    final List<TachimangaBackupSqliteSequence> sqliteSequence = await backupDbManager.queryTable(
+      TachimangaBackupTable.sqlite_sequence,
+    );
 
     await db.close();
 
@@ -109,7 +124,10 @@ class TachimangaBackupDb with TachimangaBackupDbMappable {
       databaseFactory = databaseFactoryFfi;
       db = await databaseFactory.openDatabase('tachimanga.db');
     }
-    final backupDbManager = TachimangaBackupDbManager(db: db, databaseFactory: databaseFactory);
+    final TachimangaBackupDbManager backupDbManager = TachimangaBackupDbManager(
+      db: db,
+      databaseFactory: databaseFactory,
+    );
     await backupDbManager.initDb();
     await backupDbManager.insert(TachimangaBackupTable.category, categoryTable);
     await backupDbManager.insert(TachimangaBackupTable.categoryManga, categoryMangaTable);
@@ -128,7 +146,7 @@ class TachimangaBackupDb with TachimangaBackupDbMappable {
     await backupDbManager.insert(TachimangaBackupTable.trackRecord, trackRecordTable);
     await backupDbManager.insert(TachimangaBackupTable.sqlite_sequence, sqliteSequenceTable);
 
-    final dbContent = await databaseFactory.readDatabaseBytes('tachimanga.db');
+    final Uint8List dbContent = await databaseFactory.readDatabaseBytes('tachimanga.db');
     await db.close();
 
     return dbContent;

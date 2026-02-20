@@ -8,11 +8,15 @@ class OfflineWarningBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);
 
     return ConnectivityBuilder(
-      builder: (context, connectivity, child) =>
-          connectivity.contains(ConnectivityResult.none)
+      builder:
+          (
+            BuildContext context,
+            List<ConnectivityResult> connectivity,
+            Widget? child,
+          ) => connectivity.contains(ConnectivityResult.none)
           ? child ?? const SizedBox.shrink()
           : const SizedBox.shrink(),
       child: ColoredBox(

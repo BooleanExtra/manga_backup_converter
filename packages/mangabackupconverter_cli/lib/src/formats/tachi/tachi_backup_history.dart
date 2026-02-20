@@ -55,8 +55,8 @@ class TachiBackupHistory with TachiBackupHistoryMappable {
     );
   }
 
-  static const fromMap = TachiBackupHistoryMapper.fromMap;
-  static const fromJson = TachiBackupHistoryMapper.fromJson;
+  static const TachiBackupHistory Function(Map<String, dynamic> map) fromMap = TachiBackupHistoryMapper.fromMap;
+  static const TachiBackupHistory Function(String json) fromJson = TachiBackupHistoryMapper.fromJson;
 }
 
 @MappableClass()
@@ -87,6 +87,7 @@ class TachiBrokenBackupHistory extends TachiBackupHistory with TachiBrokenBackup
     );
   }
 
-  static const fromMap = TachiBrokenBackupHistoryMapper.fromMap;
-  static const fromJson = TachiBrokenBackupHistoryMapper.fromJson;
+  static const TachiBrokenBackupHistory Function(Map<String, dynamic> map) fromMap =
+      TachiBrokenBackupHistoryMapper.fromMap;
+  static const TachiBrokenBackupHistory Function(String json) fromJson = TachiBrokenBackupHistoryMapper.fromJson;
 }

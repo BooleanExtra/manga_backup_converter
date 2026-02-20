@@ -46,8 +46,9 @@ class PaperbackBackupMangaInfo with PaperbackBackupMangaInfoMappable {
     };
   }
 
-  static const fromMap = PaperbackBackupMangaInfoMapper.fromMap;
-  static const fromJson = PaperbackBackupMangaInfoMapper.fromJson;
+  static const PaperbackBackupMangaInfo Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupMangaInfoMapper.fromMap;
+  static const PaperbackBackupMangaInfo Function(String json) fromJson = PaperbackBackupMangaInfoMapper.fromJson;
 }
 
 @MappableClass()
@@ -68,8 +69,10 @@ class PaperbackBackupMangaAdditionalInfo with PaperbackBackupMangaAdditionalInfo
     this.langName,
   });
 
-  static const fromMap = PaperbackBackupMangaAdditionalInfoMapper.fromMap;
-  static const fromJson = PaperbackBackupMangaAdditionalInfoMapper.fromJson;
+  static const PaperbackBackupMangaAdditionalInfo Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupMangaAdditionalInfoMapper.fromMap;
+  static const PaperbackBackupMangaAdditionalInfo Function(String json) fromJson =
+      PaperbackBackupMangaAdditionalInfoMapper.fromJson;
 }
 
 @MappableClass()
@@ -78,8 +81,9 @@ class PaperbackBackupMangaTag with PaperbackBackupMangaTagMappable {
   final String label;
   final List<PaperbackBackupMangaTag> tags;
 
-  PaperbackBackupMangaTag({required this.id, required this.label, this.tags = const []});
+  PaperbackBackupMangaTag({required this.id, required this.label, this.tags = const <PaperbackBackupMangaTag>[]});
 
-  static const fromMap = PaperbackBackupMangaTagMapper.fromMap;
-  static const fromJson = PaperbackBackupMangaTagMapper.fromJson;
+  static const PaperbackBackupMangaTag Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupMangaTagMapper.fromMap;
+  static const PaperbackBackupMangaTag Function(String json) fromJson = PaperbackBackupMangaTagMapper.fromJson;
 }

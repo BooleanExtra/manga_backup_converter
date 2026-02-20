@@ -19,7 +19,7 @@ sealed class UserAccountValidFailure with _$UserAccountValidFailure {
   const factory UserAccountValidFailure.invalid() = _Invalid;
 }
 
-const userExample = UserAccount(
+const UserAccount userExample = UserAccount(
   id: Id('id'),
   name: Name(firstName: 'firstName', lastName: 'lastName'),
   email: Email('email'),

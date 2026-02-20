@@ -12,8 +12,8 @@ Future<OptionT?> showOptionsMenu<OptionT extends HumanReadableEnum>(
     context: context,
     useRootNavigator: true,
     pageListBuilder: (BuildContext context) {
-      final theme = Theme.of(context);
-      return [
+      final ThemeData theme = Theme.of(context);
+      return <SliverWoltModalSheetPage>[
         SliverWoltModalSheetPage(
           topBarTitle: Center(
             child: Text(title, style: theme.textTheme.titleMedium),
@@ -23,10 +23,10 @@ Future<OptionT?> showOptionsMenu<OptionT extends HumanReadableEnum>(
             padding: EdgeInsetsDirectional.all(16.0),
             child: CloseButton(),
           ),
-          mainContentSliversBuilder: (context) => [
+          mainContentSliversBuilder: (BuildContext context) => <Widget>[
             SliverList(
-              delegate: SliverChildListDelegate([
-                for (final eachOption in options)
+              delegate: SliverChildListDelegate(<Widget>[
+                for (final OptionT eachOption in options)
                   ListTile(
                     title: Text(
                       eachOption.humanName,

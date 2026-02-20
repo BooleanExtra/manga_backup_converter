@@ -21,7 +21,7 @@ class Asset extends Equatable {
   ImageProvider toAssetImage() => toImageProvider();
 
   @override
-  List<Object> get props => [path];
+  List<Object> get props => <Object>[path];
 
   @override
   bool get stringify => true;

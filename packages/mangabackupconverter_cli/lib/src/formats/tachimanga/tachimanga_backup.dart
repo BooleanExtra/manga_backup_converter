@@ -11,13 +11,14 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 import 'package:mangabackupconverter_cli/src/exceptions/tachimanga_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_db.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_db_models.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_meta.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:xcode_parser/xcode_parser.dart';
 
 part 'tachimanga_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class TachimangaBackup with TachimangaBackupMappable implements ConvertableBackup {
   final String? name;
   final TachimangaBackupMeta meta;
@@ -38,56 +39,59 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   });
 
   static Future<TachimangaBackup> fromData(Uint8List bytes, {String? overrideName}) async {
-    final backupArchive = ZipDecoder().decodeBytes(bytes);
-    final metaFile = backupArchive.findFile('meta.json');
+    final Archive backupArchive = ZipDecoder().decodeBytes(bytes);
+    final ArchiveFile? metaFile = backupArchive.findFile('meta.json');
     if (metaFile == null) {
       throw const TachimangaException('Could not decode Tachimanga backup');
     }
 
-    final meta = TachimangaBackupMeta.fromJson(String.fromCharCodes(metaFile.content));
-    final archiveName = overrideName ?? meta.name;
+    final TachimangaBackupMeta meta = TachimangaBackupMeta.fromJson(String.fromCharCodes(metaFile.content));
+    final String archiveName = overrideName ?? meta.name;
 
-    final contentZipFile = backupArchive.findFile('contents.zip');
+    final ArchiveFile? contentZipFile = backupArchive.findFile('contents.zip');
     if (contentZipFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", contents.zip not found');
     }
-    final contentArchive = ZipDecoder().decodeBytes(contentZipFile.content);
-    final prefFile = contentArchive.findFile('pref.json');
+    final Archive contentArchive = ZipDecoder().decodeBytes(contentZipFile.content);
+    final ArchiveFile? prefFile = contentArchive.findFile('pref.json');
     if (prefFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref.json not found');
     }
-    final pref = jsonDecode(String.fromCharCodes(prefFile.content)) as Map<String, Object?>;
+    final Map<String, Object?> pref = jsonDecode(String.fromCharCodes(prefFile.content)) as Map<String, Object?>;
 
     // This json file is actually a pbxproj file
-    final prefAllFile = contentArchive.findFile('pref-all.json');
+    final ArchiveFile? prefAllFile = contentArchive.findFile('pref-all.json');
     if (prefAllFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", pref-all.json not found');
     }
-    final prefAllContent = String.fromCharCodes(prefAllFile.content);
-    final prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
+    final String prefAllContent = String.fromCharCodes(prefAllFile.content);
+    final Pbxproj prefAll = Pbxproj.parse(prefAllContent, path: 'pref-all.json');
 
-    final prefsFiles = contentArchive.files.where((file) {
+    final List<ArchiveFile> prefsFiles = contentArchive.files.where((ArchiveFile file) {
       return file.name.startsWith('prefs/') && file.name.endsWith('.plist');
     }).toList();
-    final prefs = prefsFiles.fold(<String, Map<String, Object?>>{}, (map, file) {
+    final Map<String, Map<String, Object?>> prefs = prefsFiles.fold(<String, Map<String, Object?>>{}, (
+      Map<String, Map<String, Object?>> map,
+      ArchiveFile file,
+    ) {
       map[file.name] =
           PropertyListSerialization.propertyListWithData(ByteData.sublistView(file.content)) as Map<String, Object?>;
       return map;
     });
-    final extensionFiles = contentArchive.files.where((file) {
+    final List<ArchiveFile> extensionFiles = contentArchive.files.where((ArchiveFile file) {
       return file.name.startsWith('extensions/') && file.name.endsWith('.jar');
     }).toList();
-    final extensions = extensionFiles.fold(
+    final Map<String, Uint8List> extensions = extensionFiles.fold(
       <String, Uint8List>{},
-      (map, file) => map..addAll({file.name: file.content}),
+      (Map<String, Uint8List> map, ArchiveFile file) => map..addAll(<String, Uint8List>{file.name: file.content}),
     );
 
-    final dbFile = contentArchive.findFile('tachimanga.db');
+    final ArchiveFile? dbFile = contentArchive.findFile('tachimanga.db');
     if (dbFile == null) {
       throw TachimangaException('Could not decode Tachimanga backup "$archiveName", tachimanga.db not found');
     }
-    final dbContent = dbFile.content;
-    final db = await TachimangaBackupDb.fromDatabase(dbContent);
+    final Uint8List dbContent = dbFile.content;
+    final TachimangaBackupDb db = await TachimangaBackupDb.fromDatabase(dbContent);
 
     return TachimangaBackup(
       name: archiveName,
@@ -102,7 +106,7 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
 
   @override
   Future<Uint8List> toData() async {
-    final contentsArchive = Archive();
+    final Archive contentsArchive = Archive();
     if (pref case final Map<String, Object?> pref) {
       contentsArchive.addFile(ArchiveFile.string('pref.json', jsonEncode(pref)));
     }
@@ -110,12 +114,12 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
       contentsArchive.addFile(ArchiveFile.string('pref-all.json', prefAll.toString()));
     }
     if (extensions case final Map<String, Uint8List> extensions) {
-      extensions.forEach((filename, content) {
+      extensions.forEach((String filename, Uint8List content) {
         contentsArchive.addFile(ArchiveFile(filename, content.elementSizeInBytes, content));
       });
     }
     if (prefs case final Map<String, Map<String, Object?>> prefs) {
-      prefs.forEach((filename, content) {
+      prefs.forEach((String filename, Map<String, Object?> content) {
         final ByteData binaryPlist = PropertyListSerialization.dataWithPropertyList(content);
         contentsArchive.addFile(
           ArchiveFile.noCompress(filename, binaryPlist.lengthInBytes, binaryPlist.buffer.asUint8List()),
@@ -123,11 +127,11 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
       });
     }
 
-    final dbContent = await db.exportDatabase();
+    final Uint8List dbContent = await db.exportDatabase();
     contentsArchive.addFile(ArchiveFile.noCompress('tachimanga.db', dbContent.lengthInBytes, dbContent));
-    final contentsEncoded = ZipEncoder().encode(contentsArchive);
+    final List<int> contentsEncoded = ZipEncoder().encode(contentsArchive);
 
-    final backupArchive = Archive();
+    final Archive backupArchive = Archive();
     backupArchive.addFile(ArchiveFile.string('meta.json', meta.toJson()));
     backupArchive.addFile(ArchiveFile.noCompress('contents.zip', contentsEncoded.length, contentsEncoded));
     return ZipEncoder().encodeBytes(backupArchive);
@@ -139,10 +143,10 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
     return switch (type) {
       BackupType.tachimanga => this,
       BackupType.tachi => TachiBackup(
-        backupCategories: db.categoryTable.map((c) => c.toType(db)).toList(),
-        backupManga: db.mangaTable.map((c) => c.toType(db)).toList(),
-        backupSources: db.sourceTable.map((c) => c.toType(db)).toList(),
-        backupExtensionRepo: db.repoTable.map((c) => c.toType(db)).toList(),
+        backupCategories: db.categoryTable.map((TachimangaBackupCategory c) => c.toType(db)).toList(),
+        backupManga: db.mangaTable.map((TachimangaBackupManga c) => c.toType(db)).toList(),
+        backupSources: db.sourceTable.map((TachimangaBackupSource c) => c.toType(db)).toList(),
+        backupExtensionRepo: db.repoTable.map((TachimangaBackupRepo c) => c.toType(db)).toList(),
       ),
       BackupType.aidoku => throw const TachimangaException('Tachimanga backup cannot be converted to Aidoku'),
       BackupType.paperback => throw const TachimangaException('Tachimanga backup cannot be converted to Paperback'),
@@ -150,8 +154,8 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
     };
   }
 
-  static const fromMap = TachimangaBackupMapper.fromMap;
-  static const fromJson = TachimangaBackupMapper.fromJson;
+  static const TachimangaBackup Function(Map<String, dynamic> map) fromMap = TachimangaBackupMapper.fromMap;
+  static const TachimangaBackup Function(String json) fromJson = TachimangaBackupMapper.fromJson;
 
   @override
   void verbosePrint(bool verbose) {

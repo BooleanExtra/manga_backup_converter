@@ -18,8 +18,8 @@ import 'package:test/scaffolding.dart';
 import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 bool _hasWasmer() {
-  final home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final lib = Platform.isWindows
+  final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
+  final String lib = Platform.isWindows
       ? '$home\\.wasmer\\lib\\wasmer.dll'
       : Platform.isMacOS
       ? '$home/.wasmer/lib/libwasmer.dylib'
@@ -28,11 +28,13 @@ bool _hasWasmer() {
 }
 
 void main() {
-  const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/wasm_plugin_loader/$fixturePath');
+  const String fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
+  final File fixture = File(fixturePath).existsSync()
+      ? File(fixturePath)
+      : File('packages/wasm_plugin_loader/$fixturePath');
 
-  const mangaId = 'ed996855-70de-449f-bba2-e8e24224c14d'; // Onii-chan wa Oshimai!
-  const chapterId = '6eb2f8ea-3b6c-4bce-a0d0-d9224fad5b64'; // Ch. 108 — 14 pages
+  const String mangaId = 'ed996855-70de-449f-bba2-e8e24224c14d'; // Onii-chan wa Oshimai!
+  const String chapterId = '6eb2f8ea-3b6c-4bce-a0d0-d9224fad5b64'; // Ch. 108 — 14 pages
 
   group(
     'AidokuPlugin method calls',
@@ -45,20 +47,20 @@ void main() {
       late AidokuPlugin plugin;
 
       setUpAll(() async {
-        final loader = WasmPluginLoader();
+        final WasmPluginLoader loader = WasmPluginLoader();
         // MangaDex's is_logged_in() calls defaults_get_json::<TokenResponse>("login").
         // The SDK reads stored bytes as postcard<String> (the JSON text), then
         // serde_json::from_str::<TokenResponse>. TokenResponse has Option<String> fields,
         // so any valid JSON object works — even {} deserializes to Ok(TokenResponse{..}).
         // Postcard-encode the JSON string "{}": varint(2) + '{' + '}'
-        const loginJson = '{}';
-        final jsonBytes = loginJson.codeUnits;
-        final loginPostcard = Uint8List(1 + jsonBytes.length)
+        const String loginJson = '{}';
+        final List<int> jsonBytes = loginJson.codeUnits;
+        final Uint8List loginPostcard = Uint8List(1 + jsonBytes.length)
           ..[0] = jsonBytes.length
           ..setAll(1, jsonBytes);
         plugin = await loader.load(
           fixture.readAsBytesSync(),
-          defaults: {'login': loginPostcard},
+          defaults: <String, dynamic>{'login': loginPostcard},
         );
       });
 
@@ -66,20 +68,20 @@ void main() {
 
       group('searchManga', () {
         test('empty query returns non-empty results', () async {
-          final result = await plugin.searchManga('', 1);
+          final MangaPageResult result = await plugin.searchManga('', 1);
           check(result.manga).isNotEmpty();
           check(result.hasNextPage).isA<bool>();
         });
 
         test('searching "Onimai" returns the expected manga', () async {
-          final result = await plugin.searchManga('Onimai', 1);
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           check(result.manga).isNotEmpty();
-          check(result.manga.map((m) => m.key)).contains(mangaId);
+          check(result.manga.map((Manga m) => m.key)).contains(mangaId);
         });
 
         test('each result has non-empty key and title', () async {
-          final result = await plugin.searchManga('Onimai', 1);
-          for (final m in result.manga) {
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
+          for (final Manga m in result.manga) {
             check(m.key).isNotEmpty();
             check(m.title).isNotEmpty();
           }
@@ -88,24 +90,24 @@ void main() {
 
       group('getMangaDetails', () {
         test('returns populated Manga for known ID', () async {
-          final manga = await plugin.getMangaDetails(mangaId);
+          final Manga? manga = await plugin.getMangaDetails(mangaId);
           check(manga).isNotNull();
           check(manga!.key).equals(mangaId);
         });
 
         test('title is non-empty', () async {
-          final manga = await plugin.getMangaDetails(mangaId);
+          final Manga? manga = await plugin.getMangaDetails(mangaId);
           check(manga!.title).isNotEmpty();
         });
 
         test('description is non-empty', () async {
-          final manga = await plugin.getMangaDetails(mangaId);
+          final Manga? manga = await plugin.getMangaDetails(mangaId);
           check(manga!.description).isNotNull();
           check(manga.description!).isNotEmpty();
         });
 
         test('contentRating is suggestive', () async {
-          final manga = await plugin.getMangaDetails(mangaId);
+          final Manga? manga = await plugin.getMangaDetails(mangaId);
           check(manga!.contentRating).equals(ContentRating.suggestive);
         });
       });
@@ -120,22 +122,22 @@ void main() {
         });
 
         test('Ch. 108 returns exactly 14 pages', () async {
-          final pages = await plugin.getPageList(manga, chapter);
+          final List<Page> pages = await plugin.getPageList(manga, chapter);
           check(pages).length.equals(14);
         });
 
         test('pages are indexed sequentially from 0', () async {
-          final pages = await plugin.getPageList(manga, chapter);
+          final List<Page> pages = await plugin.getPageList(manga, chapter);
           check(pages).isNotEmpty();
-          for (var i = 0; i < pages.length; i++) {
+          for (int i = 0; i < pages.length; i++) {
             check(pages[i].index).equals(i);
           }
         });
 
         test('each page has a non-empty URL', () async {
-          final pages = await plugin.getPageList(manga, chapter);
+          final List<Page> pages = await plugin.getPageList(manga, chapter);
           check(pages).isNotEmpty();
-          for (final page in pages) {
+          for (final Page page in pages) {
             check(page.url).isNotNull();
             check(page.url!).isNotEmpty();
           }
@@ -144,16 +146,16 @@ void main() {
 
       group('getMangaList', () {
         test('returns a MangaPageResult without throwing', () async {
-          final listing = plugin.sourceInfo.listings[1];
-          final result = await plugin.getMangaList(1, listing: listing);
+          final SourceListing listing = plugin.sourceInfo.listings[1];
+          final MangaPageResult result = await plugin.getMangaList(1, listing: listing);
           check(result).isA<MangaPageResult>();
           check(result.manga).isNotEmpty();
         });
 
         test('each result has non-empty key and title', () async {
-          final listing = plugin.sourceInfo.listings[1];
-          final result = await plugin.getMangaList(1, listing: listing);
-          for (final m in result.manga) {
+          final SourceListing listing = plugin.sourceInfo.listings[1];
+          final MangaPageResult result = await plugin.getMangaList(1, listing: listing);
+          for (final Manga m in result.manga) {
             check(m.key).isNotEmpty();
             check(m.title).isNotEmpty();
           }
@@ -162,15 +164,15 @@ void main() {
 
       group('getListings', () {
         test('returns a list (may be empty if plugin does not implement it)', () async {
-          final listings = await plugin.getListings();
+          final List<AidokuListing> listings = await plugin.getListings();
           check(listings).isA<List<AidokuListing>>();
           // get_dynamic_listings returns ["Library"] when is_logged_in() is true.
           check(listings).isNotEmpty();
         });
 
         test('each listing has non-empty id and name', () async {
-          final listings = await plugin.getListings();
-          for (final l in listings) {
+          final List<AidokuListing> listings = await plugin.getListings();
+          for (final AidokuListing l in listings) {
             check(l.id).isNotEmpty();
             check(l.name).isNotEmpty();
           }
@@ -181,7 +183,7 @@ void main() {
         test(
           'returns HomeLayout or null (null is acceptable if plugin does not implement it)',
           () async {
-            final home = await plugin.getHome();
+            final HomeLayout? home = await plugin.getHome();
             // Acceptable: null (not implemented) or a valid HomeLayout.
             if (home != null) {
               check(home.components).isA<List<HomeComponent>>();

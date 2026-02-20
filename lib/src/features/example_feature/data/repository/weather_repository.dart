@@ -17,7 +17,7 @@ class HttpWeatherRepository implements WeatherRepository {
 
   @override
   Future<Weather> getWeather({required String city}) async {
-    final result = await client.get(api.weather(city));
+    final http.Response result = await client.get(api.weather(city));
 
     return Weather.fromJson(result.body);
   }

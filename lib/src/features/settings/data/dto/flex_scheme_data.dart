@@ -116,6 +116,6 @@ Color _colorFromJson(ColorJson json) {
 
 extension _ColorJsonExtension on Color {
   ColorJson toJson() {
-    return {'r': r, 'g': g, 'b': b, 'a': a};
+    return <String, double>{'r': r, 'g': g, 'b': b, 'a': a};
   }
 }

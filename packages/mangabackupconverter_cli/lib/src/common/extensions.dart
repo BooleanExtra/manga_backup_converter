@@ -222,28 +222,30 @@ class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   }
 
   List<(Extension, ExtensionRepo)> findExtension(String id, ExtensionType type) {
-    final site = sites.firstWhereOrNull((site) => site.extensions[type]?.any((e) => e.id == id) ?? false);
+    final SiteIndex? site = sites.firstWhereOrNull(
+      (SiteIndex site) => site.extensions[type]?.any((Extension e) => e.id == id) ?? false,
+    );
     if (site == null) {
       throw ExtensionException('Could not find site for extension id "$id" of type "$type"');
     }
-    final siteExtensions = site.extensions[type] ?? [];
-    return siteExtensions.map((eachSiteExtension) {
-      final repo = findRepo(type, eachSiteExtension);
+    final List<Extension> siteExtensions = site.extensions[type] ?? <Extension>[];
+    return siteExtensions.map((Extension eachSiteExtension) {
+      final ExtensionRepo repo = findRepo(type, eachSiteExtension);
       return (eachSiteExtension, repo);
     }).toList();
   }
 
   List<(Extension, ExtensionRepo)> convertExtension(Extension ext, ExtensionType type, ExtensionType newType) {
-    final site = findSite(type, ext);
-    final siteExtensions = site.extensions[newType] ?? [];
-    return siteExtensions.map((eachSiteExtension) {
-      final repo = findRepo(newType, eachSiteExtension);
+    final SiteIndex site = findSite(type, ext);
+    final List<Extension> siteExtensions = site.extensions[newType] ?? <Extension>[];
+    return siteExtensions.map((Extension eachSiteExtension) {
+      final ExtensionRepo repo = findRepo(newType, eachSiteExtension);
       return (eachSiteExtension, repo);
     }).toList();
   }
 
   ExtensionRepo findRepo(ExtensionType type, Extension ext) {
-    final repo = repos[type]?.firstWhereOrNull((repo) => repo.url == ext.repo);
+    final ExtensionRepo? repo = repos[type]?.firstWhereOrNull((ExtensionRepo repo) => repo.url == ext.repo);
     if (repo == null) {
       throw ExtensionException('Could not find repo "${ext.repo}" for type "$type"');
     }
@@ -251,8 +253,8 @@ class ExtensionRepoIndex with ExtensionRepoIndexMappable {
   }
 
   SiteIndex findSite(ExtensionType type, Extension ext) {
-    final site = sites.firstWhereOrNull(
-      (site) => site.extensions[type]?.any((e) => e.id == ext.id && e.repo == ext.repo) ?? false,
+    final SiteIndex? site = sites.firstWhereOrNull(
+      (SiteIndex site) => site.extensions[type]?.any((Extension e) => e.id == ext.id && e.repo == ext.repo) ?? false,
     );
     if (site == null) {
       throw ExtensionException('Could not find site for extension "${ext.name}" of type "$type"');
@@ -260,8 +262,8 @@ class ExtensionRepoIndex with ExtensionRepoIndexMappable {
     return site;
   }
 
-  static const fromMap = ExtensionRepoIndexMapper.fromMap;
-  static const fromJson = ExtensionRepoIndexMapper.fromJson;
+  static const ExtensionRepoIndex Function(Map<String, dynamic> map) fromMap = ExtensionRepoIndexMapper.fromMap;
+  static const ExtensionRepoIndex Function(String json) fromJson = ExtensionRepoIndexMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
@@ -271,8 +273,8 @@ class SiteIndex with SiteIndexMappable {
 
   const SiteIndex({required this.name, required this.extensions});
 
-  static const fromMap = SiteIndexMapper.fromMap;
-  static const fromJson = SiteIndexMapper.fromJson;
+  static const SiteIndex Function(Map<String, dynamic> map) fromMap = SiteIndexMapper.fromMap;
+  static const SiteIndex Function(String json) fromJson = SiteIndexMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
@@ -282,8 +284,8 @@ class ExtensionRepo with ExtensionRepoMappable {
 
   const ExtensionRepo({required this.name, required this.url});
 
-  static const fromMap = ExtensionRepoMapper.fromMap;
-  static const fromJson = ExtensionRepoMapper.fromJson;
+  static const ExtensionRepo Function(Map<String, dynamic> map) fromMap = ExtensionRepoMapper.fromMap;
+  static const ExtensionRepo Function(String json) fromJson = ExtensionRepoMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
@@ -295,8 +297,8 @@ class Extension with ExtensionMappable {
 
   const Extension({required this.name, required this.id, this.repo, this.lang});
 
-  static const fromMap = ExtensionMapper.fromMap;
-  static const fromJson = ExtensionMapper.fromJson;
+  static const Extension Function(Map<String, dynamic> map) fromMap = ExtensionMapper.fromMap;
+  static const Extension Function(String json) fromJson = ExtensionMapper.fromJson;
 }
 
 @MappableEnum(caseStyle: CaseStyle.camelCase)

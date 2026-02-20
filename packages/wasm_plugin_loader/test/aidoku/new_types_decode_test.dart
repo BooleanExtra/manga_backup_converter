@@ -50,23 +50,23 @@ void _writeMinimalChapter(PostcardWriter w, {String key = 'ch1'}) {
 void main() {
   group('decodeImageRequest', () {
     test('url=None, empty headers', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(0); // url: None
       w.writeVarInt(0); // headers: empty HashMap
-      final req = decodeImageRequest(PostcardReader(w.bytes));
+      final ImageRequest req = decodeImageRequest(PostcardReader(w.bytes));
       check(req.url).isNull();
       check(req.headers).isEmpty();
     });
 
     test('url=Some, two headers', () {
-      final w = PostcardWriter();
-      w.writeOption<String>('https://img.example.com/1.jpg', (v, pw) => pw.writeString(v));
+      final PostcardWriter w = PostcardWriter();
+      w.writeOption<String>('https://img.example.com/1.jpg', (String v, PostcardWriter pw) => pw.writeString(v));
       w.writeVarInt(2); // 2 headers
       w.writeString('Referer');
       w.writeString('https://example.com');
       w.writeString('User-Agent');
       w.writeString('Aidoku/1.0');
-      final req = decodeImageRequest(PostcardReader(w.bytes));
+      final ImageRequest req = decodeImageRequest(PostcardReader(w.bytes));
       check(req.url).equals('https://img.example.com/1.jpg');
       check(req.headers).length.equals(2);
       check(req.headers['Referer']).equals('https://example.com');
@@ -80,12 +80,12 @@ void main() {
 
   group('decodeStringMap', () {
     test('empty map', () {
-      final w = PostcardWriter()..writeVarInt(0);
+      final PostcardWriter w = PostcardWriter()..writeVarInt(0);
       check(decodeStringMap(PostcardReader(w.bytes))).isEmpty();
     });
 
     test('three entries round-trip', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeVarInt(3);
       w.writeString('a');
       w.writeString('1');
@@ -93,7 +93,7 @@ void main() {
       w.writeString('2');
       w.writeString('c');
       w.writeString('3');
-      final m = decodeStringMap(PostcardReader(w.bytes));
+      final Map<String, String> m = decodeStringMap(PostcardReader(w.bytes));
       check(m).length.equals(3);
       check(m['a']).equals('1');
       check(m['b']).equals('2');
@@ -103,41 +103,41 @@ void main() {
 
   group('decodeDeepLinkResult', () {
     test('None → null', () {
-      final w = PostcardWriter()..writeU8(0);
+      final PostcardWriter w = PostcardWriter()..writeU8(0);
       check(decodeDeepLinkResult(PostcardReader(w.bytes))).isNull();
     });
 
     test('Some(0) → MangaDeepLink', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(1); // Some
       w.writeVarInt(0); // Manga
       w.writeString('manga-abc');
-      final result = decodeDeepLinkResult(PostcardReader(w.bytes));
+      final DeepLinkResult? result = decodeDeepLinkResult(PostcardReader(w.bytes));
       check(result).isA<MangaDeepLink>();
       check((result! as MangaDeepLink).key).equals('manga-abc');
     });
 
     test('Some(1) → ChapterDeepLink', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(1); // Some
       w.writeVarInt(1); // Chapter
       w.writeString('manga-xyz');
       w.writeString('chapter-123');
-      final result = decodeDeepLinkResult(PostcardReader(w.bytes));
+      final DeepLinkResult? result = decodeDeepLinkResult(PostcardReader(w.bytes));
       check(result).isA<ChapterDeepLink>();
-      final ch = result! as ChapterDeepLink;
+      final ChapterDeepLink ch = result! as ChapterDeepLink;
       check(ch.mangaKey).equals('manga-xyz');
       check(ch.key).equals('chapter-123');
     });
 
     test('Some(2) → ListingDeepLink', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeU8(1); // Some
       w.writeVarInt(2); // Listing
       w.writeString('latest');
       w.writeString('Latest');
       w.writeVarInt(0); // kind = Default
-      final result = decodeDeepLinkResult(PostcardReader(w.bytes));
+      final DeepLinkResult? result = decodeDeepLinkResult(PostcardReader(w.bytes));
       check(result).isA<ListingDeepLink>();
       check((result! as ListingDeepLink).listing.id).equals('latest');
     });
@@ -149,10 +149,10 @@ void main() {
 
   group('decodeMangaWithChapter', () {
     test('decodes manga and chapter pair', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       _writeMinimalManga(w, key: 'mg1', title: 'Manga One');
       _writeMinimalChapter(w, key: 'ch99');
-      final pair = decodeMangaWithChapter(PostcardReader(w.bytes));
+      final MangaWithChapter pair = decodeMangaWithChapter(PostcardReader(w.bytes));
       check(pair.manga.key).equals('mg1');
       check(pair.manga.title).equals('Manga One');
       check(pair.chapter.key).equals('ch99');
@@ -161,17 +161,17 @@ void main() {
 
   group('decodeStringVecResult', () {
     test('empty list', () {
-      final w = PostcardWriter()..writeVarInt(0);
+      final PostcardWriter w = PostcardWriter()..writeVarInt(0);
       check(decodeStringVecResult(w.bytes)).isEmpty();
     });
 
     test('three strings', () {
-      final w = PostcardWriter();
+      final PostcardWriter w = PostcardWriter();
       w.writeVarInt(3);
       w.writeString('https://cover1.jpg');
       w.writeString('https://cover2.jpg');
       w.writeString('https://cover3.jpg');
-      final result = decodeStringVecResult(w.bytes);
+      final List<String> result = decodeStringVecResult(w.bytes);
       check(result).length.equals(3);
       check(result[0]).equals('https://cover1.jpg');
       check(result[2]).equals('https://cover3.jpg');
@@ -184,7 +184,7 @@ void main() {
 
   group('decodeStringResult', () {
     test('decodes plain string', () {
-      final w = PostcardWriter()..writeString('https://base.example.com');
+      final PostcardWriter w = PostcardWriter()..writeString('https://base.example.com');
       check(decodeStringResult(w.bytes)).equals('https://base.example.com');
     });
 
@@ -195,11 +195,11 @@ void main() {
 
   group('decodeBoolResult', () {
     test('true', () {
-      check(decodeBoolResult(Uint8List.fromList([1]))).isTrue();
+      check(decodeBoolResult(Uint8List.fromList(<int>[1]))).isTrue();
     });
 
     test('false', () {
-      check(decodeBoolResult(Uint8List.fromList([0]))).isFalse();
+      check(decodeBoolResult(Uint8List.fromList(<int>[0]))).isFalse();
     });
 
     test('empty bytes → false', () {
@@ -209,7 +209,7 @@ void main() {
 
   group('encodeStringBytes', () {
     test('ASCII round-trip', () {
-      final bytes = encodeStringBytes('hello');
+      final Uint8List bytes = encodeStringBytes('hello');
       check(utf8.decode(bytes)).equals('hello');
     });
 
@@ -220,17 +220,17 @@ void main() {
 
   group('encodeImageResponse', () {
     test('wraps bytes in postcard Vec<u8>', () {
-      final input = Uint8List.fromList([0x89, 0x50, 0x4E, 0x47]); // PNG magic
-      final wrapped = encodeImageResponse(input);
-      final r = PostcardReader(wrapped);
-      final len = r.readVarInt();
+      final Uint8List input = Uint8List.fromList(<int>[0x89, 0x50, 0x4E, 0x47]); // PNG magic
+      final Uint8List wrapped = encodeImageResponse(input);
+      final PostcardReader r = PostcardReader(wrapped);
+      final int len = r.readVarInt();
       check(len).equals(4);
       check(wrapped.sublist(r.position)).deepEquals(input);
     });
 
     test('empty input', () {
-      final wrapped = encodeImageResponse(Uint8List(0));
-      final r = PostcardReader(wrapped);
+      final Uint8List wrapped = encodeImageResponse(Uint8List(0));
+      final PostcardReader r = PostcardReader(wrapped);
       check(r.readVarInt()).equals(0);
       check(r.isAtEnd).isTrue();
     });
@@ -238,15 +238,15 @@ void main() {
 
   group('encodeStringMap', () {
     test('empty map', () {
-      final bytes = encodeStringMap({});
-      final r = PostcardReader(bytes);
+      final Uint8List bytes = encodeStringMap(<String, String>{});
+      final PostcardReader r = PostcardReader(bytes);
       check(r.readVarInt()).equals(0);
       check(r.isAtEnd).isTrue();
     });
 
     test('two entries round-trip', () {
-      final bytes = encodeStringMap({'key1': 'val1', 'key2': 'val2'});
-      final decoded = decodeStringMap(PostcardReader(bytes));
+      final Uint8List bytes = encodeStringMap(<String, String>{'key1': 'val1', 'key2': 'val2'});
+      final Map<String, String> decoded = decodeStringMap(PostcardReader(bytes));
       check(decoded['key1']).equals('val1');
       check(decoded['key2']).equals('val2');
     });
@@ -254,22 +254,22 @@ void main() {
 
   group('encodeOptionalStringMap', () {
     test('null → [0x00]', () {
-      check(encodeOptionalStringMap(null)).deepEquals([0]);
+      check(encodeOptionalStringMap(null)).deepEquals(<Object?>[0]);
     });
 
     test('some map → [0x01, ...encodedMap]', () {
-      final bytes = encodeOptionalStringMap({'k': 'v'});
+      final Uint8List bytes = encodeOptionalStringMap(<String, String>{'k': 'v'});
       check(bytes[0]).equals(1); // Some tag
-      final decoded = decodeStringMap(PostcardReader(bytes.sublist(1)));
+      final Map<String, String> decoded = decodeStringMap(PostcardReader(bytes.sublist(1)));
       check(decoded['k']).equals('v');
     });
   });
 
   group('encodePage', () {
     test('URL page encodes as Url variant', () {
-      const page = Page(index: 0, url: 'https://img.example.com/1.jpg');
-      final bytes = encodePage(page);
-      final r = PostcardReader(bytes);
+      const Page page = Page(index: 0, url: 'https://img.example.com/1.jpg');
+      final Uint8List bytes = encodePage(page);
+      final PostcardReader r = PostcardReader(bytes);
       check(r.readVarInt()).equals(0); // Url variant
       check(r.readString()).equals('https://img.example.com/1.jpg');
       check(r.readU8()).equals(0); // PageContext = None
@@ -279,29 +279,29 @@ void main() {
     });
 
     test('text page encodes as Text variant', () {
-      const page = Page(index: 1, text: 'Caption here');
-      final bytes = encodePage(page);
-      final r = PostcardReader(bytes);
+      const Page page = Page(index: 1, text: 'Caption here');
+      final Uint8List bytes = encodePage(page);
+      final PostcardReader r = PostcardReader(bytes);
       check(r.readVarInt()).equals(1); // Text variant
       check(r.readString()).equals('Caption here');
     });
 
     test('page with no url/text encodes as Image variant', () {
-      const page = Page(index: 2);
-      final bytes = encodePage(page);
-      final r = PostcardReader(bytes);
+      const Page page = Page(index: 2);
+      final Uint8List bytes = encodePage(page);
+      final PostcardReader r = PostcardReader(bytes);
       check(r.readVarInt()).equals(2); // Image variant
     });
   });
 
   group('decodeEnum', () {
     test('returns correct enum value', () {
-      final w = PostcardWriter()..writeVarInt(2);
+      final PostcardWriter w = PostcardWriter()..writeVarInt(2);
       check(decodeEnum(PostcardReader(w.bytes), AidokuViewer.values)).equals(AidokuViewer.rtl);
     });
 
     test('out-of-range clamps to first value', () {
-      final w = PostcardWriter()..writeVarInt(99);
+      final PostcardWriter w = PostcardWriter()..writeVarInt(99);
       check(decodeEnum(PostcardReader(w.bytes), AidokuViewer.values)).equals(AidokuViewer.unknown);
     });
   });

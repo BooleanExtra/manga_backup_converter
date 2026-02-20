@@ -26,6 +26,8 @@ class TachiBackupSourcePreferences with TachiBackupSourcePreferencesMappable {
     );
   }
 
-  static const fromMap = TachiBackupSourcePreferencesMapper.fromMap;
-  static const fromJson = TachiBackupSourcePreferencesMapper.fromJson;
+  static const TachiBackupSourcePreferences Function(Map<String, dynamic> map) fromMap =
+      TachiBackupSourcePreferencesMapper.fromMap;
+  static const TachiBackupSourcePreferences Function(String json) fromJson =
+      TachiBackupSourcePreferencesMapper.fromJson;
 }

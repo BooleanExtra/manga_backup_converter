@@ -23,33 +23,33 @@ class SettingsService extends _$SettingsService {
   }
 
   bool toggleBanner() {
-    final bannerEnabled = !state.bannerEnabled;
-    final newSettings = state.copyWith(bannerEnabled: bannerEnabled);
+    final bool bannerEnabled = !state.bannerEnabled;
+    final Settings newSettings = state.copyWith(bannerEnabled: bannerEnabled);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
     return bannerEnabled;
   }
 
   void setThemeType(ThemeType themeType) {
-    final newSettings = state.copyWith(themeType: themeType);
+    final Settings newSettings = state.copyWith(themeType: themeType);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }
 
   void setLightTheme(FlexSchemeData lightTheme) {
-    final newSettings = state.copyWith(lightTheme: lightTheme);
+    final Settings newSettings = state.copyWith(lightTheme: lightTheme);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }
 
   void setDarkTheme(FlexSchemeData darkTheme) {
-    final newSettings = state.copyWith(darkTheme: darkTheme);
+    final Settings newSettings = state.copyWith(darkTheme: darkTheme);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }
 
   void setCustomThemes(List<FlexSchemeData> customThemes) {
-    final newSettings = state.copyWith(customThemes: customThemes);
+    final Settings newSettings = state.copyWith(customThemes: customThemes);
     state = newSettings;
     _settingsRepository.saveSettings(newSettings);
   }

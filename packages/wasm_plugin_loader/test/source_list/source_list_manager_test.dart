@@ -4,9 +4,11 @@ import 'package:checks/checks.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/scaffolding.dart';
+import 'package:wasm_plugin_loader/src/source_list/source_entry.dart';
+import 'package:wasm_plugin_loader/src/source_list/source_list.dart';
 import 'package:wasm_plugin_loader/src/source_list/source_list_manager.dart';
 
-const _kSampleJson = '''
+const String _kSampleJson = '''
 {
   "name": "Test List",
   "sources": [
@@ -53,7 +55,7 @@ void main() {
 
     test('addSourceList appends URL', () {
       mgr.addSourceList('https://a.example.com');
-      check(mgr.sourceListUrls).deepEquals(['https://a.example.com']);
+      check(mgr.sourceListUrls).deepEquals(<Object?>['https://a.example.com']);
     });
 
     test('addSourceList is no-op for duplicate', () {
@@ -66,7 +68,7 @@ void main() {
       mgr.addSourceList('https://a.example.com');
       mgr.addSourceList('https://b.example.com');
       mgr.removeSourceList('https://a.example.com');
-      check(mgr.sourceListUrls).deepEquals(['https://b.example.com']);
+      check(mgr.sourceListUrls).deepEquals(<Object?>['https://b.example.com']);
     });
 
     test('removeSourceList is no-op for absent URL', () {
@@ -77,19 +79,19 @@ void main() {
 
     test('sourceListUrls is unmodifiable', () {
       mgr.addSourceList('https://a.example.com');
-      check(() => (mgr.sourceListUrls as List).add('x')).throws<UnsupportedError>();
+      check(() => mgr.sourceListUrls.add('x')).throws<UnsupportedError>();
     });
 
     test('initialUrls seeded via constructor', () {
-      final m = SourceListManager(initialUrls: ['https://x.example.com']);
-      check(m.sourceListUrls).deepEquals(['https://x.example.com']);
+      final SourceListManager m = SourceListManager(initialUrls: <String>['https://x.example.com']);
+      check(m.sourceListUrls).deepEquals(<Object?>['https://x.example.com']);
     });
   });
 
   group('SourceListManager.fetchSourceList', () {
     test('success — parses list name and sources', () async {
-      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
       check(list).isNotNull();
       check(list!.url).equals('https://example.com/index.json');
@@ -98,96 +100,96 @@ void main() {
     });
 
     test('success — first source fields parsed correctly', () async {
-      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
-      final entry = list!.sources[0];
+      final SourceEntry entry = list!.sources[0];
       check(entry.id).equals('mangadex');
       check(entry.name).equals('MangaDex');
       check(entry.version).equals(12);
       check(entry.iconUrl).equals('https://example.com/icon.png');
       check(entry.downloadUrl).equals('https://example.com/mangadex.aix');
-      check(entry.languages).deepEquals(['en', 'ja']);
+      check(entry.languages).deepEquals(<Object?>['en', 'ja']);
       check(entry.contentRating).equals(1);
       check(entry.baseUrl).equals('https://mangadex.org');
-      check(entry.altNames).deepEquals(['MD']);
+      check(entry.altNames).deepEquals(<Object?>['MD']);
     });
 
     test('success — optional fields default when absent', () async {
-      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
 
-      final entry = list!.sources[1]; // safe_source — no contentRating/baseURL/altNames
+      final SourceEntry entry = list!.sources[1]; // safe_source — no contentRating/baseURL/altNames
       check(entry.contentRating).equals(0);
       check(entry.baseUrl).isNull();
       check(entry.altNames).isEmpty();
     });
 
     test('HTTP error status returns null', () async {
-      final mgr = SourceListManager(
+      final SourceListManager mgr = SourceListManager(
         httpClient: _mockClient('Not Found', statusCode: 404),
       );
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
       check(list).isNull();
     });
 
     test('malformed JSON returns null', () async {
-      final mgr = SourceListManager(httpClient: _mockClient('{invalid'));
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final SourceListManager mgr = SourceListManager(httpClient: _mockClient('{invalid'));
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
       check(list).isNull();
     });
 
     test('timeout returns null', () async {
-      final mgr = SourceListManager(httpClient: _timeoutClient());
-      final list = await mgr.fetchSourceList('https://example.com/index.json');
+      final SourceListManager mgr = SourceListManager(httpClient: _timeoutClient());
+      final RemoteSourceList? list = await mgr.fetchSourceList('https://example.com/index.json');
       check(list).isNull();
     }, timeout: const Timeout(Duration(seconds: 30)));
   });
 
   group('SourceListManager.fetchAllSourceLists', () {
     test('returns all successful lists', () async {
-      final mgr = SourceListManager(
-        initialUrls: [
+      final SourceListManager mgr = SourceListManager(
+        initialUrls: <String>[
           'https://example.com/a.json',
           'https://example.com/b.json',
         ],
         httpClient: _mockClient(_kSampleJson),
       );
-      final lists = await mgr.fetchAllSourceLists();
+      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
       check(lists).length.equals(2);
     });
 
     test('drops failing lists, returns successful ones', () async {
-      var callCount = 0;
-      final client = MockClient((_) async {
+      int callCount = 0;
+      final MockClient client = MockClient((_) async {
         callCount++;
         if (callCount == 1) return http.Response('bad json{', 200);
         return http.Response(_kSampleJson, 200);
       });
-      final mgr = SourceListManager(
-        initialUrls: [
+      final SourceListManager mgr = SourceListManager(
+        initialUrls: <String>[
           'https://example.com/bad.json',
           'https://example.com/good.json',
         ],
         httpClient: client,
       );
-      final lists = await mgr.fetchAllSourceLists();
+      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
       check(lists).length.equals(1);
       check(lists[0].name).equals('Test List');
     });
 
     test('returns empty list when no URLs configured', () async {
-      final mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
-      final lists = await mgr.fetchAllSourceLists();
+      final SourceListManager mgr = SourceListManager(httpClient: _mockClient(_kSampleJson));
+      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
       check(lists).isEmpty();
     });
 
     test('returns empty list when all URLs fail', () async {
-      final mgr = SourceListManager(
-        initialUrls: ['https://example.com/a.json'],
+      final SourceListManager mgr = SourceListManager(
+        initialUrls: <String>['https://example.com/a.json'],
         httpClient: _mockClient('', statusCode: 500),
       );
-      final lists = await mgr.fetchAllSourceLists();
+      final List<RemoteSourceList> lists = await mgr.fetchAllSourceLists();
       check(lists).isEmpty();
     });
   });

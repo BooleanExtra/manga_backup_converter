@@ -18,6 +18,6 @@ class AidokuBackupTrackItem with AidokuBackupTrackItemMappable {
     required this.title,
   });
 
-  static const fromMap = AidokuBackupTrackItemMapper.fromMap;
-  static const fromJson = AidokuBackupTrackItemMapper.fromJson;
+  static const AidokuBackupTrackItem Function(Map<String, dynamic> map) fromMap = AidokuBackupTrackItemMapper.fromMap;
+  static const AidokuBackupTrackItem Function(String json) fromJson = AidokuBackupTrackItemMapper.fromJson;
 }

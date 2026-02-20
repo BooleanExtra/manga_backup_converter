@@ -25,7 +25,7 @@ import 'package:protobuf/protobuf.dart';
 
 part 'tachi_backup.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   final TachiFork fork;
   final List<TachiBackupSource> backupBrokenSources;
@@ -37,13 +37,13 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   final List<TachiBackupSourcePreferences> backupSourcePreferences;
 
   const TachiBackup({
-    this.backupCategories = const [],
-    this.backupManga = const [],
-    this.backupBrokenSources = const [],
-    this.backupSources = const [],
-    this.backupExtensionRepo = const [],
-    this.backupPreferences = const [],
-    this.backupSourcePreferences = const [],
+    this.backupCategories = const <TachiBackupCategory>[],
+    this.backupManga = const <TachiBackupManga>[],
+    this.backupBrokenSources = const <TachiBackupSource>[],
+    this.backupSources = const <TachiBackupSource>[],
+    this.backupExtensionRepo = const <TachiBackupExtensionRepo>[],
+    this.backupPreferences = const <TachiBackupPreference>[],
+    this.backupSourcePreferences = const <TachiBackupSourcePreferences>[],
     this.fork = TachiFork.mihon,
   });
 
@@ -93,7 +93,7 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
   }
 
   factory TachiBackup.fromData(Uint8List bytes, {TachiFork fork = TachiFork.mihon}) {
-    final backupArchive = const GZipDecoder().decodeBytes(bytes);
+    final Uint8List backupArchive = const GZipDecoder().decodeBytes(bytes);
     return switch (fork) {
       TachiFork.mihon => TachiBackup._fromMihon(backup: mihon.Backup.fromBuffer(backupArchive)),
       TachiFork.sy => TachiBackup._fromSy(backup: sy.Backup.fromBuffer(backupArchive)),
@@ -105,8 +105,8 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
 
   @override
   Future<Uint8List> toData() async {
-    final json = toJson();
-    final backupBytes = switch (fork) {
+    final String json = toJson();
+    final Uint8List backupBytes = switch (fork) {
       TachiFork.mihon => mihon.Backup.fromJson(json).writeToBuffer(),
       TachiFork.sy => sy.Backup.fromJson(json).writeToBuffer(),
       TachiFork.j2k => j2k.Backup.fromJson(json).writeToBuffer(),
@@ -128,8 +128,8 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
     };
   }
 
-  static const fromMap = TachiBackupMapper.fromMap;
-  static const fromJson = TachiBackupMapper.fromJson;
+  static const TachiBackup Function(Map<String, dynamic> map) fromMap = TachiBackupMapper.fromMap;
+  static const TachiBackup Function(String json) fromJson = TachiBackupMapper.fromJson;
 
   @override
   void verbosePrint(bool verbose) {

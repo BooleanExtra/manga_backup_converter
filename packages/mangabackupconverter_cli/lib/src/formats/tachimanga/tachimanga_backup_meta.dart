@@ -3,7 +3,7 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'tachimanga_backup_meta.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class TachimangaBackupMeta with TachimangaBackupMetaMappable {
   final String name;
   final bool remoteBackup;
@@ -37,6 +37,6 @@ class TachimangaBackupMeta with TachimangaBackupMetaMappable {
     required this.extInfo,
   });
 
-  static const fromMap = TachimangaBackupMetaMapper.fromMap;
-  static const fromJson = TachimangaBackupMetaMapper.fromJson;
+  static const TachimangaBackupMeta Function(Map<String, dynamic> map) fromMap = TachimangaBackupMetaMapper.fromMap;
+  static const TachimangaBackupMeta Function(String json) fromJson = TachimangaBackupMetaMapper.fromJson;
 }

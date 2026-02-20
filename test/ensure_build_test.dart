@@ -1,5 +1,5 @@
 @TestOn('vm')
-@Tags(['presubmit-only'])
+@Tags(<String>['presubmit-only'])
 @Timeout(Duration(seconds: 120))
 import 'package:build_verify/build_verify.dart';
 import 'package:flutter_test/flutter_test.dart';

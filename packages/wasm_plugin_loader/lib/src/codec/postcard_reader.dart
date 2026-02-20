@@ -16,10 +16,10 @@ class PostcardReader {
 
   /// Decode a variable-length unsigned integer (LEB128).
   int readVarInt() {
-    var result = 0;
-    var shift = 0;
+    int result = 0;
+    int shift = 0;
     while (true) {
-      final byte = readU8();
+      final int byte = readU8();
       result |= (byte & 0x7F) << shift;
       if ((byte & 0x80) == 0) break;
       shift += 7;
@@ -29,38 +29,38 @@ class PostcardReader {
 
   /// Decode a zigzag-encoded signed variable-length integer.
   int readSignedVarInt() {
-    final n = readVarInt();
+    final int n = readVarInt();
     return (n >> 1) ^ -(n & 1);
   }
 
   double readF32() {
-    final view = ByteData.sublistView(_bytes, _pos, _pos + 4);
+    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 4);
     _pos += 4;
     return view.getFloat32(0, Endian.little);
   }
 
   double readF64() {
-    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
+    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 8);
     _pos += 8;
     return view.getFloat64(0, Endian.little);
   }
 
   int readI64() {
-    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
+    final ByteData view = ByteData.sublistView(_bytes, _pos, _pos + 8);
     _pos += 8;
     return view.getInt64(0, Endian.little);
   }
 
   String readString() {
-    final len = readVarInt();
-    final str = utf8.decode(_bytes.sublist(_pos, _pos + len));
+    final int len = readVarInt();
+    final String str = utf8.decode(_bytes.sublist(_pos, _pos + len));
     _pos += len;
     return str;
   }
 
   Uint8List readBytes() {
-    final len = readVarInt();
-    final bytes = _bytes.sublist(_pos, _pos + len);
+    final int len = readVarInt();
+    final Uint8List bytes = _bytes.sublist(_pos, _pos + len);
     _pos += len;
     return bytes;
   }
@@ -71,7 +71,7 @@ class PostcardReader {
   }
 
   List<T> readList<T>(T Function() readFn) {
-    final count = readVarInt();
-    return List.generate(count, (_) => readFn());
+    final int count = readVarInt();
+    return List<T>.generate(count, (_) => readFn());
   }
 }

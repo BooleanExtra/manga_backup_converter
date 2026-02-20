@@ -4,7 +4,7 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'paperback_backup_source_manga.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackupSourceManga with PaperbackBackupSourceMangaMappable {
   final String sourceId;
   final String mangaId;
@@ -18,6 +18,7 @@ class PaperbackBackupSourceManga with PaperbackBackupSourceMangaMappable {
     required this.mangaInfo,
   });
 
-  static const fromMap = PaperbackBackupSourceMangaMapper.fromMap;
-  static const fromJson = PaperbackBackupSourceMangaMapper.fromJson;
+  static const PaperbackBackupSourceManga Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupSourceMangaMapper.fromMap;
+  static const PaperbackBackupSourceManga Function(String json) fromJson = PaperbackBackupSourceMangaMapper.fromJson;
 }

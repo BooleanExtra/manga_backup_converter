@@ -8,7 +8,7 @@ class SourceEntry {
     required this.languages,
     this.contentRating = 0,
     this.baseUrl,
-    this.altNames = const [],
+    this.altNames = const <String>[],
   });
 
   final String id;
@@ -31,10 +31,10 @@ class SourceEntry {
       version: json['version'] as int,
       iconUrl: json['iconURL'] as String,
       downloadUrl: json['downloadURL'] as String,
-      languages: List<String>.from(json['languages'] as List? ?? const []),
+      languages: List<String>.from(json['languages'] as List<Object>? ?? const <Object>[]),
       contentRating: json['contentRating'] as int? ?? 0,
       baseUrl: json['baseURL'] as String?,
-      altNames: List<String>.from(json['altNames'] as List? ?? const []),
+      altNames: List<String>.from(json['altNames'] as List<Object>? ?? const <Object>[]),
     );
   }
 }

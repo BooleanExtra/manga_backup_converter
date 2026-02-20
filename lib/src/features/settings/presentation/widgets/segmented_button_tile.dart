@@ -37,7 +37,7 @@ class _SegmentedButtonTileState<T extends HumanReadableEnum>
 
   @override
   Widget build(BuildContext context) {
-    final scaleFactor = MediaQuery.textScalerOf(context).scale(1);
+    final double scaleFactor = MediaQuery.textScalerOf(context).scale(1);
     return Padding(
       padding: EdgeInsetsDirectional.only(
         start: 8,
@@ -47,7 +47,7 @@ class _SegmentedButtonTileState<T extends HumanReadableEnum>
       ),
       child: SegmentedButton<T>(
         segments: <ButtonSegment<T>>[
-          for (final segment in widget.segments)
+          for (final T segment in widget.segments)
             ButtonSegment<T>(
               value: segment,
               label: Text(segment.humanName, maxLines: 1),

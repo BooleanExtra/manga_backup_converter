@@ -22,8 +22,9 @@ class TachimangaBackupCategory
     return TachiBackupCategory(name: name, order: order, flags: 1);
   }
 
-  static const fromMap = TachimangaBackupCategoryMapper.fromMap;
-  static const fromJson = TachimangaBackupCategoryMapper.fromJson;
+  static const TachimangaBackupCategory Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupCategoryMapper.fromMap;
+  static const TachimangaBackupCategory Function(String json) fromJson = TachimangaBackupCategoryMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -34,8 +35,10 @@ class TachimangaBackupCategoryManga with TachimangaBackupCategoryMangaMappable {
 
   const TachimangaBackupCategoryManga({required this.id, required this.category, required this.manga});
 
-  static const fromMap = TachimangaBackupCategoryMangaMapper.fromMap;
-  static const fromJson = TachimangaBackupCategoryMangaMapper.fromJson;
+  static const TachimangaBackupCategoryManga Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupCategoryMangaMapper.fromMap;
+  static const TachimangaBackupCategoryManga Function(String json) fromJson =
+      TachimangaBackupCategoryMangaMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -52,8 +55,10 @@ class TachimangaBackupCategoryMeta with TachimangaBackupCategoryMetaMappable {
     required this.categoryRef,
   });
 
-  static const fromMap = TachimangaBackupCategoryMetaMapper.fromMap;
-  static const fromJson = TachimangaBackupCategoryMetaMapper.fromJson;
+  static const TachimangaBackupCategoryMeta Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupCategoryMetaMapper.fromMap;
+  static const TachimangaBackupCategoryMeta Function(String json) fromJson =
+      TachimangaBackupCategoryMetaMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -115,8 +120,9 @@ class TachimangaBackupChapter
     );
   }
 
-  static const fromMap = TachimangaBackupChapterMapper.fromMap;
-  static const fromJson = TachimangaBackupChapterMapper.fromJson;
+  static const TachimangaBackupChapter Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupChapterMapper.fromMap;
+  static const TachimangaBackupChapter Function(String json) fromJson = TachimangaBackupChapterMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -133,8 +139,9 @@ class TachimangaBackupChapterMeta with TachimangaBackupChapterMetaMappable {
     required this.chapterRef,
   });
 
-  static const fromMap = TachimangaBackupChapterMetaMapper.fromMap;
-  static const fromJson = TachimangaBackupChapterMetaMapper.fromJson;
+  static const TachimangaBackupChapterMeta Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupChapterMetaMapper.fromMap;
+  static const TachimangaBackupChapterMeta Function(String json) fromJson = TachimangaBackupChapterMetaMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -177,8 +184,9 @@ class TachimangaBackupExtension with TachimangaBackupExtensionMappable {
     required this.repoId,
   });
 
-  static const fromMap = TachimangaBackupExtensionMapper.fromMap;
-  static const fromJson = TachimangaBackupExtensionMapper.fromJson;
+  static const TachimangaBackupExtension Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupExtensionMapper.fromMap;
+  static const TachimangaBackupExtension Function(String json) fromJson = TachimangaBackupExtensionMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -203,12 +211,13 @@ class TachimangaBackupHistory
 
   @override
   TachiBackupHistory toType(TachimangaBackupDb db) {
-    final manga = db.mangaTable.firstWhere((manga) => manga.id == mangaId);
+    final TachimangaBackupManga manga = db.mangaTable.firstWhere((TachimangaBackupManga manga) => manga.id == mangaId);
     return TachiBackupHistory(url: manga.realUrl ?? manga.url, lastRead: lastChapterId, readDuration: lastReadAt);
   }
 
-  static const fromMap = TachimangaBackupHistoryMapper.fromMap;
-  static const fromJson = TachimangaBackupHistoryMapper.fromJson;
+  static const TachimangaBackupHistory Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupHistoryMapper.fromMap;
+  static const TachimangaBackupHistory Function(String json) fromJson = TachimangaBackupHistoryMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -278,16 +287,16 @@ class TachimangaBackupManga
       viewerFlags: 1,
       chapterFlags: 1,
       favorite: false,
-      chapters: db.chapterTable.map((c) => c.toType(db)).toList(),
-      history: db.historyTable.map((c) => c.toType(db)).toList(),
-      brokenHistory: [],
-      categories: db.categoryTable.map((c) => c.id).toList(),
-      tracking: db.trackRecordTable.map((c) => c.toType(db)).toList(),
+      chapters: db.chapterTable.map((TachimangaBackupChapter c) => c.toType(db)).toList(),
+      history: db.historyTable.map((TachimangaBackupHistory c) => c.toType(db)).toList(),
+      brokenHistory: <TachiBackupHistory>[],
+      categories: db.categoryTable.map((TachimangaBackupCategory c) => c.id).toList(),
+      tracking: db.trackRecordTable.map((TachimangaBackupTrackRecord c) => c.toType(db)).toList(),
     );
   }
 
-  static const fromMap = TachimangaBackupMangaMapper.fromMap;
-  static const fromJson = TachimangaBackupMangaMapper.fromJson;
+  static const TachimangaBackupManga Function(Map<String, dynamic> map) fromMap = TachimangaBackupMangaMapper.fromMap;
+  static const TachimangaBackupManga Function(String json) fromJson = TachimangaBackupMangaMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -299,8 +308,9 @@ class TachimangaBackupMangaMeta with TachimangaBackupMangaMetaMappable {
 
   const TachimangaBackupMangaMeta({required this.id, required this.key, required this.value, required this.mangaRef});
 
-  static const fromMap = TachimangaBackupMangaMetaMapper.fromMap;
-  static const fromJson = TachimangaBackupMangaMetaMapper.fromJson;
+  static const TachimangaBackupMangaMeta Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupMangaMetaMapper.fromMap;
+  static const TachimangaBackupMangaMeta Function(String json) fromJson = TachimangaBackupMangaMetaMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -311,8 +321,10 @@ class TachimangaBackupDbMigrations with TachimangaBackupDbMigrationsMappable {
 
   const TachimangaBackupDbMigrations({required this.version, required this.name, required this.executedAt});
 
-  static const fromMap = TachimangaBackupDbMigrationsMapper.fromMap;
-  static const fromJson = TachimangaBackupDbMigrationsMapper.fromJson;
+  static const TachimangaBackupDbMigrations Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupDbMigrationsMapper.fromMap;
+  static const TachimangaBackupDbMigrations Function(String json) fromJson =
+      TachimangaBackupDbMigrationsMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.camelCase)
@@ -331,8 +343,8 @@ class TachimangaBackupPage with TachimangaBackupPageMappable {
     required this.chapter,
   });
 
-  static const fromMap = TachimangaBackupPageMapper.fromMap;
-  static const fromJson = TachimangaBackupPageMapper.fromJson;
+  static const TachimangaBackupPage Function(Map<String, dynamic> map) fromMap = TachimangaBackupPageMapper.fromMap;
+  static const TachimangaBackupPage Function(String json) fromJson = TachimangaBackupPageMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -372,8 +384,8 @@ class TachimangaBackupRepo
     );
   }
 
-  static const fromMap = TachimangaBackupRepoMapper.fromMap;
-  static const fromJson = TachimangaBackupRepoMapper.fromJson;
+  static const TachimangaBackupRepo Function(Map<String, dynamic> map) fromMap = TachimangaBackupRepoMapper.fromMap;
+  static const TachimangaBackupRepo Function(String json) fromJson = TachimangaBackupRepoMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -394,8 +406,9 @@ class TachimangaBackupSetting with TachimangaBackupSettingMappable {
     required this.value,
   });
 
-  static const fromMap = TachimangaBackupSettingMapper.fromMap;
-  static const fromJson = TachimangaBackupSettingMapper.fromJson;
+  static const TachimangaBackupSetting Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupSettingMapper.fromMap;
+  static const TachimangaBackupSetting Function(String json) fromJson = TachimangaBackupSettingMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -425,8 +438,8 @@ class TachimangaBackupSource
     return TachiBackupSource(name: name, sourceId: id);
   }
 
-  static const fromMap = TachimangaBackupSourceMapper.fromMap;
-  static const fromJson = TachimangaBackupSourceMapper.fromJson;
+  static const TachimangaBackupSource Function(Map<String, dynamic> map) fromMap = TachimangaBackupSourceMapper.fromMap;
+  static const TachimangaBackupSource Function(String json) fromJson = TachimangaBackupSourceMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -481,8 +494,9 @@ class TachimangaBackupTrackRecord
     );
   }
 
-  static const fromMap = TachimangaBackupTrackRecordMapper.fromMap;
-  static const fromJson = TachimangaBackupTrackRecordMapper.fromJson;
+  static const TachimangaBackupTrackRecord Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupTrackRecordMapper.fromMap;
+  static const TachimangaBackupTrackRecord Function(String json) fromJson = TachimangaBackupTrackRecordMapper.fromJson;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -492,8 +506,10 @@ class TachimangaBackupSqliteSequence with TachimangaBackupSqliteSequenceMappable
 
   const TachimangaBackupSqliteSequence({required this.name, required this.seq});
 
-  static const fromMap = TachimangaBackupSqliteSequenceMapper.fromMap;
-  static const fromJson = TachimangaBackupSqliteSequenceMapper.fromJson;
+  static const TachimangaBackupSqliteSequence Function(Map<String, dynamic> map) fromMap =
+      TachimangaBackupSqliteSequenceMapper.fromMap;
+  static const TachimangaBackupSqliteSequence Function(String json) fromJson =
+      TachimangaBackupSqliteSequenceMapper.fromJson;
 }
 
 @MappableEnum(caseStyle: CaseStyle.pascalCase)

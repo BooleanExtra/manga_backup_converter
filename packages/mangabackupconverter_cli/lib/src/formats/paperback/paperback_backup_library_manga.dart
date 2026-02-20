@@ -5,7 +5,7 @@ import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_
 
 part 'paperback_backup_library_manga.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackupLibraryManga with PaperbackBackupLibraryMangaMappable {
   final List<PaperbackBackupLibraryTab> libraryTabs;
   final DateTime? lastRead;
@@ -25,6 +25,7 @@ class PaperbackBackupLibraryManga with PaperbackBackupLibraryMangaMappable {
     required this.secondarySources,
   });
 
-  static const fromMap = PaperbackBackupLibraryMangaMapper.fromMap;
-  static const fromJson = PaperbackBackupLibraryMangaMapper.fromJson;
+  static const PaperbackBackupLibraryManga Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupLibraryMangaMapper.fromMap;
+  static const PaperbackBackupLibraryManga Function(String json) fromJson = PaperbackBackupLibraryMangaMapper.fromJson;
 }

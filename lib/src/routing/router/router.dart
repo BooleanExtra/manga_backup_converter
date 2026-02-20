@@ -11,27 +11,31 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
 
 enum RouteName { home(), settings(), settingDetails() }
 
-final routerProvider = Provider<GoRouter>((ref) => createRouter());
+final Provider<GoRouter> routerProvider = Provider<GoRouter>(
+  (Ref ref) => createRouter(),
+);
 
 GoRouter createRouter() {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
-    routes: [
+    routes: <RouteBase>[
       GoRoute(
         path: '/',
         name: RouteName.home.name,
-        builder: (context, state) => const BooksRoute(),
-        routes: [
+        builder: (BuildContext context, GoRouterState state) =>
+            const BooksRoute(),
+        routes: <RouteBase>[
           GoRoute(
             path: 'settings',
             name: RouteName.settings.name,
-            builder: (context, state) => const SettingsRoute(),
-            routes: [
+            builder: (BuildContext context, GoRouterState state) =>
+                const SettingsRoute(),
+            routes: <RouteBase>[
               GoRoute(
                 path: 'settings/:id',
                 name: RouteName.settingDetails.name,
-                builder: (context, state) =>
+                builder: (BuildContext context, GoRouterState state) =>
                     SettingDetailsRoute(id: state.pathParameters['id']),
               ),
             ],

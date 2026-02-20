@@ -28,15 +28,15 @@ extension type _WasmMemory._(JSObject _) implements JSObject {
 // ---------------------------------------------------------------------------
 
 JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
-  final outer = JSObject();
-  for (final moduleEntry in imports.entries) {
-    final inner = JSObject();
-    for (final fnEntry in moduleEntry.value.entries) {
-      final dartFn = fnEntry.value;
+  final JSObject outer = JSObject();
+  for (final MapEntry<String, Map<String, Function>> moduleEntry in imports.entries) {
+    final JSObject inner = JSObject();
+    for (final MapEntry<String, Function> fnEntry in moduleEntry.value.entries) {
+      final Function dartFn = fnEntry.value;
       // 4-arg JS wrapper; extra args beyond the function's arity are ignored
-      final jsFn = (JSAny? a, JSAny? b, JSAny? c, JSAny? d) {
-        final dartArgs = [a, b, c, d].where((x) => x != null).map(_jsToValue).toList();
-        final result = Function.apply(dartFn, dartArgs);
+      final JSExportedDartFunction jsFn = (JSAny? a, JSAny? b, JSAny? c, JSAny? d) {
+        final List<Object?> dartArgs = <JSAny?>[a, b, c, d].where((JSAny? x) => x != null).map(_jsToValue).toList();
+        final Object? result = Function.apply(dartFn, dartArgs);
         return _valueToJs(result is Future ? null : result);
       }.toJS;
       inner.setProperty(fnEntry.key.toJS, jsFn);
@@ -71,22 +71,22 @@ class WasmRunner {
 
   static Future<WasmRunner> fromBytes(
     Uint8List wasmBytes, {
-    Map<String, Map<String, Function>> imports = const {},
+    Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
   }) async {
-    final jsBytes = wasmBytes.buffer.toJS;
-    final module = await _wasmCompile(jsBytes).toDart;
-    final importObj = _buildImportObject(imports);
-    final result = await _wasmInstantiateModule(module, importObj).toDart;
+    final JSArrayBuffer jsBytes = wasmBytes.buffer.toJS;
+    final JSObject module = await _wasmCompile(jsBytes).toDart;
+    final JSObject importObj = _buildImportObject(imports);
+    final JSObject result = await _wasmInstantiateModule(module, importObj).toDart;
 
-    final instance = result as _WasmInstance;
-    final exports = instance.exports;
-    final memView = _readMemoryView(exports);
+    final _WasmInstance instance = result as _WasmInstance;
+    final JSObject exports = instance.exports;
+    final Uint8List memView = _readMemoryView(exports);
 
     return WasmRunner._(exports, memView);
   }
 
   static Uint8List _readMemoryView(JSObject exports) {
-    final memJs = exports.getProperty('memory'.toJS);
+    final JSAny? memJs = exports.getProperty('memory'.toJS);
     if (memJs == null) return Uint8List(0);
     return Uint8List.view((memJs as _WasmMemory).buffer.toDart);
   }
@@ -96,12 +96,12 @@ class WasmRunner {
   }
 
   dynamic call(String name, List<Object?> args) {
-    final fn = _exports.getProperty(name.toJS);
+    final JSAny? fn = _exports.getProperty(name.toJS);
     if (fn == null) throw ArgumentError('WASM export not found: $name');
-    final jsArgs = args.map(_valueToJs).toList();
-    final result = (fn as JSFunction).callAsFunction(
+    final List<JSAny?> jsArgs = args.map(_valueToJs).toList();
+    final JSAny? result = (fn as JSFunction).callAsFunction(
       null,
-      jsArgs.jsify()! as JSArray,
+      jsArgs.jsify()! as JSArray<JSAny?>,
     );
     return _jsToValue(result);
   }

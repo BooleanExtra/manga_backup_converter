@@ -19,8 +19,10 @@ class WeatherParams with WeatherParamsMappable {
     required this.tempMax,
   });
 
-  static const fromMap = WeatherParamsMapper.fromMap;
-  static const fromJson = WeatherParamsMapper.fromJson;
+  static const WeatherParams Function(Map<String, dynamic> map) fromMap =
+      WeatherParamsMapper.fromMap;
+  static const WeatherParams Function(String json) fromJson =
+      WeatherParamsMapper.fromJson;
 }
 
 @MappableClass()
@@ -38,8 +40,10 @@ class WeatherInfo with WeatherInfoMappable {
     required this.icon,
   });
 
-  static const fromMap = WeatherInfoMapper.fromMap;
-  static const fromJson = WeatherInfoMapper.fromJson;
+  static const WeatherInfo Function(Map<String, dynamic> map) fromMap =
+      WeatherInfoMapper.fromMap;
+  static const WeatherInfo Function(String json) fromJson =
+      WeatherInfoMapper.fromJson;
 }
 
 @MappableClass()
@@ -57,6 +61,7 @@ class Weather with WeatherMappable {
     required this.dt,
   });
 
-  static const fromMap = WeatherMapper.fromMap;
-  static const fromJson = WeatherMapper.fromJson;
+  static const Weather Function(Map<String, dynamic> map) fromMap =
+      WeatherMapper.fromMap;
+  static const Weather Function(String json) fromJson = WeatherMapper.fromJson;
 }

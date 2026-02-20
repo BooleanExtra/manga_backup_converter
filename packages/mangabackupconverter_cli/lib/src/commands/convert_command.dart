@@ -3,15 +3,16 @@
 import 'dart:io' as io;
 import 'dart:typed_data';
 
+import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:path/path.dart' as p;
 
 class ConvertCommand extends Command<void> {
   @override
-  final name = 'convert';
+  final String name = 'convert';
   @override
-  final description = 'Convert a manga backup to another format.';
+  final String description = 'Convert a manga backup to another format.';
 
   ConvertCommand() {
     argParser
@@ -26,41 +27,41 @@ class ConvertCommand extends Command<void> {
         'output-format',
         abbr: 'f',
         help: 'The output backup format the backup will be converted to',
-        allowed: BackupType.values.map((e) => e.name).toList(),
+        allowed: BackupType.values.map((BackupType e) => e.name).toList(),
         mandatory: true,
       )
       ..addOption(
         'input-format',
         abbr: 'i',
         help: 'Specify the input backup format type if not detected automatically',
-        allowed: BackupType.values.map((e) => e.name).toList(),
+        allowed: BackupType.values.map((BackupType e) => e.name).toList(),
       )
       ..addOption(
         'tachi-fork',
         abbr: 't',
         help: 'The specific Tachiyomi fork to use for the backup format',
-        allowed: TachiFork.values.map((e) => e.name).toList(),
+        allowed: TachiFork.values.map((TachiFork e) => e.name).toList(),
         defaultsTo: TachiFork.mihon.name,
       );
   }
 
   @override
   Future<void> run() async {
-    final results = argResults!;
+    final ArgResults results = argResults!;
     final bool verbose = results.flag('verbose');
 
     if (verbose) {
       print('[VERBOSE] All arguments: ${results.arguments}');
     }
 
-    final backupFile = io.File(results.option('backup')!);
+    final io.File backupFile = io.File(results.option('backup')!);
     if (!backupFile.existsSync()) {
       throw UsageException('Backup file does not exist: ${backupFile.path}', usage);
     }
 
-    final outputFormat = BackupType.values.byName(results.option('output-format')!);
+    final BackupType outputFormat = BackupType.values.byName(results.option('output-format')!);
 
-    final backupFileExtension = p.extension(backupFile.uri.toString());
+    final String backupFileExtension = p.extension(backupFile.uri.toString());
     if (verbose) {
       print('Imported Backup Extension: $backupFileExtension');
     }
@@ -77,10 +78,10 @@ class ConvertCommand extends Command<void> {
       );
     }
 
-    final outputTachiFork = TachiFork.values.byName(results.option('tachi-fork')!);
+    final TachiFork outputTachiFork = TachiFork.values.byName(results.option('tachi-fork')!);
 
-    final converter = MangaBackupConverter();
-    final importedBackup = switch (inputFormat) {
+    final MangaBackupConverter converter = MangaBackupConverter();
+    final ConvertableBackup importedBackup = switch (inputFormat) {
       BackupType.aidoku => converter.importAidokuBackup(backupFile.readAsBytesSync()),
       BackupType.tachi => converter.importTachibkBackup(backupFile.readAsBytesSync(), fork: outputTachiFork),
       BackupType.paperback => converter.importPaperbackPas4Backup(

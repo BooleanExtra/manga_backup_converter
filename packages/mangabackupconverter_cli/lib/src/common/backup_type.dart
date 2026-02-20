@@ -1,19 +1,19 @@
 enum BackupType {
-  aidoku(['.aib']),
-  paperback(['.pas4']),
-  tachi(['.tachibk', '.proto.gz']),
-  tachimanga(['.tmb']),
-  mangayomi(['.backup'])
+  aidoku(<String>['.aib']),
+  paperback(<String>['.pas4']),
+  tachi(<String>['.tachibk', '.proto.gz']),
+  tachimanga(<String>['.tmb']),
+  mangayomi(<String>['.backup'])
   ;
 
   const BackupType(this.extensions);
 
   final List<String> extensions;
 
-  static List<String> get validExtensions => values.expand((e) => e.extensions).toList();
+  static List<String> get validExtensions => values.expand((BackupType e) => e.extensions).toList();
 
   static BackupType? byExtension(String extension) {
-    for (final type in values) {
+    for (final BackupType type in values) {
       if (type.extensions.contains(extension)) {
         return type;
       }

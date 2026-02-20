@@ -4,7 +4,7 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'paperback_backup_chapter_progress_marker.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackupChapterProgressMarker with PaperbackBackupChapterProgressMarkerMappable {
   final int totalPages;
   final bool completed;
@@ -22,6 +22,8 @@ class PaperbackBackupChapterProgressMarker with PaperbackBackupChapterProgressMa
     required this.hidden,
   });
 
-  static const fromMap = PaperbackBackupChapterProgressMarkerMapper.fromMap;
-  static const fromJson = PaperbackBackupChapterProgressMarkerMapper.fromJson;
+  static const PaperbackBackupChapterProgressMarker Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupChapterProgressMarkerMapper.fromMap;
+  static const PaperbackBackupChapterProgressMarker Function(String json) fromJson =
+      PaperbackBackupChapterProgressMarkerMapper.fromJson;
 }

@@ -4,7 +4,7 @@ import 'package:mangabackupconverter_cli/src/formats/mangayomi/mangayomi_backup_
 
 part 'mangayomi_backup_db.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupDb with MangayomiBackupDbMappable {
   final String? version;
   final List<MangayomiBackupManga>? manga;
@@ -36,11 +36,11 @@ class MangayomiBackupDb with MangayomiBackupDbMappable {
     this.extensions,
   });
 
-  static const fromMap = MangayomiBackupDbMapper.fromMap;
-  static const fromJson = MangayomiBackupDbMapper.fromJson;
+  static const MangayomiBackupDb Function(Map<String, dynamic> map) fromMap = MangayomiBackupDbMapper.fromMap;
+  static const MangayomiBackupDb Function(String json) fromJson = MangayomiBackupDbMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupManga with MangayomiBackupMangaMappable {
   final String? author;
   final String? artist;
@@ -90,14 +90,14 @@ class MangayomiBackupManga with MangayomiBackupMangaMappable {
     this.customCoverFromTracker,
   });
 
-  static const fromMap = MangayomiBackupMangaMapper.fromMap;
-  static const fromJson = MangayomiBackupMangaMapper.fromJson;
+  static const MangayomiBackupManga Function(Map<String, dynamic> map) fromMap = MangayomiBackupMangaMapper.fromMap;
+  static const MangayomiBackupManga Function(String json) fromJson = MangayomiBackupMangaMapper.fromJson;
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum ItemType { manga, anime, novel }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupCategory with MangayomiBackupCategoryMappable {
   final int? id;
   final String? name;
@@ -107,11 +107,12 @@ class MangayomiBackupCategory with MangayomiBackupCategoryMappable {
 
   const MangayomiBackupCategory({required this.name, required this.forItemType, this.id, this.pos, this.hide});
 
-  static const fromMap = MangayomiBackupCategoryMapper.fromMap;
-  static const fromJson = MangayomiBackupCategoryMapper.fromJson;
+  static const MangayomiBackupCategory Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupCategoryMapper.fromMap;
+  static const MangayomiBackupCategory Function(String json) fromJson = MangayomiBackupCategoryMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupChapter with MangayomiBackupChapterMappable {
   final int? id;
   final int? mangaId;
@@ -139,11 +140,11 @@ class MangayomiBackupChapter with MangayomiBackupChapterMappable {
     this.archivePath = '',
   });
 
-  static const fromMap = MangayomiBackupChapterMapper.fromMap;
-  static const fromJson = MangayomiBackupChapterMapper.fromJson;
+  static const MangayomiBackupChapter Function(Map<String, dynamic> map) fromMap = MangayomiBackupChapterMapper.fromMap;
+  static const MangayomiBackupChapter Function(String json) fromJson = MangayomiBackupChapterMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupDownload with MangayomiBackupDownloadMappable {
   final int? failed;
   final int? id;
@@ -161,11 +162,12 @@ class MangayomiBackupDownload with MangayomiBackupDownloadMappable {
     this.id = 0,
   });
 
-  static const fromMap = MangayomiBackupDownloadMapper.fromMap;
-  static const fromJson = MangayomiBackupDownloadMapper.fromJson;
+  static const MangayomiBackupDownload Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupDownloadMapper.fromMap;
+  static const MangayomiBackupDownload Function(String json) fromJson = MangayomiBackupDownloadMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupTrack with MangayomiBackupTrackMappable {
   final int? finishedReadingDate;
   final int? id;
@@ -201,11 +203,11 @@ class MangayomiBackupTrack with MangayomiBackupTrackMappable {
     this.itemType = ItemType.manga,
   });
 
-  static const fromMap = MangayomiBackupTrackMapper.fromMap;
-  static const fromJson = MangayomiBackupTrackMapper.fromJson;
+  static const MangayomiBackupTrack Function(Map<String, dynamic> map) fromMap = MangayomiBackupTrackMapper.fromMap;
+  static const MangayomiBackupTrack Function(String json) fromJson = MangayomiBackupTrackMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupTrackPreferences with MangayomiBackupTrackPreferencesMappable {
   final int? syncId;
   final String? username;
@@ -219,11 +221,13 @@ class MangayomiBackupTrackPreferences with MangayomiBackupTrackPreferencesMappab
     required this.prefs,
   });
 
-  static const fromMap = MangayomiBackupTrackPreferencesMapper.fromMap;
-  static const fromJson = MangayomiBackupTrackPreferencesMapper.fromJson;
+  static const MangayomiBackupTrackPreferences Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupTrackPreferencesMapper.fromMap;
+  static const MangayomiBackupTrackPreferences Function(String json) fromJson =
+      MangayomiBackupTrackPreferencesMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupHistory with MangayomiBackupHistoryMappable {
   final int? id;
   final int? mangaId;
@@ -241,11 +245,11 @@ class MangayomiBackupHistory with MangayomiBackupHistoryMappable {
     this.isManga,
   });
 
-  static const fromMap = MangayomiBackupHistoryMapper.fromMap;
-  static const fromJson = MangayomiBackupHistoryMapper.fromJson;
+  static const MangayomiBackupHistory Function(Map<String, dynamic> map) fromMap = MangayomiBackupHistoryMapper.fromMap;
+  static const MangayomiBackupHistory Function(String json) fromJson = MangayomiBackupHistoryMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupUpdate with MangayomiBackupUpdateMappable {
   final int? id;
   final int? mangaId;
@@ -254,11 +258,11 @@ class MangayomiBackupUpdate with MangayomiBackupUpdateMappable {
 
   const MangayomiBackupUpdate({required this.mangaId, required this.chapterName, required this.date, this.id});
 
-  static const fromMap = MangayomiBackupUpdateMapper.fromMap;
-  static const fromJson = MangayomiBackupUpdateMapper.fromJson;
+  static const MangayomiBackupUpdate Function(Map<String, dynamic> map) fromMap = MangayomiBackupUpdateMapper.fromMap;
+  static const MangayomiBackupUpdate Function(String json) fromJson = MangayomiBackupUpdateMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupExtension with MangayomiBackupExtensionMappable {
   final int? id;
   final String? name;
@@ -322,14 +326,15 @@ class MangayomiBackupExtension with MangayomiBackupExtensionMappable {
     this.sourceCodeLanguage = SourceCodeLanguage.dart,
   });
 
-  static const fromMap = MangayomiBackupExtensionMapper.fromMap;
-  static const fromJson = MangayomiBackupExtensionMapper.fromJson;
+  static const MangayomiBackupExtension Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupExtensionMapper.fromMap;
+  static const MangayomiBackupExtension Function(String json) fromJson = MangayomiBackupExtensionMapper.fromJson;
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum SourceCodeLanguage { dart, javascript }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupExtensionPreferences with MangayomiBackupExtensionPreferencesMappable {
   final int? id;
   final int? sourceId;
@@ -349,11 +354,13 @@ class MangayomiBackupExtensionPreferences with MangayomiBackupExtensionPreferenc
     this.multiSelectListPreference,
   });
 
-  static const fromMap = MangayomiBackupExtensionPreferencesMapper.fromMap;
-  static const fromJson = MangayomiBackupExtensionPreferencesMapper.fromJson;
+  static const MangayomiBackupExtensionPreferences Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupExtensionPreferencesMapper.fromMap;
+  static const MangayomiBackupExtensionPreferences Function(String json) fromJson =
+      MangayomiBackupExtensionPreferencesMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class EditTextPreference with EditTextPreferenceMappable {
   final String? title;
   final String? summary;
@@ -364,11 +371,11 @@ class EditTextPreference with EditTextPreferenceMappable {
 
   const EditTextPreference({this.title, this.summary, this.value, this.dialogTitle, this.dialogMessage, this.text});
 
-  static const fromMap = EditTextPreferenceMapper.fromMap;
-  static const fromJson = EditTextPreferenceMapper.fromJson;
+  static const EditTextPreference Function(Map<String, dynamic> map) fromMap = EditTextPreferenceMapper.fromMap;
+  static const EditTextPreference Function(String json) fromJson = EditTextPreferenceMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ListPreference with ListPreferenceMappable {
   final String? title;
   final String? summary;
@@ -378,11 +385,11 @@ class ListPreference with ListPreferenceMappable {
 
   const ListPreference({this.title, this.summary, this.valueIndex, this.entries, this.entryValues});
 
-  static const fromMap = ListPreferenceMapper.fromMap;
-  static const fromJson = ListPreferenceMapper.fromJson;
+  static const ListPreference Function(Map<String, dynamic> map) fromMap = ListPreferenceMapper.fromMap;
+  static const ListPreference Function(String json) fromJson = ListPreferenceMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SwitchPreferenceCompat with SwitchPreferenceCompatMappable {
   final String? title;
   final String? summary;
@@ -390,11 +397,11 @@ class SwitchPreferenceCompat with SwitchPreferenceCompatMappable {
 
   const SwitchPreferenceCompat({this.title, this.summary, this.value});
 
-  static const fromMap = SwitchPreferenceCompatMapper.fromMap;
-  static const fromJson = SwitchPreferenceCompatMapper.fromJson;
+  static const SwitchPreferenceCompat Function(Map<String, dynamic> map) fromMap = SwitchPreferenceCompatMapper.fromMap;
+  static const SwitchPreferenceCompat Function(String json) fromJson = SwitchPreferenceCompatMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MultiSelectListPreference with MultiSelectListPreferenceMappable {
   final String? title;
   final String? summary;
@@ -404,6 +411,7 @@ class MultiSelectListPreference with MultiSelectListPreferenceMappable {
 
   const MultiSelectListPreference({this.title, this.summary, this.values, this.entries, this.entryValues});
 
-  static const fromMap = MultiSelectListPreferenceMapper.fromMap;
-  static const fromJson = MultiSelectListPreferenceMapper.fromJson;
+  static const MultiSelectListPreference Function(Map<String, dynamic> map) fromMap =
+      MultiSelectListPreferenceMapper.fromMap;
+  static const MultiSelectListPreference Function(String json) fromJson = MultiSelectListPreferenceMapper.fromJson;
 }

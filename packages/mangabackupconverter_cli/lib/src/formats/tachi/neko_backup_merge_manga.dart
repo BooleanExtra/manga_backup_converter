@@ -21,6 +21,6 @@ class NekoBackupMergeManga with NekoBackupMergeMangaMappable {
     );
   }
 
-  static const fromMap = NekoBackupMergeMangaMapper.fromMap;
-  static const fromJson = NekoBackupMergeMangaMapper.fromJson;
+  static const NekoBackupMergeManga Function(Map<String, dynamic> map) fromMap = NekoBackupMergeMangaMapper.fromMap;
+  static const NekoBackupMergeManga Function(String json) fromJson = NekoBackupMergeMangaMapper.fromJson;
 }

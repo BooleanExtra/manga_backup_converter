@@ -35,8 +35,8 @@ class App extends ConsumerWidget {
 
     final Settings settings = ref.watch(settingsServiceProvider);
 
-    final materialApp = RouterWidget(
-      builder: (context, router) {
+    final RouterWidget materialApp = RouterWidget(
+      builder: (BuildContext context, RouterConfig<Object> router) {
         return AppSettings(
           settings: settings,
           child: MaterialApp.router(
@@ -82,14 +82,15 @@ class App extends ConsumerWidget {
               fontFamily: GoogleFonts.notoSans().fontFamily,
             ),
             themeMode: settings.themeType.toThemeMode(),
-            builder: (context, child) => AccessibilityTools(child: child),
+            builder: (BuildContext context, Widget? child) =>
+                AccessibilityTools(child: child),
           ),
         );
       },
     );
 
     // avoids nullcheck error in FlavorBanner() with no child
-    final showBanner =
+    final bool showBanner =
         !(FlavorConfig.instance.name == null ||
             (FlavorConfig.instance.name?.isEmpty ?? true));
 
@@ -97,7 +98,7 @@ class App extends ConsumerWidget {
       textDirection: TextDirection.ltr,
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
-        children: [
+        children: <Widget>[
           materialApp,
           if (settings.bannerEnabled && showBanner) const FlavorBanner(),
         ],

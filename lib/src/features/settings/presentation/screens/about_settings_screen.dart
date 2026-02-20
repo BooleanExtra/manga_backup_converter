@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:mangabackupconverter/src/features/initialization/application/info_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,10 +29,10 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final packageInfo = ref.watch(packageInfoProvider);
-    final version = packageInfo.requireValue.version;
-    final buildNumber = packageInfo.requireValue.buildNumber;
-    final versionId =
+    final AsyncValue<PackageInfo> packageInfo = ref.watch(packageInfoProvider);
+    final String version = packageInfo.requireValue.version;
+    final String buildNumber = packageInfo.requireValue.buildNumber;
+    final String versionId =
         'v$version${((!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && version == buildNumber) || buildNumber.isEmpty) ? '' : '+$buildNumber'}';
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
@@ -45,9 +46,9 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
               onTap: clipboard == null
                   ? null
                   : () async {
-                      final item = DataWriterItem();
+                      final DataWriterItem item = DataWriterItem();
                       item.add(Formats.plainText(versionId));
-                      await clipboard!.write([item]);
+                      await clipboard!.write(<DataWriterItem>[item]);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -73,11 +74,11 @@ class _AboutSettingsScreenState extends ConsumerState<AboutSettingsScreen> {
               leading: const Icon(Icons.code),
               subtitle: const Text('getBoolean/manga_backup_converter'),
               onTap: () async {
-                final url = Uri.parse(
+                final Uri url = Uri.parse(
                   'https://www.github.com/getBoolean/manga_backup_converter',
                 );
                 try {
-                  final success = await launchUrl(url);
+                  final bool success = await launchUrl(url);
                   if (!success) {
                     _log.fine('Could not launch url: ${url.path}');
                   }

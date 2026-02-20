@@ -9,21 +9,23 @@ class AppStartupWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appStartupState = ref.watch(appStartupProvider);
-    final widget = onLoaded(context);
+    final AsyncValue<void> appStartupState = ref.watch(appStartupProvider);
+    final Widget widget = onLoaded(context);
     return AnimatedSwitcher(
       duration: const Duration(seconds: 1),
       switchInCurve: Curves.easeIn,
       switchOutCurve: Curves.easeOut,
       child: appStartupState.when(
         // use an external widget builder to decide what to return
-        data: (_) =>
-            Container(key: const ValueKey('appStartupData'), child: widget),
-        loading: () => const AppStartupLoadingWidget(
-          key: ValueKey('appStartupLoading'),
+        data: (_) => Container(
+          key: const ValueKey<String>('appStartupData'),
+          child: widget,
         ),
-        error: (e, st) => AppStartupErrorWidget(
-          key: const ValueKey('appStartupError'),
+        loading: () => const AppStartupLoadingWidget(
+          key: ValueKey<String>('appStartupLoading'),
+        ),
+        error: (Object e, StackTrace st) => AppStartupErrorWidget(
+          key: const ValueKey<String>('appStartupError'),
           message: e.toString(),
           onRetry: () {
             ref.invalidate(appStartupProvider);
@@ -42,8 +44,10 @@ class AppStartupLoadingWidget extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Builder(
-          builder: (context) {
-            final brightness = MediaQuery.platformBrightnessOf(context);
+          builder: (BuildContext context) {
+            final Brightness brightness = MediaQuery.platformBrightnessOf(
+              context,
+            );
             return ColoredBox(
               color: brightness == Brightness.dark
                   ? Colors.black87
@@ -73,7 +77,7 @@ class AppStartupErrorWidget extends StatelessWidget {
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: <Widget>[
               Text(message, style: Theme.of(context).textTheme.headlineSmall),
               gap16,
               ElevatedButton(onPressed: onRetry, child: const Text('Retry')),

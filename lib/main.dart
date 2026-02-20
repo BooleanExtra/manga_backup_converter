@@ -19,7 +19,9 @@ void main() async {
   }
 
   runApp(
-    ProviderScope(child: AppStartupWidget(onLoaded: (context) => const App())),
+    ProviderScope(
+      child: AppStartupWidget(onLoaded: (BuildContext context) => const App()),
+    ),
   );
 }
 
@@ -50,7 +52,7 @@ void registerErrorHandlers() {
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 const SizedBox(height: 16),
                 Text(
                   details.exceptionAsString(),
@@ -77,7 +79,7 @@ void initLogger() {
   if (kDebugMode) {
     Logger.root.level = Level.FINE;
   }
-  Logger.root.onRecord.listen((record) {
+  Logger.root.onRecord.listen((LogRecord record) {
     if (kDebugMode) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     }

@@ -3,10 +3,10 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 
 part 'mangayomi_backup_settings.mapper.dart';
 
-const _defaultUserAgent =
+const String _defaultUserAgent =
     'Mozilla/5.0 (Linux; Android 13; 22081212UG Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.131 Mobile Safari/537.36';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MangayomiBackupSettings with MangayomiBackupSettingsMappable {
   final int? id;
   final DisplayType displayType;
@@ -230,8 +230,9 @@ class MangayomiBackupSettings with MangayomiBackupSettingsMappable {
     this.novelGridSize,
   });
 
-  static const fromMap = MangayomiBackupSettingsMapper.fromMap;
-  static const fromJson = MangayomiBackupSettingsMapper.fromJson;
+  static const MangayomiBackupSettings Function(Map<String, dynamic> map) fromMap =
+      MangayomiBackupSettingsMapper.fromMap;
+  static const MangayomiBackupSettings Function(String json) fromJson = MangayomiBackupSettingsMapper.fromJson;
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
@@ -246,29 +247,29 @@ enum ScaleType { fitScreen, stretch, fitWidth, fitHeight, originalSize, smartFit
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum BackgroundColor { black, grey, white, automatic }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class MCookie with MCookieMappable {
   final String? host;
   final String? cookie;
 
   const MCookie({this.host, this.cookie});
 
-  static const fromMap = MCookieMapper.fromMap;
-  static const fromJson = MCookieMapper.fromJson;
+  static const MCookie Function(Map<String, dynamic> map) fromMap = MCookieMapper.fromMap;
+  static const MCookie Function(String json) fromJson = MCookieMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SortLibraryManga with SortLibraryMangaMappable {
   final bool? reverse;
   final int? index;
 
   const SortLibraryManga({this.reverse = false, this.index = 0});
 
-  static const fromMap = SortLibraryMangaMapper.fromMap;
-  static const fromJson = SortLibraryMangaMapper.fromJson;
+  static const SortLibraryManga Function(Map<String, dynamic> map) fromMap = SortLibraryMangaMapper.fromMap;
+  static const SortLibraryManga Function(String json) fromJson = SortLibraryMangaMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class SortChapter with SortChapterMappable {
   final int? mangaId;
   final bool? reverse;
@@ -276,44 +277,46 @@ class SortChapter with SortChapterMappable {
 
   const SortChapter({this.mangaId, this.reverse = false, this.index = 1});
 
-  static const fromMap = SortChapterMapper.fromMap;
-  static const fromJson = SortChapterMapper.fromJson;
+  static const SortChapter Function(Map<String, dynamic> map) fromMap = SortChapterMapper.fromMap;
+  static const SortChapter Function(String json) fromJson = SortChapterMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterDownloaded with ChapterFilterDownloadedMappable {
   final int? mangaId;
   final int? type;
 
   const ChapterFilterDownloaded({this.mangaId, this.type = 0});
 
-  static const fromMap = ChapterFilterDownloadedMapper.fromMap;
-  static const fromJson = ChapterFilterDownloadedMapper.fromJson;
+  static const ChapterFilterDownloaded Function(Map<String, dynamic> map) fromMap =
+      ChapterFilterDownloadedMapper.fromMap;
+  static const ChapterFilterDownloaded Function(String json) fromJson = ChapterFilterDownloadedMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterUnread with ChapterFilterUnreadMappable {
   final int? mangaId;
   final int? type;
 
   const ChapterFilterUnread({this.mangaId, this.type = 0});
 
-  static const fromMap = ChapterFilterUnreadMapper.fromMap;
-  static const fromJson = ChapterFilterUnreadMapper.fromJson;
+  static const ChapterFilterUnread Function(Map<String, dynamic> map) fromMap = ChapterFilterUnreadMapper.fromMap;
+  static const ChapterFilterUnread Function(String json) fromJson = ChapterFilterUnreadMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterFilterBookmarked with ChapterFilterBookmarkedMappable {
   final int? mangaId;
   final int? type;
 
   const ChapterFilterBookmarked({this.mangaId, this.type = 0});
 
-  static const fromMap = ChapterFilterBookmarkedMapper.fromMap;
-  static const fromJson = ChapterFilterBookmarkedMapper.fromJson;
+  static const ChapterFilterBookmarked Function(Map<String, dynamic> map) fromMap =
+      ChapterFilterBookmarkedMapper.fromMap;
+  static const ChapterFilterBookmarked Function(String json) fromJson = ChapterFilterBookmarkedMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterPageurls with ChapterPageurlsMappable {
   final int? chapterId;
   final List<String>? urls;
@@ -321,33 +324,33 @@ class ChapterPageurls with ChapterPageurlsMappable {
 
   const ChapterPageurls({this.chapterId, this.urls, this.headers});
 
-  static const fromMap = ChapterPageurlsMapper.fromMap;
-  static const fromJson = ChapterPageurlsMapper.fromJson;
+  static const ChapterPageurls Function(Map<String, dynamic> map) fromMap = ChapterPageurlsMapper.fromMap;
+  static const ChapterPageurls Function(String json) fromJson = ChapterPageurlsMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class ChapterPageIndex with ChapterPageIndexMappable {
   final int? chapterId;
   final int? index;
 
   const ChapterPageIndex({this.chapterId, this.index});
 
-  static const fromMap = ChapterPageIndexMapper.fromMap;
-  static const fromJson = ChapterPageIndexMapper.fromJson;
+  static const ChapterPageIndex Function(Map<String, dynamic> map) fromMap = ChapterPageIndexMapper.fromMap;
+  static const ChapterPageIndex Function(String json) fromJson = ChapterPageIndexMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PersonalReaderMode with PersonalReaderModeMappable {
   final int? mangaId;
   final ReaderMode readerMode;
 
   const PersonalReaderMode({this.mangaId, this.readerMode = ReaderMode.vertical});
 
-  static const fromMap = PersonalReaderModeMapper.fromMap;
-  static const fromJson = PersonalReaderModeMapper.fromJson;
+  static const PersonalReaderMode Function(Map<String, dynamic> map) fromMap = PersonalReaderModeMapper.fromMap;
+  static const PersonalReaderMode Function(String json) fromJson = PersonalReaderModeMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class AutoScrollPages with AutoScrollPagesMappable {
   final int? mangaId;
   final double? pageOffset;
@@ -355,11 +358,11 @@ class AutoScrollPages with AutoScrollPagesMappable {
 
   const AutoScrollPages({this.mangaId, this.pageOffset = 10, this.autoScroll = false});
 
-  static const fromMap = AutoScrollPagesMapper.fromMap;
-  static const fromJson = AutoScrollPagesMapper.fromJson;
+  static const AutoScrollPages Function(Map<String, dynamic> map) fromMap = AutoScrollPagesMapper.fromMap;
+  static const AutoScrollPages Function(String json) fromJson = AutoScrollPagesMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class Repo with RepoMappable {
   final String? name;
   final String? website;
@@ -367,19 +370,19 @@ class Repo with RepoMappable {
 
   const Repo({this.name, this.website, this.jsonUrl});
 
-  static const fromMap = RepoMapper.fromMap;
-  static const fromJson = RepoMapper.fromJson;
+  static const Repo Function(Map<String, dynamic> map) fromMap = RepoMapper.fromMap;
+  static const Repo Function(String json) fromJson = RepoMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PersonalPageMode with PersonalPageModeMappable {
   final int? mangaId;
   final PageMode pageMode;
 
   const PersonalPageMode({this.mangaId, this.pageMode = PageMode.onePage});
 
-  static const fromMap = PersonalPageModeMapper.fromMap;
-  static const fromJson = PersonalPageModeMapper.fromJson;
+  static const PersonalPageMode Function(Map<String, dynamic> map) fromMap = PersonalPageModeMapper.fromMap;
+  static const PersonalPageMode Function(String json) fromJson = PersonalPageModeMapper.fromJson;
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
@@ -391,29 +394,29 @@ enum NovelTextAlign { left, center, right, block }
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)
 enum PageMode { onePage, doublePage }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class FilterScanlator with FilterScanlatorMappable {
   final int? mangaId;
   final List<String>? scanlators;
 
   const FilterScanlator({this.mangaId, this.scanlators});
 
-  static const fromMap = FilterScanlatorMapper.fromMap;
-  static const fromJson = FilterScanlatorMapper.fromJson;
+  static const FilterScanlator Function(Map<String, dynamic> map) fromMap = FilterScanlatorMapper.fromMap;
+  static const FilterScanlator Function(String json) fromJson = FilterScanlatorMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class L10nLocale with L10nLocaleMappable {
   final String? languageCode;
   final String? countryCode;
 
   const L10nLocale({this.languageCode, this.countryCode});
 
-  static const fromMap = L10nLocaleMapper.fromMap;
-  static const fromJson = L10nLocaleMapper.fromJson;
+  static const L10nLocale Function(Map<String, dynamic> map) fromMap = L10nLocaleMapper.fromMap;
+  static const L10nLocale Function(String json) fromJson = L10nLocaleMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class CustomColorFilter with CustomColorFilterMappable {
   final int? a;
   final int? r;
@@ -422,11 +425,11 @@ class CustomColorFilter with CustomColorFilterMappable {
 
   const CustomColorFilter({this.a, this.r, this.g, this.b});
 
-  static const fromMap = CustomColorFilterMapper.fromMap;
-  static const fromJson = CustomColorFilterMapper.fromJson;
+  static const CustomColorFilter Function(Map<String, dynamic> map) fromMap = CustomColorFilterMapper.fromMap;
+  static const CustomColorFilter Function(String json) fromJson = CustomColorFilterMapper.fromJson;
 }
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()], caseStyle: CaseStyle.camelCase)
 class PlayerSubtitleSettings with PlayerSubtitleSettingsMappable {
   final int? fontSize;
   final bool? useBold;
@@ -462,8 +465,8 @@ class PlayerSubtitleSettings with PlayerSubtitleSettingsMappable {
     this.backgroundColorB = 0,
   });
 
-  static const fromMap = PlayerSubtitleSettingsMapper.fromMap;
-  static const fromJson = PlayerSubtitleSettingsMapper.fromJson;
+  static const PlayerSubtitleSettings Function(Map<String, dynamic> map) fromMap = PlayerSubtitleSettingsMapper.fromMap;
+  static const PlayerSubtitleSettings Function(String json) fromJson = PlayerSubtitleSettingsMapper.fromJson;
 }
 
 @MappableEnum(mode: ValuesMode.indexed, caseStyle: CaseStyle.camelCase)

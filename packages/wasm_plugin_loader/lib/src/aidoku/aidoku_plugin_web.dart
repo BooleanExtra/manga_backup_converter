@@ -9,6 +9,7 @@ import 'package:wasm_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:wasm_plugin_loader/src/models/chapter.dart';
 import 'package:wasm_plugin_loader/src/models/filter.dart';
 import 'package:wasm_plugin_loader/src/models/filter_info.dart';
+import 'package:wasm_plugin_loader/src/models/language_info.dart';
 import 'package:wasm_plugin_loader/src/models/manga.dart';
 import 'package:wasm_plugin_loader/src/models/page.dart';
 import 'package:wasm_plugin_loader/src/models/setting_item.dart';
@@ -35,8 +36,8 @@ class AidokuPlugin {
 
   /// Default filters derived from `filters.json` default values.
   List<FilterValue> get defaultFilters => filterDefinitions
-      .expand((f) => f.type == 'group' ? f.items : [f])
-      .map((f) => f.toDefaultFilterValue())
+      .expand((FilterInfo f) => f.type == 'group' ? f.items : <FilterInfo>[f])
+      .map((FilterInfo f) => f.toDefaultFilterValue())
       .whereType<FilterValue>()
       .toList();
 
@@ -49,33 +50,33 @@ class AidokuPlugin {
     Uint8List aixBytes, {
     Map<String, dynamic>? defaults,
   }) async {
-    final bundle = AixParser.parse(aixBytes);
+    final AixBundle bundle = AixParser.parse(aixBytes);
 
-    final settings = bundle.settings ?? const [];
-    final filterDefinitions = bundle.filters ?? const [];
-    final sourceId = bundle.sourceInfo.id;
-    final initialDefaults = Map<String, Object>.from(
+    final List<SettingItem> settings = bundle.settings ?? const <SettingItem>[];
+    final List<FilterInfo> filterDefinitions = bundle.filters ?? const <FilterInfo>[];
+    final String sourceId = bundle.sourceInfo.id;
+    final Map<String, Object> initialDefaults = Map<String, Object>.from(
       flattenSettingDefaults(settings, sourceId: sourceId),
     );
     // Mirror Swift Source.loadSettings() defaultLanguages selection.
-    var defaultLanguages = bundle.languageInfos
-        .where((l) => l.isDefault ?? false)
-        .map((l) => l.effectiveValue)
+    List<String> defaultLanguages = bundle.languageInfos
+        .where((LanguageInfo l) => l.isDefault ?? false)
+        .map((LanguageInfo l) => l.effectiveValue)
         .toList();
     if (defaultLanguages.isEmpty && bundle.languageInfos.isNotEmpty) {
-      defaultLanguages = [bundle.languageInfos.first.effectiveValue];
+      defaultLanguages = <String>[bundle.languageInfos.first.effectiveValue];
     }
     if (bundle.languageSelectType == 'single' && defaultLanguages.length > 1) {
-      defaultLanguages = [defaultLanguages.first];
+      defaultLanguages = <String>[defaultLanguages.first];
     }
     if (defaultLanguages.isNotEmpty) {
       initialDefaults['$sourceId.languages'] = encodeStringList(defaultLanguages);
     }
 
     if (defaults != null) {
-      for (final entry in defaults.entries) {
-        final key = '$sourceId.${entry.key}';
-        final value = entry.value;
+      for (final MapEntry<String, dynamic> entry in defaults.entries) {
+        final String key = '$sourceId.${entry.key}';
+        final Object? value = entry.value;
         if (value == null) {
           // skip
         } else if (value is bool) {
@@ -93,19 +94,19 @@ class AidokuPlugin {
       }
     }
 
-    final store = HostStore();
+    final HostStore store = HostStore();
     // Seed defaults from settings.json before WASM starts.
     store.defaults.addAll(initialDefaults);
 
-    final lazyRunner = _LazyRunner();
+    final _LazyRunner lazyRunner = _LazyRunner();
 
     // No asyncHttp/asyncSleep on web — HTTP imports return -1 (stub).
-    final imports = buildAidokuHostImports(lazyRunner, store, sourceId: sourceId);
-    final runner = await WasmRunner.fromBytes(bundle.wasmBytes, imports: imports);
+    final Map<String, Map<String, Function>> imports = buildAidokuHostImports(lazyRunner, store, sourceId: sourceId);
+    final WasmRunner runner = await WasmRunner.fromBytes(bundle.wasmBytes, imports: imports);
     lazyRunner.delegate = runner;
 
     try {
-      runner.call('start', []);
+      runner.call('start', <Object?>[]);
     } catch (_) {
       // Some sources may not export start.
     }
@@ -121,17 +122,17 @@ class AidokuPlugin {
   Future<MangaPageResult> searchManga(
     String query,
     int page, {
-    List<FilterValue> filters = const [],
+    List<FilterValue> filters = const <FilterValue>[],
   }) async {
-    final queryRid = _store.addBytes(Uint8List.fromList(utf8.encode(query)));
-    final filtersRid = _store.addBytes(encodeFilters(filters));
+    final int queryRid = _store.addBytes(Uint8List.fromList(utf8.encode(query)));
+    final int filtersRid = _store.addBytes(encodeFilters(filters));
     try {
-      final ptr = _callInt('get_search_manga_list', [queryRid, page, filtersRid]);
-      if (ptr <= 0) return const MangaPageResult(manga: [], hasNextPage: false);
-      final data = _readResult(ptr);
+      final int ptr = _callInt('get_search_manga_list', <Object?>[queryRid, page, filtersRid]);
+      if (ptr <= 0) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
+      final Uint8List data = _readResult(ptr);
       return decodeMangaPageResult(PostcardReader(data));
     } on Object {
-      return const MangaPageResult(manga: [], hasNextPage: false);
+      return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     } finally {
       _store.remove(queryRid);
       _store.remove(filtersRid);
@@ -141,9 +142,9 @@ class AidokuPlugin {
   /// Fetch updated manga details. Returns null on error or no data.
   Future<Manga?> getMangaDetails(String key) async {
     // v2 ABI: get_manga_update(manga_descriptor_rid, needs_details, needs_chapters)
-    final mangaRid = _store.addBytes(encodeMangaKey(key));
+    final int mangaRid = _store.addBytes(encodeMangaKey(key));
     try {
-      final ptr = _callInt('get_manga_update', [mangaRid, 1, 0]);
+      final int ptr = _callInt('get_manga_update', <Object?>[mangaRid, 1, 0]);
       if (ptr <= 0) return null;
       return decodeManga(PostcardReader(_readResult(ptr)));
     } on Object {
@@ -157,14 +158,14 @@ class AidokuPlugin {
   Future<List<Page>> getPageList(Manga manga, Chapter chapter) async {
     // ABI: get_page_list(manga_descriptor_rid, chapter_descriptor_rid)
     // Note: manga comes FIRST, chapter comes SECOND.
-    final mangaRid = _store.addBytes(encodeManga(manga));
-    final chapterRid = _store.addBytes(encodeChapter(chapter));
+    final int mangaRid = _store.addBytes(encodeManga(manga));
+    final int chapterRid = _store.addBytes(encodeChapter(chapter));
     try {
-      final ptr = _callInt('get_page_list', [mangaRid, chapterRid]);
-      if (ptr <= 0) return [];
+      final int ptr = _callInt('get_page_list', <Object?>[mangaRid, chapterRid]);
+      if (ptr <= 0) return <Page>[];
       return decodePageList(PostcardReader(_readResult(ptr)));
     } on Object {
-      return [];
+      return <Page>[];
     } finally {
       _store.remove(chapterRid);
       _store.remove(mangaRid);
@@ -177,11 +178,11 @@ class AidokuPlugin {
 
     // Call get_manga_list with the Listing descriptor RID from the manifest.
     if (listing != null) {
-      final listingRid = _store.addBytes(
+      final int listingRid = _store.addBytes(
         encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)),
       );
       try {
-        final ptr = _callInt('get_manga_list', [listingRid, page]);
+        final int ptr = _callInt('get_manga_list', <Object?>[listingRid, page]);
         if (ptr > 0) data = _readResult(ptr);
       } on Object {
         // get_manga_list failed; fall through to search fallback.
@@ -192,10 +193,10 @@ class AidokuPlugin {
 
     if (data == null) {
       // No listing provided or get_manga_list failed — fall back to empty-query search.
-      final queryRid = _store.addBytes(Uint8List(0));
-      final filtersRid = _store.addBytes(Uint8List.fromList([0]));
+      final int queryRid = _store.addBytes(Uint8List(0));
+      final int filtersRid = _store.addBytes(Uint8List.fromList(<int>[0]));
       try {
-        final ptr = _callInt('get_search_manga_list', [queryRid, page, filtersRid]);
+        final int ptr = _callInt('get_search_manga_list', <Object?>[queryRid, page, filtersRid]);
         if (ptr > 0) data = _readResult(ptr);
       } on Object {
         // fall through
@@ -205,11 +206,11 @@ class AidokuPlugin {
       }
     }
 
-    if (data == null) return const MangaPageResult(manga: [], hasNextPage: false);
+    if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
       return decodeMangaPageResult(PostcardReader(data));
     } on Object {
-      return const MangaPageResult(manga: [], hasNextPage: false);
+      return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }
 
@@ -221,30 +222,30 @@ class AidokuPlugin {
 
   /// Decoded home layout from `get_home`, or null if not supported.
   Future<HomeLayout?> getHome() async {
-    final bytes = await _rawGet('get_home');
+    final Uint8List? bytes = await _rawGet('get_home');
     return bytes == null ? null : decodeHomeLayoutResult(bytes);
   }
 
   /// Available source listings from `get_listings`.
   Future<List<AidokuListing>> getListings() async {
-    final bytes = await _rawGet('get_listings');
-    if (bytes == null) return const [];
+    final Uint8List? bytes = await _rawGet('get_listings');
+    if (bytes == null) return const <AidokuListing>[];
     try {
       return decodeListings(PostcardReader(bytes));
     } on Object {
-      return const [];
+      return const <AidokuListing>[];
     }
   }
 
   /// Alternate cover URLs for a manga from `get_alternate_covers`.
   Future<List<String>> getAlternateCovers(Manga manga) async {
-    final mangaRid = _store.addBytes(encodeManga(manga));
+    final int mangaRid = _store.addBytes(encodeManga(manga));
     try {
-      final ptr = _callInt('get_alternate_covers', [mangaRid]);
-      if (ptr <= 0) return const [];
+      final int ptr = _callInt('get_alternate_covers', <Object?>[mangaRid]);
+      if (ptr <= 0) return const <String>[];
       return decodeStringVecResult(_readResult(ptr));
     } on Object {
-      return const [];
+      return const <String>[];
     } finally {
       _store.remove(mangaRid);
     }
@@ -252,10 +253,10 @@ class AidokuPlugin {
 
   /// Custom image request for a URL from `get_image_request`.
   Future<ImageRequest?> getImageRequest(String url, {Map<String, String>? context}) async {
-    final urlRid = _store.addBytes(encodeStringBytes(url));
-    final contextRid = _store.addBytes(encodeOptionalStringMap(context));
+    final int urlRid = _store.addBytes(encodeStringBytes(url));
+    final int contextRid = _store.addBytes(encodeOptionalStringMap(context));
     try {
-      final ptr = _callInt('get_image_request', [urlRid, contextRid]);
+      final int ptr = _callInt('get_image_request', <Object?>[urlRid, contextRid]);
       if (ptr <= 0) return null;
       return decodeImageRequestResult(_readResult(ptr));
     } on Object {
@@ -268,15 +269,15 @@ class AidokuPlugin {
 
   /// Source base URL from `get_base_url`.
   Future<String?> getBaseUrl() async {
-    final bytes = await _rawGet('get_base_url');
+    final Uint8List? bytes = await _rawGet('get_base_url');
     return bytes == null ? null : decodeStringResult(bytes);
   }
 
   /// Page description string from `get_page_description`.
   Future<String?> getPageDescription(Page page) async {
-    final pageRid = _store.addBytes(encodePage(page));
+    final int pageRid = _store.addBytes(encodePage(page));
     try {
-      final ptr = _callInt('get_page_description', [pageRid]);
+      final int ptr = _callInt('get_page_description', <Object?>[pageRid]);
       if (ptr <= 0) return null;
       return decodeStringResult(_readResult(ptr));
     } on Object {
@@ -288,10 +289,10 @@ class AidokuPlugin {
 
   /// Process a page image (e.g. descramble) via `process_page_image`.
   Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
-    final imageRid = _store.addBytes(encodeImageResponse(imageBytes));
-    final contextRid = _store.addBytes(encodeOptionalStringMap(context));
+    final int imageRid = _store.addBytes(encodeImageResponse(imageBytes));
+    final int contextRid = _store.addBytes(encodeOptionalStringMap(context));
     try {
-      final ptr = _callInt('process_page_image', [imageRid, contextRid]);
+      final int ptr = _callInt('process_page_image', <Object?>[imageRid, contextRid]);
       if (ptr <= 0) return null;
       return _readResult(ptr);
     } on Object {
@@ -304,9 +305,9 @@ class AidokuPlugin {
 
   /// Deliver a notification string to the plugin via `handle_notification`.
   Future<void> handleNotification(String notification) async {
-    final rid = _store.addBytes(encodeStringBytes(notification));
+    final int rid = _store.addBytes(encodeStringBytes(notification));
     try {
-      _runner.call('handle_notification', [rid]);
+      _runner.call('handle_notification', <Object?>[rid]);
     } on Object {
       // Not implemented or error — ignore.
     } finally {
@@ -316,9 +317,9 @@ class AidokuPlugin {
 
   /// Handle a deep link URL via `handle_deep_link`.
   Future<DeepLinkResult?> handleDeepLink(String url) async {
-    final rid = _store.addBytes(encodeStringBytes(url));
+    final int rid = _store.addBytes(encodeStringBytes(url));
     try {
-      final ptr = _callInt('handle_deep_link', [rid]);
+      final int ptr = _callInt('handle_deep_link', <Object?>[rid]);
       if (ptr <= 0) return null;
       return decodeDeepLinkResultFromBytes(_readResult(ptr));
     } on Object {
@@ -330,11 +331,11 @@ class AidokuPlugin {
 
   /// Perform basic (username/password) login via `handle_basic_login`.
   Future<bool> handleBasicLogin(String key, String username, String password) async {
-    final keyRid = _store.addBytes(encodeStringBytes(key));
-    final userRid = _store.addBytes(encodeStringBytes(username));
-    final passRid = _store.addBytes(encodeStringBytes(password));
+    final int keyRid = _store.addBytes(encodeStringBytes(key));
+    final int userRid = _store.addBytes(encodeStringBytes(username));
+    final int passRid = _store.addBytes(encodeStringBytes(password));
     try {
-      final result = _callInt('handle_basic_login', [keyRid, userRid, passRid]);
+      final int result = _callInt('handle_basic_login', <Object?>[keyRid, userRid, passRid]);
       return result >= 0;
     } on Object {
       return false;
@@ -347,10 +348,10 @@ class AidokuPlugin {
 
   /// Perform web (cookie) login via `handle_web_login`.
   Future<bool> handleWebLogin(String key, Map<String, String> cookies) async {
-    final keyRid = _store.addBytes(encodeStringBytes(key));
-    final cookiesRid = _store.addBytes(encodeStringMap(cookies));
+    final int keyRid = _store.addBytes(encodeStringBytes(key));
+    final int cookiesRid = _store.addBytes(encodeStringMap(cookies));
     try {
-      final result = _callInt('handle_web_login', [keyRid, cookiesRid]);
+      final int result = _callInt('handle_web_login', <Object?>[keyRid, cookiesRid]);
       return result >= 0;
     } on Object {
       return false;
@@ -362,9 +363,9 @@ class AidokuPlugin {
 
   /// Migrate a manga key via `handle_key_migration`.
   Future<String?> handleMangaMigration(String key) async {
-    final rid = _store.addBytes(encodeStringBytes(key));
+    final int rid = _store.addBytes(encodeStringBytes(key));
     try {
-      final ptr = _callInt('handle_key_migration', [rid, -1]);
+      final int ptr = _callInt('handle_key_migration', <Object?>[rid, -1]);
       if (ptr <= 0) return null;
       return decodeStringResult(_readResult(ptr));
     } on Object {
@@ -376,10 +377,10 @@ class AidokuPlugin {
 
   /// Migrate a chapter key via `handle_key_migration`.
   Future<String?> handleChapterMigration(String mangaKey, String chapterKey) async {
-    final mangaRid = _store.addBytes(encodeStringBytes(mangaKey));
-    final chapterRid = _store.addBytes(encodeStringBytes(chapterKey));
+    final int mangaRid = _store.addBytes(encodeStringBytes(mangaKey));
+    final int chapterRid = _store.addBytes(encodeStringBytes(chapterKey));
     try {
-      final ptr = _callInt('handle_key_migration', [mangaRid, chapterRid]);
+      final int ptr = _callInt('handle_key_migration', <Object?>[mangaRid, chapterRid]);
       if (ptr <= 0) return null;
       return decodeStringResult(_readResult(ptr));
     } on Object {
@@ -409,25 +410,25 @@ class AidokuPlugin {
   ///
   /// AidokuError::Message returns a positive ptr where bytes[0..4] = -1_i32 LE.
   Uint8List _readResult(int ptr) {
-    final lenBytes = _runner.readMemory(ptr, 4);
-    final totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
+    final Uint8List lenBytes = _runner.readMemory(ptr, 4);
+    final int totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
     if (totalLen < 0) {
       try {
-        _runner.call('free_result', [ptr]);
+        _runner.call('free_result', <Object?>[ptr]);
       } catch (_) {}
       throw const FormatException('AidokuError from WASM result buffer');
     }
-    final payloadLen = totalLen - 8;
-    final data = _runner.readMemory(ptr + 8, payloadLen);
+    final int payloadLen = totalLen - 8;
+    final Uint8List data = _runner.readMemory(ptr + 8, payloadLen);
     try {
-      _runner.call('free_result', [ptr]);
+      _runner.call('free_result', <Object?>[ptr]);
     } catch (_) {}
     return data;
   }
 
   Future<Uint8List?> _rawGet(String funcName) async {
     try {
-      final ptr = _callInt(funcName, []);
+      final int ptr = _callInt(funcName, <Object?>[]);
       if (ptr <= 0) return null;
       return _readResult(ptr);
     } on Object {

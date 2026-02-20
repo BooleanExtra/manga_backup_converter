@@ -71,13 +71,13 @@ class WasmSemaphore {
     if (_initialized) return;
     _initialized = true;
     if (Platform.isWindows) {
-      final lib = ffi.DynamicLibrary.open('kernel32.dll');
+      final ffi.DynamicLibrary lib = ffi.DynamicLibrary.open('kernel32.dll');
       _createSemaphore = lib.lookupFunction<_CreateSemaphoreC, _CreateSemaphoreDart>('CreateSemaphoreA');
       _waitForSingleObject = lib.lookupFunction<_WaitForSingleObjectC, _WaitForSingleObjectDart>('WaitForSingleObject');
       _releaseSemaphore = lib.lookupFunction<_ReleaseSemaphoreC, _ReleaseSemaphoreDart>('ReleaseSemaphore');
       _closeHandle = lib.lookupFunction<_CloseHandleC, _CloseHandleDart>('CloseHandle');
     } else {
-      final lib = ffi.DynamicLibrary.process();
+      final ffi.DynamicLibrary lib = ffi.DynamicLibrary.process();
       _semInit = lib.lookupFunction<_SemInitC, _SemInitDart>('sem_init');
       _semWait = lib.lookupFunction<_SemWaitC, _SemWaitDart>('sem_wait');
       _semPost = lib.lookupFunction<_SemPostC, _SemPostDart>('sem_post');
@@ -89,11 +89,11 @@ class WasmSemaphore {
   static WasmSemaphore create() {
     _ensureInitialized();
     if (Platform.isWindows) {
-      final handle = _createSemaphore!(ffi.nullptr, 0, 1, ffi.nullptr);
+      final ffi.Pointer<ffi.Void> handle = _createSemaphore!(ffi.nullptr, 0, 1, ffi.nullptr);
       return WasmSemaphore._(handle, true);
     } else {
       // 64 bytes is large enough for sem_t on all supported Unix platforms.
-      final sem = calloc<ffi.Uint8>(64).cast<ffi.Void>();
+      final ffi.Pointer<ffi.Void> sem = calloc<ffi.Uint8>(64).cast<ffi.Void>();
       _semInit!(sem, 0 /* pshared=thread */, 0 /* initial=blocked */);
       return WasmSemaphore._(sem, false);
     }
@@ -112,7 +112,7 @@ class WasmSemaphore {
   /// Block the calling thread until [signal] is called.
   void wait() {
     if (_isWindows) {
-      const infinite = 0xFFFFFFFF;
+      const int infinite = 0xFFFFFFFF;
       _waitForSingleObject!(_ptr, infinite);
     } else {
       _semWait!(_ptr);

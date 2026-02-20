@@ -4,13 +4,15 @@ import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_
 
 part 'paperback_backup_item_reference.mapper.dart';
 
-@MappableClass(includeCustomMappers: [SecondsEpochDateTimeMapper()])
+@MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackupItemReference with PaperbackBackupItemReferenceMappable {
   final PaperbackBackupItemType type;
   final String id;
 
   PaperbackBackupItemReference({required this.type, required this.id});
 
-  static const fromMap = PaperbackBackupItemReferenceMapper.fromMap;
-  static const fromJson = PaperbackBackupItemReferenceMapper.fromJson;
+  static const PaperbackBackupItemReference Function(Map<String, dynamic> map) fromMap =
+      PaperbackBackupItemReferenceMapper.fromMap;
+  static const PaperbackBackupItemReference Function(String json) fromJson =
+      PaperbackBackupItemReferenceMapper.fromJson;
 }

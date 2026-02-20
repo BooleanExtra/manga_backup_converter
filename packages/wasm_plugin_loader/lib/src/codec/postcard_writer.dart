@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class PostcardWriter {
-  final _buf = <int>[];
+  final List<int> _buf = <int>[];
 
   Uint8List get bytes => Uint8List.fromList(_buf);
 
@@ -13,7 +13,7 @@ class PostcardWriter {
 
   /// Encode an unsigned integer as a variable-length LEB128 value.
   void writeVarInt(int v) {
-    var temp = v;
+    int temp = v;
     while (temp >= 0x80) {
       _buf.add((temp & 0x7F) | 0x80);
       temp >>= 7;
@@ -27,22 +27,22 @@ class PostcardWriter {
   }
 
   void writeF32(double v) {
-    final bd = ByteData(4)..setFloat32(0, v, Endian.little);
+    final ByteData bd = ByteData(4)..setFloat32(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
   void writeF64(double v) {
-    final bd = ByteData(8)..setFloat64(0, v, Endian.little);
+    final ByteData bd = ByteData(8)..setFloat64(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
   void writeI64(int v) {
-    final bd = ByteData(8)..setInt64(0, v, Endian.little);
+    final ByteData bd = ByteData(8)..setInt64(0, v, Endian.little);
     _buf.addAll(bd.buffer.asUint8List());
   }
 
   void writeString(String v) {
-    final encoded = utf8.encode(v);
+    final Uint8List encoded = utf8.encode(v);
     writeVarInt(encoded.length);
     _buf.addAll(encoded);
   }
@@ -63,7 +63,7 @@ class PostcardWriter {
 
   void writeList<T>(List<T> list, void Function(T, PostcardWriter) writeFn) {
     writeVarInt(list.length);
-    for (final item in list) {
+    for (final T item in list) {
       writeFn(item, this);
     }
   }

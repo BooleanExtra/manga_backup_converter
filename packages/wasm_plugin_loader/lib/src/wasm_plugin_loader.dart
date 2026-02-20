@@ -7,11 +7,11 @@ import 'package:wasm_plugin_loader/src/models/source_info.dart';
 class WasmPluginLoader {
   WasmPluginLoader();
 
-  final _plugins = <String, AidokuPlugin>{};
+  final Map<String, AidokuPlugin> _plugins = <String, AidokuPlugin>{};
 
   /// Load a plugin from .aix bytes and register it.
   Future<AidokuPlugin> load(Uint8List aixBytes, {Map<String, dynamic>? defaults}) async {
-    final plugin = await AidokuPlugin.fromAix(aixBytes, defaults: defaults);
+    final AidokuPlugin plugin = await AidokuPlugin.fromAix(aixBytes, defaults: defaults);
     _plugins[plugin.sourceInfo.id] = plugin;
     return plugin;
   }
@@ -20,7 +20,7 @@ class WasmPluginLoader {
   AidokuPlugin? findBySourceId(String sourceId) => _plugins[sourceId];
 
   /// All currently loaded source infos.
-  List<SourceInfo> get loadedSources => _plugins.values.map((p) => p.sourceInfo).toList();
+  List<SourceInfo> get loadedSources => _plugins.values.map((AidokuPlugin p) => p.sourceInfo).toList();
 
   /// Unload a plugin by source ID.
   void unload(String sourceId) => _plugins.remove(sourceId);

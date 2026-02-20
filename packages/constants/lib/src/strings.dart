@@ -1,1 +1,1 @@
-const kAppName = 'Flutter App';
+const String kAppName = 'Flutter App';

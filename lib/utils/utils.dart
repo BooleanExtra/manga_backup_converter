@@ -34,7 +34,10 @@ enum DeviceType {
       this == DeviceType.ChromeOS;
 }
 
-const $breakpointMediumSmall = Breakpoint(beginWidth: 600, endWidth: 700);
+const Breakpoint $breakpointMediumSmall = Breakpoint(
+  beginWidth: 600,
+  endWidth: 700,
+);
 
 enum DeviceForm {
   /// Computer screens
@@ -53,7 +56,7 @@ enum DeviceForm {
 
   static DeviceForm of(BuildContext context) {
     return DeviceForm.values.firstWhere(
-      (form) => form.breakpoint.isActive(context),
+      (DeviceForm form) => form.breakpoint.isActive(context),
     );
   }
 }
@@ -98,7 +101,7 @@ DeviceType get _deviceTypeByPlatform {
 /// Returns the current device type by user agent
 DeviceType get _deviceTypeByUserAgent {
   final DeviceType deviceType;
-  final userAgent = html.window.navigator.userAgent.toLowerCase();
+  final String userAgent = html.window.navigator.userAgent.toLowerCase();
   // Smartphone
   if (userAgent.contains('iphone')) {
     deviceType = DeviceType.iOS;
@@ -126,7 +129,7 @@ DeviceType get _deviceTypeByUserAgent {
 
 extension ListSwap<T> on List<T> {
   List<T> swap(int activeIndex, int initialPage) {
-    final items = List<T>.of(this, growable: false);
+    final List<T> items = List<T>.of(this, growable: false);
     final T temp = items[activeIndex];
     items[activeIndex] = items[initialPage];
     items[initialPage] = temp;
@@ -143,7 +146,7 @@ extension BuildContextExtensions on BuildContext {
   /// Shows a [SnackBar] with [message] only if the user is using an accessibility
   /// service like TalkBack or VoiceOver to interact with the application.
   void showAccessibilitySnackBar(String message) {
-    final isAccessible = MediaQuery.accessibleNavigationOf(this);
+    final bool isAccessible = MediaQuery.accessibleNavigationOf(this);
     if (!isAccessible) {
       return;
     }
@@ -153,7 +156,7 @@ extension BuildContextExtensions on BuildContext {
 
   /// Shows a [SnackBar] with [message]
   void showSnackBar(String message) {
-    final messenger = ScaffoldMessenger.maybeOf(this);
+    final ScaffoldMessengerState? messenger = ScaffoldMessenger.maybeOf(this);
     messenger?.clearSnackBars();
     messenger?.showSnackBar(SnackBar(content: Text(message)));
   }

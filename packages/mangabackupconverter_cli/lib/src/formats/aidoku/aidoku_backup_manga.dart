@@ -41,12 +41,12 @@ class AidokuBackupManga with AidokuBackupMangaMappable {
   });
 
   PaperbackBackupMangaInfo toPaperbackMangaInfo() {
-    final mangaCover = cover;
+    final String? mangaCover = cover;
     return PaperbackBackupMangaInfo(
-      tags: (tags ?? <String>[]).map((tag) => PaperbackBackupMangaTag(label: tag, id: tag)).toList(),
+      tags: (tags ?? <String>[]).map((String tag) => PaperbackBackupMangaTag(label: tag, id: tag)).toList(),
       desc: desc ?? '',
-      titles: [title],
-      covers: mangaCover == null ? [] : [mangaCover],
+      titles: <String>[title],
+      covers: mangaCover == null ? <String>[] : <String>[mangaCover],
       author: author ?? '',
       image: cover ?? '',
       hentai: nsfw == AidokuMangaContentRating.nsfw,
@@ -57,6 +57,6 @@ class AidokuBackupManga with AidokuBackupMangaMappable {
     );
   }
 
-  static const fromMap = AidokuBackupMangaMapper.fromMap;
-  static const fromJson = AidokuBackupMangaMapper.fromJson;
+  static const AidokuBackupManga Function(Map<String, dynamic> map) fromMap = AidokuBackupMangaMapper.fromMap;
+  static const AidokuBackupManga Function(String json) fromJson = AidokuBackupMangaMapper.fromJson;
 }

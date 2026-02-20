@@ -5,7 +5,7 @@ class Chapter {
     this.chapterNumber,
     this.volumeNumber,
     this.dateUploaded,
-    this.scanlators = const [],
+    this.scanlators = const <String>[],
     this.language,
     this.url,
   });

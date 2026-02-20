@@ -22,8 +22,8 @@ Uint8List encodeQuery(String query) => Uint8List.fromList(utf8.encode(query));
 /// Encode a List<String> as a postcard Vec<String>.
 /// Used to seed source languages into WASM defaults.
 Uint8List encodeStringList(List<String> values) {
-  final w = PostcardWriter();
-  w.writeList(values, (s, pw) => pw.writeString(s));
+  final PostcardWriter w = PostcardWriter();
+  w.writeList(values, (String s, PostcardWriter pw) => pw.writeString(s));
   return w.bytes;
 }
 
@@ -31,7 +31,7 @@ Uint8List encodeStringList(List<String> values) {
 /// Used to pass a manga descriptor RID to WASM functions like `get_manga_update`.
 /// Field order matches the Rust `Manga` struct in aidoku-rs structs/mod.rs.
 Uint8List encodeMangaKey(String key) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeString(key); // key: String
   w.writeString(''); // title: String
   w.writeU8(0); // cover: None (Option<String>)
@@ -52,23 +52,23 @@ Uint8List encodeMangaKey(String key) {
 /// Encode a full Manga struct (postcard) with all fields populated.
 /// Used to pass a manga descriptor RID to WASM functions like `get_page_list`.
 Uint8List encodeManga(Manga m) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeString(m.key); // key: String
   w.writeString(m.title); // title: String
-  w.writeOption(m.coverUrl, (v, pw) => pw.writeString(v)); // cover: Option<String>
+  w.writeOption(m.coverUrl, (String v, PostcardWriter pw) => pw.writeString(v)); // cover: Option<String>
   w.writeOption(
     m.artists.isEmpty ? null : m.artists,
-    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+    (List<String> v, PostcardWriter pw) => pw.writeList(v, (String s, PostcardWriter pw2) => pw2.writeString(s)),
   ); // artists: Option<Vec<String>>
   w.writeOption(
     m.authors.isEmpty ? null : m.authors,
-    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+    (List<String> v, PostcardWriter pw) => pw.writeList(v, (String s, PostcardWriter pw2) => pw2.writeString(s)),
   ); // authors: Option<Vec<String>>
-  w.writeOption(m.description, (v, pw) => pw.writeString(v)); // description: Option<String>
-  w.writeOption(m.url, (v, pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption(m.description, (String v, PostcardWriter pw) => pw.writeString(v)); // description: Option<String>
+  w.writeOption(m.url, (String v, PostcardWriter pw) => pw.writeString(v)); // url: Option<String>
   w.writeOption(
     m.tags.isEmpty ? null : m.tags,
-    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+    (List<String> v, PostcardWriter pw) => pw.writeList(v, (String s, PostcardWriter pw2) => pw2.writeString(s)),
   ); // tags: Option<Vec<String>>
   w.writeVarInt(m.status.index); // status: varint
   w.writeVarInt(m.contentRating.index); // content_rating: varint
@@ -82,21 +82,21 @@ Uint8List encodeManga(Manga m) {
 /// Encode a full Chapter struct (postcard) with all fields populated.
 /// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
 Uint8List encodeChapter(Chapter ch) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeString(ch.key); // key: String
-  w.writeOption(ch.title, (v, pw) => pw.writeString(v)); // title: Option<String>
-  w.writeOption(ch.chapterNumber, (v, pw) => pw.writeF32(v)); // chapter_number: Option<f32>
-  w.writeOption(ch.volumeNumber, (v, pw) => pw.writeF32(v)); // volume_number: Option<f32>
+  w.writeOption(ch.title, (String v, PostcardWriter pw) => pw.writeString(v)); // title: Option<String>
+  w.writeOption(ch.chapterNumber, (double v, PostcardWriter pw) => pw.writeF32(v)); // chapter_number: Option<f32>
+  w.writeOption(ch.volumeNumber, (double v, PostcardWriter pw) => pw.writeF32(v)); // volume_number: Option<f32>
   w.writeOption(
     ch.dateUploaded != null ? ch.dateUploaded!.millisecondsSinceEpoch ~/ 1000 : null,
-    (v, pw) => pw.writeI64(v),
+    (int v, PostcardWriter pw) => pw.writeI64(v),
   ); // date_uploaded: Option<i64> (seconds)
   w.writeOption(
     ch.scanlators.isEmpty ? null : ch.scanlators,
-    (v, pw) => pw.writeList(v, (s, pw2) => pw2.writeString(s)),
+    (List<String> v, PostcardWriter pw) => pw.writeList(v, (String s, PostcardWriter pw2) => pw2.writeString(s)),
   ); // scanlators: Option<Vec<String>>
-  w.writeOption(ch.url, (v, pw) => pw.writeString(v)); // url: Option<String>
-  w.writeOption(ch.language, (v, pw) => pw.writeString(v)); // language: Option<String>
+  w.writeOption(ch.url, (String v, PostcardWriter pw) => pw.writeString(v)); // url: Option<String>
+  w.writeOption(ch.language, (String v, PostcardWriter pw) => pw.writeString(v)); // language: Option<String>
   w.writeU8(0); // thumbnail: None (Option<String>)
   w.writeBool(false); // locked: bool
   return w.bytes;
@@ -106,7 +106,7 @@ Uint8List encodeChapter(Chapter ch) {
 /// Used to pass a chapter descriptor RID to WASM functions like `get_page_list`.
 /// Field order matches the Rust `Chapter` struct in aidoku-rs structs/mod.rs.
 Uint8List encodeChapterKey(String key) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeString(key); // key: String
   w.writeU8(0); // title: None (Option<String>)
   w.writeU8(0); // chapter_number: None (Option<f32>)
@@ -135,16 +135,16 @@ class AidokuListing {
 /// Decode a postcard Vec<Listing> returned by `get_listings`.
 List<AidokuListing> decodeListings(PostcardReader r) {
   return r.readList(() {
-    final id = r.readString();
-    final name = r.readString();
-    final kind = r.readVarInt();
+    final String id = r.readString();
+    final String name = r.readString();
+    final int kind = r.readVarInt();
     return AidokuListing(id: id, name: name, kind: kind);
   });
 }
 
 /// Encode an [AidokuListing] as postcard bytes for passing as a descriptor RID.
 Uint8List encodeListing(AidokuListing listing) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeString(listing.id);
   w.writeString(listing.name);
   w.writeVarInt(listing.kind);
@@ -153,11 +153,11 @@ Uint8List encodeListing(AidokuListing listing) {
 
 /// Encode filter list as postcard bytes.
 Uint8List encodeFilters(List<FilterValue> filters) {
-  final w = PostcardWriter();
-  w.writeList(filters, (f, pw) {
+  final PostcardWriter w = PostcardWriter();
+  w.writeList(filters, (FilterValue f, PostcardWriter pw) {
     pw.writeVarInt(f.type.index);
     pw.writeString(f.name);
-    final v = f.value;
+    final Object? v = f.value;
     if (v is String) {
       pw.writeString(v);
     } else if (v is bool) {
@@ -174,37 +174,37 @@ Uint8List encodeFilters(List<FilterValue> filters) {
 // ---------------------------------------------------------------------------
 
 MangaPageResult decodeMangaPageResult(PostcardReader r) {
-  final manga = r.readList(() => decodeManga(r));
-  final hasNextPage = r.readBool();
+  final List<Manga> manga = r.readList(() => decodeManga(r));
+  final bool hasNextPage = r.readBool();
   return MangaPageResult(manga: manga, hasNextPage: hasNextPage);
 }
 
 Manga decodeManga(PostcardReader r) {
-  final key = r.readString();
-  final title = r.readString();
-  final cover = r.readOption(r.readString);
-  final artists = r.readOption(() => r.readList(r.readString));
-  final authors = r.readOption(() => r.readList(r.readString));
-  final description = r.readOption(r.readString);
-  final url = r.readOption(r.readString);
-  final tags = r.readOption(() => r.readList(r.readString));
-  final statusIdx = r.readVarInt();
-  final status = MangaStatus.values[statusIdx.clamp(0, MangaStatus.values.length - 1)];
-  final ratingIdx = r.readVarInt();
-  final rating = ContentRating.values[ratingIdx.clamp(0, ContentRating.values.length - 1)];
+  final String key = r.readString();
+  final String title = r.readString();
+  final String? cover = r.readOption(r.readString);
+  final List<String>? artists = r.readOption(() => r.readList(r.readString));
+  final List<String>? authors = r.readOption(() => r.readList(r.readString));
+  final String? description = r.readOption(r.readString);
+  final String? url = r.readOption(r.readString);
+  final List<String>? tags = r.readOption(() => r.readList(r.readString));
+  final int statusIdx = r.readVarInt();
+  final MangaStatus status = MangaStatus.values[statusIdx.clamp(0, MangaStatus.values.length - 1)];
+  final int ratingIdx = r.readVarInt();
+  final ContentRating rating = ContentRating.values[ratingIdx.clamp(0, ContentRating.values.length - 1)];
   r.readVarInt(); // viewer (not in our model)
   r.readVarInt(); // update_strategy (not in our model)
   r.readOption(r.readI64); // next_update_time (not in our model)
-  final chapters = r.readOption(() => r.readList(() => decodeChapter(r))) ?? [];
+  final List<Chapter> chapters = r.readOption(() => r.readList(() => decodeChapter(r))) ?? <Chapter>[];
 
   return Manga(
     key: key,
     title: title,
     coverUrl: cover,
-    authors: authors ?? [],
-    artists: artists ?? [],
+    authors: authors ?? <String>[],
+    artists: artists ?? <String>[],
     description: description,
-    tags: tags ?? [],
+    tags: tags ?? <String>[],
     status: status,
     contentRating: rating,
     chapters: chapters,
@@ -213,14 +213,14 @@ Manga decodeManga(PostcardReader r) {
 }
 
 Chapter decodeChapter(PostcardReader r) {
-  final key = r.readString();
-  final title = r.readOption(r.readString);
-  final chapterNum = r.readOption(r.readF32);
-  final volumeNum = r.readOption(r.readF32);
-  final dateUploadedSecs = r.readOption(r.readI64);
-  final scanlators = r.readOption(() => r.readList(r.readString));
-  final url = r.readOption(r.readString);
-  final language = r.readOption(r.readString);
+  final String key = r.readString();
+  final String? title = r.readOption(r.readString);
+  final double? chapterNum = r.readOption(r.readF32);
+  final double? volumeNum = r.readOption(r.readF32);
+  final int? dateUploadedSecs = r.readOption(r.readI64);
+  final List<String>? scanlators = r.readOption(() => r.readList(r.readString));
+  final String? url = r.readOption(r.readString);
+  final String? language = r.readOption(r.readString);
   r.readOption(r.readString); // thumbnail (not in our model)
   r.readBool(); // locked (not in our model)
 
@@ -230,7 +230,7 @@ Chapter decodeChapter(PostcardReader r) {
     chapterNumber: chapterNum,
     volumeNumber: volumeNum,
     dateUploaded: dateUploadedSecs != null ? DateTime.fromMillisecondsSinceEpoch(dateUploadedSecs * 1000) : null,
-    scanlators: scanlators ?? [],
+    scanlators: scanlators ?? <String>[],
     language: language,
     url: url,
   );
@@ -250,9 +250,9 @@ Chapter decodeChapter(PostcardReader r) {
 ///
 /// The page index is the position in the Vec (0-based), not a serialized field.
 List<Page> decodePageList(PostcardReader r) {
-  final pages = r.readList(() {
+  final List<({String? base64, String? text, String? url})> pages = r.readList(() {
     // PageContent enum variant
-    final variant = r.readVarInt();
+    final int variant = r.readVarInt();
     String? url;
     String? base64;
     String? text;
@@ -277,8 +277,8 @@ List<Page> decodePageList(PostcardReader r) {
     r.readOption(r.readString);
     return (url: url, base64: base64, text: text);
   });
-  return [
-    for (var i = 0; i < pages.length; i++)
+  return <Page>[
+    for (int i = 0; i < pages.length; i++)
       Page(index: i, url: pages[i].url, base64: pages[i].base64, text: pages[i].text),
   ];
 }
@@ -287,11 +287,11 @@ List<Page> decodePageList(PostcardReader r) {
 /// PageContext is HashMap<String, String> in Rust — serialized as varint(len) + pairs.
 /// We don't use it, so just advance past it.
 void _skipPageContext(PostcardReader r) {
-  final tag = r.readU8();
+  final int tag = r.readU8();
   if (tag == 0) return; // None
   // Some(HashMap<String, String>) — varint length + key-value pairs
-  final len = r.readVarInt();
-  for (var i = 0; i < len; i++) {
+  final int len = r.readVarInt();
+  for (int i = 0; i < len; i++) {
     r.readString(); // key
     r.readString(); // value
   }
@@ -310,7 +310,7 @@ enum AidokuUpdateStrategy { always, never }
 /// Read a varint discriminant and return the corresponding enum value.
 /// Out-of-range discriminants return the first value (index 0).
 T decodeEnum<T>(PostcardReader r, List<T> values) {
-  final idx = r.readVarInt();
+  final int idx = r.readVarInt();
   if (idx < 0 || idx >= values.length) return values[0];
   return values[idx];
 }
@@ -501,27 +501,27 @@ class ImageRequest {
 
 /// Decode a full [HomeLayout] from postcard bytes (no result-buffer header).
 HomeLayout decodeHomeLayout(PostcardReader r) {
-  final components = r.readList(() => decodeHomeComponent(r));
+  final List<HomeComponent> components = r.readList(() => decodeHomeComponent(r));
   return HomeLayout(components: components);
 }
 
 /// Decode a single [HomeComponent].
 HomeComponent decodeHomeComponent(PostcardReader r) {
-  final title = r.readOption(r.readString);
-  final subtitle = r.readOption(r.readString);
-  final value = decodeHomeComponentValue(r);
+  final String? title = r.readOption(r.readString);
+  final String? subtitle = r.readOption(r.readString);
+  final HomeComponentValue value = decodeHomeComponentValue(r);
   return HomeComponent(value: value, title: title, subtitle: subtitle);
 }
 
 /// Decode a [HomeComponentValue] variant.
 HomeComponentValue decodeHomeComponentValue(PostcardReader r) {
-  final discriminant = r.readVarInt();
+  final int discriminant = r.readVarInt();
   switch (discriminant) {
     case 0: // ImageScroller
-      final links = r.readList(() => decodeHomeLink(r));
-      final autoScroll = r.readOption(r.readF32);
-      final width = r.readOption(r.readVarInt);
-      final height = r.readOption(r.readVarInt);
+      final List<HomeLink> links = r.readList(() => decodeHomeLink(r));
+      final double? autoScroll = r.readOption(r.readF32);
+      final int? width = r.readOption(r.readVarInt);
+      final int? height = r.readOption(r.readVarInt);
       return ImageScrollerValue(
         links: links,
         autoScrollInterval: autoScroll,
@@ -529,18 +529,18 @@ HomeComponentValue decodeHomeComponentValue(PostcardReader r) {
         height: height,
       );
     case 1: // BigScroller
-      final items = r.readList(() => decodeManga(r));
-      final autoScroll = r.readOption(r.readF32);
+      final List<Manga> items = r.readList(() => decodeManga(r));
+      final double? autoScroll = r.readOption(r.readF32);
       return BigScrollerValue(items: items, autoScrollInterval: autoScroll);
     case 2: // Scroller
-      final links = r.readList(() => decodeHomeLink(r));
-      final listing = r.readOption(() => _decodeSourceListing(r));
+      final List<HomeLink> links = r.readList(() => decodeHomeLink(r));
+      final SourceListing? listing = r.readOption(() => _decodeSourceListing(r));
       return ScrollerValue(links: links, listing: listing);
     case 3: // MangaList
-      final ranked = r.readBool();
-      final pageSize = r.readOption(r.readVarInt);
-      final links = r.readList(() => decodeHomeLink(r));
-      final listing = r.readOption(() => _decodeSourceListing(r));
+      final bool ranked = r.readBool();
+      final int? pageSize = r.readOption(r.readVarInt);
+      final List<HomeLink> links = r.readList(() => decodeHomeLink(r));
+      final SourceListing? listing = r.readOption(() => _decodeSourceListing(r));
       return MangaListValue(
         links: links,
         ranked: ranked,
@@ -548,9 +548,9 @@ HomeComponentValue decodeHomeComponentValue(PostcardReader r) {
         listing: listing,
       );
     case 4: // MangaChapterList
-      final pageSize = r.readOption(r.readVarInt);
-      final items = r.readList(() => decodeMangaWithChapter(r));
-      final listing = r.readOption(() => _decodeSourceListing(r));
+      final int? pageSize = r.readOption(r.readVarInt);
+      final List<MangaWithChapter> items = r.readList(() => decodeMangaWithChapter(r));
+      final SourceListing? listing = r.readOption(() => _decodeSourceListing(r));
       return MangaChapterListValue(items: items, pageSize: pageSize, listing: listing);
     case 5: // Filters
       return FiltersValue(filters: r.readList(() => decodeFilterItem(r)));
@@ -563,7 +563,7 @@ HomeComponentValue decodeHomeComponentValue(PostcardReader r) {
 
 /// Decode a [HomePartialResult] from postcard bytes (no result-buffer header).
 HomePartialResult decodeHomePartialResult(PostcardReader r) {
-  final discriminant = r.readVarInt();
+  final int discriminant = r.readVarInt();
   switch (discriminant) {
     case 0:
       return HomePartialResultLayout(layout: decodeHomeLayout(r));
@@ -581,15 +581,15 @@ MangaWithChapter decodeMangaWithChapter(PostcardReader r) {
 
 /// Decode a [HomeLink].
 HomeLink decodeHomeLink(PostcardReader r) {
-  final title = r.readString();
-  final subtitle = r.readOption(r.readString);
-  final imageUrl = r.readOption(r.readString);
-  final value = r.readOption(() => _decodeHomeLinkValue(r));
+  final String title = r.readString();
+  final String? subtitle = r.readOption(r.readString);
+  final String? imageUrl = r.readOption(r.readString);
+  final HomeLinkValue? value = r.readOption(() => _decodeHomeLinkValue(r));
   return HomeLink(title: title, subtitle: subtitle, imageUrl: imageUrl, value: value);
 }
 
 HomeLinkValue _decodeHomeLinkValue(PostcardReader r) {
-  final discriminant = r.readVarInt();
+  final int discriminant = r.readVarInt();
   switch (discriminant) {
     case 0: // Url
       return UrlHomeLinkValue(url: r.readString());
@@ -604,22 +604,22 @@ HomeLinkValue _decodeHomeLinkValue(PostcardReader r) {
 
 /// Decode an [ImageRequest] (url: Option<String>, headers: HashMap<String,String>).
 ImageRequest decodeImageRequest(PostcardReader r) {
-  final url = r.readOption(r.readString);
-  final headers = decodeStringMap(r);
+  final String? url = r.readOption(r.readString);
+  final Map<String, String> headers = decodeStringMap(r);
   return ImageRequest(url: url, headers: headers);
 }
 
 /// Decode a [DeepLinkResult]? (Option<enum> — reads option tag then discriminant).
 DeepLinkResult? decodeDeepLinkResult(PostcardReader r) {
-  final tag = r.readU8();
+  final int tag = r.readU8();
   if (tag == 0) return null; // None
-  final discriminant = r.readVarInt();
+  final int discriminant = r.readVarInt();
   switch (discriminant) {
     case 0: // Manga
       return MangaDeepLink(key: r.readString());
     case 1: // Chapter
-      final mangaKey = r.readString();
-      final key = r.readString();
+      final String mangaKey = r.readString();
+      final String key = r.readString();
       return ChapterDeepLink(mangaKey: mangaKey, key: key);
     case 2: // Listing
       return ListingDeepLink(listing: _decodeSourceListing(r));
@@ -630,11 +630,11 @@ DeepLinkResult? decodeDeepLinkResult(PostcardReader r) {
 
 /// Decode a postcard HashMap<String,String>.
 Map<String, String> decodeStringMap(PostcardReader r) {
-  final count = r.readVarInt();
-  final result = <String, String>{};
-  for (var i = 0; i < count; i++) {
-    final key = r.readString();
-    final value = r.readString();
+  final int count = r.readVarInt();
+  final Map<String, String> result = <String, String>{};
+  for (int i = 0; i < count; i++) {
+    final String key = r.readString();
+    final String value = r.readString();
     result[key] = value;
   }
   return result;
@@ -642,22 +642,22 @@ Map<String, String> decodeStringMap(PostcardReader r) {
 
 // Internal: decode a SourceListing (id, name, kind).
 SourceListing _decodeSourceListing(PostcardReader r) {
-  final id = r.readString();
-  final name = r.readString();
-  final kind = r.readVarInt();
+  final String id = r.readString();
+  final String name = r.readString();
+  final int kind = r.readVarInt();
   return SourceListing(id: id, name: name, kind: kind);
 }
 
 /// Decode a [FilterItem] from a Filters home component.
 FilterItem decodeFilterItem(PostcardReader r) {
-  final title = r.readString();
-  final values = r.readOption(() => r.readList(() => _decodeAidokuFilterValue(r)));
+  final String title = r.readString();
+  final List<AidokuFilterValue>? values = r.readOption(() => r.readList(() => _decodeAidokuFilterValue(r)));
   return FilterItem(title: title, filterValues: values);
 }
 
 AidokuFilterValue _decodeAidokuFilterValue(PostcardReader r) {
-  final discriminant = r.readVarInt();
-  final id = r.readString();
+  final int discriminant = r.readVarInt();
+  final String id = r.readString();
   Object? raw;
   switch (discriminant) {
     case 0: // Text: value: String
@@ -692,12 +692,12 @@ HomeLayout? decodeHomeLayoutResult(Uint8List bytes) {
 
 /// Decode a `Vec<String>` result payload.
 List<String> decodeStringVecResult(Uint8List bytes) {
-  if (bytes.isEmpty) return const [];
+  if (bytes.isEmpty) return const <String>[];
   try {
-    final r = PostcardReader(bytes);
+    final PostcardReader r = PostcardReader(bytes);
     return r.readList(r.readString);
   } on Object {
-    return const [];
+    return const <String>[];
   }
 }
 
@@ -762,15 +762,15 @@ Uint8List encodeStringBytes(String s) => Uint8List.fromList(utf8.encode(s));
 /// Wrap image bytes in a postcard Vec<u8> (varint length + raw bytes).
 /// Used for `process_page_image` input encoding.
 Uint8List encodeImageResponse(Uint8List bytes) {
-  final w = PostcardWriter()..writeVarInt(bytes.length);
-  return Uint8List.fromList([...w.bytes, ...bytes]);
+  final PostcardWriter w = PostcardWriter()..writeVarInt(bytes.length);
+  return Uint8List.fromList(<int>[...w.bytes, ...bytes]);
 }
 
 /// Encode a Map<String,String> as a postcard HashMap.
 Uint8List encodeStringMap(Map<String, String> m) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   w.writeVarInt(m.length);
-  for (final e in m.entries) {
+  for (final MapEntry<String, String> e in m.entries) {
     w.writeString(e.key);
     w.writeString(e.value);
   }
@@ -779,14 +779,14 @@ Uint8List encodeStringMap(Map<String, String> m) {
 
 /// Encode an optional Map<String,String> as postcard Option<HashMap>.
 Uint8List encodeOptionalStringMap(Map<String, String>? m) {
-  if (m == null) return Uint8List.fromList([0]);
-  return Uint8List.fromList([1, ...encodeStringMap(m)]);
+  if (m == null) return Uint8List.fromList(<int>[0]);
+  return Uint8List.fromList(<int>[1, ...encodeStringMap(m)]);
 }
 
 /// Encode a [Page] as postcard bytes for `get_page_description`.
 /// Maps to the Rust Page struct: PageContent enum + thumbnail + has_description + description.
 Uint8List encodePage(Page p) {
-  final w = PostcardWriter();
+  final PostcardWriter w = PostcardWriter();
   if (p.url != null) {
     w.writeVarInt(0); // PageContent::Url
     w.writeString(p.url!);

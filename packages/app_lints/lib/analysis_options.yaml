@@ -53,6 +53,7 @@ linter:
   rules:
     # Preference
     prefer_single_quotes: true
+    always_specify_types: true
 
     # Can help with readability
     # omit_local_variable_types: false

@@ -12,7 +12,7 @@ class BooksScreen extends StatelessWidget {
         color: Colors.blue,
         child: Center(
           child: FilledButton(
-            key: const ValueKey('home_settings_button'),
+            key: const ValueKey<String>('home_settings_button'),
             onPressed: () async {
               context.goNamed(RouteName.settings.name);
             },

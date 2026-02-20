@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/neko_backup_merge_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_history.dart';
@@ -88,7 +89,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
     required this.chapterFlags,
     required this.viewerFlags,
     required this.history,
-    this.brokenHistory = const [],
+    this.brokenHistory = const <TachiBackupHistory>[],
     this.updateStrategy = TachiUpdateStrategy.alwaysUpdate,
     this.lastModifiedAt,
     this.favoriteModifiedAt,
@@ -120,7 +121,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
       dateAdded: backupManga.dateAdded.toInt(),
       viewer: backupManga.viewer,
       chapters: backupManga.chapters.map(TachiBackupChapter.fromMihon).toList(),
-      categories: backupManga.categories.map((i) => i.toInt()).toList(),
+      categories: backupManga.categories.map((Int64 i) => i.toInt()).toList(),
       tracking: backupManga.tracking.map(TachiBackupTracking.fromMihon).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
@@ -148,7 +149,7 @@ class TachiBackupManga with TachiBackupMangaMappable {
       dateAdded: backupManga.dateAdded.toInt(),
       viewer: backupManga.viewer,
       chapters: backupManga.chapters.map(TachiBackupChapter.fromSy).toList(),
-      categories: backupManga.categories.map((i) => i.toInt()).toList(),
+      categories: backupManga.categories.map((Int64 i) => i.toInt()).toList(),
       tracking: backupManga.tracking.map(TachiBackupTracking.fromSy).toList(),
       favorite: backupManga.favorite,
       chapterFlags: backupManga.chapterFlags,
@@ -258,6 +259,6 @@ class TachiBackupManga with TachiBackupMangaMappable {
     );
   }
 
-  static const fromMap = TachiBackupMangaMapper.fromMap;
-  static const fromJson = TachiBackupMangaMapper.fromJson;
+  static const TachiBackupManga Function(Map<String, dynamic> map) fromMap = TachiBackupMangaMapper.fromMap;
+  static const TachiBackupManga Function(String json) fromJson = TachiBackupMangaMapper.fromJson;
 }

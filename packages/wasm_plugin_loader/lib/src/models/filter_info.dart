@@ -5,10 +5,10 @@ class FilterInfo {
     required this.type,
     this.name,
     this.defaultValue,
-    this.options = const [],
+    this.options = const <String>[],
     this.canExclude = false,
     this.canAscend = false,
-    this.items = const [],
+    this.items = const <FilterInfo>[],
   });
 
   final String type;
@@ -20,11 +20,11 @@ class FilterInfo {
   final List<FilterInfo> items;
 
   factory FilterInfo.fromJson(Map<String, dynamic> json) {
-    final type = json['type'] as String? ?? '';
-    final name = json['name'] as String?;
-    final canExclude = json['canExclude'] as bool? ?? false;
-    final canAscend = json['canAscend'] as bool? ?? false;
-    final options = _stringList(json['options'] ?? json['cases'] ?? json['values']);
+    final String type = json['type'] as String? ?? '';
+    final String? name = json['name'] as String?;
+    final bool canExclude = json['canExclude'] as bool? ?? false;
+    final bool canAscend = json['canAscend'] as bool? ?? false;
+    final List<String> options = _stringList(json['options'] ?? json['cases'] ?? json['values']);
 
     Object? defaultValue;
     switch (type) {
@@ -32,11 +32,11 @@ class FilterInfo {
         defaultValue = json['default'] as bool? ?? false;
       case 'select':
       case 'segment':
-        final rawDefault = json['default'];
+        final Object? rawDefault = json['default'];
         defaultValue = rawDefault is int ? rawDefault : 0;
       case 'sort':
         // Sort default can be an int index or a Map {index: int, ascending: bool}.
-        final rawDefault = json['default'];
+        final Object? rawDefault = json['default'];
         if (rawDefault is int) {
           defaultValue = rawDefault;
         } else if (rawDefault is Map) {
@@ -46,8 +46,8 @@ class FilterInfo {
         }
     }
 
-    final rawItems = json['filters'] ?? json['items'];
-    final items = rawItems is List
+    final Object? rawItems = json['filters'] ?? json['items'];
+    final List<FilterInfo> items = rawItems is List
         ? rawItems.whereType<Map<String, dynamic>>().map(FilterInfo.fromJson).toList()
         : const <FilterInfo>[];
 
@@ -65,7 +65,7 @@ class FilterInfo {
   /// Convert to a [FilterValue] representing this filter's default state.
   /// Returns null for filter types that have no meaningful default.
   FilterValue? toDefaultFilterValue() {
-    final n = name;
+    final String? n = name;
     switch (type) {
       case 'check':
         if (n == null) return null;
@@ -97,5 +97,5 @@ class FilterInfo {
 
 List<String> _stringList(Object? raw) {
   if (raw is List) return raw.cast<String>();
-  return const [];
+  return const <String>[];
 }

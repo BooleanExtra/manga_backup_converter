@@ -24,10 +24,12 @@ class ConnectivityBuilder extends StatefulWidget {
 }
 
 class _ConnectivityBuilderState extends State<ConnectivityBuilder> {
-  List<ConnectivityResult> _connectivityResults = [ConnectivityResult.wifi];
+  List<ConnectivityResult> _connectivityResults = <ConnectivityResult>[
+    ConnectivityResult.wifi,
+  ];
   late final StreamSubscription<List<ConnectivityResult>>
   _connectivitySubscription;
-  final _connectivity = Connectivity();
+  final Connectivity _connectivity = Connectivity();
 
   @override
   void initState() {
@@ -61,11 +63,11 @@ class NoConnectivityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           const Icon(Icons.signal_wifi_off, size: 128),
           gap24,
           Text(
