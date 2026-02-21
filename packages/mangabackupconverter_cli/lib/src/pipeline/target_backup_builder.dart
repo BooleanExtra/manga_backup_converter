@@ -62,7 +62,6 @@ class AidokuBackupBuilder extends TargetBackupBuilder {
         AidokuBackupLibraryManga(
           mangaId: match.mangaKey,
           sourceId: match.pluginSourceId,
-          // TODO: Investigate if dates from each app backup need additional processing (they could be different formats not handled correctly by existing code)
           dateAdded: sourceManga.dateAdded ?? DateTime.now(),
           lastOpened: sourceManga.lastOpened ?? sourceManga.lastRead ?? DateTime.now(),
           lastUpdated: sourceManga.lastUpdated ?? sourceManga.dateAdded ?? DateTime.now(),
