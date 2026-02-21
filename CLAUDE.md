@@ -79,6 +79,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 - `TachiBackup.format` is `Tachiyomi` (sealed subtype of `BackupFormat`), not an enum
 - `Mangayomi` extends `BackupFormat` directly, not `Tachiyomi`
 - `BackupFormat` hierarchy uses dart_mappable `discriminatorKey`/`discriminatorValue` for serialization
+- `TachiUpdateStrategy` uses `ValuesMode.indexed` — maps to/from `int` (0=alwaysUpdate, 1=onlyFetchOnce), not string names
 
 ### Pipeline Data Flow
 
@@ -108,10 +109,12 @@ Always run `melos run generate` after modifying annotated model classes. The env
 
 - **State**: Riverpod + riverpod_generator + hooks_riverpod
 - **Models**: freezed (immutable), dart_mappable (serialization)
+- dart_mappable `with ...Mappable` mixin prevents const constructors — use non-const when constructing these objects in tests
 - **Navigation**: go_router
 - **Theme**: flex_color_scheme
 - **Testing**: mocktail, patrol (integration tests)
 - **Testing assertions**: `package:checks` (not `package:matcher`) — use `check(val).equals()`, `isCloseTo()`, `isA<T>()`, `isNotNull()`, `isEmpty()`; import from `package:checks/checks.dart` + `package:test/scaffolding.dart` (not `package:test/test.dart`)
+- **Testing imports**: avoid barrel import (`mangabackupconverter_lib.dart`) in tests when names clash with `package:test` (e.g. `Skip`); use specific imports or `hide`
 - **CLI formats**: protobuf, archive, sqflite_common
 
 ## CI
