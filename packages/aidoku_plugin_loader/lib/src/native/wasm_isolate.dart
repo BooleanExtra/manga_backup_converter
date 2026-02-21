@@ -246,6 +246,14 @@ class WasmLogMsg {
   final String stackTrace;
 }
 
+/// Rate limit configuration from `net::set_rate_limit`, forwarded to the main
+/// isolate for enforcement before HTTP requests.
+class WasmRateLimitMsg {
+  const WasmRateLimitMsg({required this.permits, required this.periodMs});
+  final int permits;
+  final int periodMs;
+}
+
 /// A partial result pushed by `env::_send_partial_result` inside the WASM
 /// isolate — forwarded to the main isolate for streaming to callers.
 class WasmPartialResultMsg {
@@ -336,6 +344,9 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     sourceId: init.sourceId,
     asyncHttp: asyncHttp,
     asyncSleep: asyncSleep,
+    onRateLimitSet: (int permits, int periodMs) {
+      init.asyncPort.send(WasmRateLimitMsg(permits: permits, periodMs: periodMs));
+    },
   );
 
   late final WasmRunner runner;

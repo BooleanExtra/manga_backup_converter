@@ -30,6 +30,9 @@ typedef AsyncHttpDispatch =
 /// Synchronously dispatch a sleep (blocks WASM isolate thread).
 typedef AsyncSleepDispatch = void Function(int seconds);
 
+/// Callback fired when a WASM plugin calls `net::set_rate_limit`.
+typedef RateLimitCallback = void Function(int permits, int periodMs);
+
 // ---------------------------------------------------------------------------
 // Public factory
 // ---------------------------------------------------------------------------
@@ -45,11 +48,12 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
   required String sourceId,
   AsyncHttpDispatch? asyncHttp,
   AsyncSleepDispatch? asyncSleep,
+  RateLimitCallback? onRateLimitSet,
 }) {
   return <String, Map<String, Function>>{
     'std': _stdImports(runner, store),
     'env': _envImports(runner, store, asyncSleep),
-    'net': _netImports(runner, store, asyncHttp),
+    'net': _netImports(runner, store, asyncHttp, onRateLimitSet),
     'html': _htmlImports(runner, store),
     'defaults': _defaultsImports(runner, store, sourceId),
     'canvas': _canvasImports(runner, store),
@@ -214,6 +218,7 @@ Map<String, Function> _netImports(
   WasmRunner runner,
   HostStore store,
   AsyncHttpDispatch? asyncHttp,
+  RateLimitCallback? onRateLimitSet,
 ) {
   return <String, Function>{
     'init': (int method) {
@@ -316,13 +321,13 @@ Map<String, Function> _netImports(
       if (body == null) return -1;
       return store.addBytes(body);
     },
-    // TODO: implement rate limit enforcement
     'net_set_rate_limit': (int permits, int period, int unit) {
-      // Rate limiting stored; enforcement happens at the application layer.
+      final config = RateLimitConfig.fromWasm(permits, period, unit);
+      onRateLimitSet?.call(config.permits, config.periodMs);
     },
-    // TODO: implement rate limit enforcement
     'set_rate_limit': (int permits, int period, int unit) {
-      // Legacy alias without 'net_' prefix.
+      final config = RateLimitConfig.fromWasm(permits, period, unit);
+      onRateLimitSet?.call(config.permits, config.periodMs);
     },
   };
 }
