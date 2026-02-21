@@ -116,11 +116,27 @@ const Set<String> _registeredImports = <String>{
   // defaults module
   'defaults::get',
   'defaults::set',
+  // canvas module
+  'canvas::new_context',
+  'canvas::set_transform',
+  'canvas::draw_image',
+  'canvas::copy_image',
+  'canvas::fill',
+  'canvas::stroke',
+  'canvas::draw_text',
+  'canvas::get_image',
+  'canvas::new_font',
+  'canvas::system_font',
+  'canvas::load_font',
+  'canvas::new_image',
+  'canvas::get_image_data',
+  'canvas::get_image_width',
+  'canvas::get_image_height',
 };
 
 /// Modules whose functions are intentionally stubbed (return −1 / no-op).
 /// Imports from these modules are expected and need no individual registration.
-const Set<String> _knownStubModules = <String>{'canvas', 'js'};
+const Set<String> _knownStubModules = <String>{'js'};
 
 // ---------------------------------------------------------------------------
 // Helpers

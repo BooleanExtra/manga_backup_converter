@@ -90,6 +90,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 
 - Base: `solid_lints` via `packages/app_lints`
 - `prefer_single_quotes`, `strict-inference: true`, `dart analyze --fatal-infos`
+- `omit_obvious_local_variable_types` + `specify_nonobvious_local_variable_types` + `avoid_multiple_declarations_per_line` — use `dart fix --apply <file>` after writing new code
 - **Directional UI required**: Use `EdgeInsetsDirectional`, `PositionedDirectional`, `AlignmentDirectional`, `BorderDirectional`, `BorderRadiusDirectional` instead of their non-directional counterparts
 - CI enforces formatting via `melos run verify_format`
 
@@ -100,6 +101,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - **Navigation**: go_router
 - **Theme**: flex_color_scheme
 - **Testing**: mocktail, patrol (integration tests)
+- **Testing assertions**: `package:checks` (not `package:matcher`) — use `check(val).equals()`, `isCloseTo()`, `isA<T>()`, `isNotNull()`, `isEmpty()`; import from `package:checks/checks.dart` + `package:test/scaffolding.dart` (not `package:test/test.dart`)
 - **CLI formats**: protobuf, archive, sqflite_common
 
 ## CI

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:image/image.dart' as img;
+
 /// Resource types held in the host-side store.
 sealed class HostResource {}
 
@@ -32,6 +34,28 @@ class HtmlDocumentResource extends HostResource {
 class HtmlNodeListResource extends HostResource {
   HtmlNodeListResource(this.nodes);
   final List<Object> nodes; // List of html.Element
+}
+
+class CanvasContextResource extends HostResource {
+  CanvasContextResource(this.image);
+  final img.Image image;
+  // Pending affine transform state
+  double tx = 0;
+  double ty = 0;
+  double sx = 1;
+  double sy = 1;
+  double angle = 0;
+}
+
+class ImageResource extends HostResource {
+  ImageResource(this.image);
+  final img.Image image;
+}
+
+class FontResource extends HostResource {
+  FontResource({required this.name, required this.weight});
+  final String name;
+  final int weight; // FontWeight ordinal 0-8
 }
 
 /// Host-side resource registry mapping i32 Rids to resources.

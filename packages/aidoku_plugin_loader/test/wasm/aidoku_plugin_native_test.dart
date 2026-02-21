@@ -29,7 +29,9 @@ bool _hasWasmer() {
 
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/aidoku_plugin_loader/$fixturePath');
+  final fixture = File(fixturePath).existsSync()
+      ? File(fixturePath)
+      : File('packages/aidoku_plugin_loader/$fixturePath');
 
   const mangaId = 'ed996855-70de-449f-bba2-e8e24224c14d'; // Onii-chan wa Oshimai!
   const chapterId = '6eb2f8ea-3b6c-4bce-a0d0-d9224fad5b64'; // Ch. 108 — 14 pages

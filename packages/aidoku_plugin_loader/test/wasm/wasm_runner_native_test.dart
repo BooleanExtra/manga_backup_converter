@@ -27,7 +27,9 @@ bool _hasWasmer() {
 
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
-  final fixture = File(fixturePath).existsSync() ? File(fixturePath) : File('packages/aidoku_plugin_loader/$fixturePath');
+  final fixture = File(fixturePath).existsSync()
+      ? File(fixturePath)
+      : File('packages/aidoku_plugin_loader/$fixturePath');
 
   group(
     'WasmRunner native integration',

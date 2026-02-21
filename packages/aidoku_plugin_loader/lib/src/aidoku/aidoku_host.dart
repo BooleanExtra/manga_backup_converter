@@ -2,11 +2,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:aidoku_plugin_loader/src/aidoku/canvas_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_writer.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:html/dom.dart' as html_dom;
 import 'package:html/parser.dart' as html_parser;
+import 'package:image/image.dart' as img;
 
 // ---------------------------------------------------------------------------
 // Async dispatch callbacks
@@ -50,7 +52,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
     'net': _netImports(runner, store, asyncHttp),
     'html': _htmlImports(runner, store),
     'defaults': _defaultsImports(runner, store, sourceId),
-    'canvas': _canvasImports(),
+    'canvas': _canvasImports(runner, store),
     'js': _jsImports(),
   };
 }
@@ -603,12 +605,23 @@ Map<String, Function> _defaultsImports(
 };
 
 // ---------------------------------------------------------------------------
-// canvas module (stub — canvas rendering not implemented)
+// canvas module
 // ---------------------------------------------------------------------------
 
-// TODO: implement canvas rendering
-Map<String, Function> _canvasImports() => <String, Function>{
-  'new_context': (double width, double height) => -1,
+Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <String, Function>{
+  'new_context': (double width, double height) {
+    try {
+      final image = img.Image(
+        width: width.toInt(),
+        height: height.toInt(),
+        numChannels: 4,
+      );
+      return store.add(CanvasContextResource(image));
+    } on Exception catch (e) {
+      print('[aidoku] canvas::new_context: $e');
+      return -1;
+    }
+  },
   'set_transform':
       (
         int ctx,
@@ -617,20 +630,48 @@ Map<String, Function> _canvasImports() => <String, Function>{
         double sx,
         double sy,
         double angle,
-      ) => -1,
+      ) {
+        final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+        if (c == null) return -1;
+        c.tx = tx;
+        c.ty = ty;
+        c.sx = sx;
+        c.sy = sy;
+        c.angle = angle;
+        return 0;
+      },
   'draw_image':
       (
         int ctx,
-        int img,
+        int imgRid,
         double dx,
         double dy,
         double dw,
         double dh,
-      ) => -1,
+      ) {
+        try {
+          final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+          final ImageResource? src = store.get<ImageResource>(imgRid);
+          if (c == null || src == null) return -1;
+          img.compositeImage(
+            c.image,
+            src.image,
+            dstX: dx.toInt(),
+            dstY: dy.toInt(),
+            dstW: dw.toInt(),
+            dstH: dh.toInt(),
+            blend: img.BlendMode.direct,
+          );
+          return 0;
+        } on Exception catch (e) {
+          print('[aidoku] canvas::draw_image: $e');
+          return -1;
+        }
+      },
   'copy_image':
       (
         int ctx,
-        int img,
+        int imgRid,
         double sx,
         double sy,
         double sw,
@@ -639,9 +680,60 @@ Map<String, Function> _canvasImports() => <String, Function>{
         double dy,
         double dw,
         double dh,
-      ) => -1,
-  'fill': (int ctx, int path, double r, double g, double b, double a) => -1,
-  'stroke': (int ctx, int path, int style) => -1,
+      ) {
+        try {
+          final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+          final ImageResource? src = store.get<ImageResource>(imgRid);
+          if (c == null || src == null) return -1;
+          img.compositeImage(
+            c.image,
+            src.image,
+            srcX: sx.toInt(),
+            srcY: sy.toInt(),
+            srcW: sw.toInt(),
+            srcH: sh.toInt(),
+            dstX: dx.toInt(),
+            dstY: dy.toInt(),
+            dstW: dw.toInt(),
+            dstH: dh.toInt(),
+            blend: img.BlendMode.direct,
+          );
+          return 0;
+        } on Exception catch (e) {
+          print('[aidoku] canvas::copy_image: $e');
+          return -1;
+        }
+      },
+  'fill': (int ctx, int pathPtr, double r, double g, double b, double a) {
+    try {
+      final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+      if (c == null) return -1;
+      final Uint8List postcard = readEncodedPostcard(runner, pathPtr);
+      if (postcard.isEmpty) return -1;
+      final List<PathOp> ops = deserializePathOps(postcard);
+      fillPath(c.image, ops, r, g, b, a);
+      return 0;
+    } on Exception catch (e) {
+      print('[aidoku] canvas::fill: $e');
+      return -1;
+    }
+  },
+  'stroke': (int ctx, int pathPtr, int stylePtr) {
+    try {
+      final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+      if (c == null) return -1;
+      final Uint8List pathPostcard = readEncodedPostcard(runner, pathPtr);
+      final Uint8List stylePostcard = readEncodedPostcard(runner, stylePtr);
+      if (pathPostcard.isEmpty || stylePostcard.isEmpty) return -1;
+      final List<PathOp> ops = deserializePathOps(pathPostcard);
+      final StrokeStyleData style = deserializeStrokeStyle(stylePostcard);
+      strokePath(c.image, ops, style);
+      return 0;
+    } on Exception catch (e) {
+      print('[aidoku] canvas::stroke: $e');
+      return -1;
+    }
+  },
   'draw_text':
       (
         int ctx,
@@ -655,15 +747,88 @@ Map<String, Function> _canvasImports() => <String, Function>{
         double g,
         double b,
         double a,
-      ) => -1,
-  'get_image': (int ctx) => -1,
-  'new_font': (int namePtr, int nameLen) => -1,
-  'system_font': (int weight) => -1,
-  'load_font': (int urlPtr, int urlLen) => -1,
-  'new_image': (int dataPtr, int dataLen) => -1,
-  'get_image_data': (int image) => -1,
-  'get_image_width': (int image) => 0.0,
-  'get_image_height': (int image) => 0.0,
+      ) {
+        try {
+          final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+          if (c == null) return -1;
+          final String text = utf8.decode(runner.readMemory(textPtr, textLen));
+          final color = img.ColorRgba8(
+            (r * 255).round().clamp(0, 255),
+            (g * 255).round().clamp(0, 255),
+            (b * 255).round().clamp(0, 255),
+            (a * 255).round().clamp(0, 255),
+          );
+          img.drawString(c.image, text, font: img.arial14, x: x.toInt(), y: y.toInt(), color: color);
+          return 0;
+        } on Exception catch (e) {
+          print('[aidoku] canvas::draw_text: $e');
+          return -1;
+        }
+      },
+  'get_image': (int ctx) {
+    try {
+      final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
+      if (c == null) return -1;
+      return store.add(ImageResource(c.image.clone()));
+    } on Exception catch (e) {
+      print('[aidoku] canvas::get_image: $e');
+      return -1;
+    }
+  },
+  'new_font': (int namePtr, int nameLen) {
+    try {
+      final String name = utf8.decode(runner.readMemory(namePtr, nameLen));
+      return store.add(FontResource(name: name, weight: 4));
+    } on Exception catch (e) {
+      print('[aidoku] canvas::new_font: $e');
+      return -1;
+    }
+  },
+  'system_font': (int weight) {
+    return store.add(FontResource(name: 'system', weight: weight));
+  },
+  'load_font': (int urlPtr, int urlLen) {
+    try {
+      final String url = utf8.decode(runner.readMemory(urlPtr, urlLen));
+      print('[aidoku] canvas::load_font: font loading not supported (url=$url)');
+      return store.add(FontResource(name: 'loaded', weight: 4));
+    } on Exception catch (e) {
+      print('[aidoku] canvas::load_font: $e');
+      return -1;
+    }
+  },
+  'new_image': (int dataPtr, int dataLen) {
+    try {
+      final Uint8List bytes = runner.readMemory(dataPtr, dataLen);
+      final img.Image? decoded = img.decodeImage(bytes);
+      if (decoded == null) return -1;
+      return store.add(ImageResource(decoded));
+    } on Exception catch (e) {
+      print('[aidoku] canvas::new_image: $e');
+      return -1;
+    }
+  },
+  'get_image_data': (int imgRid) {
+    try {
+      final ImageResource? r = store.get<ImageResource>(imgRid);
+      if (r == null) return -1;
+      final Uint8List pngBytes = img.encodePng(r.image);
+      return store.addBytes(pngBytes);
+    } on Exception catch (e) {
+      print('[aidoku] canvas::get_image_data: $e');
+      return -1;
+    }
+  },
+  'get_image_width': (int imgRid) {
+    final ImageResource? r = store.get<ImageResource>(imgRid);
+    if (r == null) return 0.0;
+    return r.image.width.toDouble();
+  },
+  'get_image_height': (int imgRid) {
+    final ImageResource? r = store.get<ImageResource>(imgRid);
+    if (r == null) return 0.0;
+    return r.image.height.toDouble();
+  },
 };
 
 // ---------------------------------------------------------------------------
