@@ -94,10 +94,16 @@ class ConvertCommand extends Command<void> {
     final pipeline = MigrationPipeline(
       repoUrls: const <String>[],
       onSelectExtensions: (List<ExtensionEntry> extensions) async => extensions,
-      onConfirmMatch: (MangaMatchProposal proposal) async => MangaMatchConfirmation(
-        sourceManga: SourceMangaData(details: proposal.sourceManga),
-        confirmedMatch: proposal.bestMatch,
-      ),
+      onConfirmMatch: (MangaMatchProposal proposal) async {
+        // TODO: Implement confirmation logic prompts
+        // 1. User will pick from best match or from list of candidates
+        // 2. If none are correct, user can search in the terminal for the manga across all plugins and then pick from the results
+        //     - The results should be streamed in, some plugins may be very slow or not functional so we should handle that gracefully
+        return MangaMatchConfirmation(
+          sourceManga: SourceMangaData(details: proposal.sourceManga),
+          confirmedMatch: proposal.bestMatch,
+        );
+      },
       onProgress: (int current, int total, String message) => verbose ? print('[$current/$total] $message') : null,
     );
 
