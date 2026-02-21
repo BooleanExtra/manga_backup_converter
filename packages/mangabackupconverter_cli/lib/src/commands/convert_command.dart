@@ -7,7 +7,6 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:path/path.dart' as p;
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 class ConvertCommand extends Command<void> {
   @override
@@ -94,7 +93,7 @@ class ConvertCommand extends Command<void> {
 
     final pipeline = MigrationPipeline(
       repoUrls: const <String>[],
-      onSelectExtensions: (List<SourceEntry> extensions) async => extensions,
+      onSelectExtensions: (List<ExtensionEntry> extensions) async => extensions,
       onConfirmMatch: (MangaMatchProposal proposal) async =>
           MangaMatchConfirmation(sourceManga: proposal.sourceManga, confirmedMatch: proposal.bestMatch),
       onProgress: (int current, int total, String message) => verbose ? print('[$current/$total] $message') : null,

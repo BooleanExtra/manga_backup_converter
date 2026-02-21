@@ -44,6 +44,7 @@ export 'src/formats/tachimanga/tachimanga_backup_db_models.dart';
 export 'src/formats/tachimanga/tachimanga_backup_meta.dart';
 export 'src/pipeline/backup_format.dart';
 export 'src/pipeline/conversion_strategy.dart';
+export 'src/pipeline/extension_entry.dart';
 export 'src/pipeline/manga_details.dart';
 export 'src/pipeline/migration_pipeline.dart';
 export 'src/pipeline/plugin_loader.dart';

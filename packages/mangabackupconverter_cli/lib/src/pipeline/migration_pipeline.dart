@@ -4,10 +4,10 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/extension_entry.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_loader.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 class MigrationPipeline {
   const MigrationPipeline({
@@ -18,7 +18,7 @@ class MigrationPipeline {
   });
 
   final List<String> repoUrls;
-  final Future<List<SourceEntry>> Function(List<SourceEntry> extensions) onSelectExtensions;
+  final Future<List<ExtensionEntry>> Function(List<ExtensionEntry> extensions) onSelectExtensions;
   final Future<MangaMatchConfirmation> Function(MangaMatchProposal proposal) onConfirmMatch;
   final void Function(int current, int total, String message) onProgress;
 
@@ -42,7 +42,7 @@ class MigrationPipeline {
   ) async {
     final PluginLoader loader = targetFormat.pluginLoader;
 
-    final List<SourceEntry> availableExtensions = await loader.fetchExtensionLists(
+    final List<ExtensionEntry> availableExtensions = await loader.fetchExtensionLists(
       repoUrls,
       onWarning: (String msg) => onProgress(0, 0, 'Warning: $msg'),
     );
@@ -50,7 +50,7 @@ class MigrationPipeline {
       throw const MigrationException('No extensions found from provided repos');
     }
 
-    final List<SourceEntry> selectedExtensions = await onSelectExtensions(availableExtensions);
+    final List<ExtensionEntry> selectedExtensions = await onSelectExtensions(availableExtensions);
     if (selectedExtensions.isEmpty) throw const MigrationException('No extensions selected');
 
     onProgress(0, selectedExtensions.length, 'Loading plugins...');

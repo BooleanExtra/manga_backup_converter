@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
+import 'package:mangabackupconverter_cli/src/pipeline/extension_entry.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_aidoku.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_stub.dart';
@@ -9,13 +10,13 @@ import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 sealed class PluginLoader {
   const PluginLoader();
 
-  Future<List<SourceEntry>> fetchExtensionLists(
+  Future<List<ExtensionEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
   });
 
   Future<List<PluginSource>> loadPlugins(
-    List<SourceEntry> extensions, {
+    List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   });
 }
@@ -24,16 +25,16 @@ class AidokuPluginLoader extends PluginLoader {
   const AidokuPluginLoader();
 
   @override
-  Future<List<SourceEntry>> fetchExtensionLists(
+  Future<List<ExtensionEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
   }) async {
-    final entries = <SourceEntry>[];
+    final entries = <ExtensionEntry>[];
     final manager = SourceListManager();
     for (final url in repoUrls) {
       try {
         final RemoteSourceList sourceList = await manager.fetchRemoteSourceList(url);
-        entries.addAll(sourceList.sources);
+        entries.addAll(sourceList.sources.map(AidokuExtensionEntry.fromSourceEntry));
       } on Object catch (e) {
         onWarning?.call('Failed to fetch repo $url: $e');
       }
@@ -43,12 +44,13 @@ class AidokuPluginLoader extends PluginLoader {
 
   @override
   Future<List<PluginSource>> loadPlugins(
-    List<SourceEntry> extensions, {
+    List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   }) async {
     final loader = AidokuPluginMemoryStore();
     final plugins = <PluginSource>[];
-    for (final (int i, SourceEntry entry) in extensions.indexed) {
+    for (final (int i, ExtensionEntry extension_) in extensions.indexed) {
+      final entry = extension_ as AidokuExtensionEntry;
       onProgress?.call(i + 1, extensions.length, 'Loading plugin: ${entry.name}');
       try {
         final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
@@ -74,18 +76,18 @@ class PaperbackPluginLoader extends PluginLoader {
   const PaperbackPluginLoader();
 
   @override
-  Future<List<SourceEntry>> fetchExtensionLists(
+  Future<List<ExtensionEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async => <SourceEntry>[];
+  }) async => <ExtensionEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
-    List<SourceEntry> extensions, {
+    List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   }) async => extensions
       .map(
-        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+        (ExtensionEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
       )
       .toList();
 }
@@ -94,18 +96,18 @@ class TachiPluginLoader extends PluginLoader {
   const TachiPluginLoader();
 
   @override
-  Future<List<SourceEntry>> fetchExtensionLists(
+  Future<List<ExtensionEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async => <SourceEntry>[];
+  }) async => <ExtensionEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
-    List<SourceEntry> extensions, {
+    List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   }) async => extensions
       .map(
-        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+        (ExtensionEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
       )
       .toList();
 }
@@ -114,18 +116,18 @@ class MangayomiPluginLoader extends PluginLoader {
   const MangayomiPluginLoader();
 
   @override
-  Future<List<SourceEntry>> fetchExtensionLists(
+  Future<List<ExtensionEntry>> fetchExtensionLists(
     List<String> repoUrls, {
     void Function(String)? onWarning,
-  }) async => <SourceEntry>[];
+  }) async => <ExtensionEntry>[];
 
   @override
   Future<List<PluginSource>> loadPlugins(
-    List<SourceEntry> extensions, {
+    List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   }) async => extensions
       .map(
-        (SourceEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
+        (ExtensionEntry e) => StubPluginSource(sourceId: e.id, sourceName: e.name),
       )
       .toList();
 }
