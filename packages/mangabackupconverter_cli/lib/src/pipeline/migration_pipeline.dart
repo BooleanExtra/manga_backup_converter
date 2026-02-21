@@ -66,15 +66,33 @@ class MigrationPipeline {
         onProgress(i + 1, mangaList.length, 'Searching for: ${manga.details.title}');
         final MangaMatchProposal proposal = await _searchForManga(manga.details, plugins);
         final MangaMatchConfirmation confirmation = await onConfirmMatch(proposal);
+
+        PluginMangaDetails? targetDetails;
+        var targetChapters = const <PluginChapter>[];
+
+        final PluginSearchResult? match = confirmation.confirmedMatch;
+        if (match != null) {
+          final PluginSource? source = plugins
+              .where((PluginSource p) => p.sourceId == match.pluginSourceId)
+              .firstOrNull;
+          if (source != null) {
+            onProgress(i + 1, mangaList.length, 'Fetching details for: ${match.title}');
+            targetDetails = await source.getMangaDetails(match.mangaKey);
+            targetChapters = await source.getChapterList(match.mangaKey);
+          }
+        }
+
         confirmations.add(
           MangaMatchConfirmation(
             sourceManga: manga,
-            confirmedMatch: confirmation.confirmedMatch,
+            confirmedMatch: match,
+            targetMangaDetails: targetDetails,
+            targetChapters: targetChapters,
           ),
         );
       }
 
-      return _buildTargetBackup(sourceBackup, targetFormat, confirmations);
+      return _buildTargetBackup(sourceBackup, sourceFormat, targetFormat, confirmations);
     } finally {
       for (final plugin in plugins) {
         plugin.dispose();
@@ -115,21 +133,26 @@ class MigrationPipeline {
 
   ConvertableBackup _buildTargetBackup(
     ConvertableBackup sourceBackup,
+    BackupFormat sourceFormat,
     BackupFormat targetFormat,
     List<MangaMatchConfirmation> confirmations,
   ) {
-    return targetFormat.backupBuilder.build(confirmations);
+    return targetFormat.backupBuilder.build(confirmations, sourceFormatAlias: sourceFormat.alias);
   }
 }
 
 class MangaMatchConfirmation {
-  const MangaMatchConfirmation({required this.sourceManga, this.confirmedMatch});
+  const MangaMatchConfirmation({
+    required this.sourceManga,
+    this.confirmedMatch,
+    this.targetMangaDetails,
+    this.targetChapters = const <PluginChapter>[],
+  });
 
   final SourceMangaData sourceManga;
-
-  // TODO: add chapter data fetched from the target plugin (via confirmedMatch)
-  // so TargetBackupBuilder can map source chapters to target chapter IDs
   final PluginSearchResult? confirmedMatch;
+  final PluginMangaDetails? targetMangaDetails;
+  final List<PluginChapter> targetChapters;
 }
 
 class MangaMatchProposal {

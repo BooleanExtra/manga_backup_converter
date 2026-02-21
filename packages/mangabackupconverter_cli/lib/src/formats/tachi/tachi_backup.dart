@@ -188,6 +188,9 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
         dateAdded: manga.dateAdded > 0
             ? DateTime.fromMillisecondsSinceEpoch(manga.dateAdded)
             : null,
+        lastUpdated: (manga.lastModifiedAt ?? 0) > 0
+            ? DateTime.fromMillisecondsSinceEpoch(manga.lastModifiedAt!)
+            : null,
         status: manga.status,
       );
     }).toList();

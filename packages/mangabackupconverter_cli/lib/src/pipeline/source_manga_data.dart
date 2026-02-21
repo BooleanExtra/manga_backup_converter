@@ -9,6 +9,8 @@ class SourceMangaData {
     this.tracking = const <SourceTrackingEntry>[],
     this.dateAdded,
     this.lastRead,
+    this.lastOpened,
+    this.lastUpdated,
     this.status,
   });
 
@@ -19,6 +21,8 @@ class SourceMangaData {
   final List<SourceTrackingEntry> tracking;
   final DateTime? dateAdded;
   final DateTime? lastRead;
+  final DateTime? lastOpened;
+  final DateTime? lastUpdated;
   final int? status;
 }
 

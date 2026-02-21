@@ -16,5 +16,15 @@ class StubPluginSource implements PluginSource {
   }
 
   @override
+  Future<PluginMangaDetails?> getMangaDetails(String mangaKey) {
+    throw UnimplementedError('getMangaDetails is not yet implemented for stub sources');
+  }
+
+  @override
+  Future<List<PluginChapter>> getChapterList(String mangaKey) {
+    throw UnimplementedError('getChapterList is not yet implemented for stub sources');
+  }
+
+  @override
   void dispose() {}
 }

@@ -245,6 +245,8 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
         }).toList(),
         dateAdded: libraryEntry?.dateAdded,
         lastRead: libraryEntry?.lastRead,
+        lastOpened: libraryEntry?.lastOpened,
+        lastUpdated: libraryEntry?.lastUpdated,
         status: m.status.index,
       );
     }).toList();
