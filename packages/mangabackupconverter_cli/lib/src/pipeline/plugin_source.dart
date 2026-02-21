@@ -4,8 +4,7 @@ abstract interface class PluginSource {
   String get sourceId;
   String get sourceName;
   Future<PluginSearchPageResult> search(String query, int page);
-  Future<PluginMangaDetails?> getMangaDetails(String mangaKey);
-  Future<List<PluginChapter>> getChapterList(String mangaKey);
+  Future<(PluginMangaDetails, List<PluginChapter>)?> getMangaWithChapters(String mangaKey);
   void dispose();
 }
 

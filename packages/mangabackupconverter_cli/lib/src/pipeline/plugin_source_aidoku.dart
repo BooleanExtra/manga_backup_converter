@@ -32,10 +32,10 @@ class AidokuPluginSource implements PluginSource {
   }
 
   @override
-  Future<PluginMangaDetails?> getMangaDetails(String mangaKey) async {
+  Future<(PluginMangaDetails, List<PluginChapter>)?> getMangaWithChapters(String mangaKey) async {
     final Manga? manga = await _plugin.getMangaDetails(mangaKey);
     if (manga == null) return null;
-    return PluginMangaDetails(
+    final details = PluginMangaDetails(
       key: manga.key,
       title: manga.title,
       coverUrl: manga.coverUrl,
@@ -47,13 +47,7 @@ class AidokuPluginSource implements PluginSource {
       contentRating: _mapContentRating(manga.contentRating),
       url: manga.url,
     );
-  }
-
-  @override
-  Future<List<PluginChapter>> getChapterList(String mangaKey) async {
-    final Manga? manga = await _plugin.getMangaDetails(mangaKey);
-    if (manga == null) return const <PluginChapter>[];
-    return [
+    final chapters = [
       for (final (int i, Chapter ch) in manga.chapters.indexed)
         PluginChapter(
           chapterId: ch.key,
@@ -67,6 +61,7 @@ class AidokuPluginSource implements PluginSource {
           sourceOrder: i,
         ),
     ];
+    return (details, chapters);
   }
 
   @override
