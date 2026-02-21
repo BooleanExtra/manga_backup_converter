@@ -281,17 +281,29 @@ class TachimangaBackupManga
       status: status,
       thumbnailUrl: thumbnailUrl ?? '',
       source: source,
-      updateStrategy: TachiUpdateStrategyMapper.fromValue(updateStrategy),
+      updateStrategy: TachiUpdateStrategyMapper.fromValue(int.tryParse(updateStrategy) ?? updateStrategy),
       dateAdded: DateTime.now().millisecondsSinceEpoch,
       viewer: 1,
       viewerFlags: 1,
       chapterFlags: 1,
       favorite: false,
-      chapters: db.chapterTable.map((TachimangaBackupChapter c) => c.toType(db)).toList(),
-      history: db.historyTable.map((TachimangaBackupHistory c) => c.toType(db)).toList(),
+      chapters: db.chapterTable
+          .where((TachimangaBackupChapter c) => c.manga == id)
+          .map((TachimangaBackupChapter c) => c.toType(db))
+          .toList(),
+      history: db.historyTable
+          .where((TachimangaBackupHistory h) => h.mangaId == id)
+          .map((TachimangaBackupHistory h) => h.toType(db))
+          .toList(),
       brokenHistory: <TachiBackupHistory>[],
-      categories: db.categoryTable.map((TachimangaBackupCategory c) => c.id).toList(),
-      tracking: db.trackRecordTable.map((TachimangaBackupTrackRecord c) => c.toType(db)).toList(),
+      categories: db.categoryMangaTable
+          .where((TachimangaBackupCategoryManga cm) => cm.manga == id)
+          .map((TachimangaBackupCategoryManga cm) => cm.category)
+          .toList(),
+      tracking: db.trackRecordTable
+          .where((TachimangaBackupTrackRecord t) => t.mangaId == id)
+          .map((TachimangaBackupTrackRecord t) => t.toType(db))
+          .toList(),
     );
   }
 

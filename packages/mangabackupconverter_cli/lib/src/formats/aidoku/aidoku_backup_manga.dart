@@ -1,6 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_enums.dart';
-import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 
 part 'aidoku_backup_manga.mapper.dart';
@@ -40,23 +39,6 @@ class AidokuBackupManga with AidokuBackupMangaMappable, MangaSearchEntry {
     this.langFilter,
     this.scanlatorFilter,
   });
-
-  PaperbackBackupMangaInfo toPaperbackMangaInfo() {
-    final String? mangaCover = cover;
-    return PaperbackBackupMangaInfo(
-      tags: (tags ?? <String>[]).map((String tag) => PaperbackBackupMangaTag(label: tag, id: tag)).toList(),
-      desc: desc ?? '',
-      titles: <String>[title],
-      covers: mangaCover == null ? <String>[] : <String>[mangaCover],
-      author: author ?? '',
-      image: cover ?? '',
-      hentai: nsfw == AidokuMangaContentRating.nsfw,
-      additionalInfo: PaperbackBackupMangaAdditionalInfo(),
-      artist: artist ?? '',
-      id: id,
-      status: PaperbackBackupMangaInfo.statusFromAidoku(status),
-    );
-  }
 
   @override
   MangaSearchDetails toMangaSearchDetails() {

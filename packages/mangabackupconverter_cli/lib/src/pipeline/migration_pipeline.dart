@@ -77,7 +77,7 @@ class MigrationPipeline {
               .firstOrNull;
           if (source != null) {
             onProgress(i + 1, mangaList.length, 'Fetching details for: ${match.title}');
-            final result = await source.getMangaWithChapters(match.mangaKey);
+            final (PluginMangaDetails, List<PluginChapter>)? result = await source.getMangaWithChapters(match.mangaKey);
             if (result != null) {
               (targetDetails, targetChapters) = result;
             }

@@ -47,7 +47,7 @@ class AidokuPluginSource implements PluginSource {
       contentRating: _mapContentRating(manga.contentRating),
       url: manga.url,
     );
-    final chapters = [
+    final List<PluginChapter> chapters = [
       for (final (int i, Chapter ch) in manga.chapters.indexed)
         PluginChapter(
           chapterId: ch.key,
