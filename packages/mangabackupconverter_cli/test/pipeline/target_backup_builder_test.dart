@@ -5,7 +5,6 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_chapte
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_history.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
-import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/migration_pipeline.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
@@ -181,6 +180,10 @@ void main() {
             mangaKey: 'manga-key',
             title: 'With Chapters',
           ),
+          targetChapters: <PluginChapter>[
+            PluginChapter(chapterId: 'ch-1', title: 'Chapter 1', chapterNumber: 1),
+            PluginChapter(chapterId: 'ch-2', title: 'Chapter 2', chapterNumber: 2, sourceOrder: 1),
+          ],
         ),
       ];
 
@@ -202,19 +205,11 @@ void main() {
       check(historyEntry.mangaId).equals('manga-key');
     });
 
-    test('tracking entries from source manga are migrated', () {
+    test('tracking is not migrated (target tracker IDs are unknown)', () {
       final confirmations = <MangaMatchConfirmation>[
         const MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Tracked'),
-            tracking: <SourceTrackingEntry>[
-              SourceTrackingEntry(
-                syncId: 1,
-                title: 'MyAnimeList Entry',
-                lastChapterRead: 10,
-                score: 8.5,
-              ),
-            ],
           ),
           confirmedMatch: PluginSearchResult(
             pluginSourceId: 'en.src',
@@ -227,11 +222,7 @@ void main() {
       final ConvertableBackup result = builder.build(confirmations);
       final backup = result as AidokuBackup;
 
-      check(backup.trackItems).isNotNull().length.equals(1);
-      final AidokuBackupTrackItem track = backup.trackItems!.first;
-      check(track.trackerId).equals('1');
-      check(track.title).equals('MyAnimeList Entry');
-      check(track.mangaId).equals('tracked-key');
+      check(backup.trackItems).isNull();
     });
 
     test('categories are collected from all confirmed manga', () {
