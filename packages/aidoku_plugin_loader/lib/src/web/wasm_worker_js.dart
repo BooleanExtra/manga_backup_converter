@@ -140,6 +140,7 @@ function buildStdImports() {
     _current_date() { return Date.now() / 1000.0; },
     current_date() { return Date.now() / 1000.0; },
     utc_offset() { return new Date().getTimezoneOffset() * -60; },
+    // TODO: support format string (fmtPtr/fmtLen), locale, and timezone params
     _parse_date(strPtr, strLen, fmtPtr, fmtLen, localePtr, localeLen, tzPtr, tzLen) {
       try {
         const dateStr = readString(strPtr, strLen).trim();
@@ -152,6 +153,7 @@ function buildStdImports() {
         return -1.0;
       }
     },
+    // TODO: support format string (fmtPtr/fmtLen), locale, and timezone params
     parse_date(strPtr, strLen, fmtPtr, fmtLen, localePtr, localeLen, tzPtr, tzLen) {
       try {
         const dateStr = readString(strPtr, strLen).trim();
@@ -269,6 +271,8 @@ function buildNetImports() {
         const xhr = new XMLHttpRequest();
         xhr.open(methodStr, r.url, false); // synchronous
         xhr.responseType = 'arraybuffer';
+        // TODO: xhr.timeout is ignored for synchronous XHR; implement timeout
+        // via AbortController or async XHR + Atomics.wait if needed
         xhr.timeout = r.timeout * 1000;
         for (const [k, v] of Object.entries(r.headers)) {
           try { xhr.setRequestHeader(k, v); } catch (e) { /* forbidden header */ }
@@ -340,7 +344,9 @@ function buildNetImports() {
       if (!r || r.type !== 'http' || !r.responseBody) return -1;
       return storeAddBytes(r.responseBody);
     },
+    // TODO: implement rate limit enforcement
     net_set_rate_limit(permits, period, unit) { /* no-op */ },
+    // TODO: implement rate limit enforcement
     set_rate_limit(permits, period, unit) { /* no-op */ },
   };
 }
@@ -646,6 +652,7 @@ function buildDefaultsImports() {
 
 // ---------------------------------------------------------------------------
 // canvas module — stub (image manipulation not supported in worker)
+// TODO: implement canvas module using OffscreenCanvas API
 // ---------------------------------------------------------------------------
 
 function buildCanvasImports() {
@@ -671,6 +678,7 @@ function buildCanvasImports() {
 
 // ---------------------------------------------------------------------------
 // js module — stub
+// TODO: implement JS/webview execution (requires embedding a JS engine)
 // ---------------------------------------------------------------------------
 
 function buildJsImports() {
