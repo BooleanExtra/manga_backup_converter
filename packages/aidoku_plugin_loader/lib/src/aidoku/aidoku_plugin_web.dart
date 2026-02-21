@@ -189,6 +189,7 @@ class AidokuPlugin {
 
     if (data == null) {
       // No listing provided or get_manga_list failed — fall back to empty-query search.
+      // TODO: Add helper functions for rid creation
       final int queryRid = _store.addBytes(Uint8List(0));
       final int filtersRid = _store.addBytes(Uint8List.fromList(<int>[0]));
       try {

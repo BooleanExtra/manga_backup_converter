@@ -316,9 +316,11 @@ Map<String, Function> _netImports(
       if (body == null) return -1;
       return store.addBytes(body);
     },
+    // TODO: implement rate limit enforcement
     'net_set_rate_limit': (int permits, int period, int unit) {
       // Rate limiting stored; enforcement happens at the application layer.
     },
+    // TODO: implement rate limit enforcement
     'set_rate_limit': (int permits, int period, int unit) {
       // Legacy alias without 'net_' prefix.
     },
@@ -842,6 +844,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
 // js module (stub — embedded JS execution not implemented)
 // ---------------------------------------------------------------------------
 
+// TODO: implement JS/webview execution (requires embedding a JS engine)
 Map<String, Function> _jsImports() => <String, Function>{
   'context_create': () {
     print('[aidoku] js module not implemented');

@@ -43,6 +43,7 @@ class AidokuPlugin {
   final WasmSemaphore _semaphore;
   final WasmSharedState _sharedState;
 
+  /// TODO: Decode the partial results into HomePartialResult objects
   final StreamController<Uint8List> _partialResultsController = StreamController<Uint8List>.broadcast();
 
   final SourceInfo sourceInfo;
@@ -282,9 +283,13 @@ class AidokuPlugin {
   }
 
   /// Raw postcard bytes from `get_filters`, or null if not supported.
+  /// 
+  /// TODO: Decode the filters into FilterValue objects
   Future<Uint8List?> getFilters() => _rawGet('get_filters');
 
   /// Raw postcard bytes from `get_settings`, or null if not supported.
+  /// 
+  /// TODO: Decode the settings into SettingItem objects
   Future<Uint8List?> getSettings() => _rawGet('get_settings');
 
   /// Decoded home layout from `get_home`, or null if not supported.
@@ -353,6 +358,8 @@ class AidokuPlugin {
   }
 
   /// Process a page image (e.g. descramble) via `process_page_image`.
+  /// 
+  /// TODO: Decode the image bytes into something usable (check if img/Flutter can decode it)
   Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
     final port = ReceivePort();
     _wasmCmdPort.send(

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-/// Web stub — on web, shared state is communicated via Worker `postMessage`.
+/// TODO: Web stub — on web, shared state is communicated via Worker `postMessage`.
 class WasmSharedState {
   WasmSharedState();
 
