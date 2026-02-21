@@ -1,6 +1,11 @@
 import 'dart:typed_data';
 
-/// TODO: Web stub — on web, shared state is communicated via Worker `postMessage`.
+/// Web stub — on web, shared state is communicated via Worker postMessage.
+///
+/// The web AidokuPlugin implementation (aidoku_plugin_web.dart) does not use
+/// WasmSharedState. All WASM ↔ main-thread communication goes through the
+/// Web Worker's postMessage/onmessage channel. This stub exists only to
+/// satisfy conditional imports on web.
 class WasmSharedState {
   WasmSharedState();
 

@@ -1,13 +1,8 @@
-// Web Worker stub for Aidoku WASM async execution.
+// Native stub — Web Worker WASM execution is web-only.
 //
-// Full implementation requires:
-//   1. The page to be served with COOP+COEP headers:
-//        Cross-Origin-Opener-Policy: same-origin
-//        Cross-Origin-Embedder-Policy: require-corp
-//   2. SharedArrayBuffer support in the browser.
+// The web implementation lives in lib/src/web/:
+//   - wasm_worker_js.dart — embedded JavaScript worker source
+//   - wasm_worker_launcher.dart — JS interop bindings for Worker/Blob
 //
-// TODO: implement Web Worker WASM execution with SharedArrayBuffer for async
-// HTTP on web. The web runner currently falls back to running WASM on the main
-// thread with synchronous (stub) HTTP imports.
-//
-// See wasm_runner_web.dart for the current web implementation.
+// On native platforms, WASM runs in a background Isolate instead
+// (see wasm_isolate.dart).
