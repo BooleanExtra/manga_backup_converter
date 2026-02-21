@@ -178,6 +178,7 @@ img.ColorRgba8 _toRgba8(double r, double g, double b, double a) {
 /// Only supports paths made of MoveTo/LineTo/Close that form axis-aligned
 /// rectangles (the common case for image descrambling). Non-rectangular paths
 /// are silently ignored.
+// TODO: support general polygon fill for non-rectangular paths
 void fillPath(img.Image image, List<PathOp> ops, double r, double g, double b, double a) {
   final img.ColorRgba8 color = _toRgba8(r, g, b, a);
   final List<_Rect> rects = _extractRects(ops);
@@ -196,6 +197,7 @@ void fillPath(img.Image image, List<PathOp> ops, double r, double g, double b, d
 /// Stroke line segments on [image] using the given style.
 ///
 /// Only supports LineTo segments. Curves and arcs are silently skipped.
+// TODO: support QuadTo, CubicTo, and Arc stroke rendering
 void strokePath(img.Image image, List<PathOp> ops, StrokeStyleData style) {
   final img.ColorRgba8 color = _toRgba8(
     style.color.r.toDouble(),

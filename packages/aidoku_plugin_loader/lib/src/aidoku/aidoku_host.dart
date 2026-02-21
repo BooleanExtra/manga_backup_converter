@@ -633,6 +633,8 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       ) {
         final CanvasContextResource? c = store.get<CanvasContextResource>(ctx);
         if (c == null) return -1;
+        // TODO: apply affine transform during compositing (package:image lacks
+        // affine transform support for compositeImage)
         c.tx = tx;
         c.ty = ty;
         c.sx = sx;
@@ -758,6 +760,8 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
             (b * 255).round().clamp(0, 255),
             (a * 255).round().clamp(0, 255),
           );
+          // TODO: support custom fonts and font sizes (package:image only
+          // provides bitmap fonts, no TTF rendering)
           img.drawString(c.image, text, font: img.arial14, x: x.toInt(), y: y.toInt(), color: color);
           return 0;
         } on Exception catch (e) {
@@ -775,6 +779,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       return -1;
     }
   },
+  // TODO: implement real font loading (currently returns placeholder RID)
   'new_font': (int namePtr, int nameLen) {
     try {
       final String name = utf8.decode(runner.readMemory(namePtr, nameLen));
@@ -784,9 +789,11 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       return -1;
     }
   },
+  // TODO: implement real font loading (currently returns placeholder RID)
   'system_font': (int weight) {
     return store.add(FontResource(name: 'system', weight: weight));
   },
+  // TODO: implement remote font loading (currently returns placeholder RID)
   'load_font': (int urlPtr, int urlLen) {
     try {
       final String url = utf8.decode(runner.readMemory(urlPtr, urlLen));
