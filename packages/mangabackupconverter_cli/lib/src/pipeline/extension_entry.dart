@@ -1,4 +1,4 @@
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
+import 'package:aidoku_plugin_loader/aidoku_plugin_loader.dart';
 
 sealed class ExtensionEntry {
   const ExtensionEntry({

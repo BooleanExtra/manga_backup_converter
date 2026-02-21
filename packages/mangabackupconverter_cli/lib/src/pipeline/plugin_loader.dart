@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:aidoku_plugin_loader/aidoku_plugin_loader.dart';
 import 'package:http/http.dart' as http;
 import 'package:mangabackupconverter_cli/src/pipeline/extension_entry.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_aidoku.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_stub.dart';
-import 'package:wasm_plugin_loader/wasm_plugin_loader.dart';
 
 sealed class PluginLoader {
   const PluginLoader();
