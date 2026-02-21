@@ -10,8 +10,10 @@ import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mappe
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_chapter_progress_marker.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_manga.dart';
+import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_library_tab.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_manga_info.dart';
 import 'package:mangabackupconverter_cli/src/formats/paperback/paperback_backup_source_manga.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 
 part 'paperback_backup.mapper.dart';
 
@@ -88,6 +90,61 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
 
   @override
   List<PaperbackBackupMangaInfo> get mangaSearchEntries => mangaInfo ?? const <PaperbackBackupMangaInfo>[];
+
+  @override
+  List<SourceMangaData> get sourceMangaDataEntries {
+    return (mangaInfo ?? const <PaperbackBackupMangaInfo>[]).map((PaperbackBackupMangaInfo info) {
+      // Find the sourceManga entry that links to this mangaInfo
+      final List<PaperbackBackupSourceManga> linkedSources = (sourceManga ?? const <PaperbackBackupSourceManga>[]).where(
+        (PaperbackBackupSourceManga sm) => sm.mangaInfo.id == info.id,
+      ).toList();
+
+      // Find chapters linked through sourceManga
+      final Set<String> sourceMangaIds = linkedSources.map(
+        (PaperbackBackupSourceManga sm) => sm.id,
+      ).toSet();
+      final List<PaperbackBackupChapter> mangaChapters = (chapters ?? const <PaperbackBackupChapter>[]).where(
+        (PaperbackBackupChapter c) => sourceMangaIds.contains(c.sourceManga.id),
+      ).toList();
+
+      // Find progress markers for these chapters
+      final List<PaperbackBackupChapterProgressMarker> mangaProgressMarkers = (chapterProgressMarker ?? const <PaperbackBackupChapterProgressMarker>[]).where(
+        (PaperbackBackupChapterProgressMarker pm) {
+          return mangaChapters.any((PaperbackBackupChapter c) => c.id == pm.chapter.id);
+        },
+      ).toList();
+
+      // Find library entry
+      final PaperbackBackupLibraryManga? libraryEntry = (libraryManga ?? const <PaperbackBackupLibraryManga>[]).where(
+        (PaperbackBackupLibraryManga l) => l.id == info.id,
+      ).firstOrNull;
+
+      return SourceMangaData(
+        details: info.toMangaSearchDetails(),
+        categories: libraryEntry?.libraryTabs.map(
+          (PaperbackBackupLibraryTab t) => t.name,
+        ).toList() ?? const <String>[],
+        chapters: mangaChapters.map((PaperbackBackupChapter c) {
+          final PaperbackBackupChapterProgressMarker? marker = mangaProgressMarkers.where(
+            (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id == c.id,
+          ).firstOrNull;
+          return SourceChapter(
+            title: c.name,
+            chapterNumber: c.chapNum.toDouble(),
+            volumeNumber: c.volume.toDouble(),
+            scanlator: c.group.isEmpty ? null : c.group,
+            language: c.langCode.isEmpty ? null : c.langCode,
+            isRead: marker?.completed ?? false,
+            lastPageRead: marker?.lastPage ?? 0,
+            dateUploaded: c.time,
+            sourceOrder: c.sortingIndex,
+          );
+        }).toList(),
+        dateAdded: libraryEntry?.dateBookmarked,
+        lastRead: libraryEntry?.lastRead,
+      );
+    }).toList();
+  }
 
   @override
   Future<Uint8List> toData() async {

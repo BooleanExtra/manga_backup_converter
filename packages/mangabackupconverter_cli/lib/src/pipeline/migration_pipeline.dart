@@ -7,6 +7,7 @@ import 'package:mangabackupconverter_cli/src/pipeline/extension_entry.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_loader.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 
 class MigrationPipeline {
   const MigrationPipeline({
@@ -59,13 +60,18 @@ class MigrationPipeline {
     );
 
     try {
-      final List<MangaSearchDetails> mangaList = _extractManga(sourceBackup);
+      final List<SourceMangaData> mangaList = _extractManga(sourceBackup);
       final List<MangaMatchConfirmation> confirmations = [];
-      for (final (int i, MangaSearchDetails manga) in mangaList.indexed) {
-        onProgress(i + 1, mangaList.length, 'Searching for: ${manga.title}');
-        final MangaMatchProposal proposal = await _searchForManga(manga, plugins);
+      for (final (int i, SourceMangaData manga) in mangaList.indexed) {
+        onProgress(i + 1, mangaList.length, 'Searching for: ${manga.details.title}');
+        final MangaMatchProposal proposal = await _searchForManga(manga.details, plugins);
         final MangaMatchConfirmation confirmation = await onConfirmMatch(proposal);
-        confirmations.add(confirmation);
+        confirmations.add(
+          MangaMatchConfirmation(
+            sourceManga: manga,
+            confirmedMatch: confirmation.confirmedMatch,
+          ),
+        );
       }
 
       return _buildTargetBackup(sourceBackup, targetFormat, confirmations);
@@ -76,8 +82,8 @@ class MigrationPipeline {
     }
   }
 
-  List<MangaSearchDetails> _extractManga(ConvertableBackup backup) {
-    return backup.mangaSearchEntries.map((MangaSearchEntry m) => m.toMangaSearchDetails()).toList();
+  List<SourceMangaData> _extractManga(ConvertableBackup backup) {
+    return backup.sourceMangaDataEntries;
   }
 
   Future<MangaMatchProposal> _searchForManga(MangaSearchDetails manga, List<PluginSource> plugins) async {
@@ -112,23 +118,17 @@ class MigrationPipeline {
     BackupFormat targetFormat,
     List<MangaMatchConfirmation> confirmations,
   ) {
-    // TODO: Construct the target backup from confirmed matches.
-    // ignore: unused_local_variable
-    final ConvertableBackup targetBackup = switch (targetFormat) {
-      // Aidoku() => AidokuBackup.fromConfirmedMatches(confirmedMatches),
-      // Paperback() => PaperbackBackup.fromConfirmedMatches(confirmedMatches),
-      // Tachiyomi() => TachiBackup.fromConfirmedMatches(confirmedMatches),
-      // Tachimanga() => TachimangaBackup.fromConfirmedMatches(confirmedMatches),
-      // Mangayomi() => MangayomiBackup.fromConfirmedMatches(confirmedMatches),
-      _ => throw UnimplementedError('Target backup construction not yet implemented'),
-    };
+    return targetFormat.backupBuilder.build(confirmations);
   }
 }
 
 class MangaMatchConfirmation {
   const MangaMatchConfirmation({required this.sourceManga, this.confirmedMatch});
 
-  final MangaSearchDetails sourceManga;
+  final SourceMangaData sourceManga;
+
+  // TODO: add chapter data fetched from the target plugin (via confirmedMatch)
+  // so TargetBackupBuilder can map source chapters to target chapter IDs
   final PluginSearchResult? confirmedMatch;
 }
 

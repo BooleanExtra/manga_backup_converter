@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_loader.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/target_backup_builder.dart';
 import 'package:meta/meta.dart';
 
 part 'backup_format.mapper.dart';
@@ -12,6 +13,7 @@ sealed class BackupFormat with BackupFormatMappable {
   String get alias;
   List<String> get extensions;
   PluginLoader get pluginLoader;
+  TargetBackupBuilder get backupBuilder;
 
   static const List<BackupFormat> values = <BackupFormat>[
     Aidoku(),
@@ -57,6 +59,9 @@ class Aidoku extends BackupFormat with AidokuMappable {
   PluginLoader get pluginLoader => const AidokuPluginLoader();
 
   @override
+  TargetBackupBuilder get backupBuilder => const AidokuBackupBuilder();
+
+  @override
   bool operator ==(Object other) => other is Aidoku;
 
   @override
@@ -81,6 +86,9 @@ class Paperback extends BackupFormat with PaperbackMappable {
   PluginLoader get pluginLoader => const PaperbackPluginLoader();
 
   @override
+  TargetBackupBuilder get backupBuilder => const UnimplementedBackupBuilder();
+
+  @override
   bool operator ==(Object other) => other is Paperback;
 
   @override
@@ -99,6 +107,9 @@ sealed class Tachiyomi extends BackupFormat with TachiyomiMappable {
 
   @override
   PluginLoader get pluginLoader => const TachiPluginLoader();
+
+  @override
+  TargetBackupBuilder get backupBuilder => const UnimplementedBackupBuilder();
 }
 
 @MappableClass(discriminatorValue: 'mihon')
@@ -206,6 +217,9 @@ class Tachimanga extends BackupFormat with TachimangaMappable {
   PluginLoader get pluginLoader => const TachiPluginLoader();
 
   @override
+  TargetBackupBuilder get backupBuilder => const UnimplementedBackupBuilder();
+
+  @override
   bool operator ==(Object other) => other is Tachimanga;
 
   @override
@@ -228,6 +242,9 @@ class Mangayomi extends BackupFormat with MangayomiMappable {
 
   @override
   PluginLoader get pluginLoader => const MangayomiPluginLoader();
+
+  @override
+  TargetBackupBuilder get backupBuilder => const UnimplementedBackupBuilder();
 
   @override
   bool operator ==(Object other) => other is Mangayomi;

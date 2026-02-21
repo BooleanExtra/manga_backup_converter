@@ -51,3 +51,5 @@ export 'src/pipeline/plugin_loader.dart';
 export 'src/pipeline/plugin_source.dart';
 export 'src/pipeline/plugin_source_aidoku.dart';
 export 'src/pipeline/plugin_source_stub.dart';
+export 'src/pipeline/source_manga_data.dart';
+export 'src/pipeline/target_backup_builder.dart';

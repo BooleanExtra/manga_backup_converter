@@ -11,6 +11,7 @@ import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_histor
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_library_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/aidoku/aidoku_backup_track_item.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 
 part 'aidoku_backup.mapper.dart';
@@ -185,6 +186,69 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
 
   @override
   List<AidokuBackupManga> get mangaSearchEntries => manga?.toList() ?? const <AidokuBackupManga>[];
+
+  @override
+  List<SourceMangaData> get sourceMangaDataEntries {
+    return (manga ?? <AidokuBackupManga>{}).map((AidokuBackupManga m) {
+      final AidokuBackupLibraryManga? libraryEntry = library?.where(
+        (AidokuBackupLibraryManga l) => l.sourceId == m.sourceId && l.mangaId == m.id,
+      ).firstOrNull;
+
+      final List<AidokuBackupChapter> mangaChapters = (chapters ?? <AidokuBackupChapter>{}).where(
+        (AidokuBackupChapter c) => c.sourceId == m.sourceId && c.mangaId == m.id,
+      ).toList();
+
+      final List<AidokuBackupHistory> mangaHistory = (history ?? <AidokuBackupHistory>{}).where(
+        (AidokuBackupHistory h) => h.sourceId == m.sourceId && h.mangaId == m.id,
+      ).toList();
+
+      final List<AidokuBackupTrackItem> mangaTracks = (trackItems ?? <AidokuBackupTrackItem>{}).where(
+        (AidokuBackupTrackItem t) => t.sourceId == m.sourceId && t.mangaId == m.id,
+      ).toList();
+
+      return SourceMangaData(
+        details: m.toMangaSearchDetails(),
+        categories: libraryEntry?.categories ?? const <String>[],
+        chapters: mangaChapters.map((AidokuBackupChapter c) {
+          final bool isRead = mangaHistory.any(
+            (AidokuBackupHistory h) => h.chapterId == c.id && h.completed,
+          );
+          return SourceChapter(
+            title: c.title ?? '',
+            chapterNumber: c.chapter,
+            volumeNumber: c.volume,
+            scanlator: c.scanlator,
+            language: c.lang,
+            isRead: isRead,
+            dateUploaded: c.dateUploaded,
+            sourceOrder: c.sourceOrder,
+          );
+        }).toList(),
+        history: mangaHistory.map((AidokuBackupHistory h) {
+          final AidokuBackupChapter? ch = mangaChapters.where(
+            (AidokuBackupChapter c) => c.id == h.chapterId,
+          ).firstOrNull;
+          return SourceHistoryEntry(
+            chapterTitle: ch?.title ?? h.chapterId,
+            chapterNumber: ch?.chapter,
+            dateRead: h.dateRead,
+            completed: h.completed,
+            progress: h.progress,
+            total: h.total,
+          );
+        }).toList(),
+        tracking: mangaTracks.map((AidokuBackupTrackItem t) {
+          return SourceTrackingEntry(
+            syncId: int.tryParse(t.trackerId) ?? 0,
+            title: t.title,
+          );
+        }).toList(),
+        dateAdded: libraryEntry?.dateAdded,
+        lastRead: libraryEntry?.lastRead,
+        status: m.status.index,
+      );
+    }).toList();
+  }
 
   @override
   void verbosePrint(bool verbose) {

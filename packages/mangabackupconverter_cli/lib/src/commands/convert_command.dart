@@ -94,8 +94,10 @@ class ConvertCommand extends Command<void> {
     final pipeline = MigrationPipeline(
       repoUrls: const <String>[],
       onSelectExtensions: (List<ExtensionEntry> extensions) async => extensions,
-      onConfirmMatch: (MangaMatchProposal proposal) async =>
-          MangaMatchConfirmation(sourceManga: proposal.sourceManga, confirmedMatch: proposal.bestMatch),
+      onConfirmMatch: (MangaMatchProposal proposal) async => MangaMatchConfirmation(
+        sourceManga: SourceMangaData(details: proposal.sourceManga),
+        confirmedMatch: proposal.bestMatch,
+      ),
       onProgress: (int current, int total, String message) => verbose ? print('[$current/$total] $message') : null,
     );
 

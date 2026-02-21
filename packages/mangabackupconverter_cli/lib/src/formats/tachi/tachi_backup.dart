@@ -8,12 +8,16 @@ import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/common/seconds_epoc_date_time_mapper.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/tachi_exception.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_category.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_chapter.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_extension_repo.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_history.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_manga.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_preference.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source_preferences.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_tracking.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
 import 'package:mangabackupconverter_cli/src/proto/schema_mihon.proto/proto/schema_mihon.pb.dart' as mihon;
 import 'package:mangabackupconverter_cli/src/proto/schema_neko.proto/proto/schema_neko.pb.dart' as neko;
@@ -121,6 +125,73 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
 
   @override
   List<TachiBackupManga> get mangaSearchEntries => backupManga;
+
+  @override
+  List<SourceMangaData> get sourceMangaDataEntries {
+    return backupManga.map((TachiBackupManga manga) {
+      final List<String> categoryNames = manga.categories.map((int idx) {
+        if (idx >= 0 && idx < backupCategories.length) {
+          return backupCategories[idx].name;
+        }
+        return 'Category $idx';
+      }).toList();
+
+      return SourceMangaData(
+        details: manga.toMangaSearchDetails(),
+        categories: categoryNames,
+        chapters: manga.chapters.map((TachiBackupChapter c) {
+          return SourceChapter(
+            title: c.name,
+            chapterNumber: c.chapterNumber,
+            scanlator: c.scanlator.isEmpty ? null : c.scanlator,
+            isRead: c.read,
+            isBookmarked: c.bookmark,
+            lastPageRead: c.lastPageRead,
+            dateUploaded: c.dateUpload > 0
+                ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload)
+                : null,
+            sourceOrder: c.sourceOrder,
+          );
+        }).toList(),
+        history: manga.history.map((TachiBackupHistory h) {
+          final TachiBackupChapter? ch = manga.chapters.where(
+            (TachiBackupChapter c) => c.url == h.url,
+          ).firstOrNull;
+          return SourceHistoryEntry(
+            chapterTitle: ch?.name ?? h.url,
+            chapterNumber: ch?.chapterNumber,
+            dateRead: h.lastRead > 0
+                ? DateTime.fromMillisecondsSinceEpoch(h.lastRead)
+                : null,
+            completed: ch?.read ?? false,
+          );
+        }).toList(),
+        tracking: manga.tracking.map((TachiBackupTracking t) {
+          return SourceTrackingEntry(
+            syncId: t.syncId,
+            libraryId: t.libraryId,
+            mediaId: t.mediaId,
+            trackingUrl: t.trackingUrl,
+            title: t.title,
+            lastChapterRead: t.lastChapterRead,
+            totalChapters: t.totalChapters,
+            score: t.score,
+            status: t.status,
+            startedReadingDate: t.startedReadingDate > 0
+                ? DateTime.fromMillisecondsSinceEpoch(t.startedReadingDate)
+                : null,
+            finishedReadingDate: t.finishedReadingDate > 0
+                ? DateTime.fromMillisecondsSinceEpoch(t.finishedReadingDate)
+                : null,
+          );
+        }).toList(),
+        dateAdded: manga.dateAdded > 0
+            ? DateTime.fromMillisecondsSinceEpoch(manga.dateAdded)
+            : null,
+        status: manga.status,
+      );
+    }).toList();
+  }
 
   static const TachiBackup Function(Map<String, dynamic> map) fromMap = TachiBackupMapper.fromMap;
   static const TachiBackup Function(String json) fromJson = TachiBackupMapper.fromJson;

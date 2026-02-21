@@ -12,6 +12,7 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_db.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_db_models.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup_meta.dart';
+import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:xcode_parser/xcode_parser.dart';
 
@@ -138,6 +139,85 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
 
   @override
   List<TachimangaBackupManga> get mangaSearchEntries => db.mangaTable;
+
+  @override
+  List<SourceMangaData> get sourceMangaDataEntries {
+    return db.mangaTable.map((TachimangaBackupManga manga) {
+      final List<TachimangaBackupChapter> mangaChapters = db.chapterTable.where(
+        (TachimangaBackupChapter c) => c.manga == manga.id,
+      ).toList();
+
+      final List<TachimangaBackupHistory> mangaHistory = db.historyTable.where(
+        (TachimangaBackupHistory h) => h.mangaId == manga.id,
+      ).toList();
+
+      final List<TachimangaBackupTrackRecord> mangaTracks = db.trackRecordTable.where(
+        (TachimangaBackupTrackRecord t) => t.mangaId == manga.id,
+      ).toList();
+
+      final Set<int> categoryIds = db.categoryMangaTable.where(
+        (TachimangaBackupCategoryManga cm) => cm.manga == manga.id,
+      ).map((TachimangaBackupCategoryManga cm) => cm.category).toSet();
+      final List<String> categoryNames = db.categoryTable.where(
+        (TachimangaBackupCategory c) => categoryIds.contains(c.id),
+      ).map((TachimangaBackupCategory c) => c.name).toList();
+
+      return SourceMangaData(
+        details: manga.toMangaSearchDetails(),
+        categories: categoryNames,
+        chapters: mangaChapters.map((TachimangaBackupChapter c) {
+          return SourceChapter(
+            title: c.name,
+            chapterNumber: c.chapterNumber,
+            scanlator: c.scanlator,
+            isRead: c.read,
+            isBookmarked: c.bookmark,
+            lastPageRead: c.lastPageRead,
+            dateUploaded: c.dateUpload > 0
+                ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload)
+                : null,
+            sourceOrder: c.sourceOrder,
+          );
+        }).toList(),
+        history: mangaHistory.map((TachimangaBackupHistory h) {
+          final TachimangaBackupChapter? ch = mangaChapters.where(
+            (TachimangaBackupChapter c) => c.id == h.lastChapterId,
+          ).firstOrNull;
+          return SourceHistoryEntry(
+            chapterTitle: ch?.name ?? 'Chapter ${h.lastChapterId}',
+            chapterNumber: ch?.chapterNumber,
+            dateRead: h.lastReadAt > 0
+                ? DateTime.fromMillisecondsSinceEpoch(h.lastReadAt)
+                : null,
+            completed: ch?.read ?? false,
+          );
+        }).toList(),
+        tracking: mangaTracks.map((TachimangaBackupTrackRecord t) {
+          return SourceTrackingEntry(
+            syncId: t.syncId,
+            libraryId: t.libraryId,
+            mediaId: t.remoteId,
+            trackingUrl: t.remoteUrl,
+            title: t.title,
+            lastChapterRead: t.lastChapterRead,
+            totalChapters: t.totalChapters,
+            score: t.score,
+            status: t.status,
+            startedReadingDate: t.startDate > 0
+                ? DateTime.fromMillisecondsSinceEpoch(t.startDate)
+                : null,
+            finishedReadingDate: t.finishDate > 0
+                ? DateTime.fromMillisecondsSinceEpoch(t.finishDate)
+                : null,
+          );
+        }).toList(),
+        dateAdded: manga.inLibraryAt > 0
+            ? DateTime.fromMillisecondsSinceEpoch(manga.inLibraryAt)
+            : null,
+        status: manga.status,
+      );
+    }).toList();
+  }
 
   TachiBackup toTachiBackup() {
     return TachiBackup(
