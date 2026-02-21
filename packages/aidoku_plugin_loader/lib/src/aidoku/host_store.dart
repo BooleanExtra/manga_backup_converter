@@ -108,3 +108,53 @@ class HostStore {
     _partialResultsController.close();
   }
 }
+
+/// Immutable rate-limit configuration received from a WASM plugin.
+class RateLimitConfig {
+  const RateLimitConfig({required this.permits, required this.periodMs});
+
+  /// Create from the WASM `set_rate_limit(permits, period, unit)` arguments.
+  /// Unit: 0=Seconds, 1=Minutes, 2=Hours.
+  factory RateLimitConfig.fromWasm(int permits, int period, int unit) {
+    final int ms = switch (unit) {
+      1 => period * 60 * 1000,
+      2 => period * 60 * 60 * 1000,
+      _ => period * 1000, // 0 (seconds) or unknown
+    };
+    return RateLimitConfig(permits: permits, periodMs: ms);
+  }
+
+  final int permits;
+  final int periodMs;
+}
+
+/// Sliding-window rate limiter that tracks request timestamps.
+class RateLimiter {
+  RateLimiter(this.config);
+
+  final RateLimitConfig config;
+  final List<int> _timestamps = <int>[];
+
+  /// Returns [Duration.zero] if under limit, or the delay needed until the
+  /// oldest request in the window expires.
+  Duration waitDuration({int? nowMs}) {
+    final int now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
+    _prune(now);
+    if (_timestamps.length < config.permits) return Duration.zero;
+    final int oldest = _timestamps.first;
+    final int waitMs = oldest + config.periodMs - now;
+    return waitMs > 0 ? Duration(milliseconds: waitMs) : Duration.zero;
+  }
+
+  /// Records a request timestamp and prunes expired entries.
+  void recordRequest({int? nowMs}) {
+    final int now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
+    _prune(now);
+    _timestamps.add(now);
+  }
+
+  void _prune(int now) {
+    final int cutoff = now - config.periodMs;
+    _timestamps.removeWhere((int t) => t <= cutoff);
+  }
+}

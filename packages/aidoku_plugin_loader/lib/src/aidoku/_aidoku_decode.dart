@@ -784,6 +784,515 @@ Uint8List encodeOptionalStringMap(Map<String, String>? m) {
   return Uint8List.fromList(<int>[1, ...encodeStringMap(m)]);
 }
 
+// ---------------------------------------------------------------------------
+// AidokuFilter — returned by get_filters export
+// ---------------------------------------------------------------------------
+
+/// A filter returned by the WASM `get_filters` export.
+class AidokuFilter {
+  const AidokuFilter({required this.id, required this.kind, this.title, this.hideFromHeader});
+  final String id;
+  final String? title;
+  final bool? hideFromHeader;
+  final AidokuFilterKind kind;
+}
+
+/// Discriminated union for the kind of an [AidokuFilter].
+sealed class AidokuFilterKind {}
+
+final class AidokuTextFilterKind extends AidokuFilterKind {
+  AidokuTextFilterKind({this.placeholder});
+  final String? placeholder;
+}
+
+final class AidokuSortFilterKind extends AidokuFilterKind {
+  AidokuSortFilterKind({
+    required this.canAscend,
+    required this.options,
+    this.defaultValue,
+  });
+  final bool canAscend;
+  final List<String> options;
+  final AidokuSortFilterDefault? defaultValue;
+}
+
+class AidokuSortFilterDefault {
+  const AidokuSortFilterDefault({required this.index, required this.ascending});
+  final int index;
+  final bool ascending;
+}
+
+final class AidokuCheckFilterKind extends AidokuFilterKind {
+  AidokuCheckFilterKind({required this.canExclude, this.name, this.defaultValue});
+  final String? name;
+  final bool canExclude;
+  final bool? defaultValue;
+}
+
+final class AidokuSelectFilterKind extends AidokuFilterKind {
+  AidokuSelectFilterKind({
+    required this.isGenre,
+    required this.usesTagStyle,
+    required this.options,
+    this.ids,
+    this.defaultValue,
+  });
+  final bool isGenre;
+  final bool usesTagStyle;
+  final List<String> options;
+  final List<String>? ids;
+  final String? defaultValue;
+}
+
+final class AidokuMultiSelectFilterKind extends AidokuFilterKind {
+  AidokuMultiSelectFilterKind({
+    required this.isGenre,
+    required this.canExclude,
+    required this.usesTagStyle,
+    required this.options,
+    this.ids,
+    this.defaultIncluded,
+    this.defaultExcluded,
+  });
+  final bool isGenre;
+  final bool canExclude;
+  final bool usesTagStyle;
+  final List<String> options;
+  final List<String>? ids;
+  final List<String>? defaultIncluded;
+  final List<String>? defaultExcluded;
+}
+
+final class AidokuNoteFilterKind extends AidokuFilterKind {
+  AidokuNoteFilterKind({required this.text});
+  final String text;
+}
+
+final class AidokuRangeFilterKind extends AidokuFilterKind {
+  AidokuRangeFilterKind({required this.decimal, this.min, this.max});
+  final double? min;
+  final double? max;
+  final bool decimal;
+}
+
+/// Decode a single [AidokuFilter] from postcard.
+AidokuFilter decodeAidokuFilter(PostcardReader r) {
+  final String id = r.readString();
+  final String? title = r.readOption(r.readString);
+  final bool? hideFromHeader = r.readOption(r.readBool);
+  final AidokuFilterKind kind = decodeAidokuFilterKind(r);
+  return AidokuFilter(id: id, title: title, hideFromHeader: hideFromHeader, kind: kind);
+}
+
+/// Decode an [AidokuFilterKind] variant.
+AidokuFilterKind decodeAidokuFilterKind(PostcardReader r) {
+  final int discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // Text
+      return AidokuTextFilterKind(placeholder: r.readOption(r.readString));
+    case 1: // Sort
+      final bool canAscend = r.readBool();
+      final List<String> options = r.readList(r.readString);
+      final AidokuSortFilterDefault? defaultValue = r.readOption(
+        () => AidokuSortFilterDefault(
+          index: r.readSignedVarInt(),
+          ascending: r.readBool(),
+        ),
+      );
+      return AidokuSortFilterKind(canAscend: canAscend, options: options, defaultValue: defaultValue);
+    case 2: // Check
+      final String? name = r.readOption(r.readString);
+      final bool canExclude = r.readBool();
+      final bool? defaultValue = r.readOption(r.readBool);
+      return AidokuCheckFilterKind(name: name, canExclude: canExclude, defaultValue: defaultValue);
+    case 3: // Select
+      final bool isGenre = r.readBool();
+      final bool usesTagStyle = r.readBool();
+      final List<String> options = r.readList(r.readString);
+      final List<String>? ids = r.readOption(() => r.readList(r.readString));
+      final String? defaultValue = r.readOption(r.readString);
+      return AidokuSelectFilterKind(
+        isGenre: isGenre,
+        usesTagStyle: usesTagStyle,
+        options: options,
+        ids: ids,
+        defaultValue: defaultValue,
+      );
+    case 4: // MultiSelect
+      final bool isGenre = r.readBool();
+      final bool canExclude = r.readBool();
+      final bool usesTagStyle = r.readBool();
+      final List<String> options = r.readList(r.readString);
+      final List<String>? ids = r.readOption(() => r.readList(r.readString));
+      final List<String>? defaultIncluded = r.readOption(() => r.readList(r.readString));
+      final List<String>? defaultExcluded = r.readOption(() => r.readList(r.readString));
+      return AidokuMultiSelectFilterKind(
+        isGenre: isGenre,
+        canExclude: canExclude,
+        usesTagStyle: usesTagStyle,
+        options: options,
+        ids: ids,
+        defaultIncluded: defaultIncluded,
+        defaultExcluded: defaultExcluded,
+      );
+    case 5: // Note
+      return AidokuNoteFilterKind(text: r.readString());
+    case 6: // Range
+      final double? min = r.readOption(r.readF32);
+      final double? max = r.readOption(r.readF32);
+      final bool decimal = r.readBool();
+      return AidokuRangeFilterKind(min: min, max: max, decimal: decimal);
+    default:
+      throw FormatException('Unknown AidokuFilterKind discriminant: $discriminant');
+  }
+}
+
+/// Decode a `get_filters` result payload into a list of [AidokuFilter].
+List<AidokuFilter>? decodeFilterListResult(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    final r = PostcardReader(bytes);
+    return r.readList(() => decodeAidokuFilter(r));
+  } on Object {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AidokuSetting — returned by get_settings export
+// ---------------------------------------------------------------------------
+
+/// A setting returned by the WASM `get_settings` export.
+class AidokuSetting {
+  const AidokuSetting({
+    required this.key,
+    required this.title,
+    required this.value, this.notification,
+    this.requires,
+    this.requiresFalse,
+    this.refreshes,
+  });
+  final String key;
+  final String title;
+  final String? notification;
+  final String? requires;
+  final String? requiresFalse;
+  final List<String>? refreshes;
+  final AidokuSettingValue value;
+}
+
+/// Discriminated union for the value of an [AidokuSetting].
+sealed class AidokuSettingValue {}
+
+final class AidokuGroupSettingValue extends AidokuSettingValue {
+  AidokuGroupSettingValue({required this.items, this.footer});
+  final String? footer;
+  final List<AidokuSetting> items;
+}
+
+final class AidokuSelectSettingValue extends AidokuSettingValue {
+  AidokuSelectSettingValue({required this.values, this.titles, this.authToOpen, this.defaultValue});
+  final List<String> values;
+  final List<String>? titles;
+  final bool? authToOpen;
+  final String? defaultValue;
+}
+
+final class AidokuMultiSelectSettingValue extends AidokuSettingValue {
+  AidokuMultiSelectSettingValue({required this.values, this.titles, this.authToOpen, this.defaultValue});
+  final List<String> values;
+  final List<String>? titles;
+  final bool? authToOpen;
+  final List<String>? defaultValue;
+}
+
+final class AidokuToggleSettingValue extends AidokuSettingValue {
+  AidokuToggleSettingValue({required this.defaultValue, this.subtitle, this.authToDisable});
+  final String? subtitle;
+  final bool? authToDisable;
+  final bool defaultValue;
+}
+
+final class AidokuStepperSettingValue extends AidokuSettingValue {
+  AidokuStepperSettingValue({
+    required this.minimumValue,
+    required this.maximumValue,
+    this.stepValue,
+    this.defaultValue,
+  });
+  final double minimumValue;
+  final double maximumValue;
+  final double? stepValue;
+  final double? defaultValue;
+}
+
+final class AidokuSegmentSettingValue extends AidokuSettingValue {
+  AidokuSegmentSettingValue({required this.options, this.defaultValue});
+  final List<String> options;
+  final int? defaultValue;
+}
+
+final class AidokuTextSettingValue extends AidokuSettingValue {
+  AidokuTextSettingValue({
+    this.placeholder,
+    this.autocapitalizationType,
+    this.autocorrectionDisabled,
+    this.keyboardType,
+    this.returnKeyType,
+    this.secure,
+    this.defaultValue,
+  });
+  final String? placeholder;
+  final int? autocapitalizationType;
+  final bool? autocorrectionDisabled;
+  final int? keyboardType;
+  final int? returnKeyType;
+  final bool? secure;
+  final String? defaultValue;
+}
+
+final class AidokuButtonSettingValue extends AidokuSettingValue {}
+
+final class AidokuLinkSettingValue extends AidokuSettingValue {
+  AidokuLinkSettingValue({required this.url, this.external});
+  final String url;
+  final bool? external;
+}
+
+enum AidokuLoginMethod { basic, oAuth, web }
+
+final class AidokuLoginSettingValue extends AidokuSettingValue {
+  AidokuLoginSettingValue({
+    required this.method,
+    required this.pkce, required this.useEmail, this.url,
+    this.urlKey,
+    this.logoutTitle,
+    this.tokenUrl,
+    this.callbackScheme,
+    this.localStorageKeys,
+  });
+  final AidokuLoginMethod method;
+  final String? url;
+  final String? urlKey;
+  final String? logoutTitle;
+  final bool pkce;
+  final String? tokenUrl;
+  final String? callbackScheme;
+  final bool useEmail;
+  final List<String>? localStorageKeys;
+}
+
+/// Icon for an [AidokuPageSettingValue].
+sealed class AidokuPageIcon {}
+
+final class AidokuSystemPageIcon extends AidokuPageIcon {
+  AidokuSystemPageIcon({required this.name, required this.color, this.inset});
+  final String name;
+  final String color;
+  final int? inset;
+}
+
+final class AidokuUrlPageIcon extends AidokuPageIcon {
+  AidokuUrlPageIcon({required this.url});
+  final String url;
+}
+
+final class AidokuPageSettingValue extends AidokuSettingValue {
+  AidokuPageSettingValue({
+    required this.items,
+    this.inlineTitle,
+    this.authToOpen,
+    this.icon,
+    this.info,
+  });
+  final List<AidokuSetting> items;
+  final bool? inlineTitle;
+  final bool? authToOpen;
+  final AidokuPageIcon? icon;
+  final String? info;
+}
+
+final class AidokuEditableListSettingValue extends AidokuSettingValue {
+  AidokuEditableListSettingValue({
+    required this.inline, this.lineLimit,
+    this.placeholder,
+    this.defaultValue,
+  });
+  final int? lineLimit;
+  final bool inline;
+  final String? placeholder;
+  final List<String>? defaultValue;
+}
+
+/// Decode a single [AidokuSetting] from postcard.
+AidokuSetting decodeAidokuSetting(PostcardReader r) {
+  final String key = r.readString();
+  final String title = r.readString();
+  final String? notification = r.readOption(r.readString);
+  final String? requires = r.readOption(r.readString);
+  final String? requiresFalse = r.readOption(r.readString);
+  final List<String>? refreshes = r.readOption(() => r.readList(r.readString));
+  final AidokuSettingValue value = decodeAidokuSettingValue(r);
+  return AidokuSetting(
+    key: key,
+    title: title,
+    notification: notification,
+    requires: requires,
+    requiresFalse: requiresFalse,
+    refreshes: refreshes,
+    value: value,
+  );
+}
+
+/// Decode an [AidokuSettingValue] variant.
+AidokuSettingValue decodeAidokuSettingValue(PostcardReader r) {
+  final int discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // Group
+      final String? footer = r.readOption(r.readString);
+      final List<AidokuSetting> items = r.readList(() => decodeAidokuSetting(r));
+      return AidokuGroupSettingValue(footer: footer, items: items);
+    case 1: // Select
+      final List<String> values = r.readList(r.readString);
+      final List<String>? titles = r.readOption(() => r.readList(r.readString));
+      final bool? authToOpen = r.readOption(r.readBool);
+      final String? defaultValue = r.readOption(r.readString);
+      return AidokuSelectSettingValue(values: values, titles: titles, authToOpen: authToOpen, defaultValue: defaultValue);
+    case 2: // MultiSelect
+      final List<String> values = r.readList(r.readString);
+      final List<String>? titles = r.readOption(() => r.readList(r.readString));
+      final bool? authToOpen = r.readOption(r.readBool);
+      final List<String>? defaultValue = r.readOption(() => r.readList(r.readString));
+      return AidokuMultiSelectSettingValue(
+        values: values,
+        titles: titles,
+        authToOpen: authToOpen,
+        defaultValue: defaultValue,
+      );
+    case 3: // Toggle
+      final String? subtitle = r.readOption(r.readString);
+      final bool? authToDisable = r.readOption(r.readBool);
+      final bool defaultValue = r.readBool();
+      return AidokuToggleSettingValue(subtitle: subtitle, authToDisable: authToDisable, defaultValue: defaultValue);
+    case 4: // Stepper
+      final double minimumValue = r.readF64();
+      final double maximumValue = r.readF64();
+      final double? stepValue = r.readOption(r.readF64);
+      final double? defaultValue = r.readOption(r.readF64);
+      return AidokuStepperSettingValue(
+        minimumValue: minimumValue,
+        maximumValue: maximumValue,
+        stepValue: stepValue,
+        defaultValue: defaultValue,
+      );
+    case 5: // Segment
+      final List<String> options = r.readList(r.readString);
+      final int? defaultValue = r.readOption(r.readSignedVarInt);
+      return AidokuSegmentSettingValue(options: options, defaultValue: defaultValue);
+    case 6: // Text
+      final String? placeholder = r.readOption(r.readString);
+      final int? autocapitalizationType = r.readOption(r.readSignedVarInt);
+      final bool? autocorrectionDisabled = r.readOption(r.readBool);
+      final int? keyboardType = r.readOption(r.readSignedVarInt);
+      final int? returnKeyType = r.readOption(r.readSignedVarInt);
+      final bool? secure = r.readOption(r.readBool);
+      final String? defaultValue = r.readOption(r.readString);
+      return AidokuTextSettingValue(
+        placeholder: placeholder,
+        autocapitalizationType: autocapitalizationType,
+        autocorrectionDisabled: autocorrectionDisabled,
+        keyboardType: keyboardType,
+        returnKeyType: returnKeyType,
+        secure: secure,
+        defaultValue: defaultValue,
+      );
+    case 7: // Button
+      return AidokuButtonSettingValue();
+    case 8: // Link
+      final String url = r.readString();
+      final bool? external = r.readOption(r.readBool);
+      return AidokuLinkSettingValue(url: url, external: external);
+    case 9: // Login
+      final int methodIdx = r.readVarInt();
+      final AidokuLoginMethod method = AidokuLoginMethod.values[methodIdx.clamp(0, AidokuLoginMethod.values.length - 1)];
+      final String? url = r.readOption(r.readString);
+      final String? urlKey = r.readOption(r.readString);
+      final String? logoutTitle = r.readOption(r.readString);
+      final bool pkce = r.readBool();
+      final String? tokenUrl = r.readOption(r.readString);
+      final String? callbackScheme = r.readOption(r.readString);
+      final bool useEmail = r.readBool();
+      final List<String>? localStorageKeys = r.readOption(() => r.readList(r.readString));
+      return AidokuLoginSettingValue(
+        method: method,
+        url: url,
+        urlKey: urlKey,
+        logoutTitle: logoutTitle,
+        pkce: pkce,
+        tokenUrl: tokenUrl,
+        callbackScheme: callbackScheme,
+        useEmail: useEmail,
+        localStorageKeys: localStorageKeys,
+      );
+    case 10: // Page
+      final List<AidokuSetting> items = r.readList(() => decodeAidokuSetting(r));
+      final bool? inlineTitle = r.readOption(r.readBool);
+      final bool? authToOpen = r.readOption(r.readBool);
+      final AidokuPageIcon? icon = r.readOption(() => _decodePageIcon(r));
+      final String? info = r.readOption(r.readString);
+      return AidokuPageSettingValue(
+        items: items,
+        inlineTitle: inlineTitle,
+        authToOpen: authToOpen,
+        icon: icon,
+        info: info,
+      );
+    case 11: // EditableList
+      final int? lineLimit = r.readOption(r.readSignedVarInt);
+      final bool inline = r.readBool();
+      final String? placeholder = r.readOption(r.readString);
+      final List<String>? defaultValue = r.readOption(() => r.readList(r.readString));
+      return AidokuEditableListSettingValue(
+        lineLimit: lineLimit,
+        inline: inline,
+        placeholder: placeholder,
+        defaultValue: defaultValue,
+      );
+    default:
+      throw FormatException('Unknown AidokuSettingValue discriminant: $discriminant');
+  }
+}
+
+AidokuPageIcon _decodePageIcon(PostcardReader r) {
+  final int discriminant = r.readVarInt();
+  switch (discriminant) {
+    case 0: // System
+      final String name = r.readString();
+      final String color = r.readString();
+      final int? inset = r.readOption(r.readSignedVarInt);
+      return AidokuSystemPageIcon(name: name, color: color, inset: inset);
+    case 1: // Url
+      return AidokuUrlPageIcon(url: r.readString());
+    default:
+      throw FormatException('Unknown AidokuPageIcon discriminant: $discriminant');
+  }
+}
+
+/// Decode a `get_settings` result payload into a list of [AidokuSetting].
+List<AidokuSetting>? decodeSettingListResult(Uint8List bytes) {
+  if (bytes.isEmpty) return null;
+  try {
+    final r = PostcardReader(bytes);
+    return r.readList(() => decodeAidokuSetting(r));
+  } on Object {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page encoding
+// ---------------------------------------------------------------------------
+
 /// Encode a [Page] as postcard bytes for `get_page_description`.
 /// Maps to the Rust Page struct: PageContent enum + thumbnail + has_description + description.
 Uint8List encodePage(Page p) {

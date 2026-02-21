@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+import 'dart:async';
 import 'dart:convert';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
-import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/aix_parser.dart';
-import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:aidoku_plugin_loader/src/models/chapter.dart';
 import 'package:aidoku_plugin_loader/src/models/filter.dart';
@@ -14,18 +16,26 @@ import 'package:aidoku_plugin_loader/src/models/manga.dart';
 import 'package:aidoku_plugin_loader/src/models/page.dart';
 import 'package:aidoku_plugin_loader/src/models/setting_item.dart';
 import 'package:aidoku_plugin_loader/src/models/source_info.dart';
-import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
+import 'package:aidoku_plugin_loader/src/web/wasm_worker_js.dart';
+import 'package:aidoku_plugin_loader/src/web/wasm_worker_launcher.dart';
 
 /// A loaded Aidoku WASM source plugin (web implementation).
 ///
-/// WASM executes directly on the main thread. HTTP host imports are stubbed
-/// (return -1) because `Atomics.wait()` is not allowed on the main browser
-/// thread. Full async HTTP support requires the COOP+COEP Web Worker approach.
+/// WASM executes in a dedicated Web Worker where synchronous XMLHttpRequest is
+/// allowed, enabling HTTP host imports (`net::send`) to work. Communication
+/// between the main thread and the worker uses `postMessage`.
 class AidokuPlugin {
-  AidokuPlugin._(this._runner, this._store, this.sourceInfo, this.settings, this.filterDefinitions);
+  AidokuPlugin._({
+    required JSWorker worker,
+    required JSString blobUrl,
+    required this.sourceInfo,
+    required this.settings,
+    required this.filterDefinitions,
+  }) : _worker = worker,
+       _blobUrl = blobUrl;
 
-  final WasmRunner _runner;
-  final HostStore _store;
+  final JSWorker _worker;
+  final JSString _blobUrl;
   final SourceInfo sourceInfo;
 
   /// Parsed settings from `settings.json`.
@@ -40,6 +50,13 @@ class AidokuPlugin {
       .map((FilterInfo f) => f.toDefaultFilterValue())
       .whereType<FilterValue>()
       .toList();
+
+  /// Pending call completers, keyed by call ID.
+  final Map<int, Completer<_WorkerResult>> _pending = <int, Completer<_WorkerResult>>{};
+  int _nextCallId = 1;
+
+  final StreamController<HomePartialResult> _partialResultsController =
+      StreamController<HomePartialResult>.broadcast();
 
   // ---------------------------------------------------------------------------
   // Factory
@@ -94,20 +111,85 @@ class AidokuPlugin {
       }
     }
 
-    final store = HostStore();
-    // Seed defaults from settings.json before WASM starts.
-    store.defaults.addAll(initialDefaults);
+    // Create the worker.
+    final (:JSWorker worker, :JSString blobUrl) = createWasmWorker(workerJs);
 
-    final lazyRunner = _LazyRunner();
+    final plugin = AidokuPlugin._(
+      worker: worker,
+      blobUrl: blobUrl,
+      sourceInfo: bundle.sourceInfo,
+      settings: settings,
+      filterDefinitions: filterDefinitions,
+    );
 
-    // No asyncHttp/asyncSleep on web — HTTP imports return -1 (stub).
-    final Map<String, Map<String, Function>> imports = buildAidokuHostImports(lazyRunner, store, sourceId: sourceId);
-    final WasmRunner runner = await WasmRunner.fromBytes(bundle.wasmBytes, imports: imports);
-    lazyRunner.delegate = runner;
+    // Set up message listener.
+    worker.onmessage = ((JSObject event) {
+      final msgData = event.getProperty('data'.toJS)! as JSObject;
+      final String type = (msgData.getProperty('type'.toJS)! as JSString).toDart;
 
-    runner.call('start', <Object?>[]);
+      if (type == 'result') {
+        final int id = (msgData.getProperty('id'.toJS)! as JSNumber).toDartInt;
+        final Completer<_WorkerResult>? completer = plugin._pending.remove(id);
+        if (completer == null) return;
 
-    return AidokuPlugin._(runner, store, bundle.sourceInfo, settings, filterDefinitions);
+        final JSAny? jsData = msgData.getProperty('data'.toJS);
+        final JSAny? jsReturnValue = msgData.getProperty('returnValue'.toJS);
+        Uint8List? resultData;
+        var returnValue = 0;
+
+        if (jsData != null && !jsData.isUndefinedOrNull) {
+          resultData = (jsData as JSUint8Array).toDart;
+        }
+        if (jsReturnValue != null && !jsReturnValue.isUndefinedOrNull) {
+          returnValue = (jsReturnValue as JSNumber).toDartInt;
+        }
+
+        completer.complete(_WorkerResult(data: resultData, returnValue: returnValue));
+      } else if (type == 'init_done') {
+        final Completer<_WorkerResult>? completer = plugin._pending.remove(-1);
+        completer?.complete(const _WorkerResult());
+      } else if (type == 'error') {
+        final int id = (msgData.getProperty('id'.toJS)! as JSNumber).toDartInt;
+        final String message = (msgData.getProperty('message'.toJS)! as JSString).toDart;
+        final Completer<_WorkerResult>? completer = plugin._pending.remove(id);
+        completer?.completeError(Exception(message));
+      } else if (type == 'partial_result') {
+        final JSAny? jsData = msgData.getProperty('data'.toJS);
+        if (jsData != null && !jsData.isUndefinedOrNull) {
+          final Uint8List bytes = (jsData as JSUint8Array).toDart;
+          final HomePartialResult? decoded = decodeHomePartialResultFromBytes(bytes);
+          if (decoded != null) plugin._partialResultsController.add(decoded);
+        }
+      }
+    }).toJS;
+
+    // Send init message with WASM bytes and defaults.
+    final initCompleter = Completer<_WorkerResult>();
+    plugin._pending[-1] = initCompleter;
+
+    // Serialize defaults for JS: int values stay as-is, Uint8List → JSUint8Array.
+    final jsDefaults = JSObject();
+    for (final MapEntry<String, Object> entry in initialDefaults.entries) {
+      final Object value = entry.value;
+      if (value is int) {
+        jsDefaults.setProperty(entry.key.toJS, value.toJS);
+      } else if (value is Uint8List) {
+        jsDefaults.setProperty(entry.key.toJS, value.toJS);
+      }
+    }
+
+    final initMsg = JSObject();
+    initMsg.setProperty('type'.toJS, 'init'.toJS);
+    initMsg.setProperty('wasmBytes'.toJS, bundle.wasmBytes.buffer.toJS);
+    initMsg.setProperty('sourceId'.toJS, sourceId.toJS);
+    initMsg.setProperty('defaults'.toJS, jsDefaults);
+
+    final JSArrayBuffer wasmTransfer = bundle.wasmBytes.buffer.toJS;
+    worker.postMessage(initMsg, <JSObject>[wasmTransfer].toJS);
+
+    await initCompleter.future;
+
+    return plugin;
   }
 
   // ---------------------------------------------------------------------------
@@ -120,51 +202,49 @@ class AidokuPlugin {
     int page, {
     List<FilterValue> filters = const <FilterValue>[],
   }) async {
-    final int queryRid = _store.addBytes(Uint8List.fromList(utf8.encode(query)));
-    final int filtersRid = _store.addBytes(encodeFilters(filters));
+    final _WorkerResult result = await _call(
+      'get_search_manga_list',
+      rids: <Uint8List>[
+        Uint8List.fromList(utf8.encode(query)),
+        encodeFilters(filters),
+      ],
+      args: <Object?>[null, page, null],
+    );
+    if (result.data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
-      final int ptr = _callInt('get_search_manga_list', <Object?>[queryRid, page, filtersRid]);
-      if (ptr <= 0) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
-      final Uint8List data = _readResult(ptr);
-      return decodeMangaPageResult(PostcardReader(data));
+      return decodeMangaPageResult(PostcardReader(result.data!));
     } on Object {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
-    } finally {
-      _store.remove(queryRid);
-      _store.remove(filtersRid);
     }
   }
 
   /// Fetch updated manga details. Returns null on error or no data.
   Future<Manga?> getMangaDetails(String key) async {
-    // v2 ABI: get_manga_update(manga_descriptor_rid, needs_details, needs_chapters)
-    final int mangaRid = _store.addBytes(encodeMangaKey(key));
+    final _WorkerResult result = await _call(
+      'get_manga_update',
+      rids: <Uint8List>[encodeMangaKey(key)],
+      args: <Object?>[null, 1, 0],
+    );
+    if (result.data == null) return null;
     try {
-      final int ptr = _callInt('get_manga_update', <Object?>[mangaRid, 1, 0]);
-      if (ptr <= 0) return null;
-      return decodeManga(PostcardReader(_readResult(ptr)));
+      return decodeManga(PostcardReader(result.data!));
     } on Object {
       return null;
-    } finally {
-      _store.remove(mangaRid);
     }
   }
 
   /// Fetch page image URLs for a chapter.
   Future<List<Page>> getPageList(Manga manga, Chapter chapter) async {
-    // ABI: get_page_list(manga_descriptor_rid, chapter_descriptor_rid)
-    // Note: manga comes FIRST, chapter comes SECOND.
-    final int mangaRid = _store.addBytes(encodeManga(manga));
-    final int chapterRid = _store.addBytes(encodeChapter(chapter));
+    final _WorkerResult result = await _call(
+      'get_page_list',
+      rids: <Uint8List>[encodeManga(manga), encodeChapter(chapter)],
+      args: <Object?>[null, null],
+    );
+    if (result.data == null) return <Page>[];
     try {
-      final int ptr = _callInt('get_page_list', <Object?>[mangaRid, chapterRid]);
-      if (ptr <= 0) return <Page>[];
-      return decodePageList(PostcardReader(_readResult(ptr)));
+      return decodePageList(PostcardReader(result.data!));
     } on Object {
       return <Page>[];
-    } finally {
-      _store.remove(chapterRid);
-      _store.remove(mangaRid);
     }
   }
 
@@ -172,35 +252,25 @@ class AidokuPlugin {
   Future<MangaPageResult> getMangaList(int page, {SourceListing? listing}) async {
     Uint8List? data;
 
-    // Call get_manga_list with the Listing descriptor RID from the manifest.
     if (listing != null) {
-      final int listingRid = _store.addBytes(
-        encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)),
+      final _WorkerResult result = await _call(
+        'get_manga_list',
+        rids: <Uint8List>[
+          encodeListing(AidokuListing(id: listing.id, name: listing.name, kind: listing.kind)),
+        ],
+        args: <Object?>[null, page],
       );
-      try {
-        final int ptr = _callInt('get_manga_list', <Object?>[listingRid, page]);
-        if (ptr > 0) data = _readResult(ptr);
-      } on Object {
-        // get_manga_list failed; fall through to search fallback.
-      } finally {
-        _store.remove(listingRid);
-      }
+      data = result.data;
     }
 
     if (data == null) {
       // No listing provided or get_manga_list failed — fall back to empty-query search.
-      // TODO: Add helper functions for rid creation
-      final int queryRid = _store.addBytes(Uint8List(0));
-      final int filtersRid = _store.addBytes(Uint8List.fromList(<int>[0]));
-      try {
-        final int ptr = _callInt('get_search_manga_list', <Object?>[queryRid, page, filtersRid]);
-        if (ptr > 0) data = _readResult(ptr);
-      } on Object {
-        // fall through
-      } finally {
-        _store.remove(queryRid);
-        _store.remove(filtersRid);
-      }
+      final _WorkerResult result = await _call(
+        'get_search_manga_list',
+        rids: <Uint8List>[Uint8List(0), Uint8List.fromList(<int>[0])],
+        args: <Object?>[null, page, null],
+      );
+      data = result.data;
     }
 
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
@@ -211,11 +281,19 @@ class AidokuPlugin {
     }
   }
 
-  /// Raw postcard bytes from `get_filters`, or null if not supported.
-  Future<Uint8List?> getFilters() => _rawGet('get_filters');
+  /// Decoded filter definitions from the WASM `get_filters` export.
+  Future<List<AidokuFilter>?> getFilters() async {
+    final Uint8List? bytes = await _rawGet('get_filters');
+    if (bytes == null) return null;
+    return decodeFilterListResult(bytes);
+  }
 
-  /// Raw postcard bytes from `get_settings`, or null if not supported.
-  Future<Uint8List?> getSettings() => _rawGet('get_settings');
+  /// Decoded settings from the WASM `get_settings` export.
+  Future<List<AidokuSetting>?> getSettings() async {
+    final Uint8List? bytes = await _rawGet('get_settings');
+    if (bytes == null) return null;
+    return decodeSettingListResult(bytes);
+  }
 
   /// Decoded home layout from `get_home`, or null if not supported.
   Future<HomeLayout?> getHome() async {
@@ -236,32 +314,24 @@ class AidokuPlugin {
 
   /// Alternate cover URLs for a manga from `get_alternate_covers`.
   Future<List<String>> getAlternateCovers(Manga manga) async {
-    final int mangaRid = _store.addBytes(encodeManga(manga));
-    try {
-      final int ptr = _callInt('get_alternate_covers', <Object?>[mangaRid]);
-      if (ptr <= 0) return const <String>[];
-      return decodeStringVecResult(_readResult(ptr));
-    } on Object {
-      return const <String>[];
-    } finally {
-      _store.remove(mangaRid);
-    }
+    final _WorkerResult result = await _call(
+      'get_alternate_covers',
+      rids: <Uint8List>[encodeManga(manga)],
+      args: <Object?>[null],
+    );
+    if (result.data == null) return const <String>[];
+    return decodeStringVecResult(result.data!);
   }
 
   /// Custom image request for a URL from `get_image_request`.
   Future<ImageRequest?> getImageRequest(String url, {Map<String, String>? context}) async {
-    final int urlRid = _store.addBytes(encodeStringBytes(url));
-    final int contextRid = _store.addBytes(encodeOptionalStringMap(context));
-    try {
-      final int ptr = _callInt('get_image_request', <Object?>[urlRid, contextRid]);
-      if (ptr <= 0) return null;
-      return decodeImageRequestResult(_readResult(ptr));
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(urlRid);
-      _store.remove(contextRid);
-    }
+    final _WorkerResult result = await _call(
+      'get_image_request',
+      rids: <Uint8List>[encodeStringBytes(url), encodeOptionalStringMap(context)],
+      args: <Object?>[null, null],
+    );
+    if (result.data == null) return null;
+    return decodeImageRequestResult(result.data!);
   }
 
   /// Source base URL from `get_base_url`.
@@ -272,184 +342,165 @@ class AidokuPlugin {
 
   /// Page description string from `get_page_description`.
   Future<String?> getPageDescription(Page page) async {
-    final int pageRid = _store.addBytes(encodePage(page));
-    try {
-      final int ptr = _callInt('get_page_description', <Object?>[pageRid]);
-      if (ptr <= 0) return null;
-      return decodeStringResult(_readResult(ptr));
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(pageRid);
-    }
+    final _WorkerResult result = await _call(
+      'get_page_description',
+      rids: <Uint8List>[encodePage(page)],
+      args: <Object?>[null],
+    );
+    if (result.data == null) return null;
+    return decodeStringResult(result.data!);
   }
 
   /// Process a page image (e.g. descramble) via `process_page_image`.
   Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
-    final int imageRid = _store.addBytes(encodeImageResponse(imageBytes));
-    final int contextRid = _store.addBytes(encodeOptionalStringMap(context));
-    try {
-      final int ptr = _callInt('process_page_image', <Object?>[imageRid, contextRid]);
-      if (ptr <= 0) return null;
-      return _readResult(ptr);
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(imageRid);
-      _store.remove(contextRid);
-    }
+    final _WorkerResult result = await _call(
+      'process_page_image',
+      rids: <Uint8List>[encodeImageResponse(imageBytes), encodeOptionalStringMap(context)],
+      args: <Object?>[null, null],
+    );
+    return result.data;
   }
 
   /// Deliver a notification string to the plugin via `handle_notification`.
   Future<void> handleNotification(String notification) async {
-    final int rid = _store.addBytes(encodeStringBytes(notification));
-    try {
-      _runner.call('handle_notification', <Object?>[rid]);
-    } on Object {
-      // Not implemented or error — ignore.
-    } finally {
-      _store.remove(rid);
-    }
+    await _call(
+      'handle_notification',
+      rids: <Uint8List>[encodeStringBytes(notification)],
+      args: <Object?>[null],
+      returnType: 'void',
+    );
   }
 
   /// Handle a deep link URL via `handle_deep_link`.
   Future<DeepLinkResult?> handleDeepLink(String url) async {
-    final int rid = _store.addBytes(encodeStringBytes(url));
-    try {
-      final int ptr = _callInt('handle_deep_link', <Object?>[rid]);
-      if (ptr <= 0) return null;
-      return decodeDeepLinkResultFromBytes(_readResult(ptr));
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(rid);
-    }
+    final _WorkerResult result = await _call(
+      'handle_deep_link',
+      rids: <Uint8List>[encodeStringBytes(url)],
+      args: <Object?>[null],
+    );
+    if (result.data == null) return null;
+    return decodeDeepLinkResultFromBytes(result.data!);
   }
 
   /// Perform basic (username/password) login via `handle_basic_login`.
   Future<bool> handleBasicLogin(String key, String username, String password) async {
-    final int keyRid = _store.addBytes(encodeStringBytes(key));
-    final int userRid = _store.addBytes(encodeStringBytes(username));
-    final int passRid = _store.addBytes(encodeStringBytes(password));
-    try {
-      final int result = _callInt('handle_basic_login', <Object?>[keyRid, userRid, passRid]);
-      return result >= 0;
-    } on Object {
-      return false;
-    } finally {
-      _store.remove(keyRid);
-      _store.remove(userRid);
-      _store.remove(passRid);
-    }
+    final _WorkerResult result = await _call(
+      'handle_basic_login',
+      rids: <Uint8List>[encodeStringBytes(key), encodeStringBytes(username), encodeStringBytes(password)],
+      args: <Object?>[null, null, null],
+      returnType: 'bool',
+    );
+    return result.returnValue >= 0;
   }
 
   /// Perform web (cookie) login via `handle_web_login`.
   Future<bool> handleWebLogin(String key, Map<String, String> cookies) async {
-    final int keyRid = _store.addBytes(encodeStringBytes(key));
-    final int cookiesRid = _store.addBytes(encodeStringMap(cookies));
-    try {
-      final int result = _callInt('handle_web_login', <Object?>[keyRid, cookiesRid]);
-      return result >= 0;
-    } on Object {
-      return false;
-    } finally {
-      _store.remove(keyRid);
-      _store.remove(cookiesRid);
-    }
+    final _WorkerResult result = await _call(
+      'handle_web_login',
+      rids: <Uint8List>[encodeStringBytes(key), encodeStringMap(cookies)],
+      args: <Object?>[null, null],
+      returnType: 'bool',
+    );
+    return result.returnValue >= 0;
   }
 
   /// Migrate a manga key via `handle_key_migration`.
   Future<String?> handleMangaMigration(String key) async {
-    final int rid = _store.addBytes(encodeStringBytes(key));
-    try {
-      final int ptr = _callInt('handle_key_migration', <Object?>[rid, -1]);
-      if (ptr <= 0) return null;
-      return decodeStringResult(_readResult(ptr));
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(rid);
-    }
+    final _WorkerResult result = await _call(
+      'handle_key_migration',
+      rids: <Uint8List>[encodeStringBytes(key)],
+      args: <Object?>[null, -1],
+    );
+    if (result.data == null) return null;
+    return decodeStringResult(result.data!);
   }
 
   /// Migrate a chapter key via `handle_key_migration`.
   Future<String?> handleChapterMigration(String mangaKey, String chapterKey) async {
-    final int mangaRid = _store.addBytes(encodeStringBytes(mangaKey));
-    final int chapterRid = _store.addBytes(encodeStringBytes(chapterKey));
-    try {
-      final int ptr = _callInt('handle_key_migration', <Object?>[mangaRid, chapterRid]);
-      if (ptr <= 0) return null;
-      return decodeStringResult(_readResult(ptr));
-    } on Object {
-      return null;
-    } finally {
-      _store.remove(mangaRid);
-      _store.remove(chapterRid);
-    }
+    final _WorkerResult result = await _call(
+      'handle_key_migration',
+      rids: <Uint8List>[encodeStringBytes(mangaKey), encodeStringBytes(chapterKey)],
+      args: <Object?>[null, null],
+    );
+    if (result.data == null) return null;
+    return decodeStringResult(result.data!);
   }
 
-  Stream<Uint8List> get partialResults => _store.partialResults;
+  /// Partial results stream — pushed by `env::_send_partial_result` during
+  /// `get_home` and other streaming exports.
+  Stream<HomePartialResult> get partialResults => _partialResultsController.stream;
 
-  void dispose() => _store.dispose();
+  /// Shut down the Web Worker and free the Blob URL.
+  void dispose() {
+    final shutdownMsg = JSObject();
+    shutdownMsg.setProperty('type'.toJS, 'shutdown'.toJS);
+    _worker.postMessage(shutdownMsg);
+    _worker.terminate();
+    revokeObjectURL(_blobUrl);
+    _partialResultsController.close();
+    // Complete any pending calls with null.
+    for (final Completer<_WorkerResult> completer in _pending.values) {
+      if (!completer.isCompleted) completer.complete(const _WorkerResult());
+    }
+    _pending.clear();
+  }
 
   // ---------------------------------------------------------------------------
   // Internal helpers
   // ---------------------------------------------------------------------------
 
-  int _callInt(String name, List<Object?> args) => (_runner.call(name, args) as num).toInt();
+  /// Send a call to the worker and await the result.
+  Future<_WorkerResult> _call(
+    String exportName, {
+    List<Uint8List> rids = const <Uint8List>[],
+    List<Object?> args = const <Object?>[],
+    String? returnType,
+  }) async {
+    final int id = _nextCallId++;
+    final completer = Completer<_WorkerResult>();
+    _pending[id] = completer;
 
-  /// Read a length-prefixed result buffer from WASM memory and free it.
-  ///
-  /// Layout written by Rust `__handle_result`:
-  ///   bytes[0..4] = (8 + payload_len) as i32 LE  ← total buffer size, signed
-  ///   bytes[4..8] = capacity as i32 LE
-  ///   bytes[8..]  = postcard payload
-  ///
-  /// AidokuError::Message returns a positive ptr where bytes[0..4] = -1_i32 LE.
-  Uint8List _readResult(int ptr) {
-    final Uint8List lenBytes = _runner.readMemory(ptr, 4);
-    final int totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
-    if (totalLen < 0) {
-      try {
-        _runner.call('free_result', <Object?>[ptr]);
-      } on Exception catch (e) {
-        // ignore: avoid_print
-        print('[aidoku] free_result failed after error result: $e');
-      }
-      throw const FormatException('AidokuError from WASM result buffer');
+    // Build the rids array as JS objects with data property.
+    final JSArray<JSObject> jsRids = <JSObject>[
+      for (final Uint8List bytes in rids) _makeRidObject(bytes),
+    ].toJS;
+
+    // Build the args array as JS values.
+    final JSArray<JSAny?> jsArgs = <JSAny?>[
+      for (final Object? arg in args)
+        arg == null ? null : (arg as num).toJS,
+    ].toJS;
+
+    final callMsg = JSObject();
+    callMsg.setProperty('type'.toJS, 'call'.toJS);
+    callMsg.setProperty('id'.toJS, id.toJS);
+    callMsg.setProperty('export'.toJS, exportName.toJS);
+    callMsg.setProperty('rids'.toJS, jsRids);
+    callMsg.setProperty('args'.toJS, jsArgs);
+    if (returnType != null) {
+      callMsg.setProperty('returnType'.toJS, returnType.toJS);
     }
-    final int payloadLen = totalLen - 8;
-    final Uint8List data = _runner.readMemory(ptr + 8, payloadLen);
-    try {
-      _runner.call('free_result', <Object?>[ptr]);
-    } on Exception catch (e) {
-      // ignore: avoid_print
-      print('[aidoku] free_result failed: $e');
-    }
-    return data;
+
+    _worker.postMessage(callMsg);
+
+    return completer.future;
+  }
+
+  static JSObject _makeRidObject(Uint8List bytes) {
+    final obj = JSObject();
+    obj.setProperty('data'.toJS, bytes.toJS);
+    return obj;
   }
 
   Future<Uint8List?> _rawGet(String funcName) async {
-    final int ptr = _callInt(funcName, <Object?>[]);
-    if (ptr <= 0) return null;
-    return _readResult(ptr);
+    final _WorkerResult result = await _call(funcName);
+    return result.data;
   }
 }
 
-/// Proxy that forwards [WasmRunner] calls to a [delegate] once set.
-class _LazyRunner implements WasmRunner {
-  WasmRunner? delegate;
-  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
-
-  @override
-  dynamic call(String name, List<Object?> args) => _r.call(name, args);
-
-  @override
-  Uint8List readMemory(int offset, int length) => _r.readMemory(offset, length);
-
-  @override
-  void writeMemory(int offset, Uint8List bytes) => _r.writeMemory(offset, bytes);
-
-  @override
-  int get memorySize => _r.memorySize;
+/// Result from a worker call.
+class _WorkerResult {
+  const _WorkerResult({this.data, this.returnValue = 0});
+  final Uint8List? data;
+  final int returnValue;
 }

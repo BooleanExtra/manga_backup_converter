@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/aix_parser.dart';
+import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:aidoku_plugin_loader/src/models/chapter.dart';
 import 'package:aidoku_plugin_loader/src/models/filter.dart';
@@ -43,8 +44,9 @@ class AidokuPlugin {
   final WasmSemaphore _semaphore;
   final WasmSharedState _sharedState;
 
-  /// TODO: Decode the partial results into HomePartialResult objects
-  final StreamController<Uint8List> _partialResultsController = StreamController<Uint8List>.broadcast();
+  final StreamController<HomePartialResult> _partialResultsController = StreamController<HomePartialResult>.broadcast();
+
+  RateLimiter? _rateLimiter;
 
   final SourceInfo sourceInfo;
 
@@ -163,8 +165,13 @@ class AidokuPlugin {
       } else if (msg is WasmLogMsg) {
         // ignore: avoid_print
         print('[wasm] ${msg.message}\n${msg.stackTrace}');
+      } else if (msg is WasmRateLimitMsg) {
+        plugin._rateLimiter = RateLimiter(
+          RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
+        );
       } else if (msg is WasmPartialResultMsg) {
-        plugin._partialResultsController.add(msg.data);
+        final HomePartialResult? decoded = decodeHomePartialResultFromBytes(msg.data);
+        if (decoded != null) plugin._partialResultsController.add(decoded);
       }
     });
 
@@ -172,6 +179,16 @@ class AidokuPlugin {
   }
 
   Future<void> _handleHttpMsg(WasmHttpMsg msg) async {
+    // Enforce rate limiting if configured by the plugin.
+    final RateLimiter? limiter = _rateLimiter;
+    if (limiter != null) {
+      final Duration wait = limiter.waitDuration();
+      if (wait > Duration.zero) {
+        await Future<void>.delayed(wait);
+      }
+      limiter.recordRequest();
+    }
+
     try {
       final Uri uri = Uri.parse(msg.url);
       final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
@@ -282,15 +299,19 @@ class AidokuPlugin {
     }
   }
 
-  /// Raw postcard bytes from `get_filters`, or null if not supported.
-  /// 
-  /// TODO: Decode the filters into FilterValue objects
-  Future<Uint8List?> getFilters() => _rawGet('get_filters');
+  /// Decoded filter definitions from the WASM `get_filters` export.
+  Future<List<AidokuFilter>?> getFilters() async {
+    final Uint8List? bytes = await _rawGet('get_filters');
+    if (bytes == null) return null;
+    return decodeFilterListResult(bytes);
+  }
 
-  /// Raw postcard bytes from `get_settings`, or null if not supported.
-  /// 
-  /// TODO: Decode the settings into SettingItem objects
-  Future<Uint8List?> getSettings() => _rawGet('get_settings');
+  /// Decoded settings from the WASM `get_settings` export.
+  Future<List<AidokuSetting>?> getSettings() async {
+    final Uint8List? bytes = await _rawGet('get_settings');
+    if (bytes == null) return null;
+    return decodeSettingListResult(bytes);
+  }
 
   /// Decoded home layout from `get_home`, or null if not supported.
   Future<HomeLayout?> getHome() async {
@@ -358,8 +379,9 @@ class AidokuPlugin {
   }
 
   /// Process a page image (e.g. descramble) via `process_page_image`.
-  /// 
-  /// TODO: Decode the image bytes into something usable (check if img/Flutter can decode it)
+  ///
+  /// Returns standard image bytes (PNG/JPEG/WebP) usable with `Image.memory()`
+  /// or `package:image`.
   Future<Uint8List?> processPageImage(Uint8List imageBytes, {Map<String, String>? context}) async {
     final port = ReceivePort();
     _wasmCmdPort.send(
@@ -455,7 +477,7 @@ class AidokuPlugin {
 
   /// Partial results stream — pushed by `env::_send_partial_result` during
   /// `get_home` and other streaming exports.
-  Stream<Uint8List> get partialResults => _partialResultsController.stream;
+  Stream<HomePartialResult> get partialResults => _partialResultsController.stream;
 
   /// Shut down the WASM background isolate and free native resources.
   void dispose() {
