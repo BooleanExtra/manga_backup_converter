@@ -63,6 +63,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/common/` — `Convertable` interface, shared mappers, extension repo index
 - `lib/src/formats/<format>/` — Format-specific backup models and parsers
 - `lib/src/pipeline/` — Migration pipeline API (BackupFormat, MangaSearchDetails, MigrationPipeline, plugin sources)
+- `lib/src/pipeline/plugin_source_stub.dart` — `StubPluginSource` implements `PluginSource`; must be updated when the interface changes
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
 - `lib/src/proto/` — Protocol buffer schemas for Tachi forks (mihon, j2k, neko, sy, yokai)
