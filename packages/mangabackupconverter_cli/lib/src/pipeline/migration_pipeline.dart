@@ -40,6 +40,7 @@ class PluginSearchError extends PluginSearchEvent {
 /// and a details-fetching function. Returns confirmed matches for each manga.
 typedef OnConfirmMatches =
     Future<List<MangaMatchConfirmation>> Function(
+      List<String> pluginNames,
       List<SourceMangaData> manga,
       Stream<PluginSearchEvent> Function(String query) onSearch,
       Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
@@ -108,7 +109,9 @@ class MigrationPipeline {
       final List<SourceMangaData> mangaList = _extractManga(sourceBackup);
 
       // Batch confirmation — UI handles searching & user interaction.
+      final List<String> pluginNames = plugins.map((PluginSource p) => p.sourceName).toList();
       final List<MangaMatchConfirmation> confirmations = await onConfirmMatches(
+        pluginNames,
         mangaList,
         (String query) => _streamSearch(query, plugins),
         (String pluginSourceId, String mangaKey) async {

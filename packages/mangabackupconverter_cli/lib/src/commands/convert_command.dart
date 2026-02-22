@@ -127,12 +127,13 @@ class ConvertCommand extends Command<void> {
     }
 
     final OnConfirmMatches onConfirmMatches = interactive
-        ? (manga, onSearch, onFetchDetails) {
+        ? (pluginNames, manga, onSearch, onFetchDetails) {
             spinner!.stop();
             loadingRegion!.clear();
             context!.showCursor();
             return MigrationDashboard().run(
               context: context,
+              pluginNames: pluginNames,
               manga: manga,
               onSearch: onSearch,
               onFetchDetails: onFetchDetails,
@@ -264,6 +265,7 @@ class ConvertCommand extends Command<void> {
 
 /// Non-interactive fallback: searches for each manga, auto-accepts the best match.
 Future<List<MangaMatchConfirmation>> _autoAcceptMatches(
+  List<String> pluginNames,
   List<SourceMangaData> manga,
   Stream<PluginSearchEvent> Function(String query) onSearch,
   Future<(PluginMangaDetails, List<PluginChapter>)?> Function(

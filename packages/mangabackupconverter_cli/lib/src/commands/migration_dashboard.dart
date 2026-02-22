@@ -53,6 +53,7 @@ class _SpinnerTickEvent extends _DashboardEvent {}
 class MigrationDashboard {
   Future<List<MangaMatchConfirmation>> run({
     required TerminalContext context,
+    required List<String> pluginNames,
     required List<SourceMangaData> manga,
     required Stream<PluginSearchEvent> Function(String query) onSearch,
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
@@ -137,7 +138,7 @@ class MigrationDashboard {
       );
 
       final lines = <String>[];
-      lines.add(bold('Migration'));
+      lines.add('${bold('Migration')} ${dim(pluginNames.join(', '))}');
       lines.add('');
       if (scrollOffset > 0) {
         lines.add(dim('↑ more above'));
