@@ -128,8 +128,12 @@ class MigrationDashboard {
       }
 
       lines.add('');
+      final bool allDone = !entries.any((MigrationEntry e) => e.searching);
+      final acceptHint = allDone
+          ? 'y to accept selections'
+          : 'searching... ${spinner.frame}';
       lines.add(
-        dim('y to accept selections') +
+        dim(acceptHint) +
             dim(' · ') +
             dim('Space to toggle') +
             dim(' · ') +
@@ -159,6 +163,7 @@ class MigrationDashboard {
             render();
 
           case _KeyEvent(key: CharKey(char: 'y')):
+            if (entries.any((MigrationEntry e) => e.searching)) break;
             accepted = true;
             unawaited(events.close());
 
