@@ -58,11 +58,11 @@ class LiveSearchSelect {
     ) onFetchDetails,
   }) async {
     var query = initialQuery;
-    var cursorIndex = 0;
+    var cursorIndex = -1; // -1 = search bar, >= 0 = result index
     var scrollOffset = 0;
     var searchGeneration = 0;
-    var resultsActive = false;
     final pluginStatuses = <String, _PluginStatus>{};
+    var cachedResults = <PluginSearchResult>[];
     StreamSubscription<PluginSearchEvent>? currentSearchSub;
     Timer? debounceTimer;
 
@@ -71,7 +71,7 @@ class LiveSearchSelect {
     final screen = ScreenRegion(context);
 
     // Listen for key events on shared KeyInput (broadcast stream).
-    final StreamSubscription<KeyEvent> keySub =
+    StreamSubscription<KeyEvent> keySub =
         context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
     spinner.start(() => events.add(_SpinnerTickEvent()));
 
@@ -88,8 +88,9 @@ class LiveSearchSelect {
 
     void startSearch(String q) {
       currentSearchSub?.cancel();
+      cachedResults = allResults();
       pluginStatuses.clear();
-      cursorIndex = 0;
+      cursorIndex = -1;
       scrollOffset = 0;
       searchGeneration++;
       final gen = searchGeneration;
@@ -105,24 +106,40 @@ class LiveSearchSelect {
 
     void render() {
       final int width = context.width;
-      final List<PluginSearchResult> results = allResults();
+      var results = allResults();
       final bool searching = anySearching();
+
+      // Use cached results while searching if no new results have arrived yet.
+      final bool usingCached = searching && results.isEmpty && cachedResults.isNotEmpty;
+      if (usingCached) results = cachedResults;
+
       // Reserve ~8 lines for header, footer, input box.
       final int maxVisible = max(1, context.height - 8);
 
-      // Adjust scroll.
-      if (results.isNotEmpty) {
-        cursorIndex = cursorIndex.clamp(0, results.length - 1);
-      }
-      if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
-      if (cursorIndex >= scrollOffset + maxVisible) {
-        scrollOffset = cursorIndex - maxVisible + 1;
+      // Adjust scroll (only when cursor is in the results).
+      if (cursorIndex >= 0) {
+        if (results.isNotEmpty) {
+          cursorIndex = cursorIndex.clamp(0, results.length - 1);
+        }
+        if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
+        if (cursorIndex >= scrollOffset + maxVisible) {
+          scrollOffset = cursorIndex - maxVisible + 1;
+        }
       }
 
       final lines = <String>[];
 
+      // Search input box (at top).
+      final focusIndicator = cursorIndex < 0 ? '❯ ' : '  ';
+      final inputContent = '$focusIndicator⌕ $query';
+      final int boxWidth = max(width - 2, 10);
+      final String inner = truncate(inputContent, boxWidth).padRight(boxWidth);
+      lines.add('╭${'─' * boxWidth}╮');
+      lines.add('│$inner│');
+      lines.add('╰${'─' * boxWidth}╯');
+
       // Header.
-      if (searching) {
+      if (searching && !usingCached) {
         lines.add('┌ ${bold('Searching...')} ${spinner.frame}');
       } else {
         lines.add('┌ ${bold('${results.length} results')}');
@@ -148,12 +165,14 @@ class LiveSearchSelect {
         if (visibleEnd < results.length) lines.add(dim('↓ more below'));
       }
 
-      // Per-plugin spinners / errors.
-      for (final MapEntry<String, _PluginStatus> entry in pluginStatuses.entries) {
-        if (entry.value.state == _PluginSearchState.searching) {
-          lines.add('  [${entry.key}] ${spinner.frame}');
-        } else if (entry.value.state == _PluginSearchState.failed) {
-          lines.add('  ${yellow('[${entry.key}] ⚠ search failed')}');
+      // Per-plugin spinners / errors (suppress when showing cached results).
+      if (!usingCached) {
+        for (final MapEntry<String, _PluginStatus> entry in pluginStatuses.entries) {
+          if (entry.value.state == _PluginSearchState.searching) {
+            lines.add('  [${entry.key}] ${spinner.frame}');
+          } else if (entry.value.state == _PluginSearchState.failed) {
+            lines.add('  ${yellow('[${entry.key}] ⚠ search failed')}');
+          }
         }
       }
 
@@ -161,14 +180,6 @@ class LiveSearchSelect {
       lines.add(
         dim('type to search · ↑↓ navigate · Space details · Enter select · Esc back'),
       );
-
-      // Search input box.
-      final inputContent = '⌕ $query';
-      final int boxWidth = max(width - 2, 10);
-      final String inner = truncate(inputContent, boxWidth).padRight(boxWidth);
-      lines.add('╭${'─' * boxWidth}╮');
-      lines.add('│$inner│');
-      lines.add('╰${'─' * boxWidth}╯');
 
       screen.render(lines);
     }
@@ -187,24 +198,22 @@ class LiveSearchSelect {
 
           case _KeyEvent(key: Enter()):
             final List<PluginSearchResult> results = allResults();
-            if (results.isNotEmpty && cursorIndex < results.length) {
+            if (cursorIndex >= 0 && cursorIndex < results.length) {
               selected = results[cursorIndex];
             }
             unawaited(events.close());
 
           case _KeyEvent(key: ArrowUp()):
-            resultsActive = true;
-            cursorIndex = max(0, cursorIndex - 1);
+            cursorIndex = max(-1, cursorIndex - 1);
             render();
 
           case _KeyEvent(key: ArrowDown()):
-            resultsActive = true;
             final List<PluginSearchResult> results = allResults();
-            cursorIndex = min(max(0, results.length - 1), cursorIndex + 1);
+            cursorIndex = min(max(0, results.length) - 1, cursorIndex + 1);
             render();
 
           case _KeyEvent(key: Backspace()):
-            resultsActive = false;
+            cursorIndex = -1;
             if (query.isNotEmpty) {
               query = query.substring(0, query.length - 1);
               debounceTimer?.cancel();
@@ -216,7 +225,7 @@ class LiveSearchSelect {
             }
 
           case _KeyEvent(key: CharKey(:final char)):
-            resultsActive = false;
+            cursorIndex = -1;
             query += char;
             debounceTimer?.cancel();
             debounceTimer = Timer(
@@ -226,12 +235,12 @@ class LiveSearchSelect {
             render();
 
           case _KeyEvent(key: Space()):
-            if (resultsActive) {
+            if (cursorIndex >= 0) {
               // Show details for highlighted result.
               final List<PluginSearchResult> results = allResults();
               if (results.isNotEmpty && cursorIndex < results.length) {
                 final PluginSearchResult result = results[cursorIndex];
-                keySub.pause();
+                await keySub.cancel();
                 screen.clear();
 
                 final detailsScreen = MangaDetailsScreen();
@@ -242,7 +251,9 @@ class LiveSearchSelect {
                       onFetchDetails(result.pluginSourceId, mangaKey),
                 );
 
-                keySub.resume();
+                keySub = context.keyInput.stream.listen(
+                  (KeyEvent key) => events.add(_KeyEvent(key)),
+                );
                 context.hideCursor();
                 render();
               }
@@ -263,6 +274,7 @@ class LiveSearchSelect {
 
           case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final results)):
             if (generation != searchGeneration) break; // Discard stale results.
+            cachedResults = [];
             pluginStatuses.putIfAbsent(pluginId, _PluginStatus.new).results.addAll(results);
             pluginStatuses[pluginId]!.state = _PluginSearchState.done;
             render();

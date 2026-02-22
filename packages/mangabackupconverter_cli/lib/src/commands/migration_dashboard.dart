@@ -75,7 +75,7 @@ class MigrationDashboard {
     final screen = ScreenRegion(context);
 
     // Listen for key events on shared KeyInput (broadcast stream).
-    final StreamSubscription<KeyEvent> keySub =
+    StreamSubscription<KeyEvent> keySub =
         context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
 
     // Start searches for all manga concurrently.
@@ -164,7 +164,7 @@ class MigrationDashboard {
 
           case _KeyEvent(key: Enter()):
             // Pause dashboard, open live search for this manga.
-            keySub.pause();
+            await keySub.cancel();
             screen.clear();
 
             final MigrationEntry entry = entries[cursorIndex];
@@ -180,7 +180,9 @@ class MigrationDashboard {
               entry.selected = true;
             }
 
-            keySub.resume();
+            keySub = context.keyInput.stream.listen(
+              (KeyEvent key) => events.add(_KeyEvent(key)),
+            );
             context.hideCursor();
             render();
 

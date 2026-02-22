@@ -67,8 +67,9 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - CLI TUI screens use `TerminalContext` + `ScreenRegion` for all I/O, NOT `print()` — `print()` goes through Dart zones while `TerminalContext.write` does not, enabling zone-based log redirection in interactive mode
 - `TerminalContext` bundles KeyInput, ScreenRegion output, SIGINT handling, and terminal dimensions — screens receive it as a parameter, never create their own I/O objects
 - `TerminalContext.test()` constructor accepts `StringSink` + `Stream<List<int>>` for testable rendering/input
-- `KeyInput._controller` is broadcast — parent screens `pause()` their subscription before opening a child screen, child creates its own subscription, then parent calls `resume()` on return. Do NOT use `suspend()`/`start()` (removed)
-- Paused broadcast subscriptions buffer events — events sent while paused are delivered on `resume()`
+- `win_console_stub.dart` / `win_console_native.dart` — conditional import (`dart.library.ffi`) enables `ENABLE_VIRTUAL_TERMINAL_INPUT` on Windows; `enableVirtualTerminalInput()` called in `KeyInput.start()`, `restoreConsoleMode()` in `dispose()`
+- `live_search_select.dart` uses `cursorIndex` for focus: `-1` = search bar focused, `>= 0` = result index; typing/backspace reset to `-1`; Space opens details when `>= 0`, types a space when `-1`
+- `KeyInput._controller` is broadcast — parent screens `cancel()` their subscription before opening a child screen, child creates its own subscription, then parent creates a fresh subscription on return (declare `keySub` as non-final). Do NOT use `pause()`/`resume()` (causes buffered event flood) or `suspend()`/`start()` (removed)
 - `convert_command.dart` uses `runZoned` with `ZoneSpecification.print` to redirect all `print()` (including from `aidoku_plugin_loader`) to a log file when interactive; `Zone.root.print()` escapes the zone for user-facing messages
 - `lib/src/pipeline/plugin_source_stub.dart` — `StubPluginSource` implements `PluginSource`; must be updated when the interface changes
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
@@ -111,6 +112,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - Base: `solid_lints` via `packages/app_lints`
 - `prefer_single_quotes`, `strict-inference: true`, `dart analyze --fatal-infos`
 - `omit_obvious_local_variable_types` + `specify_nonobvious_local_variable_types` + `avoid_multiple_declarations_per_line` — use `dart fix --apply <directory>` after writing new code (only accepts one path argument)
+- `directives_ordering` — all `package:` imports must be in one alphabetically-sorted section; conditional imports (`if (dart.library.ffi)`) count as their primary URI for sorting
 - **Directional UI required**: Use `EdgeInsetsDirectional`, `PositionedDirectional`, `AlignmentDirectional`, `BorderDirectional`, `BorderRadiusDirectional` instead of their non-directional counterparts
 - CI enforces formatting via `melos run verify_format`
 
