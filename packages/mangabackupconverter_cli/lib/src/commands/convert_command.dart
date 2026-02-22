@@ -91,9 +91,19 @@ class ConvertCommand extends Command<void> {
     final List<String> repoUrls = results.multiOption('repos');
     final bool interactive = hasTerminal;
 
-    final String outputPath =
+    String outputPath =
         results.option('output') ??
         '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
+
+    // If -o points to a directory, append default filename inside it.
+    if (io.FileSystemEntity.isDirectorySync(outputPath) ||
+        outputPath.endsWith(p.separator) ||
+        outputPath.endsWith('/')) {
+      outputPath = p.join(
+        outputPath,
+        '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}',
+      );
+    }
 
     final String logPath = results.option('log-file') ?? (interactive ? '${p.withoutExtension(outputPath)}.log' : '');
     final io.IOSink? logSink = logPath.isNotEmpty ? io.File(logPath).openWrite() : null;
