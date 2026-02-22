@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:collection/collection.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:mangabackupconverter_cli/src/commands/migration_dashboard.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
@@ -109,9 +110,7 @@ class ConvertCommand extends Command<void> {
       print('[VERBOSE] Non-interactive mode: auto-accepting best matches');
     }
 
-    final OnConfirmMatches onConfirmMatches = interactive
-        ? MigrationDashboard().run
-        : _autoAcceptMatches;
+    final OnConfirmMatches onConfirmMatches = interactive ? MigrationDashboard().run : _autoAcceptMatches;
 
     final pipeline = MigrationPipeline(
       repoUrls: repoUrls,
@@ -119,8 +118,11 @@ class ConvertCommand extends Command<void> {
         // TODO: Implement extension selection logic
         // User will pick from list of extensions
         // If none are correct, user can search in the terminal for the extension and then pick from the results
-        //     - The results should be streamed in, some extensions may be very slow or not functional so we should handle that gracefully
-        return extensions;
+        // Only the selected extensions should be downloaded and loaded into the pipeline
+        return [
+          extensions.firstWhereOrNull((ExtensionEntry extension) => extension.id == 'multi.mangadex') ??
+              extensions.first,
+        ];
       },
       onConfirmMatches: onConfirmMatches,
       onProgress: (int current, int total, String message) {
@@ -141,7 +143,8 @@ class ConvertCommand extends Command<void> {
       }
 
       final Uint8List fileData = await convertedBackup.toData();
-      final String outputPath = results.option('output') ??
+      final String outputPath =
+          results.option('output') ??
           '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
       final outputFile = io.File(outputPath);
       if (verbose) {
@@ -166,7 +169,8 @@ Future<List<MangaMatchConfirmation>> _autoAcceptMatches(
   Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
     String pluginSourceId,
     String mangaKey,
-  ) onFetchDetails,
+  )
+  onFetchDetails,
 ) async {
   final confirmations = <MangaMatchConfirmation>[];
   for (final entry in manga) {
