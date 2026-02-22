@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
 // ---------------------------------------------------------------------------
 // ANSI helpers
 // ---------------------------------------------------------------------------
@@ -104,36 +106,90 @@ class CharKey extends KeyEvent {
 /// Checks both `hasTerminal` and that raw mode actually works, since some
 /// environments (e.g. MSYS on Windows) report `hasTerminal = true` but
 /// fail on `echoMode=`.
+///
+/// The result is cached after the first successful check — a terminal that
+/// was available once won't disappear mid-session, and on MSYS/Windows the
+/// probe can fail after a previous stdin subscription has been cancelled.
+bool? _hasTerminalCached;
 bool get hasTerminal {
+  if (_hasTerminalCached ?? false) return true;
   try {
     if (!stdin.hasTerminal) return false;
     // Probe that raw mode actually works.
     final bool saved = stdin.echoMode;
     stdin.echoMode = saved;
+    _hasTerminalCached = true;
     return true;
   } on StdinException {
     return false;
   }
 }
 
+/// Lazily-initialized broadcast wrapper around `stdin`.
+///
+/// `stdin` is a single-subscription stream — once a subscription is cancelled,
+/// calling `listen` again throws "Stream has already been listened to".
+/// Wrapping it in `asBroadcastStream` allows independent subscribe/cancel
+/// cycles across multiple [KeyInput] instances (parent / child screens).
+Stream<List<int>>? _stdinBroadcast;
+Stream<List<int>> get _broadcastStdin =>
+    _stdinBroadcast ??= stdin.asBroadcastStream();
+
 class KeyInput {
+  KeyInput() : _inputStream = null;
+
+  /// Test-only constructor that uses [inputStream] instead of stdin.
+  @visibleForTesting
+  KeyInput.withStream(Stream<List<int>> inputStream)
+      : _inputStream = inputStream;
+
+  final Stream<List<int>>? _inputStream;
   final _controller = StreamController<KeyEvent>();
   StreamSubscription<List<int>>? _sub;
+
+  // Buffer for reassembling escape sequences split across multiple reads
+  // (common on MSYS/mintty where ESC [ B may arrive as [0x1b] then [0x5b, 0x42]).
+  List<int> _escBuffer = [];
+  Timer? _escTimer;
 
   Stream<KeyEvent> get stream => _controller.stream;
 
   void start() {
+    if (_inputStream != null) {
+      _sub = _inputStream.listen(_parseBytes);
+      return;
+    }
     if (!hasTerminal) {
       throw StateError(
         'Interactive terminal required. Use --non-interactive or pipe to a TTY.',
       );
     }
-    stdin.echoMode = false;
-    stdin.lineMode = false;
-    _sub = stdin.listen(_parseBytes);
+    try {
+      stdin.echoMode = false;
+      stdin.lineMode = false;
+    } on StdinException {
+      // Already in raw mode from a parent screen.
+    }
+    _sub = _broadcastStdin.listen(_parseBytes);
+  }
+
+  /// Releases the stdin subscription without closing the event stream.
+  /// Call [start] again to re-subscribe after a child screen returns.
+  Future<void> suspend() async {
+    _escTimer?.cancel();
+    _escTimer = null;
+    _escBuffer = [];
+    await _sub?.cancel();
+    _sub = null;
   }
 
   void dispose() {
+    _escTimer?.cancel();
+    _escTimer = null;
+    if (_escBuffer.isNotEmpty) {
+      _processBytes(_escBuffer);
+      _escBuffer = [];
+    }
     _sub?.cancel();
     _controller.close();
     try {
@@ -145,6 +201,44 @@ class KeyInput {
   }
 
   void _parseBytes(List<int> bytes) {
+    if (_controller.isClosed) return;
+
+    _escTimer?.cancel();
+    _escTimer = null;
+
+    // Prepend any buffered escape prefix.
+    final List<int> combined;
+    if (_escBuffer.isNotEmpty) {
+      combined = [..._escBuffer, ...bytes];
+      _escBuffer = [];
+    } else {
+      combined = bytes;
+    }
+
+    // Buffer partial escape sequences and wait for more bytes.
+    if (combined.length == 1 && combined[0] == 0x1b) {
+      _escBuffer = combined.toList();
+      _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
+      return;
+    }
+    if (combined.length == 2 && combined[0] == 0x1b && combined[1] == 0x5b) {
+      _escBuffer = combined.toList();
+      _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
+      return;
+    }
+
+    _processBytes(combined);
+  }
+
+  void _flushEscBuffer() {
+    if (_escBuffer.isNotEmpty) {
+      final List<int> flushed = _escBuffer;
+      _escBuffer = [];
+      _processBytes(flushed);
+    }
+  }
+
+  void _processBytes(List<int> bytes) {
     if (_controller.isClosed) return;
 
     if (bytes.length >= 3 && bytes[0] == 0x1b && bytes[1] == 0x5b) {

@@ -226,6 +226,8 @@ class LiveSearchSelect {
             final List<PluginSearchResult> results = allResults();
             if (results.isNotEmpty && cursorIndex < results.length) {
               final PluginSearchResult result = results[cursorIndex];
+              keySub.pause();
+              await keyInput.suspend();
               screen.clear();
               showCursor();
 
@@ -236,6 +238,8 @@ class LiveSearchSelect {
                     onFetchDetails(result.pluginSourceId, mangaKey),
               );
 
+              keyInput.start();
+              keySub.resume();
               hideCursor();
               render();
             }

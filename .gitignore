@@ -218,3 +218,4 @@ packages/mangabackupconverter_cli/web/sqlite3.wasm
 
 # Git worktrees
 .worktrees/
+/.playwright-mcp

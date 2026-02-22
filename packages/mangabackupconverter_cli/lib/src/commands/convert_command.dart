@@ -110,6 +110,7 @@ class ConvertCommand extends Command<void> {
 
     final String logPath = results.option('log-file') ?? (interactive ? '${p.withoutExtension(outputPath)}.log' : '');
     final io.IOSink? logSink = logPath.isNotEmpty ? io.File(logPath).openWrite() : null;
+    var logSinkMounted = logSink != null;
 
     final OnConfirmMatches onConfirmMatches = interactive ? MigrationDashboard().run : _autoAcceptMatches;
 
@@ -171,7 +172,7 @@ class ConvertCommand extends Command<void> {
         zoneSpecification: logSink != null
             ? ZoneSpecification(
                 print: (self, parent, zone, line) {
-                  logSink.writeln(line);
+                  if (logSinkMounted) logSink.writeln(line);
                 },
               )
             : null,
@@ -180,6 +181,7 @@ class ConvertCommand extends Command<void> {
       io.stderr.writeln('Migration failed: $e');
       io.exitCode = 1;
     } finally {
+      logSinkMounted = false;
       await logSink?.flush();
       await logSink?.close();
       if (logSink != null) {

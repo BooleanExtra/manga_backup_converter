@@ -166,6 +166,8 @@ class MigrationDashboard {
 
           case _KeyEvent(key: Enter()):
             // Pause dashboard, open live search for this manga.
+            keySub.pause();
+            await keyInput.suspend();
             screen.clear();
             showCursor();
 
@@ -181,6 +183,8 @@ class MigrationDashboard {
               entry.selected = true;
             }
 
+            keyInput.start();
+            keySub.resume();
             hideCursor();
             render();
 
