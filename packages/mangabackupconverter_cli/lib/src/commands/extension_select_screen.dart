@@ -74,6 +74,10 @@ class ExtensionSelectScreen {
       // Two lines per entry, plus ~8 lines for chrome.
       final int maxVisible = max(1, (context.height - 8) ~/ 2);
 
+      // Always clamp scrollOffset to valid range for current results.
+      final int maxScroll = max(0, results.length - maxVisible);
+      scrollOffset = scrollOffset.clamp(0, maxScroll);
+
       // Adjust scroll.
       if (cursorIndex >= 0) {
         if (results.isNotEmpty) {
