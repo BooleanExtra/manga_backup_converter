@@ -99,6 +99,137 @@ void main() {
     });
   });
 
+  group('KeyInput byte parsing', () {
+    test('arrow down sequence produces ArrowDown event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x1b, 0x5b, 0x42]); // ESC [ B
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<ArrowDown>();
+
+      keyInput.dispose();
+    });
+
+    test('arrow up sequence produces ArrowUp event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x1b, 0x5b, 0x41]); // ESC [ A
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<ArrowUp>();
+
+      keyInput.dispose();
+    });
+
+    test('split escape sequence reassembles into ArrowDown', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      // ESC arrives first, then [ B arrives in a second chunk.
+      controller.add([0x1b]);
+      await Future<void>.delayed(Duration.zero);
+      check(events).isEmpty(); // Buffered, not emitted yet.
+
+      controller.add([0x5b, 0x42]);
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<ArrowDown>();
+
+      keyInput.dispose();
+    });
+
+    test('0x08 (BS) produces Backspace event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x08]); // BS
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<Backspace>();
+
+      keyInput.dispose();
+    });
+
+    test('0x7f (DEL) produces Backspace event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x7f]); // DEL
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<Backspace>();
+
+      keyInput.dispose();
+    });
+
+    test('lone ESC after timeout produces Escape event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x1b]); // ESC alone
+      await Future<void>.delayed(Duration.zero);
+      check(events).isEmpty(); // Buffered, waiting for more bytes.
+
+      // Wait for the 50ms escape timeout to fire.
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+
+      check(events).length.equals(1);
+      check(events.first).isA<Escape>();
+
+      keyInput.dispose();
+    });
+  });
+
   group('TerminalContext.test', () {
     test('write/writeln go to output sink', () {
       final output = StringBuffer();

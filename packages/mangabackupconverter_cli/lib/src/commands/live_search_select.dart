@@ -61,6 +61,7 @@ class LiveSearchSelect {
     var cursorIndex = 0;
     var scrollOffset = 0;
     var searchGeneration = 0;
+    var resultsActive = false;
     final pluginStatuses = <String, _PluginStatus>{};
     StreamSubscription<PluginSearchEvent>? currentSearchSub;
     Timer? debounceTimer;
@@ -158,7 +159,7 @@ class LiveSearchSelect {
 
       lines.add('');
       lines.add(
-        dim('type to search · Space for details · Enter to select · Esc to back'),
+        dim('type to search · ↑↓ navigate · Space details · Enter select · Esc back'),
       );
 
       // Search input box.
@@ -192,15 +193,18 @@ class LiveSearchSelect {
             unawaited(events.close());
 
           case _KeyEvent(key: ArrowUp()):
+            resultsActive = true;
             cursorIndex = max(0, cursorIndex - 1);
             render();
 
           case _KeyEvent(key: ArrowDown()):
+            resultsActive = true;
             final List<PluginSearchResult> results = allResults();
             cursorIndex = min(max(0, results.length - 1), cursorIndex + 1);
             render();
 
           case _KeyEvent(key: Backspace()):
+            resultsActive = false;
             if (query.isNotEmpty) {
               query = query.substring(0, query.length - 1);
               debounceTimer?.cancel();
@@ -212,6 +216,7 @@ class LiveSearchSelect {
             }
 
           case _KeyEvent(key: CharKey(:final char)):
+            resultsActive = false;
             query += char;
             debounceTimer?.cancel();
             debounceTimer = Timer(
@@ -221,23 +226,34 @@ class LiveSearchSelect {
             render();
 
           case _KeyEvent(key: Space()):
-            // Show details for highlighted result.
-            final List<PluginSearchResult> results = allResults();
-            if (results.isNotEmpty && cursorIndex < results.length) {
-              final PluginSearchResult result = results[cursorIndex];
-              keySub.pause();
-              screen.clear();
+            if (resultsActive) {
+              // Show details for highlighted result.
+              final List<PluginSearchResult> results = allResults();
+              if (results.isNotEmpty && cursorIndex < results.length) {
+                final PluginSearchResult result = results[cursorIndex];
+                keySub.pause();
+                screen.clear();
 
-              final detailsScreen = MangaDetailsScreen();
-              await detailsScreen.run(
-                context: context,
-                result: result,
-                fetchDetails: (String mangaKey) =>
-                    onFetchDetails(result.pluginSourceId, mangaKey),
+                final detailsScreen = MangaDetailsScreen();
+                await detailsScreen.run(
+                  context: context,
+                  result: result,
+                  fetchDetails: (String mangaKey) =>
+                      onFetchDetails(result.pluginSourceId, mangaKey),
+                );
+
+                keySub.resume();
+                context.hideCursor();
+                render();
+              }
+            } else {
+              // Search bar focused — type a space character.
+              query += ' ';
+              debounceTimer?.cancel();
+              debounceTimer = Timer(
+                const Duration(milliseconds: 300),
+                () => events.add(_DebounceFireEvent()),
               );
-
-              keySub.resume();
-              context.hideCursor();
               render();
             }
 

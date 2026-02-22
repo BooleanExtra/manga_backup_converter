@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:mangabackupconverter_cli/src/commands/win_console_stub.dart'
+    if (dart.library.ffi) 'package:mangabackupconverter_cli/src/commands/win_console_native.dart';
 import 'package:meta/meta.dart';
 
 // ---------------------------------------------------------------------------
@@ -166,6 +168,7 @@ class KeyInput {
         'Interactive terminal required. Use --non-interactive or pipe to a TTY.',
       );
     }
+    enableVirtualTerminalInput();
     try {
       stdin.echoMode = false;
       stdin.lineMode = false;
@@ -184,6 +187,7 @@ class KeyInput {
     }
     _sub?.cancel();
     _controller.close();
+    restoreConsoleMode();
     try {
       stdin.echoMode = true;
       stdin.lineMode = true;
@@ -251,7 +255,7 @@ class KeyInput {
           _controller.add(Escape());
         case 0x20:
           _controller.add(Space());
-        case 0x7f:
+        case 0x08 || 0x7f:
           _controller.add(Backspace());
         default:
           if (bytes[0] >= 0x20 && bytes[0] < 0x7f) {
