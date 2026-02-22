@@ -57,38 +57,53 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
     return allManga.map((MangayomiBackupManga manga) {
       final int? mangaId = manga.id;
 
-      final List<MangayomiBackupChapter> mangaChapters = allChapters.where(
-        (MangayomiBackupChapter c) => c.mangaId == mangaId,
-      ).toList();
+      final List<MangayomiBackupChapter> mangaChapters = allChapters
+          .where(
+            (MangayomiBackupChapter c) => c.mangaId == mangaId,
+          )
+          .toList();
 
-      final List<MangayomiBackupHistory> mangaHistory = allHistory.where(
-        (MangayomiBackupHistory h) => h.mangaId == mangaId,
-      ).toList();
+      final List<MangayomiBackupHistory> mangaHistory = allHistory
+          .where(
+            (MangayomiBackupHistory h) => h.mangaId == mangaId,
+          )
+          .toList();
 
-      final List<MangayomiBackupTrack> mangaTracks = allTracks.where(
-        (MangayomiBackupTrack t) => t.mangaId == mangaId,
-      ).toList();
+      final List<MangayomiBackupTrack> mangaTracks = allTracks
+          .where(
+            (MangayomiBackupTrack t) => t.mangaId == mangaId,
+          )
+          .toList();
 
       // Parse comma-separated category IDs from manga.categories
       final List<String> categoryNames;
       final String? categoriesStr = manga.categories;
       if (categoriesStr != null && categoriesStr.isNotEmpty) {
-        final List<int?> categoryIds = categoriesStr.split(',').map(
-          (String s) => int.tryParse(s.trim()),
-        ).toList();
-        categoryNames = categoryIds.map((int? id) {
-          if (id == null) return null;
-          final MangayomiBackupCategory? cat = allCategories.where(
-            (MangayomiBackupCategory c) => c.id == id,
-          ).firstOrNull;
-          return cat?.name;
-        }).whereType<String>().toList();
+        final List<int?> categoryIds = categoriesStr
+            .split(',')
+            .map(
+              (String s) => int.tryParse(s.trim()),
+            )
+            .toList();
+        categoryNames = categoryIds
+            .map((int? id) {
+              if (id == null) return null;
+              final MangayomiBackupCategory? cat = allCategories
+                  .where(
+                    (MangayomiBackupCategory c) => c.id == id,
+                  )
+                  .firstOrNull;
+              return cat?.name;
+            })
+            .whereType<String>()
+            .toList();
       } else {
         categoryNames = const <String>[];
       }
 
       return SourceMangaData(
         details: manga.toMangaSearchDetails(),
+        sourceId: manga.source,
         categories: categoryNames,
         chapters: mangaChapters.map((MangayomiBackupChapter c) {
           return SourceChapter(
@@ -101,9 +116,11 @@ class MangayomiBackup with MangayomiBackupMappable implements ConvertableBackup 
           );
         }).toList(),
         history: mangaHistory.map((MangayomiBackupHistory h) {
-          final MangayomiBackupChapter? ch = mangaChapters.where(
-            (MangayomiBackupChapter c) => c.id == h.chapterId,
-          ).firstOrNull;
+          final MangayomiBackupChapter? ch = mangaChapters
+              .where(
+                (MangayomiBackupChapter c) => c.id == h.chapterId,
+              )
+              .firstOrNull;
           return SourceHistoryEntry(
             chapterTitle: ch?.name ?? 'Chapter ${h.chapterId}',
             dateRead: _tryParseDate(h.date),

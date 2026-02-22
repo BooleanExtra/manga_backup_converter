@@ -81,9 +81,7 @@ class AidokuPluginLoader extends PluginLoader {
         }
         final AidokuPlugin plugin = await loader.loadAixBytes(
           Uint8List.fromList(response.bodyBytes),
-          defaults: entry.baseUrl != null
-              ? <String, dynamic>{'url': entry.baseUrl}
-              : null,
+          defaults: entry.baseUrl != null ? <String, dynamic>{'url': entry.baseUrl} : null,
         );
         plugins.add(AidokuPluginSource(plugin: plugin));
       } on Object catch (e) {

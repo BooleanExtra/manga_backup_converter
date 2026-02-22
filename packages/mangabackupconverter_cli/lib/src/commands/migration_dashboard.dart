@@ -12,11 +12,7 @@ import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 // ---------------------------------------------------------------------------
 
 class MigrationEntry {
-  MigrationEntry({required this.source})
-      : selected = true,
-        searching = true,
-        candidates = [],
-        failures = [];
+  MigrationEntry({required this.source}) : selected = true, searching = true, candidates = [], failures = [];
 
   final SourceMangaData source;
   bool selected;
@@ -62,7 +58,8 @@ class MigrationDashboard {
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
       String pluginSourceId,
       String mangaKey,
-    ) onFetchDetails,
+    )
+    onFetchDetails,
   }) async {
     if (manga.isEmpty) return [];
 
@@ -75,8 +72,7 @@ class MigrationDashboard {
     final screen = ScreenRegion(context);
 
     // Listen for key events on shared KeyInput (broadcast stream).
-    StreamSubscription<KeyEvent> keySub =
-        context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
+    StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
 
     // Search entries one at a time — each search enriches results with
     // getMangaDetails which shares the plugin, so we avoid concurrent calls.
@@ -105,8 +101,7 @@ class MigrationDashboard {
 
       // Adjust scroll to keep cursor visible.
       if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
-      while (cursorIndex >=
-          scrollOffset + _visibleCount(entries, scrollOffset, budget)) {
+      while (cursorIndex >= scrollOffset + _visibleCount(entries, scrollOffset, budget)) {
         scrollOffset++;
       }
 
@@ -134,11 +129,11 @@ class MigrationDashboard {
 
       lines.add('');
       lines.add(
-        dim('y to accept selections')
-        + dim(' · ')
-        + dim('Space to toggle')
-        + dim(' · ')
-        + dim('Enter to choose manually'),
+        dim('y to accept selections') +
+            dim(' · ') +
+            dim('Space to toggle') +
+            dim(' · ') +
+            dim('Enter to choose manually'),
       );
 
       screen.render(lines);
@@ -264,8 +259,12 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
     ...entry.source.details.artists,
   }.join(', ');
   final int sourceChapters = entry.source.chapters.length;
-  final String sourceInfo =
-      [if (sourceAuthors.isNotEmpty) sourceAuthors, '$sourceChapters chapters'].join(' · ');
+  final String? sourceId = entry.source.sourceId;
+  final String sourceInfo = [
+    if (sourceId != null && sourceId.isNotEmpty) sourceId,
+    if (sourceAuthors.isNotEmpty) sourceAuthors,
+    '$sourceChapters chapters',
+  ].join(' · ');
 
   final lines = <String>[];
   final cursorMark = isCursor ? '❯ ' : '  ';
@@ -285,11 +284,9 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
     } else if (entry.match != null) {
       final PluginSearchResult m = entry.match!;
       final PluginMangaDetails? d = m.details;
-      final matchLine = '[${m.pluginSourceId}] ${m.title}';
-      final String matchText = green(matchLine);
+      final String matchText = green(m.title);
       final String? linkUrl = d?.url;
-      final String linkedMatch =
-          linkUrl != null ? hyperlink(matchText, linkUrl) : matchText;
+      final String linkedMatch = linkUrl != null ? hyperlink(matchText, linkUrl) : matchText;
       lines.add(truncate('$indent  $linkedMatch', width));
 
       final String matchAuthors = <String>{
@@ -298,6 +295,7 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
       }.join(', ');
       final String? chapterCount = d != null ? '${m.chapters.length} chapters' : null;
       final String infoLine = [
+        m.pluginSourceId,
         if (matchAuthors.isNotEmpty) matchAuthors,
         if (chapterCount != null) chapterCount,
       ].join(' · ');

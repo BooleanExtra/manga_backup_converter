@@ -38,14 +38,16 @@ class PluginSearchError extends PluginSearchEvent {
 ///
 /// Receives all source manga upfront together with a streaming search function
 /// and a details-fetching function. Returns confirmed matches for each manga.
-typedef OnConfirmMatches = Future<List<MangaMatchConfirmation>> Function(
-  List<SourceMangaData> manga,
-  Stream<PluginSearchEvent> Function(String query) onSearch,
-  Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
-    String pluginSourceId,
-    String mangaKey,
-  ) onFetchDetails,
-);
+typedef OnConfirmMatches =
+    Future<List<MangaMatchConfirmation>> Function(
+      List<SourceMangaData> manga,
+      Stream<PluginSearchEvent> Function(String query) onSearch,
+      Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
+        String pluginSourceId,
+        String mangaKey,
+      )
+      onFetchDetails,
+    );
 
 class MigrationPipeline {
   const MigrationPipeline({
@@ -110,8 +112,7 @@ class MigrationPipeline {
         mangaList,
         (String query) => _streamSearch(query, plugins),
         (String pluginSourceId, String mangaKey) async {
-          final PluginSource? source =
-              plugins.where((PluginSource p) => p.sourceId == pluginSourceId).firstOrNull;
+          final PluginSource? source = plugins.where((PluginSource p) => p.sourceId == pluginSourceId).firstOrNull;
           if (source == null) return null;
           return source.getMangaWithChapters(mangaKey);
         },
@@ -148,47 +149,53 @@ class MigrationPipeline {
       return controller.stream;
     }
     for (final plugin in plugins) {
-      plugin.search(query, 1).then(
-        (PluginSearchPageResult result) async {
-          final enriched = <PluginSearchResult>[];
-          for (final PluginSearchResult r in result.results) {
-            try {
-              final (PluginMangaDetails, List<PluginChapter>)? detailResult =
-                  await plugin.getMangaWithChapters(r.mangaKey);
-              if (detailResult != null) {
-                enriched.add(PluginSearchResult(
-                  pluginSourceId: r.pluginSourceId,
-                  mangaKey: r.mangaKey,
-                  title: r.title,
-                  coverUrl: r.coverUrl,
-                  authors: detailResult.$1.authors.isNotEmpty
-                      ? detailResult.$1.authors
-                      : r.authors,
-                  details: detailResult.$1,
-                  chapters: detailResult.$2,
-                ));
-                continue;
+      plugin
+          .search(query, 1)
+          .then(
+            (PluginSearchPageResult result) async {
+              final enriched = <PluginSearchResult>[];
+              for (final PluginSearchResult r in result.results) {
+                try {
+                  final (PluginMangaDetails, List<PluginChapter>)? detailResult = await plugin.getMangaWithChapters(
+                    r.mangaKey,
+                  );
+                  if (detailResult != null) {
+                    enriched.add(
+                      PluginSearchResult(
+                        pluginSourceId: r.pluginSourceId,
+                        mangaKey: r.mangaKey,
+                        title: r.title,
+                        coverUrl: r.coverUrl,
+                        authors: detailResult.$1.authors.isNotEmpty ? detailResult.$1.authors : r.authors,
+                        details: detailResult.$1,
+                        chapters: detailResult.$2,
+                      ),
+                    );
+                    continue;
+                  }
+                } on Object {
+                  // Fall through — use result without details.
+                }
+                enriched.add(r);
               }
-            } on Object {
-              // Fall through — use result without details.
-            }
-            enriched.add(r);
-          }
-          if (!controller.isClosed) {
-            controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
-          }
-        },
-        onError: (Object e) {
-          if (!controller.isClosed) {
-            controller.add(
-              PluginSearchError(failure: PluginSearchFailure(pluginId: plugin.sourceId, error: e)),
-            );
-          }
-        },
-      ).whenComplete(() {
-        remaining--;
-        if (remaining == 0) controller.close();
-      });
+              if (!controller.isClosed) {
+                controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
+              }
+            },
+            onError: (Object e) {
+              if (!controller.isClosed) {
+                controller.add(
+                  PluginSearchError(
+                    failure: PluginSearchFailure(pluginId: plugin.sourceId, error: e),
+                  ),
+                );
+              }
+            },
+          )
+          .whenComplete(() {
+            remaining--;
+            if (remaining == 0) controller.close();
+          });
     }
     return controller.stream;
   }

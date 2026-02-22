@@ -95,39 +95,55 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
   List<SourceMangaData> get sourceMangaDataEntries {
     return (mangaInfo ?? const <PaperbackBackupMangaInfo>[]).map((PaperbackBackupMangaInfo info) {
       // Find the sourceManga entry that links to this mangaInfo
-      final List<PaperbackBackupSourceManga> linkedSources = (sourceManga ?? const <PaperbackBackupSourceManga>[]).where(
-        (PaperbackBackupSourceManga sm) => sm.mangaInfo.id == info.id,
-      ).toList();
+      final List<PaperbackBackupSourceManga> linkedSources = (sourceManga ?? const <PaperbackBackupSourceManga>[])
+          .where(
+            (PaperbackBackupSourceManga sm) => sm.mangaInfo.id == info.id,
+          )
+          .toList();
 
       // Find chapters linked through sourceManga
-      final Set<String> sourceMangaIds = linkedSources.map(
-        (PaperbackBackupSourceManga sm) => sm.id,
-      ).toSet();
-      final List<PaperbackBackupChapter> mangaChapters = (chapters ?? const <PaperbackBackupChapter>[]).where(
-        (PaperbackBackupChapter c) => sourceMangaIds.contains(c.sourceManga.id),
-      ).toList();
+      final Set<String> sourceMangaIds = linkedSources
+          .map(
+            (PaperbackBackupSourceManga sm) => sm.id,
+          )
+          .toSet();
+      final List<PaperbackBackupChapter> mangaChapters = (chapters ?? const <PaperbackBackupChapter>[])
+          .where(
+            (PaperbackBackupChapter c) => sourceMangaIds.contains(c.sourceManga.id),
+          )
+          .toList();
 
       // Find progress markers for these chapters
-      final List<PaperbackBackupChapterProgressMarker> mangaProgressMarkers = (chapterProgressMarker ?? const <PaperbackBackupChapterProgressMarker>[]).where(
-        (PaperbackBackupChapterProgressMarker pm) {
-          return mangaChapters.any((PaperbackBackupChapter c) => c.id == pm.chapter.id);
-        },
-      ).toList();
+      final List<PaperbackBackupChapterProgressMarker> mangaProgressMarkers =
+          (chapterProgressMarker ?? const <PaperbackBackupChapterProgressMarker>[]).where(
+            (PaperbackBackupChapterProgressMarker pm) {
+              return mangaChapters.any((PaperbackBackupChapter c) => c.id == pm.chapter.id);
+            },
+          ).toList();
 
       // Find library entry
-      final PaperbackBackupLibraryManga? libraryEntry = (libraryManga ?? const <PaperbackBackupLibraryManga>[]).where(
-        (PaperbackBackupLibraryManga l) => l.id == info.id,
-      ).firstOrNull;
+      final PaperbackBackupLibraryManga? libraryEntry = (libraryManga ?? const <PaperbackBackupLibraryManga>[])
+          .where(
+            (PaperbackBackupLibraryManga l) => l.id == info.id,
+          )
+          .firstOrNull;
 
       return SourceMangaData(
         details: info.toMangaSearchDetails(),
-        categories: libraryEntry?.libraryTabs.map(
-          (PaperbackBackupLibraryTab t) => t.name,
-        ).toList() ?? const <String>[],
+        sourceId: linkedSources.firstOrNull?.sourceId,
+        categories:
+            libraryEntry?.libraryTabs
+                .map(
+                  (PaperbackBackupLibraryTab t) => t.name,
+                )
+                .toList() ??
+            const <String>[],
         chapters: mangaChapters.map((PaperbackBackupChapter c) {
-          final PaperbackBackupChapterProgressMarker? marker = mangaProgressMarkers.where(
-            (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id == c.id,
-          ).firstOrNull;
+          final PaperbackBackupChapterProgressMarker? marker = mangaProgressMarkers
+              .where(
+                (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id == c.id,
+              )
+              .firstOrNull;
           return SourceChapter(
             title: c.name,
             chapterNumber: c.chapNum.toDouble(),

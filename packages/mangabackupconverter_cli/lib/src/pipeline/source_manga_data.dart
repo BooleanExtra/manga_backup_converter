@@ -3,6 +3,7 @@ import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 class SourceMangaData {
   const SourceMangaData({
     required this.details,
+    this.sourceId,
     this.categories = const <String>[],
     this.chapters = const <SourceChapter>[],
     this.history = const <SourceHistoryEntry>[],
@@ -15,6 +16,7 @@ class SourceMangaData {
   });
 
   final MangaSearchDetails details;
+  final String? sourceId;
   final List<String> categories;
   final List<SourceChapter> chapters;
   final List<SourceHistoryEntry> history;

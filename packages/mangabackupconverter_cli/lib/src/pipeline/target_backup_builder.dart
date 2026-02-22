@@ -108,9 +108,7 @@ class AidokuBackupBuilder extends TargetBackupBuilder {
       categories: allCategories.isEmpty ? null : allCategories,
       sources: sources,
       date: DateTime.now(),
-      name: sourceFormatAlias != null
-          ? 'Migrated from $sourceFormatAlias'
-          : null,
+      name: sourceFormatAlias != null ? 'Migrated from $sourceFormatAlias' : null,
       version: '0.6.10',
     );
   }
@@ -143,8 +141,7 @@ class AidokuBackupBuilder extends TargetBackupBuilder {
         ),
       );
 
-      final SourceChapter? sourceCh =
-          ch.chapterNumber != null ? readSourceChapters[ch.chapterNumber] : null;
+      final SourceChapter? sourceCh = ch.chapterNumber != null ? readSourceChapters[ch.chapterNumber] : null;
       if (sourceCh != null) {
         historySet.add(
           AidokuBackupHistory(

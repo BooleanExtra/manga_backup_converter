@@ -17,35 +17,98 @@ void main() {
         categoryMetaTable: <TachimangaBackupCategoryMeta>[],
         chapterTable: <TachimangaBackupChapter>[
           TachimangaBackupChapter(
-            id: 100, url: '/ch/1', name: 'Ch 1', dateUpload: 0, chapterNumber: 1,
-            scanlator: null, read: true, bookmark: false, lastPageRead: 5, lastReadAt: 1000,
-            fetchedAt: 0, sourceOrder: 0, realUrl: null, isDownloaded: false, pageCount: 20, manga: 10,
+            id: 100,
+            url: '/ch/1',
+            name: 'Ch 1',
+            dateUpload: 0,
+            chapterNumber: 1,
+            scanlator: null,
+            read: true,
+            bookmark: false,
+            lastPageRead: 5,
+            lastReadAt: 1000,
+            fetchedAt: 0,
+            sourceOrder: 0,
+            realUrl: null,
+            isDownloaded: false,
+            pageCount: 20,
+            manga: 10,
           ),
           TachimangaBackupChapter(
-            id: 200, url: '/ch/2', name: 'Ch 2', dateUpload: 0, chapterNumber: 1,
-            scanlator: null, read: false, bookmark: false, lastPageRead: 0, lastReadAt: 0,
-            fetchedAt: 0, sourceOrder: 0, realUrl: null, isDownloaded: false, pageCount: 10, manga: 20,
+            id: 200,
+            url: '/ch/2',
+            name: 'Ch 2',
+            dateUpload: 0,
+            chapterNumber: 1,
+            scanlator: null,
+            read: false,
+            bookmark: false,
+            lastPageRead: 0,
+            lastReadAt: 0,
+            fetchedAt: 0,
+            sourceOrder: 0,
+            realUrl: null,
+            isDownloaded: false,
+            pageCount: 10,
+            manga: 20,
           ),
         ],
         chapterMetaTable: <TachimangaBackupChapterMeta>[],
         extensionTable: <TachimangaBackupExtension>[],
         historyTable: <TachimangaBackupHistory>[
-          TachimangaBackupHistory(id: 1, createAt: 0, isDelete: false, mangaId: 10, lastChapterId: 100, lastReadAt: 5000),
+          TachimangaBackupHistory(
+            id: 1,
+            createAt: 0,
+            isDelete: false,
+            mangaId: 10,
+            lastChapterId: 100,
+            lastReadAt: 5000,
+          ),
         ],
         mangaTable: <TachimangaBackupManga>[
           TachimangaBackupManga(
-            id: 10, url: '/manga/10', title: 'Manga A', initialized: true,
-            artist: null, author: null, description: null, genre: null, status: 0,
-            thumbnailUrl: null, thumbnailUrlLastFetched: 0, inLibrary: true,
-            defaultCategory: false, inLibraryAt: 0, source: 1, realUrl: null,
-            lastFetchedAt: 0, chaptersLastFetchedAt: 0, updateStrategy: 'AlwaysUpdate', lastDownloadAt: 0,
+            id: 10,
+            url: '/manga/10',
+            title: 'Manga A',
+            initialized: true,
+            artist: null,
+            author: null,
+            description: null,
+            genre: null,
+            status: 0,
+            thumbnailUrl: null,
+            thumbnailUrlLastFetched: 0,
+            inLibrary: true,
+            defaultCategory: false,
+            inLibraryAt: 0,
+            source: 1,
+            realUrl: null,
+            lastFetchedAt: 0,
+            chaptersLastFetchedAt: 0,
+            updateStrategy: 'AlwaysUpdate',
+            lastDownloadAt: 0,
           ),
           TachimangaBackupManga(
-            id: 20, url: '/manga/20', title: 'Manga B', initialized: true,
-            artist: null, author: null, description: null, genre: null, status: 0,
-            thumbnailUrl: null, thumbnailUrlLastFetched: 0, inLibrary: true,
-            defaultCategory: false, inLibraryAt: 0, source: 1, realUrl: null,
-            lastFetchedAt: 0, chaptersLastFetchedAt: 0, updateStrategy: 'AlwaysUpdate', lastDownloadAt: 0,
+            id: 20,
+            url: '/manga/20',
+            title: 'Manga B',
+            initialized: true,
+            artist: null,
+            author: null,
+            description: null,
+            genre: null,
+            status: 0,
+            thumbnailUrl: null,
+            thumbnailUrlLastFetched: 0,
+            inLibrary: true,
+            defaultCategory: false,
+            inLibraryAt: 0,
+            source: 1,
+            realUrl: null,
+            lastFetchedAt: 0,
+            chaptersLastFetchedAt: 0,
+            updateStrategy: 'AlwaysUpdate',
+            lastDownloadAt: 0,
           ),
         ],
         mangaMetaTable: <TachimangaBackupMangaMeta>[],
@@ -53,16 +116,37 @@ void main() {
         pageTable: <TachimangaBackupPage>[],
         repoTable: <TachimangaBackupRepo>[],
         settingTable: <TachimangaBackupSetting>[],
-        sourceTable: <TachimangaBackupSource>[],
+        sourceTable: <TachimangaBackupSource>[
+          TachimangaBackupSource(
+            id: 1,
+            name: 'MangaDex',
+            lang: 'en',
+            extension: 0,
+            isNsfw: false,
+            isDirect: false,
+            randomUa: false,
+          ),
+        ],
         trackRecordTable: <TachimangaBackupTrackRecord>[],
         sqliteSequenceTable: <TachimangaBackupSqliteSequence>[],
       );
 
       final backup = TachimangaBackup(
         meta: TachimangaBackupMeta(
-          name: 'test', version: 1, remoteBackup: false, downloaded: false,
-          backupId: 0, updateAt: 0, type: 0, size: 0, checksum: '',
-          createAt: 0, cloudBackup: false, downloadProgress: 0, state: 0, extInfo: null,
+          name: 'test',
+          version: 1,
+          remoteBackup: false,
+          downloaded: false,
+          backupId: 0,
+          updateAt: 0,
+          type: 0,
+          size: 0,
+          checksum: '',
+          createAt: 0,
+          cloudBackup: false,
+          downloadProgress: 0,
+          state: 0,
+          extInfo: null,
         ),
         db: db,
       );
@@ -72,6 +156,7 @@ void main() {
 
       final SourceMangaData entryA = entries[0];
       check(entryA.details.title).equals('Manga A');
+      check(entryA.sourceId).equals('MangaDex');
       check(entryA.chapters).length.equals(1);
       check(entryA.chapters[0].title).equals('Ch 1');
       check(entryA.history).length.equals(1);
@@ -79,6 +164,7 @@ void main() {
 
       final SourceMangaData entryB = entries[1];
       check(entryB.details.title).equals('Manga B');
+      check(entryB.sourceId).equals('MangaDex');
       check(entryB.chapters).length.equals(1);
       check(entryB.chapters[0].title).equals('Ch 2');
       check(entryB.history).isEmpty();
@@ -107,9 +193,20 @@ void main() {
 
       final backup = TachimangaBackup(
         meta: TachimangaBackupMeta(
-          name: 'test', version: 1, remoteBackup: false, downloaded: false,
-          backupId: 0, updateAt: 0, type: 0, size: 0, checksum: '',
-          createAt: 0, cloudBackup: false, downloadProgress: 0, state: 0, extInfo: null,
+          name: 'test',
+          version: 1,
+          remoteBackup: false,
+          downloaded: false,
+          backupId: 0,
+          updateAt: 0,
+          type: 0,
+          size: 0,
+          checksum: '',
+          createAt: 0,
+          cloudBackup: false,
+          downloadProgress: 0,
+          state: 0,
+          extInfo: null,
         ),
         db: db,
       );
@@ -123,6 +220,9 @@ void main() {
         backupCategories: <TachiBackupCategory>[
           TachiBackupCategory(name: 'Favorites', order: 0, flags: 1),
           TachiBackupCategory(name: 'Reading', order: 1, flags: 1),
+        ],
+        backupSources: <TachiBackupSource>[
+          const TachiBackupSource(name: 'MangaDex', sourceId: 123),
         ],
         backupManga: <TachiBackupManga>[
           const TachiBackupManga(
@@ -142,9 +242,16 @@ void main() {
             viewerFlags: 0,
             chapters: <TachiBackupChapter>[
               TachiBackupChapter(
-                url: '/ch/1', name: 'Chapter 1', scanlator: '', read: true,
-                bookmark: false, lastPageRead: 10, dateFetch: 0, dateUpload: 0,
-                chapterNumber: 1, sourceOrder: 0,
+                url: '/ch/1',
+                name: 'Chapter 1',
+                scanlator: '',
+                read: true,
+                bookmark: false,
+                lastPageRead: 10,
+                dateFetch: 0,
+                dateUpload: 0,
+                chapterNumber: 1,
+                sourceOrder: 0,
               ),
             ],
             history: <TachiBackupHistory>[
@@ -153,9 +260,18 @@ void main() {
             categories: <int>[0],
             tracking: <TachiBackupTracking>[
               TachiBackupTracking(
-                syncId: 1, libraryId: 1, mediaIdInt: 1, trackingUrl: 'https://tracker.com/1',
-                title: 'Test Manga', lastChapterRead: 1, totalChapters: 50, score: 8.0,
-                status: 1, startedReadingDate: 1000, finishedReadingDate: 0, mediaId: 1,
+                syncId: 1,
+                libraryId: 1,
+                mediaIdInt: 1,
+                trackingUrl: 'https://tracker.com/1',
+                title: 'Test Manga',
+                lastChapterRead: 1,
+                totalChapters: 50,
+                score: 8.0,
+                status: 1,
+                startedReadingDate: 1000,
+                finishedReadingDate: 0,
+                mediaId: 1,
               ),
             ],
           ),
@@ -167,6 +283,7 @@ void main() {
 
       final SourceMangaData entry = entries[0];
       check(entry.details.title).equals('Test Manga');
+      check(entry.sourceId).equals('MangaDex');
       check(entry.categories).deepEquals(<String>['Favorites']);
       check(entry.chapters).length.equals(1);
       check(entry.chapters[0].isRead).isTrue();
@@ -188,16 +305,30 @@ void main() {
         ],
         backupManga: <TachiBackupManga>[
           const TachiBackupManga(
-            url: '/manga/1', title: 'M', artist: '', author: '', description: '',
-            genre: <String>[], status: 0, thumbnailUrl: '', source: 1, dateAdded: 0,
-            viewer: 0, chapterFlags: 0, favorite: true, viewerFlags: 0,
-            chapters: <TachiBackupChapter>[], history: <TachiBackupHistory>[], categories: <int>[0, 5],
+            url: '/manga/1',
+            title: 'M',
+            artist: '',
+            author: '',
+            description: '',
+            genre: <String>[],
+            status: 0,
+            thumbnailUrl: '',
+            source: 1,
+            dateAdded: 0,
+            viewer: 0,
+            chapterFlags: 0,
+            favorite: true,
+            viewerFlags: 0,
+            chapters: <TachiBackupChapter>[],
+            history: <TachiBackupHistory>[],
+            categories: <int>[0, 5],
             tracking: <TachiBackupTracking>[],
           ),
         ],
       );
 
       final SourceMangaData entry = backup.sourceMangaDataEntries[0];
+      check(entry.sourceId).equals('Source 1');
       check(entry.categories).length.equals(2);
       check(entry.categories[0]).equals('Only');
       check(entry.categories[1]).equals('Category 5');
@@ -235,14 +366,28 @@ void main() {
         },
         chapters: <AidokuBackupChapter>{
           AidokuBackupChapter(
-            sourceId: 'src.a', mangaId: 'manga-1', id: 'ch-1', title: 'Chapter 1',
-            scanlator: null, lang: 'en', chapter: 1.0, volume: null,
-            dateUploaded: null, sourceOrder: 0,
+            sourceId: 'src.a',
+            mangaId: 'manga-1',
+            id: 'ch-1',
+            title: 'Chapter 1',
+            scanlator: null,
+            lang: 'en',
+            chapter: 1.0,
+            volume: null,
+            dateUploaded: null,
+            sourceOrder: 0,
           ),
           AidokuBackupChapter(
-            sourceId: 'src.a', mangaId: 'manga-2', id: 'ch-2', title: 'Chapter 1',
-            scanlator: null, lang: 'en', chapter: 1.0, volume: null,
-            dateUploaded: null, sourceOrder: 0,
+            sourceId: 'src.a',
+            mangaId: 'manga-2',
+            id: 'ch-2',
+            title: 'Chapter 1',
+            scanlator: null,
+            lang: 'en',
+            chapter: 1.0,
+            volume: null,
+            dateUploaded: null,
+            sourceOrder: 0,
           ),
         },
         trackItems: null,
@@ -257,6 +402,7 @@ void main() {
       check(entries).length.equals(2);
 
       final SourceMangaData entry1 = entries.firstWhere((SourceMangaData e) => e.details.title == 'Aidoku Manga');
+      check(entry1.sourceId).equals('src.a');
       check(entry1.chapters).length.equals(1);
       check(entry1.history).length.equals(1);
       check(entry1.history[0].completed).isTrue();
@@ -291,14 +437,32 @@ void main() {
         db: MangayomiBackupDb(
           manga: <MangayomiBackupManga>[
             MangayomiBackupManga(
-              id: 1, source: 'src', author: 'A', artist: 'B',
-              genre: null, imageUrl: null, lang: 'en', link: '/m/1',
-              name: 'Manga 1', status: 0, description: null, categories: '1,2',
+              id: 1,
+              source: 'src',
+              author: 'A',
+              artist: 'B',
+              genre: null,
+              imageUrl: null,
+              lang: 'en',
+              link: '/m/1',
+              name: 'Manga 1',
+              status: 0,
+              description: null,
+              categories: '1,2',
             ),
             MangayomiBackupManga(
-              id: 2, source: 'src', author: null, artist: null,
-              genre: null, imageUrl: null, lang: 'en', link: '/m/2',
-              name: 'Manga 2', status: 0, description: null, categories: '2',
+              id: 2,
+              source: 'src',
+              author: null,
+              artist: null,
+              genre: null,
+              imageUrl: null,
+              lang: 'en',
+              link: '/m/2',
+              name: 'Manga 2',
+              status: 0,
+              description: null,
+              categories: '2',
             ),
           ],
           categories: <MangayomiBackupCategory>[
@@ -311,7 +475,10 @@ void main() {
           ],
           history: <MangayomiBackupHistory>[
             MangayomiBackupHistory(
-              itemType: ItemType.manga, chapterId: 10, mangaId: 1, date: '2024-01-01',
+              itemType: ItemType.manga,
+              chapterId: 10,
+              mangaId: 1,
+              date: '2024-01-01',
             ),
           ],
           tracks: <MangayomiBackupTrack>[
@@ -324,6 +491,7 @@ void main() {
       check(entries).length.equals(2);
 
       final SourceMangaData e1 = entries.firstWhere((SourceMangaData e) => e.details.title == 'Manga 1');
+      check(e1.sourceId).equals('src');
       check(e1.chapters).length.equals(1);
       check(e1.history).length.equals(1);
       check(e1.tracking).length.equals(1);
@@ -415,6 +583,7 @@ void main() {
 
       final SourceMangaData entry = entries[0];
       check(entry.details.title).equals('PB Manga');
+      check(entry.sourceId).equals('en.source');
       check(entry.chapters).length.equals(1);
       check(entry.chapters[0].isRead).isTrue();
       check(entry.chapters[0].lastPageRead).equals(19);

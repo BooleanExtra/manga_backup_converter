@@ -55,8 +55,7 @@ class AidokuPlugin {
   final Map<int, Completer<_WorkerResult>> _pending = <int, Completer<_WorkerResult>>{};
   int _nextCallId = 1;
 
-  final StreamController<HomePartialResult> _partialResultsController =
-      StreamController<HomePartialResult>.broadcast();
+  final StreamController<HomePartialResult> _partialResultsController = StreamController<HomePartialResult>.broadcast();
 
   // ---------------------------------------------------------------------------
   // Factory
@@ -267,7 +266,10 @@ class AidokuPlugin {
       // No listing provided or get_manga_list failed — fall back to empty-query search.
       final _WorkerResult result = await _call(
         'get_search_manga_list',
-        rids: <Uint8List>[Uint8List(0), Uint8List.fromList(<int>[0])],
+        rids: <Uint8List>[
+          Uint8List(0),
+          Uint8List.fromList(<int>[0]),
+        ],
         args: <Object?>[null, page, null],
       );
       data = result.data;
@@ -467,8 +469,7 @@ class AidokuPlugin {
 
     // Build the args array as JS values.
     final JSArray<JSAny?> jsArgs = <JSAny?>[
-      for (final Object? arg in args)
-        arg == null ? null : (arg as num).toJS,
+      for (final Object? arg in args) arg == null ? null : (arg as num).toJS,
     ].toJS;
 
     final callMsg = JSObject();

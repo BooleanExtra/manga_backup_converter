@@ -967,7 +967,8 @@ class AidokuSetting {
   const AidokuSetting({
     required this.key,
     required this.title,
-    required this.value, this.notification,
+    required this.value,
+    this.notification,
     this.requires,
     this.requiresFalse,
     this.refreshes,
@@ -1064,7 +1065,9 @@ enum AidokuLoginMethod { basic, oAuth, web }
 final class AidokuLoginSettingValue extends AidokuSettingValue {
   AidokuLoginSettingValue({
     required this.method,
-    required this.pkce, required this.useEmail, this.url,
+    required this.pkce,
+    required this.useEmail,
+    this.url,
     this.urlKey,
     this.logoutTitle,
     this.tokenUrl,
@@ -1114,7 +1117,8 @@ final class AidokuPageSettingValue extends AidokuSettingValue {
 
 final class AidokuEditableListSettingValue extends AidokuSettingValue {
   AidokuEditableListSettingValue({
-    required this.inline, this.lineLimit,
+    required this.inline,
+    this.lineLimit,
     this.placeholder,
     this.defaultValue,
   });
@@ -1157,7 +1161,12 @@ AidokuSettingValue decodeAidokuSettingValue(PostcardReader r) {
       final List<String>? titles = r.readOption(() => r.readList(r.readString));
       final bool? authToOpen = r.readOption(r.readBool);
       final String? defaultValue = r.readOption(r.readString);
-      return AidokuSelectSettingValue(values: values, titles: titles, authToOpen: authToOpen, defaultValue: defaultValue);
+      return AidokuSelectSettingValue(
+        values: values,
+        titles: titles,
+        authToOpen: authToOpen,
+        defaultValue: defaultValue,
+      );
     case 2: // MultiSelect
       final List<String> values = r.readList(r.readString);
       final List<String>? titles = r.readOption(() => r.readList(r.readString));
@@ -1214,7 +1223,8 @@ AidokuSettingValue decodeAidokuSettingValue(PostcardReader r) {
       return AidokuLinkSettingValue(url: url, external: external);
     case 9: // Login
       final int methodIdx = r.readVarInt();
-      final AidokuLoginMethod method = AidokuLoginMethod.values[methodIdx.clamp(0, AidokuLoginMethod.values.length - 1)];
+      final AidokuLoginMethod method =
+          AidokuLoginMethod.values[methodIdx.clamp(0, AidokuLoginMethod.values.length - 1)];
       final String? url = r.readOption(r.readString);
       final String? urlKey = r.readOption(r.readString);
       final String? logoutTitle = r.readOption(r.readString);

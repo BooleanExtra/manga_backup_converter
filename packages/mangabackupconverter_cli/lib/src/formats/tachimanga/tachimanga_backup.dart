@@ -143,27 +143,47 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
   @override
   List<SourceMangaData> get sourceMangaDataEntries {
     return db.mangaTable.map((TachimangaBackupManga manga) {
-      final List<TachimangaBackupChapter> mangaChapters = db.chapterTable.where(
-        (TachimangaBackupChapter c) => c.manga == manga.id,
-      ).toList();
+      final List<TachimangaBackupChapter> mangaChapters = db.chapterTable
+          .where(
+            (TachimangaBackupChapter c) => c.manga == manga.id,
+          )
+          .toList();
 
-      final List<TachimangaBackupHistory> mangaHistory = db.historyTable.where(
-        (TachimangaBackupHistory h) => h.mangaId == manga.id,
-      ).toList();
+      final List<TachimangaBackupHistory> mangaHistory = db.historyTable
+          .where(
+            (TachimangaBackupHistory h) => h.mangaId == manga.id,
+          )
+          .toList();
 
-      final List<TachimangaBackupTrackRecord> mangaTracks = db.trackRecordTable.where(
-        (TachimangaBackupTrackRecord t) => t.mangaId == manga.id,
-      ).toList();
+      final List<TachimangaBackupTrackRecord> mangaTracks = db.trackRecordTable
+          .where(
+            (TachimangaBackupTrackRecord t) => t.mangaId == manga.id,
+          )
+          .toList();
 
-      final Set<int> categoryIds = db.categoryMangaTable.where(
-        (TachimangaBackupCategoryManga cm) => cm.manga == manga.id,
-      ).map((TachimangaBackupCategoryManga cm) => cm.category).toSet();
-      final List<String> categoryNames = db.categoryTable.where(
-        (TachimangaBackupCategory c) => categoryIds.contains(c.id),
-      ).map((TachimangaBackupCategory c) => c.name).toList();
+      final Set<int> categoryIds = db.categoryMangaTable
+          .where(
+            (TachimangaBackupCategoryManga cm) => cm.manga == manga.id,
+          )
+          .map((TachimangaBackupCategoryManga cm) => cm.category)
+          .toSet();
+      final List<String> categoryNames = db.categoryTable
+          .where(
+            (TachimangaBackupCategory c) => categoryIds.contains(c.id),
+          )
+          .map((TachimangaBackupCategory c) => c.name)
+          .toList();
+
+      final String sourceId =
+          db.sourceTable
+              .where((TachimangaBackupSource s) => s.id == manga.source)
+              .map((TachimangaBackupSource s) => s.name)
+              .firstOrNull ??
+          'Source ${manga.source}';
 
       return SourceMangaData(
         details: manga.toMangaSearchDetails(),
+        sourceId: sourceId,
         categories: categoryNames,
         chapters: mangaChapters.map((TachimangaBackupChapter c) {
           return SourceChapter(
@@ -173,22 +193,20 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
             isRead: c.read,
             isBookmarked: c.bookmark,
             lastPageRead: c.lastPageRead,
-            dateUploaded: c.dateUpload > 0
-                ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload)
-                : null,
+            dateUploaded: c.dateUpload > 0 ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload) : null,
             sourceOrder: c.sourceOrder,
           );
         }).toList(),
         history: mangaHistory.map((TachimangaBackupHistory h) {
-          final TachimangaBackupChapter? ch = mangaChapters.where(
-            (TachimangaBackupChapter c) => c.id == h.lastChapterId,
-          ).firstOrNull;
+          final TachimangaBackupChapter? ch = mangaChapters
+              .where(
+                (TachimangaBackupChapter c) => c.id == h.lastChapterId,
+              )
+              .firstOrNull;
           return SourceHistoryEntry(
             chapterTitle: ch?.name ?? 'Chapter ${h.lastChapterId}',
             chapterNumber: ch?.chapterNumber,
-            dateRead: h.lastReadAt > 0
-                ? DateTime.fromMillisecondsSinceEpoch(h.lastReadAt)
-                : null,
+            dateRead: h.lastReadAt > 0 ? DateTime.fromMillisecondsSinceEpoch(h.lastReadAt) : null,
             completed: ch?.read ?? false,
           );
         }).toList(),
@@ -203,17 +221,11 @@ class TachimangaBackup with TachimangaBackupMappable implements ConvertableBacku
             totalChapters: t.totalChapters,
             score: t.score,
             status: t.status,
-            startedReadingDate: t.startDate > 0
-                ? DateTime.fromMillisecondsSinceEpoch(t.startDate)
-                : null,
-            finishedReadingDate: t.finishDate > 0
-                ? DateTime.fromMillisecondsSinceEpoch(t.finishDate)
-                : null,
+            startedReadingDate: t.startDate > 0 ? DateTime.fromMillisecondsSinceEpoch(t.startDate) : null,
+            finishedReadingDate: t.finishDate > 0 ? DateTime.fromMillisecondsSinceEpoch(t.finishDate) : null,
           );
         }).toList(),
-        dateAdded: manga.inLibraryAt > 0
-            ? DateTime.fromMillisecondsSinceEpoch(manga.inLibraryAt)
-            : null,
+        dateAdded: manga.inLibraryAt > 0 ? DateTime.fromMillisecondsSinceEpoch(manga.inLibraryAt) : null,
         status: manga.status,
       );
     }).toList();

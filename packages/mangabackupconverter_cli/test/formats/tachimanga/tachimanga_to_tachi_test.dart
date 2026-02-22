@@ -78,8 +78,22 @@ void main() {
         chapterMetaTable: <TachimangaBackupChapterMeta>[],
         extensionTable: <TachimangaBackupExtension>[],
         historyTable: <TachimangaBackupHistory>[
-          TachimangaBackupHistory(id: 1, createAt: 0, isDelete: false, mangaId: 100, lastChapterId: 10, lastReadAt: 5000),
-          TachimangaBackupHistory(id: 2, createAt: 0, isDelete: false, mangaId: 200, lastChapterId: 20, lastReadAt: 3000),
+          TachimangaBackupHistory(
+            id: 1,
+            createAt: 0,
+            isDelete: false,
+            mangaId: 100,
+            lastChapterId: 10,
+            lastReadAt: 5000,
+          ),
+          TachimangaBackupHistory(
+            id: 2,
+            createAt: 0,
+            isDelete: false,
+            mangaId: 200,
+            lastChapterId: 20,
+            lastReadAt: 3000,
+          ),
         ],
         mangaTable: <TachimangaBackupManga>[
           TachimangaBackupManga(
@@ -133,8 +147,24 @@ void main() {
         repoTable: <TachimangaBackupRepo>[],
         settingTable: <TachimangaBackupSetting>[],
         sourceTable: <TachimangaBackupSource>[
-          TachimangaBackupSource(id: 999, name: 'Source A', lang: 'en', extension: 1, isNsfw: false, isDirect: null, randomUa: null),
-          TachimangaBackupSource(id: 888, name: 'Source B', lang: 'en', extension: 2, isNsfw: false, isDirect: null, randomUa: null),
+          TachimangaBackupSource(
+            id: 999,
+            name: 'Source A',
+            lang: 'en',
+            extension: 1,
+            isNsfw: false,
+            isDirect: null,
+            randomUa: null,
+          ),
+          TachimangaBackupSource(
+            id: 888,
+            name: 'Source B',
+            lang: 'en',
+            extension: 2,
+            isNsfw: false,
+            isDirect: null,
+            randomUa: null,
+          ),
         ],
         trackRecordTable: <TachimangaBackupTrackRecord>[
           TachimangaBackupTrackRecord(
@@ -173,9 +203,20 @@ void main() {
 
       backup = TachimangaBackup(
         meta: TachimangaBackupMeta(
-          name: 'test', version: 1, remoteBackup: false, downloaded: false,
-          backupId: 0, updateAt: 0, type: 0, size: 0, checksum: '',
-          createAt: 0, cloudBackup: false, downloadProgress: 0, state: 0, extInfo: null,
+          name: 'test',
+          version: 1,
+          remoteBackup: false,
+          downloaded: false,
+          backupId: 0,
+          updateAt: 0,
+          type: 0,
+          size: 0,
+          checksum: '',
+          createAt: 0,
+          cloudBackup: false,
+          downloadProgress: 0,
+          state: 0,
+          extInfo: null,
         ),
         db: db,
       );
@@ -299,9 +340,20 @@ void main() {
 
       final emptyBackup = TachimangaBackup(
         meta: TachimangaBackupMeta(
-          name: 'test', version: 1, remoteBackup: false, downloaded: false,
-          backupId: 0, updateAt: 0, type: 0, size: 0, checksum: '',
-          createAt: 0, cloudBackup: false, downloadProgress: 0, state: 0, extInfo: null,
+          name: 'test',
+          version: 1,
+          remoteBackup: false,
+          downloaded: false,
+          backupId: 0,
+          updateAt: 0,
+          type: 0,
+          size: 0,
+          checksum: '',
+          createAt: 0,
+          cloudBackup: false,
+          downloadProgress: 0,
+          state: 0,
+          extInfo: null,
         ),
         db: emptyDb,
       );

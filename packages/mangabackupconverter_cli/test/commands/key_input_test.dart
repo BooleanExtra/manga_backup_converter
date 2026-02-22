@@ -328,7 +328,7 @@ void main() {
       // Should contain cursor-up ANSI sequence.
       final rendered = output.toString();
       check(rendered).contains('\x1b[2A'); // Move up 2 lines.
-      check(rendered).contains('\x1b[J');  // Clear down.
+      check(rendered).contains('\x1b[J'); // Clear down.
     });
   });
 }

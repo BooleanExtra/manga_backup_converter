@@ -170,17 +170,13 @@ class ExtensionSelectScreen {
 
           case _KeyEvent(key: Enter()):
             if (selected.isNotEmpty) {
-              result = extensions
-                  .where((ExtensionEntry e) => selected.contains(e.id))
-                  .toList();
+              result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
             }
             unawaited(events.close());
 
           case _KeyEvent(key: CharKey(char: 'y')):
             if (cursorIndex >= 0 && selected.isNotEmpty) {
-              result = extensions
-                  .where((ExtensionEntry e) => selected.contains(e.id))
-                  .toList();
+              result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
               unawaited(events.close());
             } else if (cursorIndex < 0) {
               // Search bar — type the character.

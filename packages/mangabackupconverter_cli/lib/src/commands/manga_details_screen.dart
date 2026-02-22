@@ -20,8 +20,7 @@ class MangaDetailsScreen {
       screen.render([bold(result.title), '', '  Loading... ${spinner.frame}']);
     });
 
-    final (PluginMangaDetails, List<PluginChapter>)? fetchResult =
-        await fetchDetails(result.mangaKey);
+    final (PluginMangaDetails, List<PluginChapter>)? fetchResult = await fetchDetails(result.mangaKey);
     loadTimer.cancel();
 
     if (fetchResult == null) {

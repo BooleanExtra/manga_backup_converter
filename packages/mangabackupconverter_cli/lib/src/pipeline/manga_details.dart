@@ -12,12 +12,11 @@ class MangaSearchDetails {
     this.latestChapterNum,
     this.coverImageUrl,
     this.languages = const <String>[],
-  })  : title = fixDoubleEncoding(title),
-        altTitles = altTitles.map(fixDoubleEncoding).toList(),
-        authors = authors.map(fixDoubleEncoding).toList(),
-        artists = artists.map(fixDoubleEncoding).toList(),
-        description =
-            description != null ? fixDoubleEncoding(description) : null;
+  }) : title = fixDoubleEncoding(title),
+       altTitles = altTitles.map(fixDoubleEncoding).toList(),
+       authors = authors.map(fixDoubleEncoding).toList(),
+       artists = artists.map(fixDoubleEncoding).toList(),
+       description = description != null ? fixDoubleEncoding(description) : null;
 
   final String title;
   final List<String> altTitles;

@@ -18,20 +18,18 @@ void main() {
     // 二日市とふろう → UTF-8 bytes treated as Latin-1
     const original = '二日市とふろう';
     // Double-encode: take UTF-8 bytes, treat each as a code point
-    final List<int> utf8Bytes = [...original.runes]
-        .expand((r) {
-          if (r <= 0x7F) return [r];
-          if (r <= 0x7FF) return [(0xC0 | (r >> 6)), (0x80 | (r & 0x3F))];
-          if (r <= 0xFFFF) {
-            return [
-              (0xE0 | (r >> 12)),
-              (0x80 | ((r >> 6) & 0x3F)),
-              (0x80 | (r & 0x3F)),
-            ];
-          }
-          return [r]; // Should not happen for these chars
-        })
-        .toList();
+    final List<int> utf8Bytes = [...original.runes].expand((r) {
+      if (r <= 0x7F) return [r];
+      if (r <= 0x7FF) return [(0xC0 | (r >> 6)), (0x80 | (r & 0x3F))];
+      if (r <= 0xFFFF) {
+        return [
+          (0xE0 | (r >> 12)),
+          (0x80 | ((r >> 6) & 0x3F)),
+          (0x80 | (r & 0x3F)),
+        ];
+      }
+      return [r]; // Should not happen for these chars
+    }).toList();
     final garbled = String.fromCharCodes(utf8Bytes);
     final w = PostcardWriter()..writeString(garbled);
     final r = PostcardReader(w.bytes);

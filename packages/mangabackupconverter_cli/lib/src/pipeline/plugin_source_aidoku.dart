@@ -70,16 +70,16 @@ class AidokuPluginSource implements PluginSource {
   }
 
   static MangaPublishingStatus _mapStatus(MangaStatus status) => switch (status) {
-        MangaStatus.unknown => MangaPublishingStatus.unknown,
-        MangaStatus.ongoing => MangaPublishingStatus.ongoing,
-        MangaStatus.completed => MangaPublishingStatus.completed,
-        MangaStatus.cancelled => MangaPublishingStatus.cancelled,
-        MangaStatus.hiatus => MangaPublishingStatus.hiatus,
-      };
+    MangaStatus.unknown => MangaPublishingStatus.unknown,
+    MangaStatus.ongoing => MangaPublishingStatus.ongoing,
+    MangaStatus.completed => MangaPublishingStatus.completed,
+    MangaStatus.cancelled => MangaPublishingStatus.cancelled,
+    MangaStatus.hiatus => MangaPublishingStatus.hiatus,
+  };
 
   static MangaContentRating _mapContentRating(ContentRating rating) => switch (rating) {
-        ContentRating.safe => MangaContentRating.safe,
-        ContentRating.suggestive => MangaContentRating.suggestive,
-        ContentRating.nsfw => MangaContentRating.nsfw,
-      };
+    ContentRating.safe => MangaContentRating.safe,
+    ContentRating.suggestive => MangaContentRating.suggestive,
+    ContentRating.nsfw => MangaContentRating.nsfw,
+  };
 }

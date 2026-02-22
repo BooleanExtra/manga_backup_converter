@@ -136,8 +136,14 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
         return 'Category $idx';
       }).toList();
 
+      final String? sourceName = <TachiBackupSource>[
+        ...backupSources,
+        ...backupBrokenSources,
+      ].where((TachiBackupSource s) => s.sourceId == manga.source).map((TachiBackupSource s) => s.name).firstOrNull;
+
       return SourceMangaData(
         details: manga.toMangaSearchDetails(),
+        sourceId: sourceName ?? 'Source ${manga.source}',
         categories: categoryNames,
         chapters: manga.chapters.map((TachiBackupChapter c) {
           return SourceChapter(
@@ -147,22 +153,20 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
             isRead: c.read,
             isBookmarked: c.bookmark,
             lastPageRead: c.lastPageRead,
-            dateUploaded: c.dateUpload > 0
-                ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload)
-                : null,
+            dateUploaded: c.dateUpload > 0 ? DateTime.fromMillisecondsSinceEpoch(c.dateUpload) : null,
             sourceOrder: c.sourceOrder,
           );
         }).toList(),
         history: manga.history.map((TachiBackupHistory h) {
-          final TachiBackupChapter? ch = manga.chapters.where(
-            (TachiBackupChapter c) => c.url == h.url,
-          ).firstOrNull;
+          final TachiBackupChapter? ch = manga.chapters
+              .where(
+                (TachiBackupChapter c) => c.url == h.url,
+              )
+              .firstOrNull;
           return SourceHistoryEntry(
             chapterTitle: ch?.name ?? h.url,
             chapterNumber: ch?.chapterNumber,
-            dateRead: h.lastRead > 0
-                ? DateTime.fromMillisecondsSinceEpoch(h.lastRead)
-                : null,
+            dateRead: h.lastRead > 0 ? DateTime.fromMillisecondsSinceEpoch(h.lastRead) : null,
             completed: ch?.read ?? false,
           );
         }).toList(),
@@ -185,9 +189,7 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
                 : null,
           );
         }).toList(),
-        dateAdded: manga.dateAdded > 0
-            ? DateTime.fromMillisecondsSinceEpoch(manga.dateAdded)
-            : null,
+        dateAdded: manga.dateAdded > 0 ? DateTime.fromMillisecondsSinceEpoch(manga.dateAdded) : null,
         lastUpdated: (manga.lastModifiedAt ?? 0) > 0
             ? DateTime.fromMillisecondsSinceEpoch(manga.lastModifiedAt!)
             : null,

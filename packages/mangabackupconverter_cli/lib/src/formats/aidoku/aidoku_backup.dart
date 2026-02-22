@@ -190,24 +190,33 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   @override
   List<SourceMangaData> get sourceMangaDataEntries {
     return (manga ?? <AidokuBackupManga>{}).map((AidokuBackupManga m) {
-      final AidokuBackupLibraryManga? libraryEntry = library?.where(
-        (AidokuBackupLibraryManga l) => l.sourceId == m.sourceId && l.mangaId == m.id,
-      ).firstOrNull;
+      final AidokuBackupLibraryManga? libraryEntry = library
+          ?.where(
+            (AidokuBackupLibraryManga l) => l.sourceId == m.sourceId && l.mangaId == m.id,
+          )
+          .firstOrNull;
 
-      final List<AidokuBackupChapter> mangaChapters = (chapters ?? <AidokuBackupChapter>{}).where(
-        (AidokuBackupChapter c) => c.sourceId == m.sourceId && c.mangaId == m.id,
-      ).toList();
+      final List<AidokuBackupChapter> mangaChapters = (chapters ?? <AidokuBackupChapter>{})
+          .where(
+            (AidokuBackupChapter c) => c.sourceId == m.sourceId && c.mangaId == m.id,
+          )
+          .toList();
 
-      final List<AidokuBackupHistory> mangaHistory = (history ?? <AidokuBackupHistory>{}).where(
-        (AidokuBackupHistory h) => h.sourceId == m.sourceId && h.mangaId == m.id,
-      ).toList();
+      final List<AidokuBackupHistory> mangaHistory = (history ?? <AidokuBackupHistory>{})
+          .where(
+            (AidokuBackupHistory h) => h.sourceId == m.sourceId && h.mangaId == m.id,
+          )
+          .toList();
 
-      final List<AidokuBackupTrackItem> mangaTracks = (trackItems ?? <AidokuBackupTrackItem>{}).where(
-        (AidokuBackupTrackItem t) => t.sourceId == m.sourceId && t.mangaId == m.id,
-      ).toList();
+      final List<AidokuBackupTrackItem> mangaTracks = (trackItems ?? <AidokuBackupTrackItem>{})
+          .where(
+            (AidokuBackupTrackItem t) => t.sourceId == m.sourceId && t.mangaId == m.id,
+          )
+          .toList();
 
       return SourceMangaData(
         details: m.toMangaSearchDetails(),
+        sourceId: m.sourceId,
         categories: libraryEntry?.categories ?? const <String>[],
         chapters: mangaChapters.map((AidokuBackupChapter c) {
           final bool isRead = mangaHistory.any(
@@ -225,9 +234,11 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
           );
         }).toList(),
         history: mangaHistory.map((AidokuBackupHistory h) {
-          final AidokuBackupChapter? ch = mangaChapters.where(
-            (AidokuBackupChapter c) => c.id == h.chapterId,
-          ).firstOrNull;
+          final AidokuBackupChapter? ch = mangaChapters
+              .where(
+                (AidokuBackupChapter c) => c.id == h.chapterId,
+              )
+              .firstOrNull;
           return SourceHistoryEntry(
             chapterTitle: ch?.title ?? h.chapterId,
             chapterNumber: ch?.chapter,
