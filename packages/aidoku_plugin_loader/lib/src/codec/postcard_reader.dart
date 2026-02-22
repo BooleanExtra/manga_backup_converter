@@ -45,11 +45,8 @@ class PostcardReader {
     return view.getFloat64(0, Endian.little);
   }
 
-  int readI64() {
-    final view = ByteData.sublistView(_bytes, _pos, _pos + 8);
-    _pos += 8;
-    return view.getInt64(0, Endian.little);
-  }
+  /// Decode an i64 as a zigzag-encoded varint (postcard's default encoding).
+  int readI64() => readSignedVarInt();
 
   String readString() {
     final int len = readVarInt();

@@ -115,6 +115,14 @@ void main() {
           check(manga.description!).isNotEmpty();
         });
 
+        test('includeChapters returns non-empty chapters', () async {
+          final Manga? manga = await plugin.getMangaDetails(mangaId, includeChapters: true);
+          if (manga == null) {
+            throw Exception('manga is null');
+          }
+          check(manga.chapters).isNotEmpty();
+        });
+
         test('contentRating is suggestive', () async {
           final Manga? manga = await plugin.getMangaDetails(mangaId);
           if (manga == null) {

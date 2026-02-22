@@ -410,7 +410,7 @@ void _processCmd(
     try {
       final int ptr = (runner.call('get_manga_update', <Object?>[mangaRid, 1, if (cmd.includeChapters) 1 else 0]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } on Exception catch (e, st) {
+    } on Object catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_manga_update: $e', stackTrace: st.toString()));
     } finally {
