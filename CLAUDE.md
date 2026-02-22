@@ -63,6 +63,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/common/` — `Convertable` interface, shared mappers, extension repo index
 - `lib/src/formats/<format>/` — Format-specific backup models and parsers
 - `lib/src/pipeline/` — Migration pipeline API (BackupFormat, MangaSearchDetails, MigrationPipeline, plugin sources)
+- `lib/src/commands/` — CLI command implementations + interactive terminal UI (`terminal_ui.dart`, `migration_dashboard.dart`, `live_search_select.dart`, `manga_details_screen.dart`)
 - `lib/src/pipeline/plugin_source_stub.dart` — `StubPluginSource` implements `PluginSource`; must be updated when the interface changes
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
@@ -83,6 +84,8 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 
 ### Pipeline Data Flow
 
+- `MigrationPipeline.onConfirmMatches` is a batch callback — receives all `SourceMangaData` plus `onSearch` (streaming) and `onFetchDetails` functions; UI handles searching and user interaction
+- `PluginSearchEvent` (sealed) streams search results per-plugin: `PluginSearchResults` / `PluginSearchError`
 - `MangaMatchConfirmation.sourceManga` is `SourceMangaData` (not `MangaSearchDetails`) — carries chapters, history, tracking, categories from source backup
 - `ConvertableBackup.sourceMangaDataEntries` extracts `List<SourceMangaData>` from each backup format
 - `MangaMatchProposal.sourceManga` remains `MangaSearchDetails` (UI display only)

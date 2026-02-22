@@ -34,7 +34,24 @@ class AidokuPluginLoader extends PluginLoader {
     for (final url in repoUrls) {
       try {
         final RemoteSourceList sourceList = await manager.fetchRemoteSourceList(url);
-        entries.addAll(sourceList.sources.map(AidokuExtensionEntry.fromSourceEntry));
+        final Uri sourceListUri = Uri.parse(sourceList.url);
+        entries.addAll(
+          sourceList.sources.map((SourceEntry s) {
+            final downloadUrl = sourceListUri.resolve(s.downloadUrl).toString();
+            final iconUrl = sourceListUri.resolve(s.iconUrl).toString();
+            return AidokuExtensionEntry(
+              id: s.id,
+              name: s.name,
+              languages: s.languages,
+              version: s.version,
+              iconUrl: iconUrl,
+              downloadUrl: downloadUrl,
+              contentRating: s.contentRating,
+              baseUrl: s.baseUrl,
+              altNames: s.altNames,
+            );
+          }),
+        );
       } on Object catch (e) {
         onWarning?.call('Failed to fetch repo $url: $e');
       }
