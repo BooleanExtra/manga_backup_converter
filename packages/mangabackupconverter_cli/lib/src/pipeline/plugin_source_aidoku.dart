@@ -33,7 +33,7 @@ class AidokuPluginSource implements PluginSource {
 
   @override
   Future<(PluginMangaDetails, List<PluginChapter>)?> getMangaWithChapters(String mangaKey) async {
-    final Manga? manga = await _plugin.getMangaDetails(mangaKey);
+    final Manga? manga = await _plugin.getMangaDetails(mangaKey, includeChapters: true);
     if (manga == null) return null;
     final details = PluginMangaDetails(
       key: manga.key,

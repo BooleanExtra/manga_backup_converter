@@ -251,12 +251,13 @@ class AidokuPlugin {
   }
 
   /// Fetch updated manga details. Returns null on error or no data.
-  Future<Manga?> getMangaDetails(String key) async {
+  Future<Manga?> getMangaDetails(String key, {bool includeChapters = false}) async {
     final port = ReceivePort();
     _wasmCmdPort.send(
       WasmMangaDetailsCmd(
         keyBytes: Uint8List.fromList(utf8.encode(key)),
         replyPort: port.sendPort,
+        includeChapters: includeChapters,
       ),
     );
     final data = await port.first as Uint8List?;

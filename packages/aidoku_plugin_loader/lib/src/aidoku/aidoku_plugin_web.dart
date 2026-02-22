@@ -218,11 +218,11 @@ class AidokuPlugin {
   }
 
   /// Fetch updated manga details. Returns null on error or no data.
-  Future<Manga?> getMangaDetails(String key) async {
+  Future<Manga?> getMangaDetails(String key, {bool includeChapters = false}) async {
     final _WorkerResult result = await _call(
       'get_manga_update',
       rids: <Uint8List>[encodeMangaKey(key)],
-      args: <Object?>[null, 1, 0],
+      args: <Object?>[null, 1, if (includeChapters) 1 else 0],
     );
     if (result.data == null) return null;
     try {
