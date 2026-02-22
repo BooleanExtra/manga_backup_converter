@@ -191,6 +191,13 @@ class AidokuPlugin {
 
     try {
       final Uri uri = Uri.parse(msg.url);
+      if (!uri.hasScheme || !uri.hasAuthority) {
+        // ignore: avoid_print
+        print('[wasm/net] error: relative URL from plugin: ${msg.url}');
+        _sharedState.writeError();
+        WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
+        return;
+      }
       final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
       // ignore: avoid_print
       print('[wasm/net] $methodStr ${msg.url}');

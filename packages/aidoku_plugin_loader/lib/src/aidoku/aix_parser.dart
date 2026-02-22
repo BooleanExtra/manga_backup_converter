@@ -62,7 +62,7 @@ class AixParser {
           final m = l as Map<String, dynamic>;
           return SourceListing(
             id: m['id'] as String,
-            name: m['name'] as String,
+            name: (m['name'] as String?) ?? m['id'] as String,
             kind: (m['kind'] as int?) ?? 0,
           );
         }).toList() ??
