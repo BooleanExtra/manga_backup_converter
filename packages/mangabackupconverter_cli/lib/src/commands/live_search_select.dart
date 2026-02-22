@@ -63,6 +63,7 @@ class LiveSearchSelect {
     var searchGeneration = 0;
     final pluginStatuses = <String, _PluginStatus>{};
     var cachedResults = <PluginSearchResult>[];
+    var searchActive = false;
     StreamSubscription<PluginSearchEvent>? currentSearchSub;
     Timer? debounceTimer;
 
@@ -90,6 +91,7 @@ class LiveSearchSelect {
       currentSearchSub?.cancel();
       cachedResults = allResults();
       pluginStatuses.clear();
+      searchActive = true;
       cursorIndex = -1;
       scrollOffset = 0;
       searchGeneration++;
@@ -107,7 +109,7 @@ class LiveSearchSelect {
     void render() {
       final int width = context.width;
       var results = allResults();
-      final bool searching = anySearching();
+      final bool searching = searchActive || anySearching();
 
       // Use cached results while searching if no new results have arrived yet.
       final bool usingCached = searching && results.isEmpty && cachedResults.isNotEmpty;
@@ -287,6 +289,7 @@ class LiveSearchSelect {
 
           case _PluginStreamDoneEvent(:final generation):
             if (generation != searchGeneration) break;
+            searchActive = false;
             // Mark any remaining as done.
             for (final _PluginStatus status in pluginStatuses.values) {
               if (status.state == _PluginSearchState.searching) {
@@ -296,7 +299,7 @@ class LiveSearchSelect {
             render();
 
           case _SpinnerTickEvent():
-            if (anySearching()) render();
+            if (searchActive || anySearching()) render();
         }
 
         if (events.isClosed) break;
