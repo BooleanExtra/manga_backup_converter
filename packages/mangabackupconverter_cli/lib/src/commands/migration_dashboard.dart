@@ -78,15 +78,41 @@ class MigrationDashboard {
     // getMangaDetails which shares the plugin, so we avoid concurrent calls.
     var nextSearchIndex = 0;
     StreamSubscription<PluginSearchEvent>? activeSub;
+    MigrationEntry? activeEntry;
+    final pendingRetries = <MigrationEntry>[];
 
-    void startNextSearch() {
-      if (nextSearchIndex >= entries.length) return;
-      final MigrationEntry entry = entries[nextSearchIndex++];
+    void startSearch(MigrationEntry entry) {
+      entry.candidates.clear();
+      entry.failures.clear();
+      entry.match = null;
+      entry.searching = true;
+      activeEntry = entry;
       final Stream<PluginSearchEvent> stream = onSearch(entry.source.details.title);
       activeSub = stream.listen(
         (PluginSearchEvent event) => events.add(_SearchResultEvent(entry, event)),
         onDone: () => events.add(_SearchDoneEvent(entry)),
       );
+    }
+
+    void startNextSearch() {
+      // Drain pending retries first.
+      while (pendingRetries.isNotEmpty) {
+        final MigrationEntry retry = pendingRetries.removeAt(0);
+        if (retry.selected && retry.searching) {
+          startSearch(retry);
+          return;
+        }
+      }
+      // Continue linear scan.
+      while (nextSearchIndex < entries.length) {
+        final MigrationEntry entry = entries[nextSearchIndex++];
+        if (!entry.selected) {
+          entry.searching = false;
+          continue;
+        }
+        startSearch(entry);
+        return;
+      }
     }
 
     startNextSearch();
@@ -128,7 +154,7 @@ class MigrationDashboard {
       }
 
       lines.add('');
-      final bool allDone = !entries.any((MigrationEntry e) => e.searching);
+      final bool allDone = !entries.any((MigrationEntry e) => e.searching && e.selected);
       final acceptHint = allDone
           ? 'y to accept selections'
           : 'searching... ${spinner.frame}';
@@ -159,11 +185,24 @@ class MigrationDashboard {
             render();
 
           case _KeyEvent(key: Space()):
-            entries[cursorIndex].selected = !entries[cursorIndex].selected;
+            final MigrationEntry toggled = entries[cursorIndex];
+            toggled.selected = !toggled.selected;
+            if (!toggled.selected && toggled == activeEntry) {
+              // Cancel the active search for this entry.
+              await activeSub?.cancel();
+              activeSub = null;
+              activeEntry = null;
+              startNextSearch();
+            } else if (toggled.selected && toggled.match == null) {
+              // Re-selected while search never completed or was skipped.
+              toggled.searching = true;
+              pendingRetries.add(toggled);
+              if (activeEntry == null) startNextSearch();
+            }
             render();
 
           case _KeyEvent(key: CharKey(char: 'y')):
-            if (entries.any((MigrationEntry e) => e.searching)) break;
+            if (entries.any((MigrationEntry e) => e.searching && e.selected)) break;
             accepted = true;
             unawaited(events.close());
 
@@ -192,20 +231,24 @@ class MigrationDashboard {
             render();
 
           case _SearchResultEvent(:final entry, event: PluginSearchResults(:final results)):
+            if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.candidates.addAll(results);
             entry.match ??= _findBestMatch(entry.source.details.title, results);
             render();
 
           case _SearchResultEvent(:final entry, event: PluginSearchError(:final failure)):
+            if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.failures.add(failure);
 
           case _SearchDoneEvent(:final entry):
+            if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.searching = false;
+            activeEntry = null;
             startNextSearch();
             render();
 
           case _SpinnerTickEvent():
-            if (entries.any((MigrationEntry e) => e.searching)) render();
+            if (entries.any((MigrationEntry e) => e.searching && e.selected)) render();
 
           case _KeyEvent():
             break; // Unhandled keys.
