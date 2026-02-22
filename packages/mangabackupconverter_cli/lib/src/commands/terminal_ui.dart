@@ -172,7 +172,9 @@ bool get hasTerminal {
 /// Wrapping it in `asBroadcastStream` allows independent subscribe/cancel
 /// cycles across multiple [KeyInput] instances (parent / child screens).
 Stream<List<int>>? _stdinBroadcast;
-Stream<List<int>> get _broadcastStdin => _stdinBroadcast ??= stdin.asBroadcastStream();
+StreamSubscription<List<int>>? _stdinSub;
+Stream<List<int>> get _broadcastStdin =>
+    _stdinBroadcast ??= stdin.asBroadcastStream(onListen: (sub) => _stdinSub = sub);
 
 class KeyInput {
   KeyInput() : _inputStream = null;
@@ -434,6 +436,8 @@ class TerminalContext {
     _keyInput.dispose();
     _sigintSub?.cancel();
     _sigintSub = null;
+    _stdinSub?.cancel();
+    _stdinBroadcast = null;
   }
 }
 
