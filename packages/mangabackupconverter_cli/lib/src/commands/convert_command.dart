@@ -112,7 +112,16 @@ class ConvertCommand extends Command<void> {
     final io.IOSink? logSink = logPath.isNotEmpty ? io.File(logPath).openWrite() : null;
     var logSinkMounted = logSink != null;
 
-    final OnConfirmMatches onConfirmMatches = interactive ? MigrationDashboard().run : _autoAcceptMatches;
+    final TerminalContext? context = interactive ? TerminalContext() : null;
+
+    final OnConfirmMatches onConfirmMatches = interactive
+        ? (manga, onSearch, onFetchDetails) => MigrationDashboard().run(
+              context: context!,
+              manga: manga,
+              onSearch: onSearch,
+              onFetchDetails: onFetchDetails,
+            )
+        : _autoAcceptMatches;
 
     try {
       await runZoned(
@@ -181,6 +190,7 @@ class ConvertCommand extends Command<void> {
       io.stderr.writeln('Migration failed: $e');
       io.exitCode = 1;
     } finally {
+      context?.dispose();
       logSinkMounted = false;
       await logSink?.flush();
       await logSink?.close();

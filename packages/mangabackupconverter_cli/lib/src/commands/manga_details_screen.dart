@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
@@ -7,14 +6,14 @@ import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 
 class MangaDetailsScreen {
   Future<void> run({
+    required TerminalContext context,
     required PluginSearchResult result,
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(String mangaKey) fetchDetails,
   }) async {
-    final screen = ScreenRegion();
+    final screen = ScreenRegion(context);
     final spinner = Spinner();
-    final keyInput = KeyInput();
 
-    hideCursor();
+    context.hideCursor();
 
     // Show loading spinner while fetching.
     final loadTimer = Timer.periodic(const Duration(milliseconds: 80), (_) {
@@ -27,11 +26,17 @@ class MangaDetailsScreen {
 
     if (fetchResult == null) {
       screen.render([bold(result.title), '', '  ${yellow('Failed to load details.')}', '', dim('Esc to back')]);
-      keyInput.start();
-      await keyInput.stream.firstWhere((KeyEvent k) => k is Escape || k is Enter);
-      keyInput.dispose();
+      final StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen(null);
+      final completer = Completer<void>();
+      keySub.onData((KeyEvent k) {
+        if ((k is Escape || k is Enter) && !completer.isCompleted) {
+          completer.complete();
+        }
+      });
+      await completer.future;
+      await keySub.cancel();
       screen.clear();
-      showCursor();
+      context.showCursor();
       return;
     }
 
@@ -42,7 +47,7 @@ class MangaDetailsScreen {
       ..sort((PluginChapter a, PluginChapter b) => (b.chapterNumber ?? 0).compareTo(a.chapterNumber ?? 0));
 
     var chapterScrollOffset = 0;
-    final int width = terminalWidth;
+    final int width = context.width;
 
     // Build static header lines.
     final headerLines = <String>[];
@@ -66,7 +71,8 @@ class MangaDetailsScreen {
       final lines = List<String>.of(headerLines);
 
       if (sortedChapters.isNotEmpty) {
-        final int maxChapterLines = _maxChapterLines(headerLines.length);
+        // Reserve header + 3 footer lines.
+        final int maxChapterLines = max(1, context.height - headerLines.length - 3);
         final int visibleEnd = min(sortedChapters.length, chapterScrollOffset + maxChapterLines);
 
         if (chapterScrollOffset > 0) lines.add(dim('↑ more above'));
@@ -87,45 +93,35 @@ class MangaDetailsScreen {
       screen.render(lines);
     }
 
-    keyInput.start();
     render();
 
-    await for (final KeyEvent key in keyInput.stream) {
+    final StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen(null);
+    final completer = Completer<void>();
+    keySub.onData((KeyEvent key) {
       switch (key) {
         case Escape() || Enter():
-          break;
+          if (!completer.isCompleted) completer.complete();
         case ArrowUp():
           chapterScrollOffset = max(0, chapterScrollOffset - 1);
           render();
-          continue;
         case ArrowDown():
           chapterScrollOffset = min(
             max(0, sortedChapters.length - 1),
             chapterScrollOffset + 1,
           );
           render();
-          continue;
         default:
-          continue;
+          break;
       }
-      break;
-    }
+    });
 
-    keyInput.dispose();
+    await completer.future;
+    await keySub.cancel();
     screen.clear();
-    showCursor();
+    context.showCursor();
   }
 }
 
 String _formatChNum(double n) {
   return n == n.truncateToDouble() ? n.toInt().toString() : n.toString();
-}
-
-int _maxChapterLines(int headerHeight) {
-  try {
-    // Reserve header + 3 footer lines.
-    return max(1, stdout.terminalLines - headerHeight - 3);
-  } on StdoutException {
-    return 10;
-  }
 }

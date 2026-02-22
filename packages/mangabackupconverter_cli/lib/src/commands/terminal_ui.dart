@@ -5,16 +5,8 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 
 // ---------------------------------------------------------------------------
-// ANSI helpers
+// ANSI helpers (pure functions — no I/O dependency)
 // ---------------------------------------------------------------------------
-
-void hideCursor() => stdout.write('\x1b[?25l');
-void showCursor() => stdout.write('\x1b[?25h');
-void clearLine() => stdout.write('\x1b[2K\r');
-void moveCursorUp(int n) {
-  if (n > 0) stdout.write('\x1b[${n}A');
-}
-void clearDown() => stdout.write('\x1b[J');
 
 String bold(String text) => '\x1b[1m$text\x1b[22m';
 String dim(String text) => '\x1b[2m$text\x1b[22m';
@@ -54,6 +46,16 @@ List<String> wordWrap(String text, int width) {
     if (currentLine.isNotEmpty) lines.add(currentLine.toString());
   }
   return lines;
+}
+
+/// Truncates [text] to [maxWidth] visible columns, appending "…" if needed.
+String truncate(String text, int maxWidth) {
+  if (maxWidth <= 0) return '';
+  if (visibleLength(text) <= maxWidth) return text;
+  // Strip ANSI for safe truncation, then re-truncate.
+  final String plain = text.replaceAll(RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]'), '');
+  if (plain.length <= maxWidth) return text;
+  return '${plain.substring(0, max(0, maxWidth - 1))}…';
 }
 
 // ---------------------------------------------------------------------------
@@ -107,7 +109,7 @@ class CharKey extends KeyEvent {
 /// environments (e.g. MSYS on Windows) report `hasTerminal = true` but
 /// fail on `echoMode=`.
 ///
-/// The result is cached after the first successful check — a terminal that
+/// The result is cached after the first successful check -- a terminal that
 /// was available once won't disappear mid-session, and on MSYS/Windows the
 /// probe can fail after a previous stdin subscription has been cancelled.
 bool? _hasTerminalCached;
@@ -127,7 +129,7 @@ bool get hasTerminal {
 
 /// Lazily-initialized broadcast wrapper around `stdin`.
 ///
-/// `stdin` is a single-subscription stream — once a subscription is cancelled,
+/// `stdin` is a single-subscription stream -- once a subscription is cancelled,
 /// calling `listen` again throws "Stream has already been listened to".
 /// Wrapping it in `asBroadcastStream` allows independent subscribe/cancel
 /// cycles across multiple [KeyInput] instances (parent / child screens).
@@ -144,7 +146,7 @@ class KeyInput {
       : _inputStream = inputStream;
 
   final Stream<List<int>>? _inputStream;
-  final _controller = StreamController<KeyEvent>();
+  final _controller = StreamController<KeyEvent>.broadcast();
   StreamSubscription<List<int>>? _sub;
 
   // Buffer for reassembling escape sequences split across multiple reads
@@ -171,16 +173,6 @@ class KeyInput {
       // Already in raw mode from a parent screen.
     }
     _sub = _broadcastStdin.listen(_parseBytes);
-  }
-
-  /// Releases the stdin subscription without closing the event stream.
-  /// Call [start] again to re-subscribe after a child screen returns.
-  Future<void> suspend() async {
-    _escTimer?.cancel();
-    _escTimer = null;
-    _escBuffer = [];
-    await _sub?.cancel();
-    _sub = null;
   }
 
   void dispose() {
@@ -282,78 +274,112 @@ class KeyInput {
 }
 
 // ---------------------------------------------------------------------------
-// Screen region — flicker-free re-rendering
+// TerminalContext — bundles all terminal I/O for composable screens
+// ---------------------------------------------------------------------------
+
+class TerminalContext {
+  /// Production -- uses real stdin/stdout, installs SIGINT handler.
+  TerminalContext()
+      : _output = stdout,
+        _widthOverride = null,
+        _heightOverride = null {
+    _keyInput = KeyInput();
+    _keyInput.start();
+    _sigintSub = ProcessSignal.sigint.watch().listen((_) {
+      showCursor();
+      try {
+        stdin.echoMode = true;
+        stdin.lineMode = true;
+      } on StdinException {
+        // Already restored.
+      }
+      exit(130);
+    });
+  }
+
+  /// Test -- injected I/O, no SIGINT, no raw mode.
+  @visibleForTesting
+  TerminalContext.test({
+    required StringSink output,
+    required Stream<List<int>> inputStream,
+    int width = 80,
+    int height = 24,
+  })  : _output = output,
+        _widthOverride = width,
+        _heightOverride = height {
+    _keyInput = KeyInput.withStream(inputStream);
+    _keyInput.start();
+  }
+
+  final StringSink _output;
+  final int? _widthOverride;
+  final int? _heightOverride;
+  late final KeyInput _keyInput;
+  StreamSubscription<ProcessSignal>? _sigintSub;
+
+  KeyInput get keyInput => _keyInput;
+
+  int get width {
+    if (_widthOverride != null) return _widthOverride;
+    try {
+      return stdout.terminalColumns;
+    } on StdoutException {
+      return 80;
+    }
+  }
+
+  int get height {
+    if (_heightOverride != null) return _heightOverride;
+    try {
+      return stdout.terminalLines;
+    } on StdoutException {
+      return 24;
+    }
+  }
+
+  // Terminal control (write ANSI to output sink).
+  void hideCursor() => _output.write('\x1b[?25l');
+  void showCursor() => _output.write('\x1b[?25h');
+  void moveCursorUp(int n) {
+    if (n > 0) _output.write('\x1b[${n}A');
+  }
+  void clearDown() => _output.write('\x1b[J');
+  void write(String s) => _output.write(s);
+  void writeln(String s) => _output.writeln(s);
+
+  void dispose() {
+    _keyInput.dispose();
+    _sigintSub?.cancel();
+    _sigintSub = null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Screen region -- flicker-free re-rendering
 // ---------------------------------------------------------------------------
 
 class ScreenRegion {
+  ScreenRegion(this._context);
+  final TerminalContext _context;
   int _renderedLines = 0;
 
   void render(List<String> lines) {
-    final int width = terminalWidth;
+    final int width = _context.width;
     if (_renderedLines > 0) {
-      moveCursorUp(_renderedLines);
+      _context.moveCursorUp(_renderedLines);
     }
-    clearDown();
+    _context.clearDown();
     for (final line in lines) {
-      stdout.writeln(truncate(line, width));
+      _context.writeln(truncate(line, width));
     }
     _renderedLines = lines.length;
   }
 
   void clear() {
     if (_renderedLines > 0) {
-      moveCursorUp(_renderedLines);
-      clearDown();
+      _context.moveCursorUp(_renderedLines);
+      _context.clearDown();
       _renderedLines = 0;
     }
   }
-}
-
-// ---------------------------------------------------------------------------
-// SIGINT safety — restores terminal state on Ctrl+C
-// ---------------------------------------------------------------------------
-
-StreamSubscription<ProcessSignal>? _sigintSub;
-
-/// Installs a handler that restores cursor and terminal mode on SIGINT.
-/// Call [removeSigintHandler] when done with the interactive UI.
-void installSigintHandler() {
-  _sigintSub = ProcessSignal.sigint.watch().listen((_) {
-    showCursor();
-    try {
-      stdin.echoMode = true;
-      stdin.lineMode = true;
-    } on StdinException {
-      // Already restored.
-    }
-    exit(130); // Standard SIGINT exit code.
-  });
-}
-
-void removeSigintHandler() {
-  _sigintSub?.cancel();
-  _sigintSub = null;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/// Terminal width, falling back to 80 if not available.
-int get terminalWidth {
-  try {
-    return stdout.terminalColumns;
-  } on StdoutException {
-    return 80;
-  }
-}
-
-/// Truncates [text] to [maxWidth] visible columns, appending "…" if needed.
-String truncate(String text, int maxWidth) {
-  if (maxWidth <= 0) return '';
-  if (visibleLength(text) <= maxWidth) return text;
-  // Strip ANSI for safe truncation, then re-truncate.
-  final String plain = text.replaceAll(RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]'), '');
-  if (plain.length <= maxWidth) return text;
-  return '${plain.substring(0, max(0, maxWidth - 1))}…';
 }

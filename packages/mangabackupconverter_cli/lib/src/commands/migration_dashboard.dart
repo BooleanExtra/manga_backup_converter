@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:mangabackupconverter_cli/src/commands/live_search_select.dart';
@@ -56,14 +55,15 @@ class _SpinnerTickEvent extends _DashboardEvent {}
 // ---------------------------------------------------------------------------
 
 class MigrationDashboard {
-  Future<List<MangaMatchConfirmation>> run(
-    List<SourceMangaData> manga,
-    Stream<PluginSearchEvent> Function(String query) onSearch,
-    Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
+  Future<List<MangaMatchConfirmation>> run({
+    required TerminalContext context,
+    required List<SourceMangaData> manga,
+    required Stream<PluginSearchEvent> Function(String query) onSearch,
+    required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
       String pluginSourceId,
       String mangaKey,
     ) onFetchDetails,
-  ) async {
+  }) async {
     if (manga.isEmpty) return [];
 
     final List<MigrationEntry> entries = manga.map((SourceMangaData m) => MigrationEntry(source: m)).toList();
@@ -72,13 +72,11 @@ class MigrationDashboard {
 
     final events = StreamController<_DashboardEvent>();
     final spinner = Spinner();
-    final screen = ScreenRegion();
-    final keyInput = KeyInput();
+    final screen = ScreenRegion(context);
 
-    // Start key input.
-    keyInput.start();
-    installSigintHandler();
-    final StreamSubscription<KeyEvent> keySub = keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
+    // Listen for key events on shared KeyInput (broadcast stream).
+    final StreamSubscription<KeyEvent> keySub =
+        context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
 
     // Start searches for all manga concurrently.
     final searchSubs = <StreamSubscription<PluginSearchEvent>>[];
@@ -95,10 +93,10 @@ class MigrationDashboard {
     // Spinner tick.
     spinner.start(() => events.add(_SpinnerTickEvent()));
 
-    hideCursor();
+    context.hideCursor();
 
     void render() {
-      final int budget = max(4, _terminalHeight() - 6);
+      final int budget = max(4, context.height - 6);
 
       // Adjust scroll to keep cursor visible.
       if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
@@ -122,7 +120,7 @@ class MigrationDashboard {
       for (var i = scrollOffset; i < visibleEnd; i++) {
         final MigrationEntry entry = entries[i];
         final isCursor = i == cursorIndex;
-        lines.addAll(_renderEntry(entry, isCursor, spinner));
+        lines.addAll(_renderEntry(entry, isCursor, spinner, context.width));
       }
 
       if (visibleEnd < entries.length) {
@@ -167,13 +165,12 @@ class MigrationDashboard {
           case _KeyEvent(key: Enter()):
             // Pause dashboard, open live search for this manga.
             keySub.pause();
-            await keyInput.suspend();
             screen.clear();
-            showCursor();
 
             final MigrationEntry entry = entries[cursorIndex];
             final liveSearch = LiveSearchSelect();
             final PluginSearchResult? result = await liveSearch.run(
+              context: context,
               initialQuery: entry.source.details.title,
               onSearch: onSearch,
               onFetchDetails: onFetchDetails,
@@ -183,9 +180,8 @@ class MigrationDashboard {
               entry.selected = true;
             }
 
-            keyInput.start();
             keySub.resume();
-            hideCursor();
+            context.hideCursor();
             render();
 
           case _SearchResultEvent(:final entry, event: PluginSearchResults(:final results)):
@@ -210,16 +206,14 @@ class MigrationDashboard {
         if (events.isClosed) break;
       }
     } finally {
-      // Cleanup — always restore terminal state.
+      // Cleanup -- always restore terminal state.
       spinner.stop();
       for (final sub in searchSubs) {
         await sub.cancel();
       }
       await keySub.cancel();
-      keyInput.dispose();
-      removeSigintHandler();
       screen.clear();
-      showCursor();
+      context.showCursor();
     }
 
     if (!accepted) return [];
@@ -239,14 +233,6 @@ class MigrationDashboard {
 // Rendering helpers
 // ---------------------------------------------------------------------------
 
-int _terminalHeight() {
-  try {
-    return stdout.terminalLines;
-  } on StdoutException {
-    return 20;
-  }
-}
-
 int _entryLineCount(MigrationEntry entry) => 5;
 
 /// How many entries fit within [budget] lines starting from [scrollOffset].
@@ -262,9 +248,8 @@ int _visibleCount(List<MigrationEntry> entries, int scrollOffset, int budget) {
   return max(1, count);
 }
 
-List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner) {
+List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, int width) {
   final checkbox = entry.selected ? '◉' : '◯';
-  final int width = terminalWidth;
   const indent = '  ';
 
   final String sourceTitle = entry.source.details.title;

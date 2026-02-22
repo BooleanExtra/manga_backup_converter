@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:mangabackupconverter_cli/src/commands/manga_details_screen.dart';
@@ -50,6 +49,7 @@ class _DebounceFireEvent extends _SearchEvent {}
 
 class LiveSearchSelect {
   Future<PluginSearchResult?> run({
+    required TerminalContext context,
     required String initialQuery,
     required Stream<PluginSearchEvent> Function(String query) onSearch,
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
@@ -67,13 +67,11 @@ class LiveSearchSelect {
 
     final events = StreamController<_SearchEvent>();
     final spinner = Spinner();
-    final screen = ScreenRegion();
-    final keyInput = KeyInput();
+    final screen = ScreenRegion(context);
 
-    // Start key input.
-    keyInput.start();
-    installSigintHandler();
-    final StreamSubscription<KeyEvent> keySub = keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
+    // Listen for key events on shared KeyInput (broadcast stream).
+    final StreamSubscription<KeyEvent> keySub =
+        context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
     spinner.start(() => events.add(_SpinnerTickEvent()));
 
     List<PluginSearchResult> allResults() {
@@ -102,13 +100,14 @@ class LiveSearchSelect {
       );
     }
 
-    hideCursor();
+    context.hideCursor();
 
     void render() {
-      final int width = terminalWidth;
+      final int width = context.width;
       final List<PluginSearchResult> results = allResults();
       final bool searching = anySearching();
-      final int maxVisible = _maxVisibleResults();
+      // Reserve ~8 lines for header, footer, input box.
+      final int maxVisible = max(1, context.height - 8);
 
       // Adjust scroll.
       if (results.isNotEmpty) {
@@ -227,20 +226,18 @@ class LiveSearchSelect {
             if (results.isNotEmpty && cursorIndex < results.length) {
               final PluginSearchResult result = results[cursorIndex];
               keySub.pause();
-              await keyInput.suspend();
               screen.clear();
-              showCursor();
 
               final detailsScreen = MangaDetailsScreen();
               await detailsScreen.run(
+                context: context,
                 result: result,
                 fetchDetails: (String mangaKey) =>
                     onFetchDetails(result.pluginSourceId, mangaKey),
               );
 
-              keyInput.start();
               keySub.resume();
-              hideCursor();
+              context.hideCursor();
               render();
             }
 
@@ -277,26 +274,15 @@ class LiveSearchSelect {
         if (events.isClosed) break;
       }
     } finally {
-      // Cleanup — always restore terminal state.
+      // Cleanup -- always restore terminal state.
       debounceTimer?.cancel();
       await currentSearchSub?.cancel();
       spinner.stop();
       await keySub.cancel();
-      keyInput.dispose();
-      removeSigintHandler();
       screen.clear();
-      showCursor();
+      context.showCursor();
     }
 
     return selected;
-  }
-}
-
-int _maxVisibleResults() {
-  try {
-    // Reserve ~8 lines for header, footer, input box.
-    return max(1, (stdout.terminalLines - 8) ~/ 1);
-  } on StdoutException {
-    return 10;
   }
 }
