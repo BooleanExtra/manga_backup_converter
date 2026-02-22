@@ -117,31 +117,16 @@ class MigrationPipeline {
         },
       );
 
-      // Fetch full details for each confirmed match.
-      final detailedConfirmations = <MangaMatchConfirmation>[];
-      for (final (int i, MangaMatchConfirmation confirmation) in confirmations.indexed) {
+      // Use already-enriched details from _streamSearch (no re-fetch needed).
+      final List<MangaMatchConfirmation> detailedConfirmations = confirmations.map((confirmation) {
         final PluginSearchResult? match = confirmation.confirmedMatch;
-        PluginMangaDetails? details;
-        var chapters = const <PluginChapter>[];
-        if (match != null) {
-          final PluginSource? source =
-              plugins.where((PluginSource p) => p.sourceId == match.pluginSourceId).firstOrNull;
-          if (source != null) {
-            onProgress(i + 1, confirmations.length, 'Fetching details for: ${match.title}');
-            final (PluginMangaDetails, List<PluginChapter>)? result =
-                await source.getMangaWithChapters(match.mangaKey);
-            if (result != null) (details, chapters) = result;
-          }
-        }
-        detailedConfirmations.add(
-          MangaMatchConfirmation(
-            sourceManga: confirmation.sourceManga,
-            confirmedMatch: match,
-            targetMangaDetails: details,
-            targetChapters: chapters,
-          ),
+        return MangaMatchConfirmation(
+          sourceManga: confirmation.sourceManga,
+          confirmedMatch: match,
+          targetMangaDetails: match?.details,
+          targetChapters: match?.chapters ?? const <PluginChapter>[],
         );
-      }
+      }).toList();
 
       return _buildTargetBackup(sourceBackup, sourceFormat, targetFormat, detailedConfirmations);
     } finally {
