@@ -286,9 +286,11 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
       final PluginSearchResult m = entry.match!;
       final PluginMangaDetails? d = m.details;
       final matchLine = '[${m.pluginSourceId}] ${m.title}';
-      final String truncatedMatch = truncate('$indent  ${green(matchLine)}', width);
+      final String matchText = green(matchLine);
       final String? linkUrl = d?.url;
-      lines.add(linkUrl != null ? hyperlink(truncatedMatch, linkUrl) : truncatedMatch);
+      final String linkedMatch =
+          linkUrl != null ? hyperlink(matchText, linkUrl) : matchText;
+      lines.add(truncate('$indent  $linkedMatch', width));
 
       final String matchAuthors = <String>{
         ...m.authors,
