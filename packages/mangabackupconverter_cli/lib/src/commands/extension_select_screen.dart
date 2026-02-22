@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/extension_entry.dart';
 
@@ -25,8 +24,7 @@ class ExtensionSelectScreen {
     required TerminalContext context,
     required List<ExtensionEntry> extensions,
   }) async {
-    var query = '';
-    var cursorPos = 0;
+    final searchInput = SearchInputState();
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
     var scrollOffset = 0;
     final selected = <String>{}; // selected extension IDs
@@ -41,8 +39,8 @@ class ExtensionSelectScreen {
     context.hideCursor();
 
     List<ExtensionEntry> filtered() {
-      if (query.isEmpty) return extensions;
-      final String lowerQuery = query.toLowerCase();
+      if (searchInput.query.isEmpty) return extensions;
+      final String lowerQuery = searchInput.query.toLowerCase();
       return extensions.where((ExtensionEntry e) {
         if (e.name.toLowerCase().contains(lowerQuery)) return true;
         if (e.id.toLowerCase().contains(lowerQuery)) return true;
@@ -90,18 +88,7 @@ class ExtensionSelectScreen {
       final lines = <String>[];
 
       // Search input box.
-      final int boxWidth = max(width - 2, 10);
-      final String inputLine = renderSearchInput(
-        query,
-        cursorPos,
-        isFocused: cursorIndex < 0,
-        boxWidth: boxWidth,
-      );
-      final int pad = max(0, boxWidth - displayWidth(inputLine));
-      final inner = '$inputLine${' ' * pad}';
-      lines.add('╭${'─' * boxWidth}╮');
-      lines.add('│$inner│');
-      lines.add('╰${'─' * boxWidth}╯');
+      lines.addAll(searchInput.renderBox(width: width));
 
       // Header.
       final int selectedCount = selected.length;
@@ -178,21 +165,13 @@ class ExtensionSelectScreen {
             }
             unawaited(events.close());
 
-          case _KeyEvent(key: CharKey(char: 'y')):
-            if (cursorIndex >= 0 && selected.isNotEmpty) {
-              result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
-              unawaited(events.close());
-            } else if (cursorIndex < 0) {
-              // Search bar — type the character.
-              final List<String> chars = query.characters.toList();
-              chars.insert(cursorPos, 'y');
-              query = chars.join();
-              cursorPos++;
-              render();
-            }
+          case _KeyEvent(key: CharKey(char: 'y')) when cursorIndex >= 0 && selected.isNotEmpty:
+            result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
+            unawaited(events.close());
 
           case _KeyEvent(key: ArrowUp()):
             cursorIndex = max(-1, cursorIndex - 1);
+            searchInput.focused = cursorIndex < 0;
             render();
 
           case _KeyEvent(key: ArrowDown()):
@@ -201,73 +180,26 @@ class ExtensionSelectScreen {
               max(0, results.length) - 1,
               cursorIndex + 1,
             );
+            searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: Backspace()):
-            cursorIndex = -1;
-            if (cursorPos > 0) {
-              final List<String> chars = query.characters.toList();
-              chars.removeAt(cursorPos - 1);
-              query = chars.join();
-              cursorPos--;
-              render();
-            }
-
-          case _KeyEvent(key: Space()):
-            if (cursorIndex >= 0) {
-              // Toggle selection.
-              final List<ExtensionEntry> results = filtered();
-              if (results.isNotEmpty && cursorIndex < results.length) {
-                final String id = results[cursorIndex].id;
-                if (selected.contains(id)) {
-                  selected.remove(id);
-                } else {
-                  selected.add(id);
-                }
-                render();
+          case _KeyEvent(key: Space()) when cursorIndex >= 0:
+            // Toggle selection.
+            final List<ExtensionEntry> results = filtered();
+            if (results.isNotEmpty && cursorIndex < results.length) {
+              final String id = results[cursorIndex].id;
+              if (selected.contains(id)) {
+                selected.remove(id);
+              } else {
+                selected.add(id);
               }
-            } else {
-              // Search bar — type a space.
-              final List<String> chars = query.characters.toList();
-              chars.insert(cursorPos, ' ');
-              query = chars.join();
-              cursorPos++;
               render();
             }
 
-          case _KeyEvent(key: Delete()):
-            cursorIndex = -1;
-            if (cursorPos < query.characters.length) {
-              final List<String> chars = query.characters.toList();
-              chars.removeAt(cursorPos);
-              query = chars.join();
-              render();
-            }
-
-          case _KeyEvent(key: ArrowLeft()):
-            if (cursorIndex < 0 && cursorPos > 0) cursorPos--;
-            render();
-
-          case _KeyEvent(key: ArrowRight()):
-            if (cursorIndex < 0 && cursorPos < query.characters.length) {
-              cursorPos++;
-            }
-            render();
-
-          case _KeyEvent(key: Home()):
-            if (cursorIndex < 0) cursorPos = 0;
-            render();
-
-          case _KeyEvent(key: End()):
-            if (cursorIndex < 0) cursorPos = query.characters.length;
-            render();
-
-          case _KeyEvent(key: CharKey(:final char)):
-            cursorIndex = -1;
-            final List<String> chars = query.characters.toList();
-            chars.insert(cursorPos, char);
-            query = chars.join();
-            cursorPos++;
+          case _KeyEvent(key: final k):
+            final SearchKeyResult r = searchInput.tryHandleKey(k);
+            if (r == SearchKeyResult.ignored) break;
+            if (searchInput.focused && cursorIndex >= 0) cursorIndex = -1;
             render();
         }
 

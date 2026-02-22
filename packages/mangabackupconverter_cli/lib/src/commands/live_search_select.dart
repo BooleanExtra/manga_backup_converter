@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/manga_details_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/migration_pipeline.dart';
@@ -59,8 +58,7 @@ class LiveSearchSelect {
     )
     onFetchDetails,
   }) async {
-    var query = initialQuery;
-    int cursorPos = initialQuery.characters.length;
+    final searchInput = SearchInputState(initialQuery);
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
     var scrollOffset = 0;
     var searchGeneration = 0;
@@ -94,6 +92,7 @@ class LiveSearchSelect {
       pluginStatuses.clear();
       searchActive = true;
       cursorIndex = -1;
+      searchInput.focused = true;
       scrollOffset = 0;
       searchGeneration++;
       final gen = searchGeneration;
@@ -133,18 +132,7 @@ class LiveSearchSelect {
       final lines = <String>[];
 
       // Search input box (at top).
-      final int boxWidth = max(width - 2, 10);
-      final String inputLine = renderSearchInput(
-        query,
-        cursorPos,
-        isFocused: cursorIndex < 0,
-        boxWidth: boxWidth,
-      );
-      final int pad = max(0, boxWidth - displayWidth(inputLine));
-      final inner = '$inputLine${' ' * pad}';
-      lines.add('╭${'─' * boxWidth}╮');
-      lines.add('│$inner│');
-      lines.add('╰${'─' * boxWidth}╯');
+      lines.addAll(searchInput.renderBox(width: width));
 
       // Header.
       if (searching && !usingCached) {
@@ -197,7 +185,7 @@ class LiveSearchSelect {
     }
 
     // Initial search.
-    startSearch(query);
+    startSearch(searchInput.query);
     render();
 
     PluginSearchResult? selected;
@@ -217,111 +205,52 @@ class LiveSearchSelect {
 
           case _KeyEvent(key: ArrowUp()):
             cursorIndex = max(-1, cursorIndex - 1);
+            searchInput.focused = cursorIndex < 0;
             render();
 
           case _KeyEvent(key: ArrowDown()):
             final List<PluginSearchResult> results = allResults();
             cursorIndex = min(max(0, results.length) - 1, cursorIndex + 1);
+            searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: Backspace()):
-            cursorIndex = -1;
-            if (cursorPos > 0) {
-              final List<String> chars = query.characters.toList();
-              chars.removeAt(cursorPos - 1);
-              query = chars.join();
-              cursorPos--;
+          case _KeyEvent(key: Space()) when cursorIndex >= 0:
+            // Show details for highlighted result.
+            final List<PluginSearchResult> results = allResults();
+            if (results.isNotEmpty && cursorIndex < results.length) {
+              final PluginSearchResult result = results[cursorIndex];
+              await keySub.cancel();
+              screen.clear();
+
+              final detailsScreen = MangaDetailsScreen();
+              await detailsScreen.run(
+                context: context,
+                result: result,
+                fetchDetails: (String mangaKey) => onFetchDetails(result.pluginSourceId, mangaKey),
+              );
+
+              keySub = context.keyInput.stream.listen(
+                (KeyEvent key) => events.add(_KeyEvent(key)),
+              );
+              context.hideCursor();
+              render();
+            }
+
+          case _KeyEvent(key: final k):
+            final SearchKeyResult r = searchInput.tryHandleKey(k);
+            if (r == SearchKeyResult.ignored) break;
+            if (searchInput.focused && cursorIndex >= 0) cursorIndex = -1;
+            if (r == SearchKeyResult.consumed) {
               debounceTimer?.cancel();
               debounceTimer = Timer(
                 const Duration(milliseconds: 300),
                 () => events.add(_DebounceFireEvent()),
               );
-              render();
-            }
-
-          case _KeyEvent(key: Delete()):
-            cursorIndex = -1;
-            if (cursorPos < query.characters.length) {
-              final List<String> chars = query.characters.toList();
-              chars.removeAt(cursorPos);
-              query = chars.join();
-              debounceTimer?.cancel();
-              debounceTimer = Timer(
-                const Duration(milliseconds: 300),
-                () => events.add(_DebounceFireEvent()),
-              );
-              render();
-            }
-
-          case _KeyEvent(key: ArrowLeft()):
-            if (cursorIndex < 0 && cursorPos > 0) cursorPos--;
-            render();
-
-          case _KeyEvent(key: ArrowRight()):
-            if (cursorIndex < 0 && cursorPos < query.characters.length) {
-              cursorPos++;
             }
             render();
-
-          case _KeyEvent(key: Home()):
-            if (cursorIndex < 0) cursorPos = 0;
-            render();
-
-          case _KeyEvent(key: End()):
-            if (cursorIndex < 0) cursorPos = query.characters.length;
-            render();
-
-          case _KeyEvent(key: CharKey(:final char)):
-            cursorIndex = -1;
-            final List<String> chars = query.characters.toList();
-            chars.insert(cursorPos, char);
-            query = chars.join();
-            cursorPos++;
-            debounceTimer?.cancel();
-            debounceTimer = Timer(
-              const Duration(milliseconds: 300),
-              () => events.add(_DebounceFireEvent()),
-            );
-            render();
-
-          case _KeyEvent(key: Space()):
-            if (cursorIndex >= 0) {
-              // Show details for highlighted result.
-              final List<PluginSearchResult> results = allResults();
-              if (results.isNotEmpty && cursorIndex < results.length) {
-                final PluginSearchResult result = results[cursorIndex];
-                await keySub.cancel();
-                screen.clear();
-
-                final detailsScreen = MangaDetailsScreen();
-                await detailsScreen.run(
-                  context: context,
-                  result: result,
-                  fetchDetails: (String mangaKey) => onFetchDetails(result.pluginSourceId, mangaKey),
-                );
-
-                keySub = context.keyInput.stream.listen(
-                  (KeyEvent key) => events.add(_KeyEvent(key)),
-                );
-                context.hideCursor();
-                render();
-              }
-            } else {
-              // Search bar focused — type a space character.
-              final List<String> chars = query.characters.toList();
-              chars.insert(cursorPos, ' ');
-              query = chars.join();
-              cursorPos++;
-              debounceTimer?.cancel();
-              debounceTimer = Timer(
-                const Duration(milliseconds: 300),
-                () => events.add(_DebounceFireEvent()),
-              );
-              render();
-            }
 
           case _DebounceFireEvent():
-            startSearch(query);
+            startSearch(searchInput.query);
             render();
 
           case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final results)):

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/win_console_stub.dart'
@@ -141,6 +142,145 @@ String renderSearchInput(String query, int cursorPos, {required bool isFocused, 
   }
 
   return buf.toString();
+}
+
+// ---------------------------------------------------------------------------
+// Search input state — shared text-editing + rendering for search boxes
+// ---------------------------------------------------------------------------
+
+/// Result of [SearchInputState.tryHandleKey].
+enum SearchKeyResult {
+  /// Key consumed, query text changed (caller should debounce/re-filter).
+  consumed,
+
+  /// Key consumed, only cursor moved (caller should re-render).
+  cursorMoved,
+
+  /// Key not handled by search input (caller should handle it).
+  ignored,
+}
+
+/// Encapsulates query text, cursor position, key handling, and search-box
+/// rendering shared by the live search and extension select screens.
+class SearchInputState {
+  SearchInputState([String initialQuery = '']) : query = initialQuery, cursorPos = initialQuery.characters.length;
+
+  String query;
+  int cursorPos;
+
+  /// Whether the search bar is focused. Updated automatically by
+  /// [tryHandleKey] when a text-modifying key refocuses the input.
+  bool focused = true;
+
+  /// Processes a text-editing [KeyEvent] and mutates [query] / [cursorPos].
+  ///
+  /// Returns `true` if the query text changed (callers may want to trigger a
+  /// search or re-filter), `false` if only the cursor moved or the key was
+  /// not handled.
+  bool handleKey(KeyEvent key) {
+    switch (key) {
+      case CharKey(:final char):
+        final List<String> chars = query.characters.toList();
+        chars.insert(cursorPos, char);
+        query = chars.join();
+        cursorPos++;
+        return true;
+
+      case Backspace():
+        if (cursorPos > 0) {
+          final List<String> chars = query.characters.toList();
+          chars.removeAt(cursorPos - 1);
+          query = chars.join();
+          cursorPos--;
+          return true;
+        }
+        return false;
+
+      case Delete():
+        if (cursorPos < query.characters.length) {
+          final List<String> chars = query.characters.toList();
+          chars.removeAt(cursorPos);
+          query = chars.join();
+          return true;
+        }
+        return false;
+
+      case Space():
+        final List<String> chars = query.characters.toList();
+        chars.insert(cursorPos, ' ');
+        query = chars.join();
+        cursorPos++;
+        return true;
+
+      case ArrowLeft():
+        if (cursorPos > 0) cursorPos--;
+        return false;
+
+      case ArrowRight():
+        if (cursorPos < query.characters.length) cursorPos++;
+        return false;
+
+      case Home():
+        cursorPos = 0;
+        return false;
+
+      case End():
+        cursorPos = query.characters.length;
+        return false;
+
+      default:
+        return false;
+    }
+  }
+
+  /// Routes a key event through the search input, handling focus transitions.
+  ///
+  /// When [focused], all text-editing and cursor-movement keys are consumed.
+  /// When unfocused, only text-modifying keys (CharKey, Backspace, Delete)
+  /// trigger a refocus — Space is left to the caller for screen-specific use.
+  SearchKeyResult tryHandleKey(KeyEvent key) {
+    if (focused) {
+      if (key is! CharKey &&
+          key is! Backspace &&
+          key is! Delete &&
+          key is! Space &&
+          key is! ArrowLeft &&
+          key is! ArrowRight &&
+          key is! Home &&
+          key is! End) {
+        return SearchKeyResult.ignored;
+      }
+      return handleKey(key) ? SearchKeyResult.consumed : SearchKeyResult.cursorMoved;
+    }
+    // Unfocused: only text-modifying keys trigger refocus.
+    if (key is! CharKey && key is! Backspace && key is! Delete) {
+      return SearchKeyResult.ignored;
+    }
+    focused = true;
+    return handleKey(key) ? SearchKeyResult.consumed : SearchKeyResult.cursorMoved;
+  }
+
+  /// Renders the 3-line search box (╭─╮ │...│ ╰─╯).
+  ///
+  /// Uses the [focused] field to control whether the block cursor is drawn.
+  /// [width] is the total available terminal width (the box occupies width-2
+  /// for the outer border characters).
+  List<String> renderBox({required int width}) {
+    final int boxWidth = max(width - 2, 10);
+    final String inputLine = renderSearchInput(
+      query,
+      cursorPos,
+      isFocused: focused,
+      boxWidth: boxWidth,
+    );
+    final int pad = max(0, boxWidth - displayWidth(inputLine));
+    final inner = '$inputLine${' ' * pad}';
+    return [
+      '╭${'─' * boxWidth}╮',
+      '│$inner│',
+      '╰${'─' * boxWidth}╯',
+    ];
+  }
 }
 
 // ---------------------------------------------------------------------------
