@@ -78,17 +78,22 @@ class MigrationDashboard {
     StreamSubscription<KeyEvent> keySub =
         context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
 
-    // Start searches for all manga concurrently.
-    final searchSubs = <StreamSubscription<PluginSearchEvent>>[];
-    for (final entry in entries) {
+    // Search entries one at a time — each search enriches results with
+    // getMangaDetails which shares the plugin, so we avoid concurrent calls.
+    var nextSearchIndex = 0;
+    StreamSubscription<PluginSearchEvent>? activeSub;
+
+    void startNextSearch() {
+      if (nextSearchIndex >= entries.length) return;
+      final MigrationEntry entry = entries[nextSearchIndex++];
       final Stream<PluginSearchEvent> stream = onSearch(entry.source.details.title);
-      searchSubs.add(
-        stream.listen(
-          (PluginSearchEvent event) => events.add(_SearchResultEvent(entry, event)),
-          onDone: () => events.add(_SearchDoneEvent(entry)),
-        ),
+      activeSub = stream.listen(
+        (PluginSearchEvent event) => events.add(_SearchResultEvent(entry, event)),
+        onDone: () => events.add(_SearchDoneEvent(entry)),
       );
     }
+
+    startNextSearch();
 
     // Spinner tick.
     spinner.start(() => events.add(_SpinnerTickEvent()));
@@ -196,6 +201,7 @@ class MigrationDashboard {
 
           case _SearchDoneEvent(:final entry):
             entry.searching = false;
+            startNextSearch();
             render();
 
           case _SpinnerTickEvent():
@@ -210,9 +216,7 @@ class MigrationDashboard {
     } finally {
       // Cleanup -- always restore terminal state.
       spinner.stop();
-      for (final sub in searchSubs) {
-        await sub.cancel();
-      }
+      await activeSub?.cancel();
       await keySub.cancel();
       screen.clear();
       context.showCursor();
@@ -267,24 +271,39 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
   final cursorMark = isCursor ? '❯ ' : '  ';
   lines.add(truncate('$cursorMark$checkbox ${bold(sourceTitle)}', width));
   lines.add(truncate('$indent  ${dim(sourceInfo)}', width));
-  lines.add('$indent  ${dim('↓')}');
 
-  if (entry.searching && entry.match == null) {
-    lines.add('$indent  ${spinner.frame}');
+  if (!entry.selected) {
+    lines.add('$indent  ${dim('⏭ skipped')}');
     lines.add(indent);
-  } else if (entry.match != null) {
-    final PluginSearchResult m = entry.match!;
-    final String matchAuthors = m.authors.join(', ');
-    final matchLine = '[${m.pluginSourceId}] ${m.title}';
-    lines.add(truncate('$indent  ${green(matchLine)}', width));
-    if (matchAuthors.isNotEmpty) {
-      lines.add(truncate('$indent  ${dim(matchAuthors)}', width));
+    lines.add(indent);
+  } else {
+    lines.add('$indent  ${dim('↓')}');
+
+    if (entry.searching && entry.match == null) {
+      lines.add('$indent  ${spinner.frame}');
+      lines.add(indent);
+    } else if (entry.match != null) {
+      final PluginSearchResult m = entry.match!;
+      final PluginMangaDetails? d = m.details;
+      final matchLine = '[${m.pluginSourceId}] ${m.title}';
+      final String truncatedMatch = truncate('$indent  ${green(matchLine)}', width);
+      final String? linkUrl = d?.url;
+      lines.add(linkUrl != null ? hyperlink(truncatedMatch, linkUrl) : truncatedMatch);
+
+      final String matchAuthors = <String>{
+        ...m.authors,
+        if (d != null) ...d.artists,
+      }.join(', ');
+      final String? chapterCount = d != null ? '${m.chapters.length} chapters' : null;
+      final String infoLine = [
+        if (matchAuthors.isNotEmpty) matchAuthors,
+        if (chapterCount != null) chapterCount,
+      ].join(' · ');
+      lines.add(infoLine.isNotEmpty ? truncate('$indent  ${dim(infoLine)}', width) : indent);
     } else {
+      lines.add('$indent  ${dim('No match found')}');
       lines.add(indent);
     }
-  } else {
-    lines.add('$indent  ${dim('No match found')}');
-    lines.add(indent);
   }
 
   return lines;

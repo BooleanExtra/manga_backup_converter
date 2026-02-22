@@ -80,6 +80,7 @@ class MigrationPipeline {
   ) async {
     final PluginLoader loader = targetFormat.pluginLoader;
 
+    onProgress(0, 0, 'Fetching extension lists...');
     final List<ExtensionEntry> availableExtensions = await loader.fetchExtensionLists(
       repoUrls,
       onWarning: (String msg) => onProgress(0, 0, 'Warning: $msg'),
@@ -151,6 +152,9 @@ class MigrationPipeline {
   }
 
   /// Searches all [plugins] in parallel, emitting results as they arrive.
+  ///
+  /// Each result is enriched with details from [PluginSource.getMangaWithChapters]
+  /// before being emitted, so consumers receive URL and chapter data upfront.
   Stream<PluginSearchEvent> _streamSearch(String query, List<PluginSource> plugins) {
     final controller = StreamController<PluginSearchEvent>();
     int remaining = plugins.length;
@@ -160,9 +164,33 @@ class MigrationPipeline {
     }
     for (final plugin in plugins) {
       plugin.search(query, 1).then(
-        (PluginSearchPageResult result) {
+        (PluginSearchPageResult result) async {
+          final enriched = <PluginSearchResult>[];
+          for (final PluginSearchResult r in result.results) {
+            try {
+              final (PluginMangaDetails, List<PluginChapter>)? detailResult =
+                  await plugin.getMangaWithChapters(r.mangaKey);
+              if (detailResult != null) {
+                enriched.add(PluginSearchResult(
+                  pluginSourceId: r.pluginSourceId,
+                  mangaKey: r.mangaKey,
+                  title: r.title,
+                  coverUrl: r.coverUrl,
+                  authors: detailResult.$1.authors.isNotEmpty
+                      ? detailResult.$1.authors
+                      : r.authors,
+                  details: detailResult.$1,
+                  chapters: detailResult.$2,
+                ));
+                continue;
+              }
+            } on Object {
+              // Fall through — use result without details.
+            }
+            enriched.add(r);
+          }
           if (!controller.isClosed) {
-            controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: result.results));
+            controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
           }
         },
         onError: (Object e) {

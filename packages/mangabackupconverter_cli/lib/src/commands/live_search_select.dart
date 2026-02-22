@@ -159,7 +159,11 @@ class LiveSearchSelect {
           final PluginSearchResult r = results[i];
           final isCursor = i == cursorIndex;
           final prefix = isCursor ? '❯ ' : '  ';
-          final authorStr = r.authors.isNotEmpty ? ' · ${r.authors.join(', ')}' : '';
+          final String detailAuthors = <String>{
+            ...r.authors,
+            if (r.details != null) ...r.details!.artists,
+          }.join(', ');
+          final authorStr = detailAuthors.isNotEmpty ? ' · $detailAuthors' : '';
           final line = '[${r.pluginSourceId}] ${r.title}$authorStr';
           lines.add(truncate('$prefix$line', width));
         }

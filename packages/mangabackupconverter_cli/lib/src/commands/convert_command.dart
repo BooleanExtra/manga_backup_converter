@@ -88,19 +88,6 @@ class ConvertCommand extends Command<void> {
     }
     final BackupFormat resolvedInputFormat = inputFormat;
 
-    final converter = MangaBackupConverter();
-    final Uint8List bytes = backupFile.readAsBytesSync();
-    final ConvertableBackup importedBackup = switch (resolvedInputFormat) {
-      Aidoku() => converter.importAidokuBackup(bytes),
-      Tachiyomi() => converter.importTachibkBackup(bytes, format: resolvedInputFormat),
-      Paperback() => converter.importPaperbackPas4Backup(
-        bytes,
-        name: p.basenameWithoutExtension(backupFile.uri.toString()),
-      ),
-      Tachimanga() => await converter.importTachimangaBackup(bytes),
-      Mangayomi() => converter.importMangayomiBackup(bytes),
-    };
-
     final List<String> repoUrls = results.multiOption('repos');
     final bool interactive = hasTerminal;
 
@@ -114,18 +101,53 @@ class ConvertCommand extends Command<void> {
 
     final TerminalContext? context = interactive ? TerminalContext() : null;
 
+    // Loading indicator for interactive startup.
+    final Spinner? spinner = interactive ? Spinner() : null;
+    final ScreenRegion? loadingRegion = context != null ? ScreenRegion(context) : null;
+    var loadingMessage = '';
+    void updateLoading(String message) {
+      loadingMessage = message;
+      loadingRegion?.render(['${spinner!.frame} $loadingMessage']);
+    }
+
+    if (interactive) {
+      context!.hideCursor();
+      spinner!.start(() => loadingRegion!.render(['${spinner.frame} $loadingMessage']));
+    }
+
     final OnConfirmMatches onConfirmMatches = interactive
-        ? (manga, onSearch, onFetchDetails) => MigrationDashboard().run(
-              context: context!,
+        ? (manga, onSearch, onFetchDetails) {
+            spinner!.stop();
+            loadingRegion!.clear();
+            context!.showCursor();
+            return MigrationDashboard().run(
+              context: context,
               manga: manga,
               onSearch: onSearch,
               onFetchDetails: onFetchDetails,
-            )
+            );
+          }
         : _autoAcceptMatches;
 
     try {
       await runZoned(
         () async {
+          updateLoading('Reading backup file...');
+          final converter = MangaBackupConverter();
+          final Uint8List bytes = backupFile.readAsBytesSync();
+
+          updateLoading('Importing ${resolvedInputFormat.alias} backup...');
+          final ConvertableBackup importedBackup = switch (resolvedInputFormat) {
+            Aidoku() => converter.importAidokuBackup(bytes),
+            Tachiyomi() => converter.importTachibkBackup(bytes, format: resolvedInputFormat),
+            Paperback() => converter.importPaperbackPas4Backup(
+              bytes,
+              name: p.basenameWithoutExtension(backupFile.uri.toString()),
+            ),
+            Tachimanga() => await converter.importTachimangaBackup(bytes),
+            Mangayomi() => converter.importMangayomiBackup(bytes),
+          };
+
           if (verbose) {
             print('[VERBOSE] All arguments: ${results.arguments}');
             print('Imported Backup Extension: $backupFileExtension');
@@ -151,6 +173,10 @@ class ConvertCommand extends Command<void> {
             onConfirmMatches: onConfirmMatches,
             onProgress: (int current, int total, String message) {
               if (verbose) print('[$current/$total] $message');
+              if (interactive) {
+                final progress = total > 0 ? ' [$current/$total]' : '';
+                updateLoading('$message$progress');
+              }
             },
           );
 
@@ -190,6 +216,9 @@ class ConvertCommand extends Command<void> {
       io.stderr.writeln('Migration failed: $e');
       io.exitCode = 1;
     } finally {
+      spinner?.stop();
+      loadingRegion?.clear();
+      context?.showCursor();
       context?.dispose();
       logSinkMounted = false;
       await logSink?.flush();
