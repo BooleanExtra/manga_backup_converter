@@ -26,6 +26,7 @@ class ExtensionSelectScreen {
     required List<ExtensionEntry> extensions,
   }) async {
     var query = '';
+    var cursorPos = 0;
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
     var scrollOffset = 0;
     final selected = <String>{}; // selected extension IDs
@@ -89,12 +90,15 @@ class ExtensionSelectScreen {
       final lines = <String>[];
 
       // Search input box.
-      final focusIndicator = cursorIndex < 0 ? '❯ ' : '  ';
-      final inputContent = '$focusIndicator⌕ $query';
       final int boxWidth = max(width - 2, 10);
-      final String truncatedInput = truncate(inputContent, boxWidth);
-      final int pad = max(0, boxWidth - displayWidth(truncatedInput));
-      final inner = '$truncatedInput${' ' * pad}';
+      final String inputLine = renderSearchInput(
+        query,
+        cursorPos,
+        isFocused: cursorIndex < 0,
+        boxWidth: boxWidth,
+      );
+      final int pad = max(0, boxWidth - displayWidth(inputLine));
+      final inner = '$inputLine${' ' * pad}';
       lines.add('╭${'─' * boxWidth}╮');
       lines.add('│$inner│');
       lines.add('╰${'─' * boxWidth}╯');
@@ -150,8 +154,8 @@ class ExtensionSelectScreen {
       lines.add('');
       lines.add(
         dim(
-          'type to filter · ↑↓ navigate · Space toggle · '
-          'Enter confirm · Esc cancel',
+          'type to filter · ←→ move cursor · ↑↓ navigate · '
+          'Space toggle · Enter confirm · Esc cancel',
         ),
       );
 
@@ -180,8 +184,10 @@ class ExtensionSelectScreen {
               unawaited(events.close());
             } else if (cursorIndex < 0) {
               // Search bar — type the character.
-              query += 'y';
-              cursorIndex = -1;
+              final List<String> chars = query.characters.toList();
+              chars.insert(cursorPos, 'y');
+              query = chars.join();
+              cursorPos++;
               render();
             }
 
@@ -199,8 +205,11 @@ class ExtensionSelectScreen {
 
           case _KeyEvent(key: Backspace()):
             cursorIndex = -1;
-            if (query.isNotEmpty) {
-              query = query.characters.skipLast(1).string;
+            if (cursorPos > 0) {
+              final List<String> chars = query.characters.toList();
+              chars.removeAt(cursorPos - 1);
+              query = chars.join();
+              cursorPos--;
               render();
             }
 
@@ -219,13 +228,46 @@ class ExtensionSelectScreen {
               }
             } else {
               // Search bar — type a space.
-              query += ' ';
+              final List<String> chars = query.characters.toList();
+              chars.insert(cursorPos, ' ');
+              query = chars.join();
+              cursorPos++;
               render();
             }
 
+          case _KeyEvent(key: Delete()):
+            cursorIndex = -1;
+            if (cursorPos < query.characters.length) {
+              final List<String> chars = query.characters.toList();
+              chars.removeAt(cursorPos);
+              query = chars.join();
+              render();
+            }
+
+          case _KeyEvent(key: ArrowLeft()):
+            if (cursorIndex < 0 && cursorPos > 0) cursorPos--;
+            render();
+
+          case _KeyEvent(key: ArrowRight()):
+            if (cursorIndex < 0 && cursorPos < query.characters.length) {
+              cursorPos++;
+            }
+            render();
+
+          case _KeyEvent(key: Home()):
+            if (cursorIndex < 0) cursorPos = 0;
+            render();
+
+          case _KeyEvent(key: End()):
+            if (cursorIndex < 0) cursorPos = query.characters.length;
+            render();
+
           case _KeyEvent(key: CharKey(:final char)):
             cursorIndex = -1;
-            query += char;
+            final List<String> chars = query.characters.toList();
+            chars.insert(cursorPos, char);
+            query = chars.join();
+            cursorPos++;
             render();
         }
 

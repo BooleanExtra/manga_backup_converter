@@ -96,6 +96,53 @@ String truncate(String text, int maxWidth) {
   return buf.toString();
 }
 
+/// Renders a search input line with a visible block cursor at [cursorPos].
+///
+/// When [isFocused] is true, the character at [cursorPos] (or a trailing space
+/// if the cursor is at the end) is rendered with ANSI inverse video to simulate
+/// a block cursor. The result is truncated to [boxWidth] visible columns.
+String renderSearchInput(String query, int cursorPos, {required bool isFocused, required int boxWidth}) {
+  final focusIndicator = isFocused ? '❯ ' : '  ';
+  const prefix = '⌕ ';
+  final prefixStr = '$focusIndicator$prefix';
+  final int prefixWidth = displayWidth(prefixStr);
+  final int availableWidth = boxWidth - prefixWidth;
+
+  if (!isFocused || availableWidth <= 0) {
+    return truncate('$prefixStr$query', boxWidth);
+  }
+
+  final List<String> chars = query.characters.toList();
+  final int clampedPos = cursorPos.clamp(0, chars.length);
+
+  // Build the query with an inverse-video cursor character.
+  final buf = StringBuffer(prefixStr);
+  var col = 0;
+  for (var i = 0; i < chars.length; i++) {
+    final gw = _isDoubleWidth(chars[i].runes.first) ? 2 : 1;
+    if (col + gw > availableWidth - (i == clampedPos ? 0 : 0)) {
+      // Would exceed available width — truncate.
+      if (i <= clampedPos) {
+        // Cursor hasn't been rendered yet; show ellipsis.
+        buf.write('…');
+      }
+      break;
+    }
+    if (i == clampedPos) {
+      buf.write('\x1b[7m${chars[i]}\x1b[27m');
+    } else {
+      buf.write(chars[i]);
+    }
+    col += gw;
+  }
+  // If cursor is at the end, render an inverse space as the block cursor.
+  if (clampedPos == chars.length && col < availableWidth) {
+    buf.write('\x1b[7m \x1b[27m');
+  }
+
+  return buf.toString();
+}
+
 // ---------------------------------------------------------------------------
 // Spinner
 // ---------------------------------------------------------------------------
@@ -128,6 +175,14 @@ class ArrowUp extends KeyEvent {}
 
 class ArrowDown extends KeyEvent {}
 
+class ArrowLeft extends KeyEvent {}
+
+class ArrowRight extends KeyEvent {}
+
+class Home extends KeyEvent {}
+
+class End extends KeyEvent {}
+
 class Enter extends KeyEvent {}
 
 class Escape extends KeyEvent {}
@@ -135,6 +190,8 @@ class Escape extends KeyEvent {}
 class Space extends KeyEvent {}
 
 class Backspace extends KeyEvent {}
+
+class Delete extends KeyEvent {}
 
 class CharKey extends KeyEvent {
   CharKey(this.char);
@@ -266,6 +323,16 @@ class KeyInput {
       _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
       return;
     }
+    // Buffer ESC [ <digit> waiting for ~ (e.g. Delete = ESC [ 3 ~).
+    if (combined.length == 3 &&
+        combined[0] == 0x1b &&
+        combined[1] == 0x5b &&
+        combined[2] >= 0x30 &&
+        combined[2] <= 0x39) {
+      _escBuffer = combined.toList();
+      _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
+      return;
+    }
 
     _processBytes(combined);
   }
@@ -282,11 +349,27 @@ class KeyInput {
     if (_controller.isClosed) return;
 
     if (bytes.length >= 3 && bytes[0] == 0x1b && bytes[1] == 0x5b) {
+      // ESC [ <digit> ~ sequences (e.g. Delete = ESC [ 3 ~).
+      if (bytes.length >= 4 && bytes[3] == 0x7e) {
+        switch (bytes[2]) {
+          case 0x33:
+            _controller.add(Delete());
+        }
+        return;
+      }
       switch (bytes[2]) {
         case 0x41:
           _controller.add(ArrowUp());
         case 0x42:
           _controller.add(ArrowDown());
+        case 0x43:
+          _controller.add(ArrowRight());
+        case 0x44:
+          _controller.add(ArrowLeft());
+        case 0x46:
+          _controller.add(End());
+        case 0x48:
+          _controller.add(Home());
       }
       return;
     }

@@ -60,6 +60,7 @@ class LiveSearchSelect {
     onFetchDetails,
   }) async {
     var query = initialQuery;
+    int cursorPos = initialQuery.characters.length;
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
     var scrollOffset = 0;
     var searchGeneration = 0;
@@ -132,12 +133,15 @@ class LiveSearchSelect {
       final lines = <String>[];
 
       // Search input box (at top).
-      final focusIndicator = cursorIndex < 0 ? '❯ ' : '  ';
-      final inputContent = '$focusIndicator⌕ $query';
       final int boxWidth = max(width - 2, 10);
-      final String truncated = truncate(inputContent, boxWidth);
-      final int pad = max(0, boxWidth - displayWidth(truncated));
-      final inner = '$truncated${' ' * pad}';
+      final String inputLine = renderSearchInput(
+        query,
+        cursorPos,
+        isFocused: cursorIndex < 0,
+        boxWidth: boxWidth,
+      );
+      final int pad = max(0, boxWidth - displayWidth(inputLine));
+      final inner = '$inputLine${' ' * pad}';
       lines.add('╭${'─' * boxWidth}╮');
       lines.add('│$inner│');
       lines.add('╰${'─' * boxWidth}╯');
@@ -186,7 +190,7 @@ class LiveSearchSelect {
 
       lines.add('');
       lines.add(
-        dim('type to search · ↑↓ navigate · Space details · Enter select · Esc back'),
+        dim('type to search · ←→ move cursor · ↑↓ navigate · Space details · Enter select · Esc back'),
       );
 
       screen.render(lines);
@@ -222,8 +226,11 @@ class LiveSearchSelect {
 
           case _KeyEvent(key: Backspace()):
             cursorIndex = -1;
-            if (query.isNotEmpty) {
-              query = query.characters.skipLast(1).string;
+            if (cursorPos > 0) {
+              final List<String> chars = query.characters.toList();
+              chars.removeAt(cursorPos - 1);
+              query = chars.join();
+              cursorPos--;
               debounceTimer?.cancel();
               debounceTimer = Timer(
                 const Duration(milliseconds: 300),
@@ -232,9 +239,44 @@ class LiveSearchSelect {
               render();
             }
 
+          case _KeyEvent(key: Delete()):
+            cursorIndex = -1;
+            if (cursorPos < query.characters.length) {
+              final List<String> chars = query.characters.toList();
+              chars.removeAt(cursorPos);
+              query = chars.join();
+              debounceTimer?.cancel();
+              debounceTimer = Timer(
+                const Duration(milliseconds: 300),
+                () => events.add(_DebounceFireEvent()),
+              );
+              render();
+            }
+
+          case _KeyEvent(key: ArrowLeft()):
+            if (cursorIndex < 0 && cursorPos > 0) cursorPos--;
+            render();
+
+          case _KeyEvent(key: ArrowRight()):
+            if (cursorIndex < 0 && cursorPos < query.characters.length) {
+              cursorPos++;
+            }
+            render();
+
+          case _KeyEvent(key: Home()):
+            if (cursorIndex < 0) cursorPos = 0;
+            render();
+
+          case _KeyEvent(key: End()):
+            if (cursorIndex < 0) cursorPos = query.characters.length;
+            render();
+
           case _KeyEvent(key: CharKey(:final char)):
             cursorIndex = -1;
-            query += char;
+            final List<String> chars = query.characters.toList();
+            chars.insert(cursorPos, char);
+            query = chars.join();
+            cursorPos++;
             debounceTimer?.cancel();
             debounceTimer = Timer(
               const Duration(milliseconds: 300),
@@ -266,7 +308,10 @@ class LiveSearchSelect {
               }
             } else {
               // Search bar focused — type a space character.
-              query += ' ';
+              final List<String> chars = query.characters.toList();
+              chars.insert(cursorPos, ' ');
+              query = chars.join();
+              cursorPos++;
               debounceTimer?.cancel();
               debounceTimer = Timer(
                 const Duration(milliseconds: 300),
