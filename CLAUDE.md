@@ -76,6 +76,8 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
 - WASM plugins are single-threaded — never call `search`/`getMangaWithChapters` concurrently on the same `PluginSource`; the migration dashboard serializes searches (one manga at a time) and `_streamSearch` enriches results with `getMangaWithChapters` before emitting so the TUI receives complete data (URL, chapters) upfront
 - `PluginSearchResult` carries optional `details` (`PluginMangaDetails?`) and `chapters` (`List<PluginChapter>`) populated by `_streamSearch` enrichment — the TUI reads these directly, no async detail fetching needed
+- WASM `get_search_manga_list` returns minimal data (authors typically empty); full author/artist data comes from `getMangaWithChapters` enrichment — always prefer detail-level fields over search-level fields when both exist
+- `PluginMangaDetails` has separate `authors` and `artists` lists — display code should merge both into a `<String>{}` set to deduplicate (authors who are also artists)
 - `lib/src/proto/` — Protocol buffer schemas for Tachi forks (mihon, j2k, neko, sy, yokai)
 - `lib/src/exceptions/` — Format-specific exception classes
 
