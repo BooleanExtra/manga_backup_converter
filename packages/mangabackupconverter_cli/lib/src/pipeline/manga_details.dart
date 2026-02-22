@@ -2,19 +2,22 @@ import 'package:mangabackupconverter_cli/src/common/fix_double_encoding.dart';
 
 class MangaSearchDetails {
   MangaSearchDetails({
-    required this.title,
+    required String title,
     List<String> altTitles = const <String>[],
     List<String> authors = const <String>[],
     List<String> artists = const <String>[],
     this.tagNames = const <String>[],
-    this.description,
+    String? description,
     this.chaptersCount,
     this.latestChapterNum,
     this.coverImageUrl,
     this.languages = const <String>[],
-  })  : altTitles = altTitles.map(fixDoubleEncoding).toList(),
+  })  : title = fixDoubleEncoding(title),
+        altTitles = altTitles.map(fixDoubleEncoding).toList(),
         authors = authors.map(fixDoubleEncoding).toList(),
-        artists = artists.map(fixDoubleEncoding).toList();
+        artists = artists.map(fixDoubleEncoding).toList(),
+        description =
+            description != null ? fixDoubleEncoding(description) : null;
 
   final String title;
   final List<String> altTitles;

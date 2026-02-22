@@ -102,6 +102,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 - `MangaMatchConfirmation.sourceManga` is `SourceMangaData` (not `MangaSearchDetails`) — carries chapters, history, tracking, categories from source backup
 - `ConvertableBackup.sourceMangaDataEntries` extracts `List<SourceMangaData>` from each backup format
 - `MangaMatchProposal.sourceManga` remains `MangaSearchDetails` (UI display only)
+- `MangaSearchDetails` constructor applies `fixDoubleEncoding` (from `common/fix_double_encoding.dart`) to all text fields (`title`, `altTitles`, `authors`, `artists`, `description`) — NOT a const constructor; do not use `const MangaSearchDetails(...)`
 - `tachi_backup.dart` must directly import `tachi_backup_chapter.dart`, `tachi_backup_history.dart`, `tachi_backup_tracking.dart` — they are NOT re-exported by `tachi_backup_manga.dart`
 
 ## Code Generation
