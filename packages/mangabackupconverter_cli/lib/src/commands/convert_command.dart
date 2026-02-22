@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
 import 'dart:io' as io;
 import 'dart:typed_data';
 
@@ -50,6 +51,13 @@ class ConvertCommand extends Command<void> {
         'output',
         abbr: 'o',
         help: 'Output file path. Defaults to <input>_converted.<ext> in the current directory.',
+      )
+      ..addOption(
+        'log-file',
+        abbr: 'l',
+        help:
+            'Log file path for verbose output in interactive mode. '
+            'Defaults to <output-basename>.log next to the output file.',
       );
   }
 
@@ -57,10 +65,6 @@ class ConvertCommand extends Command<void> {
   Future<void> run() async {
     final ArgResults results = argResults!;
     final bool verbose = results.flag('verbose');
-
-    if (verbose) {
-      print('[VERBOSE] All arguments: ${results.arguments}');
-    }
 
     final backupFile = io.File(results.option('backup')!);
     if (!backupFile.existsSync()) {
@@ -70,9 +74,6 @@ class ConvertCommand extends Command<void> {
     final BackupFormat outputFormat = BackupFormat.byName(results.option('output-format')!);
 
     final String backupFileExtension = p.extension(backupFile.uri.toString());
-    if (verbose) {
-      print('Imported Backup Extension: $backupFileExtension');
-    }
 
     BackupFormat? inputFormat = BackupFormat.byExtension(backupFileExtension);
     if (results.wasParsed('input-format')) {
@@ -85,12 +86,13 @@ class ConvertCommand extends Command<void> {
         usage,
       );
     }
+    final BackupFormat resolvedInputFormat = inputFormat;
 
     final converter = MangaBackupConverter();
     final Uint8List bytes = backupFile.readAsBytesSync();
-    final ConvertableBackup importedBackup = switch (inputFormat) {
+    final ConvertableBackup importedBackup = switch (resolvedInputFormat) {
       Aidoku() => converter.importAidokuBackup(bytes),
-      Tachiyomi() => converter.importTachibkBackup(bytes, format: inputFormat),
+      Tachiyomi() => converter.importTachibkBackup(bytes, format: resolvedInputFormat),
       Paperback() => converter.importPaperbackPas4Backup(
         bytes,
         name: p.basenameWithoutExtension(backupFile.uri.toString()),
@@ -99,65 +101,90 @@ class ConvertCommand extends Command<void> {
       Mangayomi() => converter.importMangayomiBackup(bytes),
     };
 
-    if (verbose) {
-      print('============ Imported Backup Data ============ ');
-      importedBackup.verbosePrint(verbose);
-    }
-
     final List<String> repoUrls = results.multiOption('repos');
     final bool interactive = hasTerminal;
-    if (verbose && !interactive) {
-      print('[VERBOSE] Non-interactive mode: auto-accepting best matches');
-    }
+
+    final String outputPath =
+        results.option('output') ??
+        '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
+
+    final String logPath = results.option('log-file') ?? (interactive ? '${p.withoutExtension(outputPath)}.log' : '');
+    final io.IOSink? logSink = logPath.isNotEmpty ? io.File(logPath).openWrite() : null;
 
     final OnConfirmMatches onConfirmMatches = interactive ? MigrationDashboard().run : _autoAcceptMatches;
 
-    final pipeline = MigrationPipeline(
-      repoUrls: repoUrls,
-      onSelectExtensions: (List<ExtensionEntry> extensions) async {
-        // TODO: Implement extension selection logic
-        // User will pick from list of extensions
-        // If none are correct, user can search in the terminal for the extension and then pick from the results
-        // Only the selected extensions should be downloaded and loaded into the pipeline
-        return [
-          extensions.firstWhereOrNull((ExtensionEntry extension) => extension.id == 'multi.mangadex') ??
-              extensions.first,
-        ];
-      },
-      onConfirmMatches: onConfirmMatches,
-      onProgress: (int current, int total, String message) {
-        if (verbose) print('[$current/$total] $message');
-      },
-    );
-
     try {
-      final ConvertableBackup convertedBackup = await pipeline.run(
-        sourceBackup: importedBackup,
-        sourceFormat: inputFormat,
-        targetFormat: outputFormat,
+      await runZoned(
+        () async {
+          if (verbose) {
+            print('[VERBOSE] All arguments: ${results.arguments}');
+            print('Imported Backup Extension: $backupFileExtension');
+            print('============ Imported Backup Data ============ ');
+            importedBackup.verbosePrint(verbose);
+          }
+          if (verbose && !interactive) {
+            print('[VERBOSE] Non-interactive mode: auto-accepting best matches');
+          }
+
+          final pipeline = MigrationPipeline(
+            repoUrls: repoUrls,
+            onSelectExtensions: (List<ExtensionEntry> extensions) async {
+              // TODO: Implement extension selection logic
+              // User will pick from list of extensions
+              // If none are correct, user can search in the terminal for the extension and then pick from the results
+              // Only the selected extensions should be downloaded and loaded into the pipeline
+              return [
+                extensions.firstWhereOrNull((ExtensionEntry extension) => extension.id == 'multi.mangadex') ??
+                    extensions.first,
+              ];
+            },
+            onConfirmMatches: onConfirmMatches,
+            onProgress: (int current, int total, String message) {
+              if (verbose) print('[$current/$total] $message');
+            },
+          );
+
+          final ConvertableBackup convertedBackup = await pipeline.run(
+            sourceBackup: importedBackup,
+            sourceFormat: resolvedInputFormat,
+            targetFormat: outputFormat,
+          );
+
+          if (verbose) {
+            print('============ Converted Backup Data ============ ');
+            convertedBackup.verbosePrint(verbose);
+          }
+
+          final Uint8List fileData = await convertedBackup.toData();
+          final outputFile = io.File(outputPath);
+          if (verbose) {
+            print('Converted Backup Size: ${fileData.length}');
+          }
+          if (outputFile.existsSync()) {
+            // Write outside zone — user-facing status message
+            Zone.root.print('Output file already exists, overwriting...');
+          }
+          outputFile.writeAsBytesSync(fileData);
+          // Write outside zone — user-facing status message
+          Zone.root.print('Converted backup written to ${outputFile.path}');
+        },
+        zoneSpecification: logSink != null
+            ? ZoneSpecification(
+                print: (self, parent, zone, line) {
+                  logSink.writeln(line);
+                },
+              )
+            : null,
       );
-
-      if (verbose) {
-        print('============ Converted Backup Data ============ ');
-        convertedBackup.verbosePrint(verbose);
-      }
-
-      final Uint8List fileData = await convertedBackup.toData();
-      final String outputPath =
-          results.option('output') ??
-          '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
-      final outputFile = io.File(outputPath);
-      if (verbose) {
-        print('Converted Backup Size: ${fileData.length}');
-      }
-      if (outputFile.existsSync()) {
-        print('Output file already exists, overwriting...');
-      }
-      outputFile.writeAsBytesSync(fileData);
-      print('Converted backup written to ${outputFile.path}');
     } on MigrationException catch (e) {
       io.stderr.writeln('Migration failed: $e');
       io.exitCode = 1;
+    } finally {
+      await logSink?.flush();
+      await logSink?.close();
+      if (logSink != null) {
+        print('Logs written to $logPath');
+      }
     }
   }
 }

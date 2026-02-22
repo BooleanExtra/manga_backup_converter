@@ -79,7 +79,12 @@ class AidokuPluginLoader extends PluginLoader {
           );
           continue;
         }
-        final AidokuPlugin plugin = await loader.loadAixBytes(Uint8List.fromList(response.bodyBytes));
+        final AidokuPlugin plugin = await loader.loadAixBytes(
+          Uint8List.fromList(response.bodyBytes),
+          defaults: entry.baseUrl != null
+              ? <String, dynamic>{'url': entry.baseUrl}
+              : null,
+        );
         plugins.add(AidokuPluginSource(plugin: plugin));
       } on Object catch (e) {
         onProgress?.call(i + 1, extensions.length, 'Warning: failed to load ${entry.name}: $e');
