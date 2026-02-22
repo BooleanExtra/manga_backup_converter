@@ -55,7 +55,29 @@ class PostcardReader {
     final int len = readVarInt();
     final String str = utf8.decode(_bytes.sublist(_pos, _pos + len));
     _pos += len;
-    return str;
+    return _tryFixDoubleEncoded(str);
+  }
+
+  /// Detect and repair double-encoded UTF-8 strings.
+  ///
+  /// Some WASM plugins interpret UTF-8 HTTP response bytes as Latin-1 code
+  /// points, producing strings where e.g. 二 (U+4E8C, UTF-8: E4 BA 8C)
+  /// becomes ä (U+E4) + º (U+BA) + Œ (U+8C). This re-encodes to Latin-1
+  /// (recovering the original bytes) and re-decodes as UTF-8.
+  static String _tryFixDoubleEncoded(String s) {
+    var hasHighLatin = false;
+    for (final int c in s.codeUnits) {
+      if (c > 0xFF) return s;
+      if (c >= 0x80) hasHighLatin = true;
+    }
+    if (!hasHighLatin) return s;
+
+    try {
+      final bytes = Uint8List.fromList(s.codeUnits);
+      return utf8.decode(bytes);
+    } on FormatException {
+      return s;
+    }
   }
 
   Uint8List readBytes() {

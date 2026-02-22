@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/manga_details_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/migration_pipeline.dart';
@@ -55,7 +56,8 @@ class LiveSearchSelect {
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
       String pluginSourceId,
       String mangaKey,
-    ) onFetchDetails,
+    )
+    onFetchDetails,
   }) async {
     var query = initialQuery;
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
@@ -72,8 +74,7 @@ class LiveSearchSelect {
     final screen = ScreenRegion(context);
 
     // Listen for key events on shared KeyInput (broadcast stream).
-    StreamSubscription<KeyEvent> keySub =
-        context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
+    StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen((KeyEvent key) => events.add(_KeyEvent(key)));
     spinner.start(() => events.add(_SpinnerTickEvent()));
 
     List<PluginSearchResult> allResults() {
@@ -84,8 +85,7 @@ class LiveSearchSelect {
       return results;
     }
 
-    bool anySearching() =>
-        pluginStatuses.values.any((_PluginStatus s) => s.state == _PluginSearchState.searching);
+    bool anySearching() => pluginStatuses.values.any((_PluginStatus s) => s.state == _PluginSearchState.searching);
 
     void startSearch(String q) {
       currentSearchSub?.cancel();
@@ -108,7 +108,7 @@ class LiveSearchSelect {
 
     void render() {
       final int width = context.width;
-      var results = allResults();
+      List<PluginSearchResult> results = allResults();
       final bool searching = searchActive || anySearching();
 
       // Use cached results while searching if no new results have arrived yet.
@@ -135,7 +135,9 @@ class LiveSearchSelect {
       final focusIndicator = cursorIndex < 0 ? '❯ ' : '  ';
       final inputContent = '$focusIndicator⌕ $query';
       final int boxWidth = max(width - 2, 10);
-      final String inner = truncate(inputContent, boxWidth).padRight(boxWidth);
+      final String truncated = truncate(inputContent, boxWidth);
+      final int pad = max(0, boxWidth - displayWidth(truncated));
+      final inner = '$truncated${' ' * pad}';
       lines.add('╭${'─' * boxWidth}╮');
       lines.add('│$inner│');
       lines.add('╰${'─' * boxWidth}╯');
@@ -221,7 +223,7 @@ class LiveSearchSelect {
           case _KeyEvent(key: Backspace()):
             cursorIndex = -1;
             if (query.isNotEmpty) {
-              query = query.substring(0, query.length - 1);
+              query = query.characters.skipLast(1).string;
               debounceTimer?.cancel();
               debounceTimer = Timer(
                 const Duration(milliseconds: 300),
@@ -253,8 +255,7 @@ class LiveSearchSelect {
                 await detailsScreen.run(
                   context: context,
                   result: result,
-                  fetchDetails: (String mangaKey) =>
-                      onFetchDetails(result.pluginSourceId, mangaKey),
+                  fetchDetails: (String mangaKey) => onFetchDetails(result.pluginSourceId, mangaKey),
                 );
 
                 keySub = context.keyInput.stream.listen(
@@ -287,8 +288,7 @@ class LiveSearchSelect {
 
           case _PluginResultEvent(:final generation, event: PluginSearchError(:final failure)):
             if (generation != searchGeneration) break;
-            pluginStatuses.putIfAbsent(failure.pluginId, _PluginStatus.new).state =
-                _PluginSearchState.failed;
+            pluginStatuses.putIfAbsent(failure.pluginId, _PluginStatus.new).state = _PluginSearchState.failed;
             render();
 
           case _PluginStreamDoneEvent(:final generation):

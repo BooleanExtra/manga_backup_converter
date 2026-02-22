@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
+import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/win_console_stub.dart'
     if (dart.library.ffi) 'package:mangabackupconverter_cli/src/commands/win_console_native.dart';
 import 'package:meta/meta.dart';
@@ -18,12 +19,40 @@ String green(String text) => '\x1b[32m$text\x1b[39m';
 String cyan(String text) => '\x1b[36m$text\x1b[39m';
 
 /// OSC 8 terminal hyperlink.
-String hyperlink(String text, String url) =>
-    '\x1b]8;;$url\x1b\\$text\x1b]8;;\x1b\\';
+String hyperlink(String text, String url) => '\x1b]8;;$url\x1b\\$text\x1b]8;;\x1b\\';
 
-/// Strips ANSI escape sequences for length calculation.
-int visibleLength(String text) =>
-    text.replaceAll(RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]'), '').length;
+final _ansiRe = RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]');
+
+/// Whether a Unicode code point occupies two terminal columns.
+bool _isDoubleWidth(int rune) {
+  return (rune >= 0x1100 && rune <= 0x115F) ||
+      (rune >= 0x2E80 && rune <= 0x303E) ||
+      (rune >= 0x3040 && rune <= 0x33BF) ||
+      (rune >= 0x3400 && rune <= 0x4DBF) ||
+      (rune >= 0x4E00 && rune <= 0x9FFF) ||
+      (rune >= 0xA000 && rune <= 0xA4CF) ||
+      (rune >= 0xAC00 && rune <= 0xD7AF) ||
+      (rune >= 0xF900 && rune <= 0xFAFF) ||
+      (rune >= 0xFE30 && rune <= 0xFE6F) ||
+      (rune >= 0xFF01 && rune <= 0xFF60) ||
+      (rune >= 0xFFE0 && rune <= 0xFFE6) ||
+      (rune >= 0x1F300 && rune <= 0x1F9FF) ||
+      (rune >= 0x20000 && rune <= 0x2FA1F);
+}
+
+/// Computes the terminal display width of [text], accounting for double-width
+/// CJK / fullwidth characters and stripping ANSI escapes.
+int displayWidth(String text) {
+  final String plain = text.replaceAll(_ansiRe, '');
+  var w = 0;
+  for (final String g in plain.characters) {
+    w += _isDoubleWidth(g.runes.first) ? 2 : 1;
+  }
+  return w;
+}
+
+/// Visible column count of [text] (ANSI-stripped, CJK-aware).
+int visibleLength(String text) => displayWidth(text);
 
 /// Word-wraps [text] to [width] columns, respecting existing newlines.
 List<String> wordWrap(String text, int width) {
@@ -38,7 +67,7 @@ List<String> wordWrap(String text, int width) {
     for (final word in words) {
       if (currentLine.isEmpty) {
         currentLine.write(word);
-      } else if (currentLine.length + 1 + word.length <= width) {
+      } else if (displayWidth(currentLine.toString()) + 1 + displayWidth(word) <= width) {
         currentLine.write(' $word');
       } else {
         lines.add(currentLine.toString());
@@ -53,11 +82,18 @@ List<String> wordWrap(String text, int width) {
 /// Truncates [text] to [maxWidth] visible columns, appending "…" if needed.
 String truncate(String text, int maxWidth) {
   if (maxWidth <= 0) return '';
-  if (visibleLength(text) <= maxWidth) return text;
-  // Strip ANSI for safe truncation, then re-truncate.
-  final String plain = text.replaceAll(RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]'), '');
-  if (plain.length <= maxWidth) return text;
-  return '${plain.substring(0, max(0, maxWidth - 1))}…';
+  if (displayWidth(text) <= maxWidth) return text;
+  final String plain = text.replaceAll(_ansiRe, '');
+  final buf = StringBuffer();
+  var w = 0;
+  for (final String g in plain.characters) {
+    final gw = _isDoubleWidth(g.runes.first) ? 2 : 1;
+    if (w + gw > maxWidth - 1) break;
+    buf.write(g);
+    w += gw;
+  }
+  buf.write('…');
+  return buf.toString();
 }
 
 // ---------------------------------------------------------------------------
@@ -136,16 +172,14 @@ bool get hasTerminal {
 /// Wrapping it in `asBroadcastStream` allows independent subscribe/cancel
 /// cycles across multiple [KeyInput] instances (parent / child screens).
 Stream<List<int>>? _stdinBroadcast;
-Stream<List<int>> get _broadcastStdin =>
-    _stdinBroadcast ??= stdin.asBroadcastStream();
+Stream<List<int>> get _broadcastStdin => _stdinBroadcast ??= stdin.asBroadcastStream();
 
 class KeyInput {
   KeyInput() : _inputStream = null;
 
   /// Test-only constructor that uses [inputStream] instead of stdin.
   @visibleForTesting
-  KeyInput.withStream(Stream<List<int>> inputStream)
-      : _inputStream = inputStream;
+  KeyInput.withStream(Stream<List<int>> inputStream) : _inputStream = inputStream;
 
   final Stream<List<int>>? _inputStream;
   final _controller = StreamController<KeyEvent>.broadcast();
@@ -155,6 +189,11 @@ class KeyInput {
   // (common on MSYS/mintty where ESC [ B may arrive as [0x1b] then [0x5b, 0x42]).
   List<int> _escBuffer = [];
   Timer? _escTimer;
+
+  // Buffer for reassembling multi-byte UTF-8 sequences split across reads
+  // (e.g. Korean 격 = 3 bytes [0xEA, 0xB2, 0xA9] may arrive in separate chunks).
+  List<int> _utf8Buffer = [];
+  Timer? _utf8Timer;
 
   Stream<KeyEvent> get stream => _controller.stream;
 
@@ -185,6 +224,9 @@ class KeyInput {
       _processBytes(_escBuffer);
       _escBuffer = [];
     }
+    _utf8Timer?.cancel();
+    _utf8Timer = null;
+    _decodeAndEmitUtf8();
     _sub?.cancel();
     _controller.close();
     restoreConsoleMode();
@@ -248,7 +290,8 @@ class KeyInput {
     }
 
     if (bytes.length == 1) {
-      switch (bytes[0]) {
+      final int byte = bytes[0];
+      switch (byte) {
         case 0x0d:
           _controller.add(Enter());
         case 0x1b:
@@ -258,8 +301,11 @@ class KeyInput {
         case 0x08 || 0x7f:
           _controller.add(Backspace());
         default:
-          if (bytes[0] >= 0x20 && bytes[0] < 0x7f) {
-            _controller.add(CharKey(String.fromCharCode(bytes[0])));
+          if (byte >= 0x20 && byte < 0x7f) {
+            _controller.add(CharKey(String.fromCharCode(byte)));
+          } else if (byte >= 0x80) {
+            // High byte — part of a multi-byte UTF-8 sequence.
+            _bufferUtf8(bytes);
           }
       }
       return;
@@ -267,13 +313,48 @@ class KeyInput {
 
     // Multi-byte UTF-8 printable characters.
     if (bytes.isNotEmpty && bytes[0] != 0x1b) {
-      try {
-        final char = String.fromCharCodes(bytes);
-        if (char.isNotEmpty) _controller.add(CharKey(char));
-      } on FormatException {
-        // Ignore unrecognised sequences.
-      }
+      _bufferUtf8(bytes);
     }
+  }
+
+  /// Returns the expected total byte count for a UTF-8 sequence starting with
+  /// [leadByte], or 0 if it is not a multi-byte lead byte.
+  static int _utf8ExpectedLength(int leadByte) {
+    if (leadByte & 0xE0 == 0xC0) return 2; // 110xxxxx
+    if (leadByte & 0xF0 == 0xE0) return 3; // 1110xxxx (CJK lives here)
+    if (leadByte & 0xF8 == 0xF0) return 4; // 11110xxx
+    return 0;
+  }
+
+  void _bufferUtf8(List<int> bytes) {
+    _utf8Buffer.addAll(bytes);
+    _utf8Timer?.cancel();
+
+    final int expected = _utf8ExpectedLength(_utf8Buffer.first);
+    if (expected > 0 && _utf8Buffer.length < expected) {
+      // Incomplete sequence — wait for more bytes.
+      _utf8Timer = Timer(const Duration(milliseconds: 50), _flushUtf8Buffer);
+      return;
+    }
+
+    _decodeAndEmitUtf8();
+  }
+
+  void _decodeAndEmitUtf8() {
+    if (_utf8Buffer.isEmpty) return;
+    _utf8Timer?.cancel();
+    final List<int> bytes = _utf8Buffer;
+    _utf8Buffer = [];
+    try {
+      final String char = utf8.decode(bytes);
+      if (char.isNotEmpty) _controller.add(CharKey(char));
+    } on FormatException {
+      // Malformed UTF-8 — discard.
+    }
+  }
+
+  void _flushUtf8Buffer() {
+    if (_utf8Buffer.isNotEmpty) _decodeAndEmitUtf8();
   }
 }
 
@@ -283,10 +364,7 @@ class KeyInput {
 
 class TerminalContext {
   /// Production -- uses real stdin/stdout, installs SIGINT handler.
-  TerminalContext()
-      : _output = stdout,
-        _widthOverride = null,
-        _heightOverride = null {
+  TerminalContext() : _output = stdout, _widthOverride = null, _heightOverride = null {
     _keyInput = KeyInput();
     _keyInput.start();
     _sigintSub = ProcessSignal.sigint.watch().listen((_) {
@@ -308,9 +386,9 @@ class TerminalContext {
     required Stream<List<int>> inputStream,
     int width = 80,
     int height = 24,
-  })  : _output = output,
-        _widthOverride = width,
-        _heightOverride = height {
+  }) : _output = output,
+       _widthOverride = width,
+       _heightOverride = height {
     _keyInput = KeyInput.withStream(inputStream);
     _keyInput.start();
   }
@@ -347,6 +425,7 @@ class TerminalContext {
   void moveCursorUp(int n) {
     if (n > 0) _output.write('\x1b[${n}A');
   }
+
   void clearDown() => _output.write('\x1b[J');
   void write(String s) => _output.write(s);
   void writeln(String s) => _output.writeln(s);

@@ -33,7 +33,7 @@ void main() {
       final confirmations = <MangaMatchConfirmation>[
         MangaMatchConfirmation(
           sourceManga: SourceMangaData(
-            details: const MangaSearchDetails(
+            details: MangaSearchDetails(
               title: 'Original Title',
               authors: <String>['Author A'],
               artists: <String>['Artist B'],
@@ -82,16 +82,16 @@ void main() {
 
     test('skipped (null) match is filtered out', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Skipped Manga'),
           ),
         ),
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Kept Manga'),
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'en.source',
             mangaKey: 'key1',
             title: 'Kept Manga',
@@ -108,21 +108,21 @@ void main() {
 
     test('multiple matches with same source deduplicates sources', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Manga A'),
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'multi.mangadex',
             mangaKey: 'key-a',
             title: 'Manga A',
           ),
         ),
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Manga B'),
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'multi.mangadex',
             mangaKey: 'key-b',
             title: 'Manga B',
@@ -140,11 +140,11 @@ void main() {
 
     test('manga with no tags sets tags to null', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'No Tags'),
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'en.src',
             mangaKey: 'k',
             title: 'No Tags',
@@ -159,30 +159,30 @@ void main() {
 
     test('chapters from source manga are migrated', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'With Chapters'),
             chapters: <SourceChapter>[
-              SourceChapter(
+              const SourceChapter(
                 title: 'Chapter 1',
                 chapterNumber: 1,
                 isRead: true,
               ),
-              SourceChapter(
+              const SourceChapter(
                 title: 'Chapter 2',
                 chapterNumber: 2,
                 sourceOrder: 1,
               ),
             ],
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'en.src',
             mangaKey: 'manga-key',
             title: 'With Chapters',
           ),
           targetChapters: <PluginChapter>[
-            PluginChapter(chapterId: 'ch-1', title: 'Chapter 1', chapterNumber: 1),
-            PluginChapter(chapterId: 'ch-2', title: 'Chapter 2', chapterNumber: 2, sourceOrder: 1),
+            const PluginChapter(chapterId: 'ch-1', title: 'Chapter 1', chapterNumber: 1),
+            const PluginChapter(chapterId: 'ch-2', title: 'Chapter 2', chapterNumber: 2, sourceOrder: 1),
           ],
         ),
       ];
@@ -207,11 +207,11 @@ void main() {
 
     test('tracking is not migrated (target tracker IDs are unknown)', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'Tracked'),
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'en.src',
             mangaKey: 'tracked-key',
             title: 'Tracked',
@@ -227,23 +227,23 @@ void main() {
 
     test('categories are collected from all confirmed manga', () {
       final confirmations = <MangaMatchConfirmation>[
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'A'),
             categories: <String>['Favorites', 'Action'],
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'src',
             mangaKey: 'a',
             title: 'A',
           ),
         ),
-        const MangaMatchConfirmation(
+        MangaMatchConfirmation(
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'B'),
             categories: <String>['Action', 'Comedy'],
           ),
-          confirmedMatch: PluginSearchResult(
+          confirmedMatch: const PluginSearchResult(
             pluginSourceId: 'src',
             mangaKey: 'b',
             title: 'B',
