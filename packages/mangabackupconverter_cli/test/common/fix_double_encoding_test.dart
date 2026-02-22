@@ -34,6 +34,19 @@ void main() {
       check(fixDoubleEncoding('')).equals('');
     });
 
+    test('fixes double-encoded smart quotes', () {
+      // Right single quote U+2019 (') → UTF-8 bytes E2 80 99
+      // When interpreted as Latin-1: â + control chars
+      const original = '\u2019'; // '
+      final garbled = String.fromCharCodes(utf8.encode(original));
+      check(fixDoubleEncoding(garbled)).equals(original);
+
+      // Full phrase: "It's"
+      const phrase = 'It\u2019s';
+      final garbledPhrase = String.fromCharCodes(utf8.encode(phrase));
+      check(fixDoubleEncoding(garbledPhrase)).equals(phrase);
+    });
+
     test('returns accented Latin unchanged (invalid re-decode)', () {
       // 'café' has code units in 0x80-0xFF range but is not double-encoded.
       // Attempting utf8.decode on its code units would fail, so it's returned
