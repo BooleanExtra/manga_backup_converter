@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:mangabackupconverter_cli/src/runner.dart';
 
 Future<void> main(List<String> arguments) async {
+  stdout.write('Starting...\r');
   try {
     await runApp(arguments);
     // ignore: avoid_catches_without_on_clauses

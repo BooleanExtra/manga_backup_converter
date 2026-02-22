@@ -260,6 +260,10 @@ melos:
       run: melos run flutter_test:pkg --no-select
       description: Run all Flutter tests in this project.
 
+    cli:
+      run: dart run packages/mangabackupconverter_cli/bin/mangabackupconverter_cli.dart
+      description: Run the CLI directly (faster than `dart run mangabackupconverter_cli:mangabackupconverter_cli`).
+
     dart_test:
       run: melos run dart_test:pkg --no-select
       description: Run all Flutter tests in this project.
