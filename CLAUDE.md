@@ -64,7 +64,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/common/` — `Convertable` interface, shared mappers, extension repo index
 - `lib/src/formats/<format>/` — Format-specific backup models and parsers
 - `lib/src/pipeline/` — Migration pipeline API (BackupFormat, MangaSearchDetails, MigrationPipeline, plugin sources)
-- `lib/src/commands/` — CLI command implementations + interactive terminal UI (`terminal_ui.dart`, `migration_dashboard.dart`, `live_search_select.dart`, `manga_details_screen.dart`)
+- `lib/src/commands/` — CLI command implementations + interactive terminal UI (`terminal_ui.dart`, `migration_dashboard.dart`, `live_search_select.dart`, `manga_details_screen.dart`, `extension_select_screen.dart`)
 - CLI TUI screens use `TerminalContext` + `ScreenRegion` for all I/O, NOT `print()` — `print()` goes through Dart zones while `TerminalContext.write` does not, enabling zone-based log redirection in interactive mode
 - `TerminalContext` bundles KeyInput, ScreenRegion output, SIGINT handling, and terminal dimensions — screens receive it as a parameter, never create their own I/O objects
 - `TerminalContext.test()` constructor accepts `StringSink` + `Stream<List<int>>` for testable rendering/input
@@ -72,7 +72,9 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `win_console_stub.dart` / `win_console_native.dart` — conditional import (`dart.library.ffi`) enables `ENABLE_VIRTUAL_TERMINAL_INPUT` on Windows; `enableVirtualTerminalInput()` called in `KeyInput.start()`, `restoreConsoleMode()` in `dispose()`
 - `live_search_select.dart` uses `cursorIndex` for focus: `-1` = search bar focused, `>= 0` = result index; typing/backspace reset to `-1`; Space opens details when `>= 0`, types a space when `-1`
 - `KeyInput._controller` is broadcast — parent screens `cancel()` their subscription before opening a child screen, child creates its own subscription, then parent creates a fresh subscription on return (declare `keySub` as non-final). Do NOT use `pause()`/`resume()` (causes buffered event flood) or `suspend()`/`start()` (removed)
+- `convert_command.dart` interactive callbacks (e.g. `onSelectExtensions`, `onConfirmMatches`) follow a stop/restore pattern: `spinner.stop()` → `loadingRegion.clear()` → `context.showCursor()` → run TUI screen → `context.hideCursor()` → `spinner.start(...)`. Non-interactive mode uses auto-select fallbacks.
 - `convert_command.dart` uses `runZoned` with `ZoneSpecification.print` to redirect all `print()` (including from `aidoku_plugin_loader`) to a log file when interactive; `Zone.root.print()` escapes the zone for user-facing messages
+- `extension_entry.dart` — `ExtensionEntry` sealed class (`id`, `name`, `languages`); `AidokuExtensionEntry` adds `version`, `contentRating` (0=Safe, 1=Suggestive, 2=NSFW), `altNames`, `iconUrl`, `downloadUrl`, `baseUrl?`; `StubExtensionEntry` has only base fields
 - `lib/src/pipeline/plugin_source_stub.dart` — `StubPluginSource` implements `PluginSource`; must be updated when the interface changes
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata

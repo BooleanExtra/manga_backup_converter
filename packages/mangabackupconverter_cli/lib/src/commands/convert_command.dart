@@ -8,6 +8,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
+import 'package:mangabackupconverter_cli/src/commands/extension_select_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/migration_dashboard.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:path/path.dart' as p;
@@ -170,16 +171,37 @@ class ConvertCommand extends Command<void> {
 
           final pipeline = MigrationPipeline(
             repoUrls: repoUrls,
-            onSelectExtensions: (List<ExtensionEntry> extensions) async {
-              // TODO: Implement extension selection logic
-              // User will pick from list of extensions
-              // If none are correct, user can search in the terminal for the extension and then pick from the results
-              // Only the selected extensions should be downloaded and loaded into the pipeline
-              return [
-                extensions.firstWhereOrNull((ExtensionEntry extension) => extension.id == 'multi.mangadex') ??
-                    extensions.first,
-              ];
-            },
+            onSelectExtensions: interactive
+                ? (List<ExtensionEntry> extensions) async {
+                    spinner!.stop();
+                    loadingRegion!.clear();
+                    context!.showCursor();
+
+                    final List<ExtensionEntry>? result = await ExtensionSelectScreen().run(
+                      context: context,
+                      extensions: extensions,
+                    );
+
+                    if (result == null || result.isEmpty) {
+                      throw const MigrationException('No extensions selected.');
+                    }
+
+                    context.hideCursor();
+                    spinner.start(
+                      () => loadingRegion.render(
+                        ['${spinner.frame} $loadingMessage'],
+                      ),
+                    );
+                    return result;
+                  }
+                : (List<ExtensionEntry> extensions) async {
+                    return [
+                      extensions.firstWhereOrNull(
+                            (ExtensionEntry e) => e.id == 'multi.mangadex',
+                          ) ??
+                          extensions.first,
+                    ];
+                  },
             onConfirmMatches: onConfirmMatches,
             onProgress: (int current, int total, String message) {
               if (verbose) print('[$current/$total] $message');
