@@ -195,12 +195,13 @@ class ScreenRegion {
   int _renderedLines = 0;
 
   void render(List<String> lines) {
+    final int width = terminalWidth;
     if (_renderedLines > 0) {
       moveCursorUp(_renderedLines);
     }
     clearDown();
     for (final line in lines) {
-      stdout.writeln(line);
+      stdout.writeln(truncate(line, width));
     }
     _renderedLines = lines.length;
   }

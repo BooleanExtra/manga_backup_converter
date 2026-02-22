@@ -98,18 +98,23 @@ class MigrationDashboard {
     hideCursor();
 
     void render() {
-      final int maxVisible = _maxVisibleEntries();
+      final int budget = max(4, _terminalHeight() - 6);
+
       // Adjust scroll to keep cursor visible.
       if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
-      if (cursorIndex >= scrollOffset + maxVisible) {
-        scrollOffset = cursorIndex - maxVisible + 1;
+      while (cursorIndex >=
+          scrollOffset + _visibleCount(entries, scrollOffset, budget)) {
+        scrollOffset++;
       }
+
+      final int visibleEnd = min(
+        entries.length,
+        scrollOffset + _visibleCount(entries, scrollOffset, budget),
+      );
 
       final lines = <String>[];
       lines.add(bold('Migration'));
       lines.add('');
-
-      final int visibleEnd = min(entries.length, scrollOffset + maxVisible);
       if (scrollOffset > 0) {
         lines.add(dim('↑ more above'));
       }
@@ -230,19 +235,33 @@ class MigrationDashboard {
 // Rendering helpers
 // ---------------------------------------------------------------------------
 
-int _maxVisibleEntries() {
+int _terminalHeight() {
   try {
-    // Each entry takes ~4 lines, reserve 6 lines for header/footer.
-    return max(1, (stdout.terminalLines - 6) ~/ 4);
+    return stdout.terminalLines;
   } on StdoutException {
-    return 5;
+    return 20;
   }
 }
 
+int _entryLineCount(MigrationEntry entry) => 5;
+
+/// How many entries fit within [budget] lines starting from [scrollOffset].
+int _visibleCount(List<MigrationEntry> entries, int scrollOffset, int budget) {
+  var used = 0;
+  var count = 0;
+  for (var i = scrollOffset; i < entries.length; i++) {
+    final int h = _entryLineCount(entries[i]);
+    if (used + h > budget) break;
+    used += h;
+    count++;
+  }
+  return max(1, count);
+}
+
 List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner) {
-  final prefix = isCursor ? '❯ ' : '  ';
   final checkbox = entry.selected ? '◉' : '◯';
   final int width = terminalWidth;
+  const indent = '  ';
 
   final String sourceTitle = entry.source.details.title;
   final String sourceAuthors = <String>{
@@ -254,22 +273,27 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner) 
       [if (sourceAuthors.isNotEmpty) sourceAuthors, '$sourceChapters chapters'].join(' · ');
 
   final lines = <String>[];
-  lines.add(truncate('$prefix$checkbox ${bold(sourceTitle)}', width));
-  lines.add(truncate('$prefix  ${dim(sourceInfo)}', width));
-  lines.add('$prefix  ${dim('↓')}');
+  final cursorMark = isCursor ? '❯ ' : '  ';
+  lines.add(truncate('$cursorMark$checkbox ${bold(sourceTitle)}', width));
+  lines.add(truncate('$indent  ${dim(sourceInfo)}', width));
+  lines.add('$indent  ${dim('↓')}');
 
   if (entry.searching && entry.match == null) {
-    lines.add('$prefix  ${spinner.frame}');
+    lines.add('$indent  ${spinner.frame}');
+    lines.add(indent);
   } else if (entry.match != null) {
     final PluginSearchResult m = entry.match!;
     final String matchAuthors = m.authors.join(', ');
     final matchLine = '[${m.pluginSourceId}] ${m.title}';
-    lines.add(truncate('$prefix  ${green(matchLine)}', width));
+    lines.add(truncate('$indent  ${green(matchLine)}', width));
     if (matchAuthors.isNotEmpty) {
-      lines.add(truncate('$prefix  ${dim(matchAuthors)}', width));
+      lines.add(truncate('$indent  ${dim(matchAuthors)}', width));
+    } else {
+      lines.add(indent);
     }
   } else {
-    lines.add('$prefix  ${dim('No match found')}');
+    lines.add('$indent  ${dim('No match found')}');
+    lines.add(indent);
   }
 
   return lines;
