@@ -107,7 +107,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 - `TachiUpdateStrategy` uses `ValuesMode.indexed` — maps to/from `int` (0=alwaysUpdate, 1=onlyFetchOnce), not string names
 - `ConversionStrategy` (sealed): `DirectConversion` (Tachimanga↔Tachi) or `Migration` (all other pairs including same-format); no `Skip` — all pairs allow plugin migration
 - `MigrationPipeline.run()` accepts `forceMigration` — when true, `DirectConversion` pairs use plugin migration instead of direct conversion
-- `TachiBackup.toTachimangaBackup()` is stubbed (`UnimplementedError`) — direct Tachi→Tachimanga conversion not yet implemented
+- `TachiBackup.toTachimangaBackup()` flattens nested Tachi structures into normalized Tachimanga DB tables with autoincrement-style sequential PKs (matching Tachimanga's `IntIdTable`); history is collapsed to one row per manga (Tachimanga's History table has `UNIQUE(manga_id)`) — latest chapter by `lastRead` timestamp, summed `readDuration`; Source IDs are preserved as-is (Source table uses `BIGINT NOT NULL`, not autoincrement)
 
 ### Pipeline Data Flow
 
