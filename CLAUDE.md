@@ -121,7 +121,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 ### Pipeline Data Flow
 
 - `MigrationPipeline.onConfirmMatches` is a batch callback — receives all `SourceMangaData` plus `onSearch` (streaming) and `onFetchDetails` functions; UI handles searching and user interaction
-- `PluginSearchEvent` (sealed) streams search results per-plugin: `PluginSearchResults` / `PluginSearchError`
+- `PluginSearchEvent` (sealed) streams search results per-plugin: `PluginSearchStarted` (emitted before each plugin's search begins) / `PluginSearchResults` / `PluginSearchError`
 - `MangaMatchConfirmation.sourceManga` is `SourceMangaData` (not `MangaSearchDetails`) — carries chapters, history, tracking, categories from source backup
 - `ConvertableBackup.sourceMangaDataEntries` extracts `List<SourceMangaData>` from each backup format
 - `MangaMatchProposal.sourceManga` remains `MangaSearchDetails` (UI display only)

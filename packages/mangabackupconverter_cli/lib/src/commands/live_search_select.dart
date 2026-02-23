@@ -214,6 +214,8 @@ class LiveSearchSelect {
             lines.add('  [${entry.key}] ${spinner.frame}');
           } else if (entry.value.state == _PluginSearchState.failed) {
             lines.add('  ${yellow('[${entry.key}] ⚠ search failed')}');
+          } else if (entry.value.state == _PluginSearchState.done && entry.value.results.isEmpty) {
+            lines.add('  ${dim('[${entry.key}] no results')}');
           }
         }
       }
@@ -304,6 +306,11 @@ class LiveSearchSelect {
 
           case _DebounceFireEvent():
             startSearch(searchInput.query);
+            render();
+
+          case _PluginResultEvent(:final generation, event: PluginSearchStarted(:final pluginId)):
+            if (generation != searchGeneration) break;
+            pluginStatuses.putIfAbsent(pluginId, _PluginStatus.new);
             render();
 
           case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final results)):

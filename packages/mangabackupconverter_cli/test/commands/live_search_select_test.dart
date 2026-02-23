@@ -76,6 +76,67 @@ void main() {
       check(result).isNull();
     });
 
+    test('shows no results indicator for plugin with empty results', () async {
+      final output = StringBuffer();
+      final input = StreamController<List<int>>.broadcast();
+      addTearDown(input.close);
+
+      final context = TerminalContext.test(
+        output: output,
+        inputStream: input.stream,
+        height: 30,
+      );
+      addTearDown(context.dispose);
+
+      final liveSearch = LiveSearchSelect();
+      final Future<PluginSearchResult?> future = liveSearch.run(
+        context: context,
+        initialQuery: 'test',
+        onSearch: (String query) {
+          final controller = StreamController<PluginSearchEvent>();
+          scheduleMicrotask(() {
+            controller.add(PluginSearchStarted(pluginId: 'plugin1'));
+            controller.add(PluginSearchStarted(pluginId: 'plugin2'));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [
+                  const PluginSearchResult(
+                    pluginSourceId: 'plugin1',
+                    mangaKey: 'key1',
+                    title: 'Manga From Plugin1',
+                  ),
+                ],
+              ),
+            );
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin2',
+                results: [],
+              ),
+            );
+            controller.close();
+          });
+          return controller.stream;
+        },
+        onFetchDetails: (String pluginSourceId, String mangaKey) async => null,
+      );
+
+      // Wait for results to arrive and render.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      final rendered = output.toString();
+      check(rendered).contains('Manga From Plugin1');
+      check(rendered).contains('[plugin2] no results');
+
+      // Press Escape to close.
+      input.add([0x1b]);
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+
+      final PluginSearchResult? result = await future;
+      check(result).isNull();
+    });
+
     test('selecting a result from second plugin returns it', () async {
       final output = StringBuffer();
       final input = StreamController<List<int>>.broadcast();

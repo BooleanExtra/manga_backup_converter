@@ -236,6 +236,9 @@ class MigrationDashboard {
             context.hideCursor();
             render();
 
+          case _SearchResultEvent(event: PluginSearchStarted()):
+            break; // No-op — dashboard doesn't show per-plugin status.
+
           case _SearchResultEvent(:final entry, event: PluginSearchResults(:final results)):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.candidates.addAll(results);

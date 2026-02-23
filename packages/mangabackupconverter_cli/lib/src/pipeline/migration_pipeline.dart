@@ -18,6 +18,12 @@ import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 
 sealed class PluginSearchEvent {}
 
+class PluginSearchStarted extends PluginSearchEvent {
+  PluginSearchStarted({required this.pluginId});
+
+  final String pluginId;
+}
+
 class PluginSearchResults extends PluginSearchEvent {
   PluginSearchResults({required this.pluginId, required this.results});
 
@@ -165,6 +171,7 @@ class MigrationPipeline {
       return controller.stream;
     }
     for (final plugin in plugins) {
+      controller.add(PluginSearchStarted(pluginId: plugin.sourceId));
       plugin
           .search(query, 1)
           .then(
