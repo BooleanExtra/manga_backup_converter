@@ -50,7 +50,7 @@ class ConvertCommand extends Command<void> {
       ..addOption(
         'output',
         abbr: 'o',
-        help: 'Output file path. Defaults to <input>_converted.<ext> in the current directory.',
+        help: 'Output file path. Defaults to <input>_converted.<ext> next to the backup file.',
       )
       ..addOption(
         'log-file',
@@ -160,7 +160,7 @@ class ConvertCommand extends Command<void> {
     }
     final BackupFormat resolvedInputFormat = inputFormat;
 
-    final List<String> repoUrls = results.multiOption('repos');
+    List<String> repoUrls = results.multiOption('repos');
 
     final ConversionStrategy strategy = determineStrategy(resolvedInputFormat, outputFormat);
     var forceMigration = false;
@@ -188,9 +188,51 @@ class ConvertCommand extends Command<void> {
       }
     }
 
-    String outputPath =
-        results.option('output') ??
-        '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
+    // --- Repo URL prompt ---
+    final bool willMigrate = strategy is Migration || forceMigration;
+    if (interactive && willMigrate && repoUrls.isEmpty) {
+      final required = strategy is Migration;
+      final promptLabel = required
+          ? 'Extension repo URL: '
+          : 'Extension repo URL (Enter to skip): ';
+      String? repoInput;
+      do {
+        repoInput = await _readLine(context!, prompt: promptLabel);
+        if (repoInput == null) {
+          throw UsageException('Cancelled.', usage);
+        }
+        if (repoInput.isEmpty && required) {
+          context.write('A repo URL is required for migration.\r\n');
+        }
+      } while (repoInput.isEmpty && required);
+      if (repoInput.isNotEmpty) {
+        repoUrls = [repoInput];
+      }
+    }
+
+    // --- Output path ---
+    final String defaultOutputPath = p.join(
+      p.dirname(backupFile.path),
+      '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted'
+      '${outputFormat.extensions.first}',
+    );
+
+    String outputPath;
+    if (results.wasParsed('output')) {
+      outputPath = results.option('output')!;
+    } else if (interactive) {
+      final String? customPath = await _readLine(
+        context!,
+        prompt: 'Output path: ',
+        defaultValue: defaultOutputPath,
+      );
+      if (customPath == null) {
+        throw UsageException('Cancelled.', usage);
+      }
+      outputPath = customPath;
+    } else {
+      outputPath = defaultOutputPath;
+    }
 
     // If -o points to a directory, append default filename inside it.
     if (io.FileSystemEntity.isDirectorySync(outputPath) ||
@@ -407,3 +449,40 @@ Future<bool> _readYesNo(TerminalContext context) async {
 
 bool _isSameBackupFormat(BackupFormat source, BackupFormat target) =>
     source == target || (source is Tachiyomi && target is Tachiyomi);
+
+/// Reads a line of text from [KeyInput] in raw mode, echoing characters.
+/// Returns `null` on Escape; returns [defaultValue] (or `''`) on empty Enter.
+Future<String?> _readLine(
+  TerminalContext context, {
+  String prompt = '',
+  String? defaultValue,
+}) async {
+  final buf = StringBuffer();
+  final String defaultHint = defaultValue != null ? dim(' ($defaultValue)') : '';
+  context.write('$prompt$defaultHint');
+
+  await for (final KeyEvent key in context.keyInput.stream) {
+    switch (key) {
+      case Escape():
+        context.write('\r\n');
+        return null;
+      case Enter():
+        context.write('\r\n');
+        final String text = buf.toString().trim();
+        return text.isEmpty ? (defaultValue ?? '') : text;
+      case Backspace():
+        if (buf.isNotEmpty) {
+          context.write('\x08 \x08');
+          final s = buf.toString();
+          buf.clear();
+          buf.write(s.substring(0, s.length - 1));
+        }
+      case CharKey(:final char):
+        buf.write(char);
+        context.write(char);
+      default:
+        break;
+    }
+  }
+  return null;
+}
