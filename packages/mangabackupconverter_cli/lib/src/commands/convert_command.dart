@@ -8,9 +8,11 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
+import 'package:mangabackupconverter_cli/src/commands/caching_plugin_loader.dart';
 import 'package:mangabackupconverter_cli/src/commands/extension_select_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/format_select_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/migration_dashboard.dart';
+import 'package:mangabackupconverter_cli/src/commands/plugin_cache.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:path/path.dart' as p;
 
@@ -306,8 +308,14 @@ class ConvertCommand extends Command<void> {
             print('[VERBOSE] Non-interactive mode: auto-accepting best matches');
           }
 
+          final pluginCache = PluginCache();
+          final cachingLoader = CachingPluginLoader(
+            outputFormat.pluginLoader,
+            cache: pluginCache,
+          );
           final pipeline = MigrationPipeline(
             repoUrls: repoUrls,
+            pluginLoader: cachingLoader,
             onSelectExtensions: interactive
                 ? (List<ExtensionEntry> extensions) async {
                     spinner!.stop();

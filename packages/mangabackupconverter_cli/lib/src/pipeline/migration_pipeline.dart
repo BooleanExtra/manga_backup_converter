@@ -63,12 +63,14 @@ class MigrationPipeline {
     required this.onSelectExtensions,
     required this.onConfirmMatches,
     required this.onProgress,
+    this.pluginLoader,
   });
 
   final List<String> repoUrls;
   final Future<List<ExtensionEntry>> Function(List<ExtensionEntry> extensions) onSelectExtensions;
   final OnConfirmMatches onConfirmMatches;
   final void Function(int current, int total, String message) onProgress;
+  final PluginLoader? pluginLoader;
 
   Future<ConvertableBackup> run({
     required ConvertableBackup sourceBackup,
@@ -96,7 +98,7 @@ class MigrationPipeline {
     BackupFormat sourceFormat,
     BackupFormat targetFormat,
   ) async {
-    final PluginLoader loader = targetFormat.pluginLoader;
+    final PluginLoader loader = pluginLoader ?? targetFormat.pluginLoader;
 
     onProgress(0, 0, 'Fetching extension lists...');
     final List<ExtensionEntry> availableExtensions = await loader.fetchExtensionLists(

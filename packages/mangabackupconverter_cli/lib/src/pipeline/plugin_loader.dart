@@ -7,7 +7,7 @@ import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_aidoku.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source_stub.dart';
 
-sealed class PluginLoader {
+abstract class PluginLoader {
   const PluginLoader();
 
   Future<List<ExtensionEntry>> fetchExtensionLists(
@@ -19,6 +19,15 @@ sealed class PluginLoader {
     List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   });
+
+  /// Downloads raw plugin bytes for [entry]. Returns null if not downloadable.
+  Future<Uint8List?> downloadPluginBytes(ExtensionEntry entry) async => null;
+
+  /// Loads a plugin from raw [bytes] for [entry]. Returns null if not supported.
+  Future<PluginSource?> loadPluginFromBytes(
+    ExtensionEntry entry,
+    Uint8List bytes,
+  ) async => null;
 }
 
 class AidokuPluginLoader extends PluginLoader {
@@ -68,27 +77,62 @@ class AidokuPluginLoader extends PluginLoader {
     final plugins = <PluginSource>[];
     for (final (int i, ExtensionEntry extension_) in extensions.indexed) {
       final entry = extension_ as AidokuExtensionEntry;
-      onProgress?.call(i + 1, extensions.length, 'Loading plugin: ${entry.name}');
       try {
+        onProgress?.call(
+          i + 1,
+          extensions.length,
+          'Loading plugin: ${entry.name}',
+        );
         final http.Response response = await http.get(Uri.parse(entry.downloadUrl));
         if (response.statusCode != 200) {
           onProgress?.call(
             i + 1,
             extensions.length,
-            'Warning: failed to download ${entry.name}: HTTP ${response.statusCode}',
+            'Warning: failed to download ${entry.name}: '
+            'HTTP ${response.statusCode}',
           );
           continue;
         }
+        final bytes = Uint8List.fromList(response.bodyBytes);
         final AidokuPlugin plugin = await loader.loadAixBytes(
-          Uint8List.fromList(response.bodyBytes),
+          bytes,
           defaults: entry.baseUrl != null ? <String, dynamic>{'url': entry.baseUrl} : null,
         );
         plugins.add(AidokuPluginSource(plugin: plugin));
       } on Object catch (e) {
-        onProgress?.call(i + 1, extensions.length, 'Warning: failed to load ${entry.name}: $e');
+        onProgress?.call(
+          i + 1,
+          extensions.length,
+          'Warning: failed to load ${entry.name}: $e',
+        );
       }
     }
     return plugins;
+  }
+
+  @override
+  Future<Uint8List?> downloadPluginBytes(ExtensionEntry entry) async {
+    final aidokuEntry = entry as AidokuExtensionEntry;
+    final http.Response response =
+        await http.get(Uri.parse(aidokuEntry.downloadUrl));
+    if (response.statusCode != 200) return null;
+    return Uint8List.fromList(response.bodyBytes);
+  }
+
+  @override
+  Future<PluginSource?> loadPluginFromBytes(
+    ExtensionEntry entry,
+    Uint8List bytes,
+  ) async {
+    final aidokuEntry = entry as AidokuExtensionEntry;
+    final loader = AidokuPluginMemoryStore();
+    final AidokuPlugin plugin = await loader.loadAixBytes(
+      bytes,
+      defaults: aidokuEntry.baseUrl != null
+          ? <String, dynamic>{'url': aidokuEntry.baseUrl}
+          : null,
+    );
+    return AidokuPluginSource(plugin: plugin);
   }
 }
 

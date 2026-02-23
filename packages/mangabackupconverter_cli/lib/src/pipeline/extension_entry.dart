@@ -10,6 +10,8 @@ sealed class ExtensionEntry {
   final String id;
   final String name;
   final List<String> languages;
+
+  String get cacheKey;
 }
 
 class AidokuExtensionEntry extends ExtensionEntry {
@@ -45,6 +47,9 @@ class AidokuExtensionEntry extends ExtensionEntry {
   final int contentRating;
   final String? baseUrl;
   final List<String> altNames;
+
+  @override
+  String get cacheKey => '$id-v$version';
 }
 
 class StubExtensionEntry extends ExtensionEntry {
@@ -53,4 +58,7 @@ class StubExtensionEntry extends ExtensionEntry {
     required super.name,
     super.languages,
   });
+
+  @override
+  String get cacheKey => id;
 }
