@@ -156,15 +156,9 @@ class MigrationDashboard {
 
       lines.add('');
       final bool allDone = !entries.any((MigrationEntry e) => e.searching && e.selected);
-      final acceptHint = allDone
-          ? 'y to accept selections'
-          : 'searching... ${spinner.frame}';
+      final acceptHint = allDone ? 'y to accept selections' : 'searching... ${spinner.frame}';
       lines.add(
-        dim(acceptHint) +
-            dim(' · ') +
-            dim('Space to toggle') +
-            dim(' · ') +
-            dim('Enter to choose manually'),
+        dim(acceptHint) + dim(' · ') + dim('Space to toggle') + dim(' · ') + dim('Enter to choose manually'),
       );
 
       screen.render(lines);
@@ -234,7 +228,7 @@ class MigrationDashboard {
           case _SearchResultEvent(:final entry, event: PluginSearchResults(:final results)):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.candidates.addAll(results);
-            entry.match ??= _findBestMatch(entry.source.details.title, results);
+            entry.match = _findBestMatch(entry.source.details.title, entry.candidates);
             render();
 
           case _SearchResultEvent(:final entry, event: PluginSearchError(:final failure)):
@@ -361,8 +355,14 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
 PluginSearchResult? _findBestMatch(String sourceTitle, List<PluginSearchResult> results) {
   if (results.isEmpty) return null;
   final String lower = sourceTitle.toLowerCase();
+  PluginSearchResult? best;
+  var bestScore = -1.0;
   for (final r in results) {
-    if (r.title.toLowerCase() == lower) return r;
+    final double score = diceCoefficient(lower, r.title.toLowerCase());
+    if (score > bestScore) {
+      bestScore = score;
+      best = r;
+    }
   }
-  return results.first;
+  return best;
 }

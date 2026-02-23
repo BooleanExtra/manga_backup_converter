@@ -77,9 +77,16 @@ class LiveSearchSelect {
     spinner.start(() => events.add(_SpinnerTickEvent()));
 
     List<PluginSearchResult> allResults() {
+      final String lowerQuery = searchInput.query.toLowerCase();
       final results = <PluginSearchResult>[];
       for (final _PluginStatus status in pluginStatuses.values) {
-        results.addAll(status.results);
+        final List<PluginSearchResult> sorted = [...status.results]
+          ..sort((a, b) {
+            final double sa = diceCoefficient(lowerQuery, a.title.toLowerCase());
+            final double sb = diceCoefficient(lowerQuery, b.title.toLowerCase());
+            return sb.compareTo(sa);
+          });
+        results.addAll(sorted);
       }
       return results;
     }
@@ -118,15 +125,9 @@ class LiveSearchSelect {
       // Reserve ~8 lines for header, footer, input box.
       final int maxVisible = max(1, context.height - 8);
 
-      // Adjust scroll (only when cursor is in the results).
-      if (cursorIndex >= 0) {
-        if (results.isNotEmpty) {
-          cursorIndex = cursorIndex.clamp(0, results.length - 1);
-        }
-        if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
-        if (cursorIndex >= scrollOffset + maxVisible) {
-          scrollOffset = cursorIndex - maxVisible + 1;
-        }
+      // Clamp cursor to valid result range.
+      if (cursorIndex >= 0 && results.isNotEmpty) {
+        cursorIndex = cursorIndex.clamp(0, results.length - 1);
       }
 
       final lines = <String>[];
@@ -142,30 +143,68 @@ class LiveSearchSelect {
       }
       lines.add('│');
 
-      // Results.
-      if (results.isEmpty && !searching) {
-        lines.add('  ${dim('No results found')}');
-      } else {
-        if (scrollOffset > 0) lines.add(dim('↑ more above'));
-
-        final int visibleEnd = min(results.length, scrollOffset + maxVisible);
-        for (var i = scrollOffset; i < visibleEnd; i++) {
+      // Build display rows: group headers (non-selectable) + result rows.
+      // Each entry is (resultIndex or -1 for headers, display line).
+      final displayRows = <(int, String)>[];
+      {
+        String? lastPlugin;
+        for (var i = 0; i < results.length; i++) {
           final PluginSearchResult r = results[i];
-          final isCursor = i == cursorIndex;
-          final prefix = isCursor ? '❯ ' : '  ';
+          if (r.pluginSourceId != lastPlugin) {
+            lastPlugin = r.pluginSourceId;
+            final String header = dim('── $lastPlugin ──');
+            displayRows.add((-1, header));
+          }
           final String detailAuthors = <String>{
             ...r.authors,
             if (r.details != null) ...r.details!.artists,
           }.join(', ');
           final authorStr = detailAuthors.isNotEmpty ? ' · $detailAuthors' : '';
           final String? url = r.details?.url;
-          final String titleText =
-              url != null ? hyperlink(green(r.title), url) : r.title;
-          final line = '[${r.pluginSourceId}] $titleText$authorStr';
-          lines.add(truncate('$prefix$line', width));
+          final String titleText = url != null ? hyperlink(green(r.title), url) : r.title;
+          displayRows.add((i, '$titleText$authorStr'));
+        }
+      }
+
+      // Map cursorIndex (result index) to display row index for scroll.
+      int cursorDisplayRow() {
+        for (var d = 0; d < displayRows.length; d++) {
+          if (displayRows[d].$1 == cursorIndex) return d;
+        }
+        return 0;
+      }
+
+      // Adjust scroll offset in display-row space.
+      var displayScroll = scrollOffset;
+      if (cursorIndex >= 0 && displayRows.isNotEmpty) {
+        final int cdr = cursorDisplayRow();
+        if (cdr < displayScroll) displayScroll = cdr;
+        if (cdr >= displayScroll + maxVisible) {
+          displayScroll = cdr - maxVisible + 1;
+        }
+      }
+      scrollOffset = displayScroll;
+
+      // Results.
+      if (results.isEmpty && !searching) {
+        lines.add('  ${dim('No results found')}');
+      } else {
+        if (displayScroll > 0) lines.add(dim('↑ more above'));
+
+        final int visibleEnd = min(displayRows.length, displayScroll + maxVisible);
+        for (var d = displayScroll; d < visibleEnd; d++) {
+          final (int resultIdx, String text) = displayRows[d];
+          if (resultIdx < 0) {
+            // Group header — not selectable.
+            lines.add('  $text');
+          } else {
+            final isCursor = resultIdx == cursorIndex;
+            final prefix = isCursor ? '❯ ' : '  ';
+            lines.add(truncate('$prefix$text', width));
+          }
         }
 
-        if (visibleEnd < results.length) lines.add(dim('↓ more below'));
+        if (visibleEnd < displayRows.length) lines.add(dim('↓ more below'));
       }
 
       // Per-plugin spinners / errors (suppress when showing cached results).

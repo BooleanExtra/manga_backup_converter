@@ -284,6 +284,29 @@ class SearchInputState {
 }
 
 // ---------------------------------------------------------------------------
+// String similarity (Dice coefficient on character bigrams)
+// ---------------------------------------------------------------------------
+
+/// Computes a normalized similarity score (0.0–1.0) between [a] and [b] using
+/// the Sørensen–Dice coefficient on character bigrams. Uses grapheme clusters
+/// for correct CJK / emoji handling.
+double diceCoefficient(String a, String b) {
+  if (a == b) return 1.0;
+  final List<String> aChars = a.characters.toList();
+  final List<String> bChars = b.characters.toList();
+  if (aChars.length < 2 || bChars.length < 2) return 0.0;
+  final aBigrams = <String>{};
+  for (var i = 0; i < aChars.length - 1; i++) {
+    aBigrams.add('${aChars[i]}${aChars[i + 1]}');
+  }
+  var matches = 0;
+  for (var i = 0; i < bChars.length - 1; i++) {
+    if (aBigrams.remove('${bChars[i]}${bChars[i + 1]}')) matches++;
+  }
+  return 2 * matches / (aChars.length - 1 + bChars.length - 1);
+}
+
+// ---------------------------------------------------------------------------
 // Spinner
 // ---------------------------------------------------------------------------
 
