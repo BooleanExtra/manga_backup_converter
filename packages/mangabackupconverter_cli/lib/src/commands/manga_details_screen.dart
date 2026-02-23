@@ -84,7 +84,11 @@ class MangaDetailsScreen {
           final num = ch.chapterNumber != null ? 'Ch. ${_formatChNum(ch.chapterNumber!)}' : '';
           final String title = ch.title ?? '';
           final scanlator = ch.scanlator != null ? ' [${ch.scanlator}]' : '';
-          lines.add(truncate('   $num $title${dim(scanlator)}', width));
+          final String chapterText = '$num $title'.trimRight();
+          final String linkedChapter = ch.url != null
+              ? hyperlink(chapterText, ch.url!)
+              : chapterText;
+          lines.add(truncate('   $linkedChapter${dim(scanlator)}', width));
         }
 
         if (visibleEnd < sortedChapters.length) lines.add(dim('↓ more below'));
