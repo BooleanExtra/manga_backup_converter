@@ -51,8 +51,7 @@ class CachingPluginLoader extends PluginLoader {
             'Loading plugin: ${entry.name} (cached)',
           );
         }
-        final PluginSource? plugin =
-            await _inner.loadPluginFromBytes(entry, bytes);
+        final PluginSource? plugin = await _inner.loadPluginFromBytes(entry, bytes);
         if (plugin != null) {
           plugins.add(plugin);
         } else {

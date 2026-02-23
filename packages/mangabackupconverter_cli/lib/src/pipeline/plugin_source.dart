@@ -77,11 +77,8 @@ class PluginChapter implements ChapterData {
     this.dateUploaded,
     this.url,
     this.sourceOrder = 0,
-  })  : chapterNumber = chapterNumber == null
-            ? null
-            : normalizeChapterNumber(chapterNumber),
-        volumeNumber =
-            volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
+  }) : chapterNumber = chapterNumber == null ? null : normalizeChapterNumber(chapterNumber),
+       volumeNumber = volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
 
   @override
   final String chapterId;

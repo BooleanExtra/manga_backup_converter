@@ -50,9 +50,7 @@ class MangaDetailsScreen {
 
     // Build static header lines (used by both render() and key handler).
     final headerLines = <String>[];
-    final String titleText = details.url != null
-        ? hyperlink(green(details.title), details.url!)
-        : bold(details.title);
+    final String titleText = details.url != null ? hyperlink(green(details.title), details.url!) : bold(details.title);
     headerLines.add(titleText);
 
     final String authors = <String>{...details.authors, ...details.artists}.join(', ');
@@ -61,7 +59,9 @@ class MangaDetailsScreen {
 
     if (details.description != null && details.description!.isNotEmpty) {
       headerLines.add('');
-      headerLines.addAll(wordWrap(details.description!, max(20, width - 4)).map((String l) => '  ${renderMarkdown(l)}'));
+      headerLines.addAll(
+        wordWrap(details.description!, max(20, width - 4)).map((String l) => '  ${renderMarkdown(l)}'),
+      );
     }
 
     if (sortedChapters.isNotEmpty) {
@@ -92,9 +92,7 @@ class MangaDetailsScreen {
           final scanlator = ch.scanlator != null ? ' [${ch.scanlator}]' : '';
           final lang = ch.language != null ? ' ${ch.language}' : '';
           final String chapterText = '$num $title'.trimRight();
-          final String linkedChapter = ch.url != null
-              ? hyperlink(chapterText, ch.url!)
-              : chapterText;
+          final String linkedChapter = ch.url != null ? hyperlink(chapterText, ch.url!) : chapterText;
           lines.add(truncate('   $linkedChapter${dim('$scanlator$lang')}', width));
         }
 

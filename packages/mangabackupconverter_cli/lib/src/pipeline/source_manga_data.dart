@@ -41,11 +41,8 @@ class SourceChapter {
     this.lastPageRead = 0,
     this.dateUploaded,
     this.sourceOrder = 0,
-  })  : chapterNumber = chapterNumber == null
-            ? null
-            : normalizeChapterNumber(chapterNumber),
-        volumeNumber =
-            volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
+  }) : chapterNumber = chapterNumber == null ? null : normalizeChapterNumber(chapterNumber),
+       volumeNumber = volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
 
   final String title;
   final double? chapterNumber;
@@ -67,9 +64,7 @@ class SourceHistoryEntry {
     this.completed = false,
     this.progress,
     this.total,
-  }) : chapterNumber = chapterNumber == null
-            ? null
-            : normalizeChapterNumber(chapterNumber);
+  }) : chapterNumber = chapterNumber == null ? null : normalizeChapterNumber(chapterNumber);
 
   final String chapterTitle;
   final double? chapterNumber;
@@ -92,9 +87,7 @@ class SourceTrackingEntry {
     this.status,
     this.startedReadingDate,
     this.finishedReadingDate,
-  }) : lastChapterRead = lastChapterRead == null
-            ? null
-            : normalizeChapterNumber(lastChapterRead);
+  }) : lastChapterRead = lastChapterRead == null ? null : normalizeChapterNumber(lastChapterRead);
 
   final int syncId;
   final int? libraryId;

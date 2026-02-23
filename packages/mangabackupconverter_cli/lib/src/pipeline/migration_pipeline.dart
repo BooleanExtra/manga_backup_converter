@@ -80,9 +80,8 @@ class MigrationPipeline {
   }) async {
     final ConversionStrategy strategy = determineStrategy(sourceFormat, targetFormat);
     return switch (strategy) {
-      DirectConversion() => forceMigration
-          ? _runMigration(sourceBackup, sourceFormat, targetFormat)
-          : _directConvert(sourceBackup),
+      DirectConversion() =>
+        forceMigration ? _runMigration(sourceBackup, sourceFormat, targetFormat) : _directConvert(sourceBackup),
       Migration() => _runMigration(sourceBackup, sourceFormat, targetFormat),
     };
   }
