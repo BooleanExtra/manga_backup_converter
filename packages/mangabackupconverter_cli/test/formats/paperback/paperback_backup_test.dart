@@ -138,6 +138,58 @@ void main() {
         check(fileNames).contains('__SOURCE_MANGA_V4');
         check(fileNames).contains('__CHAPTER_PROGRESS_MARKER_V4-1');
       });
+
+      test('round-trips through toData and fromData', () async {
+        final sourceMangaRef = PaperbackBackupItemReference(
+          type: PaperbackBackupItemType.sourceMangaV4,
+          id: 'sm1',
+        );
+
+        final backup = PaperbackBackup(
+          name: 'roundtrip',
+          mangaInfo: <PaperbackBackupMangaInfo>[
+            PaperbackBackupMangaInfo(
+              id: 'info1',
+              titles: <String>['Test Manga'],
+              covers: <String>[],
+              image: 'img.jpg',
+              desc: 'Desc',
+              author: 'Auth',
+              artist: 'Art',
+              hentai: false,
+              status: 'Ongoing',
+              tags: <PaperbackBackupMangaTag>[],
+              additionalInfo: PaperbackBackupMangaAdditionalInfo(),
+            ),
+          ],
+          chapters: <PaperbackBackupChapter>[
+            PaperbackBackupChapter(
+              volume: 1,
+              langCode: 'en',
+              group: 'Scanlator',
+              sortingIndex: 0,
+              id: 'ch1',
+              chapNum: 1,
+              chapterId: 'ch1',
+              time: epoch,
+              isNew: false,
+              name: 'Chapter 1',
+              sourceManga: sourceMangaRef,
+            ),
+          ],
+        );
+
+        final Uint8List bytes = await backup.toData();
+        final PaperbackBackup restored = PaperbackBackup.fromData(bytes, name: 'roundtrip');
+
+        check(restored.name).equals('roundtrip');
+        check(restored.mangaInfo).isNotNull().length.equals(1);
+        check(restored.mangaInfo!.first.id).equals('info1');
+        check(restored.mangaInfo!.first.titles.first).equals('Test Manga');
+        check(restored.chapters).isNotNull().length.equals(1);
+        check(restored.chapters!.first.id).equals('ch1');
+        check(restored.chapters!.first.name).equals('Chapter 1');
+      });
     });
 
     group('mangaSearchEntries', () {

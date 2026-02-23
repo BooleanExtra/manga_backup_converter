@@ -17,6 +17,13 @@ import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 
 part 'paperback_backup.mapper.dart';
 
+Map<String, dynamic> _toIdMap<T>(List<T>? items, String Function(T) idOf) {
+  if (items == null) return const <String, dynamic>{};
+  return <String, dynamic>{
+    for (final T item in items) idOf(item): (item as dynamic).toMap(),
+  };
+}
+
 @MappableClass(includeCustomMappers: <MapperBase<Object>>[SecondsEpochDateTimeMapper()])
 class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup {
   final List<PaperbackBackupChapterProgressMarker>? chapterProgressMarker;
@@ -166,11 +173,26 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
   Future<Uint8List> toData() async {
     final archive = Archive();
 
-    archive.addFile(ArchiveFile.string('__CHAPTER_PROGRESS_MARKER_V4-1', jsonEncode(chapterProgressMarker)));
-    archive.addFile(ArchiveFile.string('__CHAPTER_V4', jsonEncode(chapters)));
-    archive.addFile(ArchiveFile.string('__LIBRARY_MANGA_V4', jsonEncode(libraryManga)));
-    archive.addFile(ArchiveFile.string('__MANGA_INFO_V4', jsonEncode(mangaInfo)));
-    archive.addFile(ArchiveFile.string('__SOURCE_MANGA_V4', jsonEncode(sourceManga)));
+    archive.addFile(ArchiveFile.string(
+      '__CHAPTER_PROGRESS_MARKER_V4-1',
+      jsonEncode(_toIdMap(chapterProgressMarker, (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id)),
+    ));
+    archive.addFile(ArchiveFile.string(
+      '__CHAPTER_V4',
+      jsonEncode(_toIdMap(chapters, (PaperbackBackupChapter c) => c.id)),
+    ));
+    archive.addFile(ArchiveFile.string(
+      '__LIBRARY_MANGA_V4',
+      jsonEncode(_toIdMap(libraryManga, (PaperbackBackupLibraryManga l) => l.id)),
+    ));
+    archive.addFile(ArchiveFile.string(
+      '__MANGA_INFO_V4',
+      jsonEncode(_toIdMap(mangaInfo, (PaperbackBackupMangaInfo m) => m.id)),
+    ));
+    archive.addFile(ArchiveFile.string(
+      '__SOURCE_MANGA_V4',
+      jsonEncode(_toIdMap(sourceManga, (PaperbackBackupSourceManga sm) => sm.id)),
+    ));
     return ZipEncoder().encodeBytes(archive);
   }
 

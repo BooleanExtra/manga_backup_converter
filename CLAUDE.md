@@ -147,6 +147,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - Base: `solid_lints` via `packages/app_lints`
 - `prefer_single_quotes`, `strict-inference: true`, `dart analyze --fatal-infos`
 - `omit_obvious_local_variable_types` + `specify_nonobvious_local_variable_types` + `avoid_multiple_declarations_per_line` — use `dart fix --apply <directory>` after writing new code (only accepts one path argument)
+- `avoid_catching_errors` lint: don't use `on UnimplementedError catch` in tests — use `on Object catch (e)` + `check(e).isA<UnimplementedError>()` instead
 - `directives_ordering` — all `package:` imports must be in one alphabetically-sorted section; conditional imports (`if (dart.library.ffi)`) count as their primary URI for sorting
 - **Directional UI required**: Use `EdgeInsetsDirectional`, `PositionedDirectional`, `AlignmentDirectional`, `BorderDirectional`, `BorderRadiusDirectional` instead of their non-directional counterparts
 - CI enforces formatting via `melos run verify_format`
@@ -156,6 +157,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - **State**: Riverpod + riverpod_generator + hooks_riverpod
 - **Models**: freezed (immutable), dart_mappable (serialization)
 - dart_mappable `with ...Mappable` mixin prevents const constructors — use non-const when constructing these objects in tests
+- dart_mappable custom mapper `encode()`/`decode()` return `dynamic` — use `final dynamic result = mapper.encode(...)` to satisfy `specify_nonobvious_local_variable_types`
 - **Navigation**: go_router
 - **Theme**: flex_color_scheme
 - **Testing**: mocktail, patrol (integration tests)
