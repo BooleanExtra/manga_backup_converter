@@ -12,6 +12,7 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
 - `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (native wasmer FFI + web WebAssembly)
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
+- `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS)
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
 
@@ -188,8 +189,18 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
   - Decoding postcard results must happen at the consumer level (`aidoku_plugin_io.dart` / `aidoku_plugin_web.dart`), not inside `HostStore`
   - Native isolate forwards raw bytes via `WasmPartialResultMsg`
 - `_encodeString` in `aidoku_host.dart` returns **raw UTF-8** (`utf8.encode`), NOT postcard-encoded — aidoku-rs SDK reads host strings via `String::from_utf8(buffer)` which expects no length prefix
-- `html::attr` supports `abs:` prefix (Jsoup convention) — strips prefix, gets raw attribute, resolves against `baseUri`; all HTML resources (`HtmlDocumentResource`, `HtmlNodeListResource`) carry `baseUri` propagated from `net::html` (request URL) through child resource creation
-- `html::parse_fragment` returns `HtmlDocumentResource` (not `HtmlNodeListResource`) so CSS selectors work; Dart `html` package does NOT support `:contains()` pseudo-selector (Jsoup-specific)
+- `html::attr` supports `abs:` prefix (Jsoup convention) — uses `element.absUrl(key)`; `HtmlElementResource`/`HtmlElementsResource` in `host_store.dart` hold `Element`/`Elements` objects; `baseUri` propagates via `Element.baseUri`
+- `html::parse_fragment` returns `HtmlElementResource` (wrapping a `Document`) so CSS selectors work
+- **jsoup OO API** (`packages/jsoup/`): public classes `Jsoup`, `Document extends Element`, `Element extends Node`, `Elements extends Iterable<Element>`, `Node` (base class), `TextNode extends Node`; `NativeHtmlParser` is internal (not exported from barrel `package:jsoup/jsoup.dart`)
+- `Jsoup.parser` is `@internal`; `Element.fromHandle`/`Elements.fromHandle`/`Document.fromHandle` are `@internal` — external code uses `Jsoup()`, `jsoup.parse()`, `element.select()` etc.
+- `Elements` is always native-backed; public constructor `Elements(Jsoup, List<Element>)` creates via `createElements`; for empty fallback use `Elements.fromHandle(parser, parser.createElements(const <int>[]))`
+- `Node` base class: `nodeName`, `parentNode`, `childNode(index)`, `childNodes`, `childNodeSize`, `outerHtml`, `remove()`
+- `TextNode extends Node`: `text` (get/set), `wholeText`, `isBlank`; `Element.textNodes` returns `List<TextNode>`, `Element.childNodes` returns `List<Node>` (mixed)
+- `Jsoup` factory methods: `element(tag)`, `textNode(text)`, `elements(list)` — preferred entry points alongside `parse`/`parseFragment`
+- Node type discrimination in `jsoup_parser.dart`: `_addNode()` checks `nodeName() == "#text"` then casts with `.as(TextNode.type)` or `.as(Element.type)`
+- JNI inherited methods (not in jnigen bindings): use raw FFI `ProtectedJniExtensions.lookup` pattern — see `_callBooleanMethodWithObject` for `List.add`, `_callIntMethod` for `List.size`
+- `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
+- `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a JS Web Worker (`lib/src/web/wasm_worker_js.dart`) with sync XHR for HTTP
   - Sync XHR is required because WASM host imports must return synchronously; allowed in workers (only deprecated on main thread)

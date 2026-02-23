@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
+import 'package:jsoup/jsoup.dart' as jsoup;
 
 /// Resource types held in the host-side store.
 sealed class HostResource {}
@@ -24,17 +25,14 @@ class HttpRequestResource extends HostResource {
   final Map<String, String> responseHeaders = <String, String>{};
 }
 
-class HtmlDocumentResource extends HostResource {
-  HtmlDocumentResource(this.document, {this.baseUri = ''});
-  final Object document; // html.Document or html.Element
-  /// The base URI provided when this document was parsed (html::parse).
-  final String baseUri;
+class HtmlElementResource extends HostResource {
+  HtmlElementResource(this.element);
+  final jsoup.Element element;
 }
 
-class HtmlNodeListResource extends HostResource {
-  HtmlNodeListResource(this.nodes, {this.baseUri = ''});
-  final List<Object> nodes; // List of html.Element
-  final String baseUri;
+class HtmlElementsResource extends HostResource {
+  HtmlElementsResource(this.elements);
+  final jsoup.Elements elements;
 }
 
 class CanvasContextResource extends HostResource {

@@ -180,7 +180,7 @@ void main() {
         );
 
         final Uint8List bytes = await backup.toData();
-        final PaperbackBackup restored = PaperbackBackup.fromData(bytes, name: 'roundtrip');
+        final restored = PaperbackBackup.fromData(bytes, name: 'roundtrip');
 
         check(restored.name).equals('roundtrip');
         check(restored.mangaInfo).isNotNull().length.equals(1);

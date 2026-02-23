@@ -34,7 +34,7 @@ void main() {
       tearDownAll(() => plugin.dispose());
 
       tearDown(() {
-        final warnings = plugin.drainWarnings();
+        final List<String> warnings = plugin.drainWarnings();
         check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
             .isEmpty();
       });

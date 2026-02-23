@@ -8,6 +8,7 @@ import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
+import 'package:jsoup/jsoup.dart' as jsoup;
 
 // ---------------------------------------------------------------------------
 // Init data (sent to the isolate at spawn time)
@@ -346,6 +347,11 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     if (message.startsWith('[CB]')) callErrors.add(message);
   }
 
+  // Each WASM isolate gets its own JsoupParser instance. The JVM is
+  // process-global (Jni.spawn on main thread), and GlobalJniEnv is
+  // thread-safe, so JClass.forName() etc. work from any isolate.
+  final htmlParser = jsoup.Jsoup();
+
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
@@ -355,6 +361,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     onRateLimitSet: (int permits, int periodMs) {
       init.asyncPort.send(WasmRateLimitMsg(permits: permits, periodMs: periodMs));
     },
+    htmlParser: htmlParser,
     onLog: sendLog,
   );
 
