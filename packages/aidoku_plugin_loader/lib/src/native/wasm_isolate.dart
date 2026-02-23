@@ -340,8 +340,10 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
 
   // Lazy runner proxy (breaks circular dep between imports and runner).
   final lazyRunner = _LazyRunner();
+  final List<String> callErrors = [];
   void sendLog(String message) {
     init.asyncPort.send(WasmLogMsg(message: message, stackTrace: ''));
+    if (message.startsWith('[CB]')) callErrors.add(message);
   }
 
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
@@ -372,7 +374,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   // Process commands until shutdown.
   await for (final Object? cmd in cmdPort) {
     if (cmd is WasmShutdownCmd) break;
-    _processCmd(cmd!, runner, store, init.asyncPort);
+    _processCmd(cmd!, runner, store, init.asyncPort, callErrors);
   }
 
   store.dispose();
@@ -388,10 +390,12 @@ void _processCmd(
   WasmRunner runner,
   HostStore store,
   SendPort logPort,
+  List<String> callErrors,
 ) {
   if (cmd is WasmSearchCmd) {
     Uint8List? result;
     String? error;
+    callErrors.clear();
     final int queryRid = store.addBytes(cmd.queryBytes);
     final int filtersRid = store.addBytes(cmd.filtersBytes);
     try {
@@ -404,12 +408,15 @@ void _processCmd(
       store.remove(queryRid);
       store.remove(filtersRid);
     }
-    cmd.replyPort.send(error ?? result);
+    final warnings = List<String>.of(callErrors);
+    callErrors.clear();
+    cmd.replyPort.send((error ?? result, warnings));
     return;
   }
 
   if (cmd is WasmMangaDetailsCmd) {
     Uint8List? result;
+    callErrors.clear();
     // v2 ABI: get_manga_update(manga_descriptor_rid, needs_details, needs_chapters)
     // manga_descriptor is postcard-encoded Manga struct with the key set.
     final int mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
@@ -423,7 +430,9 @@ void _processCmd(
     } finally {
       store.remove(mangaRid);
     }
-    cmd.replyPort.send(result);
+    final warnings = List<String>.of(callErrors);
+    callErrors.clear();
+    cmd.replyPort.send((result, warnings));
     return;
   }
 

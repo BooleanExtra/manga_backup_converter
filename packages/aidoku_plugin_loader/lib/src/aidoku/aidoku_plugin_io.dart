@@ -46,6 +46,8 @@ class AidokuPlugin {
 
   final StreamController<HomePartialResult> _partialResultsController = StreamController<HomePartialResult>.broadcast();
 
+  final List<String> _recentWarnings = [];
+
   RateLimiter? _rateLimiter;
 
   final SourceInfo sourceInfo;
@@ -62,6 +64,14 @@ class AidokuPlugin {
       .map((FilterInfo f) => f.toDefaultFilterValue())
       .whereType<FilterValue>()
       .toList();
+
+  /// Returns and clears any host-level warnings accumulated during recent
+  /// WASM calls (e.g. unsupported CSS selectors, HTML parse failures).
+  List<String> drainWarnings() {
+    final result = List<String>.of(_recentWarnings);
+    _recentWarnings.clear();
+    return result;
+  }
 
   // Shared HTTP client reused for the plugin's lifetime.
   static final http.Client _httpClient = http.Client();
@@ -242,8 +252,9 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final Object? data = await port.first;
+    final (Object? data, List<String> warnings) = await port.first as (Object?, List<String>);
     port.close();
+    _recentWarnings.addAll(warnings);
     if (data is String) throw Exception(data);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
@@ -263,8 +274,9 @@ class AidokuPlugin {
         includeChapters: includeChapters,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final (Uint8List? data, List<String> warnings) = await port.first as (Uint8List?, List<String>);
     port.close();
+    _recentWarnings.addAll(warnings);
     if (data == null) return null;
     try {
       return decodeManga(PostcardReader(data));

@@ -352,14 +352,17 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
         if (d != null) ...d.artists,
       }.join(', ');
       final String? chapterCount = d != null ? '${m.chapters.length} chapters' : null;
+      final String errorHint =
+          entry.failures.isNotEmpty ? yellow('\u26A0 ${entry.failures.length} error(s)') : '';
       final String infoLine = [
         m.pluginSourceId,
         if (matchAuthors.isNotEmpty) matchAuthors,
         if (chapterCount != null) chapterCount,
-      ].join(' · ');
+        if (errorHint.isNotEmpty) errorHint,
+      ].join(' \u00B7 ');
       lines.add(infoLine.isNotEmpty ? truncate('$indent  ${dim(infoLine)}', width) : indent);
     } else if (entry.failures.isNotEmpty && entry.candidates.isEmpty) {
-      lines.add('$indent  ${yellow('⚠ search failed')}');
+      lines.add('$indent  ${yellow('\u26A0 ${entry.failures.length} plugin error(s) (see log)')}');
       lines.add(indent);
     } else {
       lines.add('$indent  ${dim('No match found')}');

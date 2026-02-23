@@ -15,6 +15,7 @@ class AidokuPluginSource implements PluginSource {
   @override
   Future<PluginSearchPageResult> search(String query, int page) async {
     final MangaPageResult result = await _plugin.searchManga(query, page);
+    final List<String> warnings = _plugin.drainWarnings();
     return PluginSearchPageResult(
       results: result.manga
           .map(
@@ -28,6 +29,7 @@ class AidokuPluginSource implements PluginSource {
           )
           .toList(),
       hasNextPage: result.hasNextPage,
+      warnings: warnings,
     );
   }
 

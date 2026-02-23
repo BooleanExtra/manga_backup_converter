@@ -205,6 +205,16 @@ class MigrationPipeline {
               }
               if (!cancelled && !controller.isClosed) {
                 controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
+                if (result.warnings.isNotEmpty) {
+                  controller.add(
+                    PluginSearchError(
+                      failure: PluginSearchFailure(
+                        pluginId: plugin.sourceId,
+                        error: '${result.warnings.length} host error(s)',
+                      ),
+                    ),
+                  );
+                }
               }
             },
             onError: (Object e) {

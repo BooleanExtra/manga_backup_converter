@@ -51,6 +51,11 @@ class AidokuPlugin {
       .whereType<FilterValue>()
       .toList();
 
+  /// Returns and clears any host-level warnings accumulated during recent
+  /// WASM calls. Web worker does not currently capture host errors, so this
+  /// always returns an empty list.
+  List<String> drainWarnings() => const <String>[];
+
   /// Pending call completers, keyed by call ID.
   final Map<int, Completer<_WorkerResult>> _pending = <int, Completer<_WorkerResult>>{};
   int _nextCallId = 1;

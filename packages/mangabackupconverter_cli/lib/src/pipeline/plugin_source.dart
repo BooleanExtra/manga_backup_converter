@@ -30,10 +30,15 @@ class PluginSearchResult {
 }
 
 class PluginSearchPageResult {
-  const PluginSearchPageResult({required this.results, required this.hasNextPage});
+  const PluginSearchPageResult({
+    required this.results,
+    required this.hasNextPage,
+    this.warnings = const <String>[],
+  });
 
   final List<PluginSearchResult> results;
   final bool hasNextPage;
+  final List<String> warnings;
 }
 
 enum MangaPublishingStatus { unknown, ongoing, completed, cancelled, hiatus }
