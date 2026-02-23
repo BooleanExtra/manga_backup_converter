@@ -202,7 +202,12 @@ class MigrationDashboard {
             unawaited(events.close());
 
           case _KeyEvent(key: Enter()):
-            // Pause dashboard, open live search for this manga.
+            // Cancel active search to free WASM plugins for the live search.
+            await activeSub?.cancel();
+            activeSub = null;
+            final interrupted = activeEntry;
+            activeEntry = null;
+
             await keySub.cancel();
             screen.clear();
 
@@ -218,6 +223,12 @@ class MigrationDashboard {
               entry.match = result;
               entry.selected = true;
             }
+
+            // Re-queue interrupted search if it didn't complete.
+            if (interrupted != null && interrupted.selected && interrupted.match == null) {
+              pendingRetries.insert(0, interrupted);
+            }
+            if (activeEntry == null) startNextSearch();
 
             keySub = context.keyInput.stream.listen(
               (KeyEvent key) => events.add(_KeyEvent(key)),

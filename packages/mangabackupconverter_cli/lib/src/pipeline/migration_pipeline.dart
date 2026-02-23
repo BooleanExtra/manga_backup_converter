@@ -155,6 +155,10 @@ class MigrationPipeline {
   /// before being emitted, so consumers receive URL and chapter data upfront.
   Stream<PluginSearchEvent> _streamSearch(String query, List<PluginSource> plugins) {
     final controller = StreamController<PluginSearchEvent>();
+    var cancelled = false;
+    controller.onCancel = () {
+      cancelled = true;
+    };
     int remaining = plugins.length;
     if (remaining == 0) {
       controller.close();
@@ -167,6 +171,7 @@ class MigrationPipeline {
             (PluginSearchPageResult result) async {
               final enriched = <PluginSearchResult>[];
               for (final PluginSearchResult r in result.results) {
+                if (cancelled) break;
                 try {
                   final (PluginMangaDetails, List<PluginChapter>)? detailResult = await plugin.getMangaWithChapters(
                     r.mangaKey,
@@ -190,12 +195,12 @@ class MigrationPipeline {
                 }
                 enriched.add(r);
               }
-              if (!controller.isClosed) {
+              if (!cancelled && !controller.isClosed) {
                 controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
               }
             },
             onError: (Object e) {
-              if (!controller.isClosed) {
+              if (!cancelled && !controller.isClosed) {
                 controller.add(
                   PluginSearchError(
                     failure: PluginSearchFailure(pluginId: plugin.sourceId, error: e),
@@ -206,7 +211,7 @@ class MigrationPipeline {
           )
           .whenComplete(() {
             remaining--;
-            if (remaining == 0) controller.close();
+            if (remaining == 0 && !controller.isClosed) controller.close();
           });
     }
     return controller.stream;
