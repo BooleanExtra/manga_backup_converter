@@ -366,9 +366,9 @@ class WasmRunner {
               _setDefaultVal(results.ref.data, resultKind);
             }
           }
-        } on Exception catch (e, st) {
+        } on Object catch (e, st) {
           if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
-          onLog?.call('[CB] exception in host import $debugName: $e\n$st');
+          onLog?.call('[CB] ${e is Error ? 'error' : 'exception'} in host import $debugName: $e\n$st');
         }
         return ffi.nullptr;
       },
