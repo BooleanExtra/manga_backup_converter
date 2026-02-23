@@ -163,9 +163,14 @@ class ExtensionSelectScreen {
           case _KeyEvent(key: Escape()):
             unawaited(events.close());
 
-          case _KeyEvent(key: Enter()):
+          case _KeyEvent(key: Enter()) when cursorIndex >= 0:
             if (selected.isNotEmpty) {
               result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
+            } else {
+              final List<ExtensionEntry> results = filtered();
+              if (cursorIndex < results.length) {
+                result = [results[cursorIndex]];
+              }
             }
             unawaited(events.close());
 

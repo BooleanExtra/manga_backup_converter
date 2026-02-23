@@ -72,6 +72,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `TerminalContext.test()` constructor accepts `StringSink` + `Stream<List<int>>` for testable rendering/input
 - `TerminalContext.dispose()` cancels the underlying `stdin` broadcast subscription (`_stdinSub`) — without this the Dart event loop hangs after the CLI finishes
 - `MangaDetailsScreen.run()` returns `Future<bool>` — `true` = Enter (confirm selection), `false` = Escape (go back); `LiveSearchSelect` closes the event loop on `true` (same as direct Enter on a result)
+- `ExtensionSelectScreen` Enter behavior: `when cursorIndex >= 0` guard — Enter does nothing while search bar is focused; with extensions toggled returns toggled set, without toggled auto-selects highlighted entry
 - CLI TUI hyperlinks: wrap text in `green()` then `hyperlink()` — `green(text)` not `green(bold(text))` to match the dashboard's color; bold brightens green to a different shade
 - `win_console_stub.dart` / `win_console_native.dart` — conditional import (`dart.library.ffi`) enables `ENABLE_VIRTUAL_TERMINAL_INPUT` on Windows; `enableVirtualTerminalInput()` called in `KeyInput.start()`, `restoreConsoleMode()` in `dispose()`
 - `SearchInputState` in `terminal_ui.dart` owns query text, cursor position, focus state (`focused`), key routing (`tryHandleKey` → `SearchKeyResult`), and box rendering (`renderBox`) — callers pass unhandled keys through and check the result enum; `renderSearchInput()` renders the ANSI inverse block cursor
