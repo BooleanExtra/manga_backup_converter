@@ -70,7 +70,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - CLI TUI screens use `TerminalContext` + `ScreenRegion` for all I/O, NOT `print()` — `print()` goes through Dart zones while `TerminalContext.write` does not, enabling zone-based log redirection in interactive mode
 - `TerminalContext` bundles KeyInput, ScreenRegion output, SIGINT handling, and terminal dimensions — screens receive it as a parameter, never create their own I/O objects
 - `TerminalContext` is single-use per process — `dispose()` cancels `_stdinSub` (the broadcast source), permanently killing stdin; never create multiple sequential contexts, use one for the entire interactive session
-- `readLineSync()` must be called BEFORE creating `TerminalContext` — once the context puts stdin in raw mode (`lineMode=false`), `readLineSync()` won't work; for y/N prompts after context creation, read raw keys from `KeyInput` instead
+- `readLineSync()` must be called BEFORE creating `TerminalContext` — once the context puts stdin in raw mode (`lineMode=false`), `readLineSync()` won't work; use `_readYesNo` for y/N prompts and `_readLine` (in `convert_command.dart`) for free-text input after context creation — both read raw keys from `KeyInput`
 - Raw mode output: when `TerminalContext` is active, use `\r\n` (not `\n`) for newlines in `context.write()` calls — raw mode disables automatic CR insertion
 - `TerminalContext.test()` constructor accepts `StringSink` + `Stream<List<int>>` for testable rendering/input
 - `TerminalContext.dispose()` cancels the underlying `stdin` broadcast subscription (`_stdinSub`) — without this the Dart event loop hangs after the CLI finishes
