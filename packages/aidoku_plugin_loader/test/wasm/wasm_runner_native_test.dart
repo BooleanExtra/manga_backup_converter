@@ -41,8 +41,7 @@ void main() {
     () {
       test('loads .aix and returns source info', () async {
         final Uint8List aixBytes = fixture.readAsBytesSync();
-        final loader = AidokuPluginMemoryStore();
-        final AidokuPlugin plugin = await loader.loadAixBytes(aixBytes);
+        final AidokuPlugin plugin = await AidokuPlugin.fromAix(aixBytes);
         check(plugin.sourceInfo.id).equals('multi.mangadex');
         check(plugin.sourceInfo.name).equals('MangaDex');
         check(plugin.sourceInfo.languages).contains('en');

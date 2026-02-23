@@ -73,7 +73,6 @@ class AidokuPluginLoader extends PluginLoader {
     List<ExtensionEntry> extensions, {
     void Function(int current, int total, String message)? onProgress,
   }) async {
-    final loader = AidokuPluginMemoryStore();
     final plugins = <PluginSource>[];
     for (final (int i, ExtensionEntry extension_) in extensions.indexed) {
       final entry = extension_ as AidokuExtensionEntry;
@@ -94,7 +93,7 @@ class AidokuPluginLoader extends PluginLoader {
           continue;
         }
         final bytes = Uint8List.fromList(response.bodyBytes);
-        final AidokuPlugin plugin = await loader.loadAixBytes(
+        final AidokuPlugin plugin = await AidokuPlugin.fromAix(
           bytes,
           defaults: entry.baseUrl != null ? <String, dynamic>{'url': entry.baseUrl} : null,
         );
@@ -125,8 +124,7 @@ class AidokuPluginLoader extends PluginLoader {
     Uint8List bytes,
   ) async {
     final aidokuEntry = entry as AidokuExtensionEntry;
-    final loader = AidokuPluginMemoryStore();
-    final AidokuPlugin plugin = await loader.loadAixBytes(
+    final AidokuPlugin plugin = await AidokuPlugin.fromAix(
       bytes,
       defaults: aidokuEntry.baseUrl != null
           ? <String, dynamic>{'url': aidokuEntry.baseUrl}

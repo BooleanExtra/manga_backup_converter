@@ -47,7 +47,6 @@ void main() {
       late AidokuPlugin plugin;
 
       setUpAll(() async {
-        final loader = AidokuPluginMemoryStore();
         // MangaDex's is_logged_in() calls defaults_get_json::<TokenResponse>("login").
         // The SDK reads stored bytes as postcard<String> (the JSON text), then
         // serde_json::from_str::<TokenResponse>. TokenResponse has Option<String> fields,
@@ -58,7 +57,7 @@ void main() {
         final loginPostcard = Uint8List(1 + jsonBytes.length)
           ..[0] = jsonBytes.length
           ..setAll(1, jsonBytes);
-        plugin = await loader.loadAixBytes(
+        plugin = await AidokuPlugin.fromAix(
           fixture.readAsBytesSync(),
           defaults: <String, dynamic>{'login': loginPostcard},
         );
