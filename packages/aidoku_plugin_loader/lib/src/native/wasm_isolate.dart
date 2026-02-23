@@ -65,7 +65,7 @@ class WasmSearchCmd {
   final Uint8List queryBytes;
   final int page;
   final Uint8List filtersBytes;
-  final SendPort replyPort; // replies with Uint8List? (postcard) or null
+  final SendPort replyPort; // replies with Uint8List? (postcard), null, or String (error)
 }
 
 class WasmMangaDetailsCmd {
@@ -386,19 +386,20 @@ void _processCmd(
 ) {
   if (cmd is WasmSearchCmd) {
     Uint8List? result;
+    String? error;
     final int queryRid = store.addBytes(cmd.queryBytes);
     final int filtersRid = store.addBytes(cmd.filtersBytes);
     try {
       final int ptr = (runner.call('get_search_manga_list', <Object?>[queryRid, cmd.page, filtersRid]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
-    } on Exception catch (e, st) {
-      result = null;
-      logPort.send(WasmLogMsg(message: 'get_search_manga_list: $e', stackTrace: st.toString()));
+    } on Object catch (e, st) {
+      error = 'get_search_manga_list: $e';
+      logPort.send(WasmLogMsg(message: error, stackTrace: st.toString()));
     } finally {
       store.remove(queryRid);
       store.remove(filtersRid);
     }
-    cmd.replyPort.send(result);
+    cmd.replyPort.send(error ?? result);
     return;
   }
 

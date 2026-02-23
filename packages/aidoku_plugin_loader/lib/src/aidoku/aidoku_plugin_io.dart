@@ -226,6 +226,8 @@ class AidokuPlugin {
   // ---------------------------------------------------------------------------
 
   /// Search for manga on this source. [page] is 1-based.
+  ///
+  /// Throws [Exception] if the WASM plugin encounters a fatal error (e.g. trap).
   Future<MangaPageResult> searchManga(
     String query,
     int page, {
@@ -240,11 +242,12 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final data = await port.first as Uint8List?;
+    final Object? data = await port.first;
     port.close();
+    if (data is String) throw Exception(data);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
-      return decodeMangaPageResult(PostcardReader(data));
+      return decodeMangaPageResult(PostcardReader(data as Uint8List));
     } on Object {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
