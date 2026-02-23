@@ -1455,7 +1455,6 @@ class StringSetPreferenceValue extends $pb.GeneratedMessage {
   static StringSetPreferenceValue? _defaultInstance;
 }
 
-/// BackupSerializer.kt
 /// BackupSource.kt
 class BrokenBackupSource extends $pb.GeneratedMessage {
   factory BrokenBackupSource({

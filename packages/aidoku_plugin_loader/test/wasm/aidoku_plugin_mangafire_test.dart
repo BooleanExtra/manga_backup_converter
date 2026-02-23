@@ -14,13 +14,12 @@ import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 
 bool _hasWasmer() {
-  final String home =
-      Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
+  final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
   final lib = Platform.isWindows
       ? '$home\\.wasmer\\lib\\wasmer.dll'
       : Platform.isMacOS
-          ? '$home/.wasmer/lib/libwasmer.dylib'
-          : '$home/.wasmer/lib/libwasmer.so';
+      ? '$home/.wasmer/lib/libwasmer.dylib'
+      : '$home/.wasmer/lib/libwasmer.so';
   return File(lib).existsSync();
 }
 
@@ -35,8 +34,8 @@ void main() {
     skip: !fixture.existsSync()
         ? 'Missing test/aidoku/fixtures/multi.mangafire-v5.aix'
         : !_hasWasmer()
-            ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-            : null,
+        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
+        : null,
     () {
       late AidokuPlugin plugin;
 

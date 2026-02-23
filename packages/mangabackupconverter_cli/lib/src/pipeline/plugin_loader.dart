@@ -112,8 +112,7 @@ class AidokuPluginLoader extends PluginLoader {
   @override
   Future<Uint8List?> downloadPluginBytes(ExtensionEntry entry) async {
     final aidokuEntry = entry as AidokuExtensionEntry;
-    final http.Response response =
-        await http.get(Uri.parse(aidokuEntry.downloadUrl));
+    final http.Response response = await http.get(Uri.parse(aidokuEntry.downloadUrl));
     if (response.statusCode != 200) return null;
     return Uint8List.fromList(response.bodyBytes);
   }
@@ -126,9 +125,7 @@ class AidokuPluginLoader extends PluginLoader {
     final aidokuEntry = entry as AidokuExtensionEntry;
     final AidokuPlugin plugin = await AidokuPlugin.fromAix(
       bytes,
-      defaults: aidokuEntry.baseUrl != null
-          ? <String, dynamic>{'url': aidokuEntry.baseUrl}
-          : null,
+      defaults: aidokuEntry.baseUrl != null ? <String, dynamic>{'url': aidokuEntry.baseUrl} : null,
     );
     return AidokuPluginSource(plugin: plugin);
   }

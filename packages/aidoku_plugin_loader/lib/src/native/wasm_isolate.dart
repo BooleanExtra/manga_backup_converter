@@ -409,7 +409,8 @@ void _processCmd(
     // manga_descriptor is postcard-encoded Manga struct with the key set.
     final int mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
     try {
-      final int ptr = (runner.call('get_manga_update', <Object?>[mangaRid, 1, if (cmd.includeChapters) 1 else 0]) as num).toInt();
+      final int ptr =
+          (runner.call('get_manga_update', <Object?>[mangaRid, 1, if (cmd.includeChapters) 1 else 0]) as num).toInt();
       if (ptr > 0) result = _readResult(runner, ptr);
     } on Object catch (e, st) {
       result = null;

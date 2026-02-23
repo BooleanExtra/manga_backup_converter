@@ -6,19 +6,19 @@ import 'package:path/path.dart' as p;
 
 class PluginCache {
   PluginCache({Directory? cacheDir})
-      : cacheDir = cacheDir ??
-            Directory(
-              p.join(
-                Directory.systemTemp.path,
-                'manga_backup_converter',
-                'plugins',
-              ),
-            );
+    : cacheDir =
+          cacheDir ??
+          Directory(
+            p.join(
+              Directory.systemTemp.path,
+              'manga_backup_converter',
+              'plugins',
+            ),
+          );
 
   final Directory cacheDir;
 
-  File cacheFileFor(ExtensionEntry entry) =>
-      File(p.join(cacheDir.path, entry.cacheKey));
+  File cacheFileFor(ExtensionEntry entry) => File(p.join(cacheDir.path, entry.cacheKey));
 
   Uint8List? get(ExtensionEntry entry) {
     final File file = cacheFileFor(entry);
