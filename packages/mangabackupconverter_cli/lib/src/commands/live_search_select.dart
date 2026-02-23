@@ -186,26 +186,22 @@ class LiveSearchSelect {
       scrollOffset = displayScroll;
 
       // Results.
-      if (results.isEmpty && !searching) {
-        lines.add('  ${dim('No results found')}');
-      } else {
-        if (displayScroll > 0) lines.add(dim('↑ more above'));
+      if (displayScroll > 0) lines.add(dim('↑ more above'));
 
-        final int visibleEnd = min(displayRows.length, displayScroll + maxVisible);
-        for (var d = displayScroll; d < visibleEnd; d++) {
-          final (int resultIdx, String text) = displayRows[d];
-          if (resultIdx < 0) {
-            // Group header — not selectable.
-            lines.add('  $text');
-          } else {
-            final isCursor = resultIdx == cursorIndex;
-            final prefix = isCursor ? '❯ ' : '  ';
-            lines.add(truncate('$prefix$text', width));
-          }
+      final int visibleEnd = min(displayRows.length, displayScroll + maxVisible);
+      for (var d = displayScroll; d < visibleEnd; d++) {
+        final (int resultIdx, String text) = displayRows[d];
+        if (resultIdx < 0) {
+          // Group header — not selectable.
+          lines.add('  $text');
+        } else {
+          final isCursor = resultIdx == cursorIndex;
+          final prefix = isCursor ? '❯ ' : '  ';
+          lines.add(truncate('$prefix$text', width));
         }
-
-        if (visibleEnd < displayRows.length) lines.add(dim('↓ more below'));
       }
+
+      if (visibleEnd < displayRows.length) lines.add(dim('↓ more below'));
 
       // Per-plugin spinners / errors (suppress when showing cached results).
       if (!usingCached) {
