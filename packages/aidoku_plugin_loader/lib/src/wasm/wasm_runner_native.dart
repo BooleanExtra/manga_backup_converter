@@ -1,7 +1,6 @@
 // lib/src/wasm/wasm_runner_native.dart
 // ignore_for_file: avoid_dynamic_calls
 import 'dart:ffi' as ffi;
-import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_ffi.dart';
@@ -10,10 +9,9 @@ import 'package:ffi/ffi.dart' show calloc;
 
 /// Native WASM runner backed by the wasmer runtime (https://wasmer.io).
 ///
-/// Requires wasmer to be installed. Library is loaded from:
-///   Linux:   ~/.wasmer/lib/libwasmer.so
-///   macOS:   ~/.wasmer/lib/libwasmer.dylib
-///   Windows: %USERPROFILE%\.wasmer\lib\wasmer.dll
+/// The wasmer library is bundled automatically via Dart code assets
+/// (see `hook/build.dart`). The `@Native`-annotated FFI functions in
+/// `wasm_bindings_generated.dart` resolve at runtime without manual install.
 ///
 /// **HTTP limitation**: WASM host imports are synchronous. The net::* imports
 /// are stubbed (return -1) because async HTTP cannot run inside a synchronous
@@ -57,8 +55,7 @@ class WasmRunner {
     Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
     void Function(String message)? onLog,
   }) async {
-    final ffi.DynamicLibrary lib = _openWasmer();
-    final bindings = WasmerBindings(lib);
+    final bindings = WasmerBindings();
 
     final ffi.Pointer<WasmEngineT> engine = bindings.engineNew();
     final ffi.Pointer<WasmStoreT> store = bindings.storeNew(engine);
@@ -192,8 +189,7 @@ class WasmRunner {
   static List<({String module, String name, int resultKind})> listImports(
     Uint8List wasmBytes,
   ) {
-    final ffi.DynamicLibrary lib = _openWasmer();
-    final bindings = WasmerBindings(lib);
+    final bindings = WasmerBindings();
     final ffi.Pointer<WasmEngineT> engine = bindings.engineNew();
     final ffi.Pointer<WasmStoreT> store = bindings.storeNew(engine);
 
@@ -303,29 +299,6 @@ class WasmRunner {
   // ---------------------------------------------------------------------------
   // Private helpers
   // ---------------------------------------------------------------------------
-
-  static ffi.DynamicLibrary _openWasmer() {
-    final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-    final String path;
-    if (Platform.isLinux || Platform.isAndroid) {
-      path = '$home/.wasmer/lib/libwasmer.so';
-    } else if (Platform.isMacOS || Platform.isIOS) {
-      path = '$home/.wasmer/lib/libwasmer.dylib';
-    } else if (Platform.isWindows) {
-      path = r'$home\.wasmer\lib\wasmer.dll'.replaceFirst(r'$home', home);
-    } else {
-      throw UnsupportedError('Native WASM not supported on ${Platform.operatingSystem}');
-    }
-    try {
-      return ffi.DynamicLibrary.open(path);
-    } catch (e) {
-      throw WasmRuntimeException(
-        'Cannot load wasmer from $path.\n'
-        'Install wasmer: curl https://get.wasmer.io -sSfL | sh\n'
-        'Error: $e',
-      );
-    }
-  }
 
   /// Create a NativeCallable for a single host import.
   /// All WASM imports share the same C callback type:
