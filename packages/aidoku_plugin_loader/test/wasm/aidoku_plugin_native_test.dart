@@ -65,6 +65,12 @@ void main() {
 
       tearDownAll(() => plugin.dispose());
 
+      tearDown(() {
+        final warnings = plugin.drainWarnings();
+        check(because: 'Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
+            .isEmpty();
+      });
+
       group('searchManga', () {
         test('empty query returns non-empty results', () async {
           final MangaPageResult result = await plugin.searchManga('', 1);
