@@ -201,7 +201,7 @@ void main() {
     test('ArrowDown cycles through completions', () {
       final state = PathInputState(p.join(basePath, 'back'));
       state.handleKey(Tab()); // resolve completions
-      final firstText = state.text;
+      final String firstText = state.text;
       check(state.completionIndex).equals(0);
 
       check(state.handleKey(ArrowDown())).equals(PathInputResult.tabCompleted);
@@ -251,7 +251,7 @@ void main() {
       check(state.completions.length).equals(4);
 
       // Find the subdir entry and navigate to it.
-      final subdirIdx = state.completions.indexWhere(
+      final int subdirIdx = state.completions.indexWhere(
         (c) => c.endsWith('subdir${p.separator}'),
       );
       check(subdirIdx).isGreaterOrEqual(0);
@@ -262,7 +262,7 @@ void main() {
       check(state.text).endsWith('subdir${p.separator}');
 
       // ArrowRight should accept and auto-enter the directory.
-      final result = state.handleKey(ArrowRight());
+      final PathInputResult result = state.handleKey(ArrowRight());
       check(result).equals(PathInputResult.tabCompleted);
       // Should now show contents of subdir.
       check(state.text).contains('nested.txt');
