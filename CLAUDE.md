@@ -69,6 +69,9 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/commands/` — CLI command implementations + interactive terminal UI (`terminal_ui.dart`, `migration_dashboard.dart`, `live_search_select.dart`, `manga_details_screen.dart`, `extension_select_screen.dart`)
 - CLI TUI screens use `TerminalContext` + `ScreenRegion` for all I/O, NOT `print()` — `print()` goes through Dart zones while `TerminalContext.write` does not, enabling zone-based log redirection in interactive mode
 - `TerminalContext` bundles KeyInput, ScreenRegion output, SIGINT handling, and terminal dimensions — screens receive it as a parameter, never create their own I/O objects
+- `TerminalContext` is single-use per process — `dispose()` cancels `_stdinSub` (the broadcast source), permanently killing stdin; never create multiple sequential contexts, use one for the entire interactive session
+- `readLineSync()` must be called BEFORE creating `TerminalContext` — once the context puts stdin in raw mode (`lineMode=false`), `readLineSync()` won't work; for y/N prompts after context creation, read raw keys from `KeyInput` instead
+- Raw mode output: when `TerminalContext` is active, use `\r\n` (not `\n`) for newlines in `context.write()` calls — raw mode disables automatic CR insertion
 - `TerminalContext.test()` constructor accepts `StringSink` + `Stream<List<int>>` for testable rendering/input
 - `TerminalContext.dispose()` cancels the underlying `stdin` broadcast subscription (`_stdinSub`) — without this the Dart event loop hangs after the CLI finishes
 - `MangaDetailsScreen.run()` returns `Future<bool>` — `true` = Enter (confirm selection), `false` = Escape (go back); `LiveSearchSelect` closes the event loop on `true` (same as direct Enter on a result)

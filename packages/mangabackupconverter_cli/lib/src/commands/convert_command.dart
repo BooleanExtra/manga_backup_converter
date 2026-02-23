@@ -9,6 +9,7 @@ import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:mangabackupconverter_cli/src/commands/extension_select_screen.dart';
+import 'package:mangabackupconverter_cli/src/commands/format_select_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/migration_dashboard.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:path/path.dart' as p;
@@ -28,14 +29,12 @@ class ConvertCommand extends Command<void> {
         'backup',
         abbr: 'b',
         help: 'A backup file to convert to the output format.',
-        mandatory: true,
       )
       ..addOption(
         'output-format',
         abbr: 'f',
         help: 'The output backup format.',
         allowed: _aliases,
-        mandatory: true,
       )
       ..addOption(
         'input-format',
@@ -66,13 +65,65 @@ class ConvertCommand extends Command<void> {
   Future<void> run() async {
     final ArgResults results = argResults!;
     final bool verbose = results.flag('verbose');
+    final bool interactive = hasTerminal;
 
-    final backupFile = io.File(results.option('backup')!);
+    // --- Backup file path ---
+    String? backupPath = results.option('backup');
+    if (backupPath == null) {
+      if (!interactive) {
+        throw UsageException('--backup is required in non-interactive mode.', usage);
+      }
+      io.stdout.write('Backup file path: ');
+      backupPath = io.stdin.readLineSync()?.trim();
+      if (backupPath == null || backupPath.isEmpty) {
+        throw UsageException('No backup file path provided.', usage);
+      }
+    }
+
+    final backupFile = io.File(backupPath);
     if (!backupFile.existsSync()) {
       throw UsageException('Backup file does not exist: ${backupFile.path}', usage);
     }
 
-    final BackupFormat outputFormat = BackupFormat.byName(results.option('output-format')!);
+    // Single TerminalContext for the entire interactive session — stdin's
+    // broadcast subscription is killed on dispose(), so we must not create
+    // multiple short-lived contexts.
+    final TerminalContext? context = interactive ? TerminalContext() : null;
+
+    try {
+      return await _runWithContext(results, verbose, interactive, backupFile, context);
+    } finally {
+      context?.showCursor();
+      context?.dispose();
+    }
+  }
+
+  Future<void> _runWithContext(
+    ArgResults results,
+    bool verbose,
+    bool interactive,
+    io.File backupFile,
+    TerminalContext? context,
+  ) async {
+    // --- Output format ---
+    final String? outputFormatName = results.option('output-format');
+    final BackupFormat outputFormat;
+    if (outputFormatName == null) {
+      if (!interactive) {
+        throw UsageException('--output-format is required in non-interactive mode.', usage);
+      }
+      final BackupFormat? picked = await FormatSelectScreen().run(
+        context: context!,
+        formats: BackupFormat.values,
+        title: 'Select output format',
+      );
+      if (picked == null) {
+        throw UsageException('No output format selected.', usage);
+      }
+      outputFormat = picked;
+    } else {
+      outputFormat = BackupFormat.byName(outputFormatName);
+    }
 
     if (outputFormat.backupBuilder is UnimplementedBackupBuilder) {
       throw UsageException(
@@ -81,6 +132,7 @@ class ConvertCommand extends Command<void> {
       );
     }
 
+    // --- Input format ---
     final String backupFileExtension = p.extension(backupFile.uri.toString());
 
     BackupFormat? inputFormat = BackupFormat.byExtension(backupFileExtension);
@@ -89,39 +141,50 @@ class ConvertCommand extends Command<void> {
     }
 
     if (inputFormat == null) {
-      throw UsageException(
-        'Unsupported file extension: "$backupFileExtension". Use --input-format to specify the input format.',
-        usage,
+      if (!interactive) {
+        throw UsageException(
+          'Unsupported file extension: "$backupFileExtension". Use --input-format to specify.',
+          usage,
+        );
+      }
+      context!.write('Could not detect format from extension "$backupFileExtension".\r\n');
+      final BackupFormat? picked = await FormatSelectScreen().run(
+        context: context,
+        formats: BackupFormat.values,
+        title: 'Select input format',
       );
+      if (picked == null) {
+        throw UsageException('No input format selected.', usage);
+      }
+      inputFormat = picked;
     }
     final BackupFormat resolvedInputFormat = inputFormat;
 
     final List<String> repoUrls = results.multiOption('repos');
-    final bool interactive = hasTerminal;
 
     final ConversionStrategy strategy = determineStrategy(resolvedInputFormat, outputFormat);
     var forceMigration = false;
 
     if (interactive) {
       if (strategy is DirectConversion) {
-        io.stdout.writeln(
+        context!.write(
           '${resolvedInputFormat.alias} can be converted directly to '
-          '${outputFormat.alias} without plugins.',
+          '${outputFormat.alias} without plugins.\r\n'
+          'Use plugin migration instead? [y/N] ',
         );
-        io.stdout.write('Use plugin migration instead? [y/N] ');
-        final response = io.stdin.readLineSync()?.trim().toLowerCase();
-        forceMigration = response == 'y' || response == 'yes';
+        forceMigration = await _readYesNo(context);
+        context.write('\r\n');
       } else if (_isSameBackupFormat(resolvedInputFormat, outputFormat)) {
-        io.stdout.writeln(
+        context!.write(
           'Source (${resolvedInputFormat.alias}) and target (${outputFormat.alias}) '
           'use the same backup format. '
-          'This will re-migrate all manga through plugins.',
+          'This will re-migrate all manga through plugins.\r\n'
+          'Continue? [y/N] ',
         );
-        io.stdout.write('Continue? [y/N] ');
-        final response = io.stdin.readLineSync()?.trim().toLowerCase();
-        if (response != 'y' && response != 'yes') {
+        if (!await _readYesNo(context)) {
           throw UsageException('Aborted.', usage);
         }
+        context.write('\r\n');
       }
     }
 
@@ -142,8 +205,6 @@ class ConvertCommand extends Command<void> {
     final String logPath = results.option('log-file') ?? (interactive ? '${p.withoutExtension(outputPath)}.log' : '');
     final io.IOSink? logSink = logPath.isNotEmpty ? io.File(logPath).openWrite() : null;
     var logSinkMounted = logSink != null;
-
-    final TerminalContext? context = interactive ? TerminalContext() : null;
 
     // Loading indicator for interactive startup.
     final Spinner? spinner = interactive ? Spinner() : null;
@@ -285,8 +346,6 @@ class ConvertCommand extends Command<void> {
     } finally {
       spinner?.stop();
       loadingRegion?.clear();
-      context?.showCursor();
-      context?.dispose();
       logSinkMounted = false;
       await logSink?.flush();
       await logSink?.close();
@@ -330,6 +389,20 @@ Future<List<MangaMatchConfirmation>> _autoAcceptMatches(
     confirmations.add(MangaMatchConfirmation(sourceManga: entry, confirmedMatch: best));
   }
   return confirmations;
+}
+
+/// Reads a single y/n keypress from [KeyInput] in raw mode.
+Future<bool> _readYesNo(TerminalContext context) async {
+  await for (final KeyEvent key in context.keyInput.stream) {
+    if (key is CharKey) {
+      final String ch = key.char.toLowerCase();
+      if (ch == 'y') return true;
+      if (ch == 'n') return false;
+    }
+    if (key is Enter) return false; // default = No
+    if (key is Escape) return false;
+  }
+  return false;
 }
 
 bool _isSameBackupFormat(BackupFormat source, BackupFormat target) =>
