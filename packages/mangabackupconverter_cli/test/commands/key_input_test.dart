@@ -205,6 +205,26 @@ void main() {
       keyInput.dispose();
     });
 
+    test('0x09 produces Tab event', () async {
+      final controller = StreamController<List<int>>();
+      addTearDown(controller.close);
+
+      final keyInput = KeyInput.withStream(controller.stream.asBroadcastStream());
+      keyInput.start();
+
+      final events = <KeyEvent>[];
+      final StreamSubscription<KeyEvent> sub = keyInput.stream.listen(events.add);
+      addTearDown(sub.cancel);
+
+      controller.add([0x09]); // Tab
+      await Future<void>.delayed(Duration.zero);
+
+      check(events).length.equals(1);
+      check(events.first).isA<Tab>();
+
+      keyInput.dispose();
+    });
+
     test('lone ESC after timeout produces Escape event', () async {
       final controller = StreamController<List<int>>();
       addTearDown(controller.close);

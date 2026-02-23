@@ -181,7 +181,7 @@ class LiveSearchSelect {
 
       lines.add('');
       lines.add(
-        dim('type to search · ←→ move cursor · ↑↓ navigate · Space details · Enter select · Esc back'),
+        dim('type to search · ←→ move cursor · ↑↓ navigate · Tab details · Enter select · Esc back'),
       );
 
       screen.render(lines);
@@ -217,7 +217,7 @@ class LiveSearchSelect {
             searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: Space()) when cursorIndex >= 0:
+          case _KeyEvent(key: Tab()) when cursorIndex >= 0:
             // Show details for highlighted result.
             final List<PluginSearchResult> results = allResults();
             if (results.isNotEmpty && cursorIndex < results.length) {

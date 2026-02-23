@@ -329,6 +329,8 @@ class Escape extends KeyEvent {}
 
 class Space extends KeyEvent {}
 
+class Tab extends KeyEvent {}
+
 class Backspace extends KeyEvent {}
 
 class Delete extends KeyEvent {}
@@ -517,6 +519,8 @@ class KeyInput {
     if (bytes.length == 1) {
       final int byte = bytes[0];
       switch (byte) {
+        case 0x09:
+          _controller.add(Tab());
         case 0x0d:
           _controller.add(Enter());
         case 0x1b:
