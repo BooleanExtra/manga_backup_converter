@@ -74,6 +74,13 @@ class ConvertCommand extends Command<void> {
 
     final BackupFormat outputFormat = BackupFormat.byName(results.option('output-format')!);
 
+    if (outputFormat.backupBuilder is UnimplementedBackupBuilder) {
+      throw UsageException(
+        '${outputFormat.alias} is not yet supported as a target format.',
+        usage,
+      );
+    }
+
     final String backupFileExtension = p.extension(backupFile.uri.toString());
 
     BackupFormat? inputFormat = BackupFormat.byExtension(backupFileExtension);
