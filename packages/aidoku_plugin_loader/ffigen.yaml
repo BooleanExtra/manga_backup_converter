@@ -13,6 +13,9 @@ headers:
 compiler-opts:
   - '-Down='
 
+ffi-native:
+  asset-id: 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_generated.dart'
+
 preamble: |
   // ignore_for_file: camel_case_types
   // ignore_for_file: non_constant_identifier_names
@@ -65,6 +68,8 @@ functions:
     - 'wasm_memory_delete'
     - 'wasm_trap_message'
     - 'wasm_trap_delete'
+    - 'wasm_functype_results'
+    - 'wasm_valtype_kind'
 
 structs:
   dependency-only: opaque
@@ -75,6 +80,7 @@ structs:
     - 'wasm_extern_vec_t'
     - 'wasm_importtype_vec_t'
     - 'wasm_exporttype_vec_t'
+    - 'wasm_valtype_vec_t'
 
 typedefs:
   include:

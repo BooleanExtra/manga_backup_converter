@@ -9,8 +9,11 @@ resolution: workspace
 
 dependencies:
   archive: ^4.0.0
+  code_assets: ^1.0.0
   collection: ^1.19.0
+  crypto: ^3.0.0
   ffi: ^2.2.0
+  hooks: ^1.0.0
   html: ^0.15.4
   http: ^1.2.0
   image: ^4.5.3

@@ -1,7 +1,7 @@
 // test/wasm/aidoku_plugin_mangafire_test.dart
 //
 // Integration tests for AidokuPlugin with the mangafire HTML-scraping plugin.
-// Requires wasmer + the real .aix fixture.
+// Requires the real .aix fixture. Wasmer is bundled via code assets.
 //
 // Tests make live network requests to mangafire and assert on real data.
 //
@@ -13,16 +13,6 @@ import 'package:aidoku_plugin_loader/aidoku_plugin_loader.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 
-bool _hasWasmer() {
-  final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final lib = Platform.isWindows
-      ? '$home\\.wasmer\\lib\\wasmer.dll'
-      : Platform.isMacOS
-      ? '$home/.wasmer/lib/libwasmer.dylib'
-      : '$home/.wasmer/lib/libwasmer.so';
-  return File(lib).existsSync();
-}
-
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangafire-v5.aix';
   final fixture = File(fixturePath).existsSync()
@@ -31,11 +21,7 @@ void main() {
 
   group(
     'AidokuPlugin mangafire',
-    skip: !fixture.existsSync()
-        ? 'Missing test/aidoku/fixtures/multi.mangafire-v5.aix'
-        : !_hasWasmer()
-        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-        : null,
+    skip: !fixture.existsSync() ? 'Missing test/aidoku/fixtures/multi.mangafire-v5.aix' : null,
     () {
       late AidokuPlugin plugin;
 

@@ -19,16 +19,6 @@ import 'package:test/scaffolding.dart';
 // Guards
 // ---------------------------------------------------------------------------
 
-bool _hasWasmer() {
-  final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final lib = Platform.isWindows
-      ? '$home\\.wasmer\\lib\\wasmer.dll'
-      : Platform.isMacOS
-      ? '$home/.wasmer/lib/libwasmer.dylib'
-      : '$home/.wasmer/lib/libwasmer.so';
-  return File(lib).existsSync();
-}
-
 File _findFixture(String relPath) {
   final a = File(relPath);
   if (a.existsSync()) return a;
@@ -192,9 +182,7 @@ void main() {
       .map((({String label, String wasmPath}) f) => f.label)
       .toList();
 
-  final String? skipReason = !_hasWasmer()
-      ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-      : missingFixtures.isNotEmpty
+  final String? skipReason = missingFixtures.isNotEmpty
       ? 'Missing fixture WASM(s): ${missingFixtures.join(', ')}'
       : null;
 

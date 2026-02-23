@@ -1,8 +1,8 @@
 // test/wasm/aidoku_plugin_native_test.dart
 //
 // Integration tests for AidokuPlugin method calls.
-// Requires wasmer + the real .aix fixture — same prerequisites as
-// wasm_runner_native_test.dart.
+// Requires the real .aix fixture — same prerequisites as
+// wasm_runner_native_test.dart. Wasmer is bundled via code assets.
 //
 // Tests make live network requests to MangaDex and assert on real data.
 // Verified live data (2026-02-19):
@@ -17,16 +17,6 @@ import 'package:aidoku_plugin_loader/aidoku_plugin_loader.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 
-bool _hasWasmer() {
-  final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
-  final lib = Platform.isWindows
-      ? '$home\\.wasmer\\lib\\wasmer.dll'
-      : Platform.isMacOS
-      ? '$home/.wasmer/lib/libwasmer.dylib'
-      : '$home/.wasmer/lib/libwasmer.so';
-  return File(lib).existsSync();
-}
-
 void main() {
   const fixturePath = 'test/aidoku/fixtures/multi.mangadex-v12.aix';
   final fixture = File(fixturePath).existsSync()
@@ -38,11 +28,7 @@ void main() {
 
   group(
     'AidokuPlugin method calls',
-    skip: !fixture.existsSync()
-        ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix'
-        : !_hasWasmer()
-        ? 'wasmer not installed — run: curl https://get.wasmer.io -sSfL | sh'
-        : null,
+    skip: !fixture.existsSync() ? 'Missing test/aidoku/fixtures/multi.mangadex-v12.aix' : null,
     () {
       late AidokuPlugin plugin;
 
