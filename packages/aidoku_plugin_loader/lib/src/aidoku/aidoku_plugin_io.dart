@@ -247,8 +247,13 @@ class AidokuPlugin {
     if (data is String) throw Exception(data);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
-      return decodeMangaPageResult(PostcardReader(data as Uint8List));
-    } on Object {
+      final bytes = data as Uint8List;
+      // ignore: avoid_print
+      print('[searchManga] raw bytes: ${bytes.length} bytes, first 20: ${bytes.take(20).toList()}');
+      return decodeMangaPageResult(PostcardReader(bytes));
+    } on Object catch (e, st) {
+      // ignore: avoid_print
+      print('[searchManga] decode failed: $e\n$st');
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }

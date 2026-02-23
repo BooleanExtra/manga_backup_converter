@@ -313,7 +313,7 @@ Map<String, Function> _netImports(
       if (body == null) return -1;
       final String htmlStr = utf8.decode(body);
       final html_dom.Document doc = html_parser.parse(htmlStr);
-      return store.add(HtmlDocumentResource(doc));
+      return store.add(HtmlDocumentResource(doc, baseUri: req?.url ?? ''));
     },
     'get_image': (int rid) {
       final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
@@ -367,20 +367,34 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
     final List<html_dom.Element>? elements = _querySelectorAll(store, rid, selector);
     if (elements == null) return -1;
-    return store.add(HtmlNodeListResource(elements));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlNodeListResource(elements, baseUri: baseUri));
   },
   'select_first': (int rid, int selectorPtr, int selectorLen) {
     final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
     final html_dom.Element? element = _querySelector(store, rid, selector);
     if (element == null) return -1;
-    return store.add(HtmlDocumentResource(element));
+    final String baseUri = store.get<HtmlDocumentResource>(rid)?.baseUri ?? '';
+    return store.add(HtmlDocumentResource(element, baseUri: baseUri));
   },
   'attr': (int rid, int keyPtr, int keyLen) {
-    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
     final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
+    // Jsoup convention: "abs:href" resolves the attribute against the base URI.
+    final bool resolveAbsolute = key.startsWith('abs:');
+    if (resolveAbsolute) key = key.substring(4);
     final String? val = el.attributes[key];
+    print(
+      '[html::attr] key="$key" abs=$resolveAbsolute val=${val != null ? '"${val.length > 80 ? '${val.substring(0, 80)}...' : val}"' : 'null'} baseUri=${store.get<HtmlDocumentResource>(rid)?.baseUri ?? 'N/A'}',
+    );
     if (val == null) return -1;
+    if (resolveAbsolute) {
+      final String baseUri = store.get<HtmlDocumentResource>(rid)?.baseUri ?? '';
+      if (baseUri.isNotEmpty) {
+        return store.addBytes(_encodeString(Uri.parse(baseUri).resolve(val).toString()));
+      }
+    }
     return store.addBytes(_encodeString(val));
   },
   'has_attr': (int rid, int keyPtr, int keyLen) {
@@ -432,25 +446,24 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     return store.addBytes(_encodeString(el.className));
   },
   'base_uri': (int rid) {
-    final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
-    return store.addBytes(_encodeString(r?.baseUri ?? ''));
+    return store.addBytes(_encodeString(_resolveBaseUri(store, rid)));
   },
   'first': (int rid) {
     final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || list.nodes.isEmpty) return -1;
-    return store.add(HtmlDocumentResource(list.nodes.first));
+    return store.add(HtmlDocumentResource(list.nodes.first, baseUri: list.baseUri));
   },
   'last': (int rid) {
     final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || list.nodes.isEmpty) return -1;
-    return store.add(HtmlDocumentResource(list.nodes.last));
+    return store.add(HtmlDocumentResource(list.nodes.last, baseUri: list.baseUri));
   },
   'get': (int rid, int index) {
     final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
     if (list == null || index < 0 || index >= list.nodes.length) {
       return -1;
     }
-    return store.add(HtmlDocumentResource(list.nodes[index]));
+    return store.add(HtmlDocumentResource(list.nodes[index], baseUri: list.baseUri));
   },
   // Alias kept for any legacy WASM binaries compiled with the old name.
   'html_get': (int rid, int index) {
@@ -458,7 +471,7 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     if (list == null || index < 0 || index >= list.nodes.length) {
       return -1;
     }
-    return store.add(HtmlDocumentResource(list.nodes[index]));
+    return store.add(HtmlDocumentResource(list.nodes[index], baseUri: list.baseUri));
   },
   'size': (int rid) {
     return store.get<HtmlNodeListResource>(rid)?.nodes.length ?? -1;
@@ -467,12 +480,14 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     final html_dom.Element? el = _asElement(store, rid);
     final html_dom.Element? parent = el?.parent;
     if (parent == null) return -1;
-    return store.add(HtmlDocumentResource(parent));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlDocumentResource(parent, baseUri: baseUri));
   },
   'children': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
     if (el == null) return -1;
-    return store.add(HtmlNodeListResource(el.children.cast<Object>()));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlNodeListResource(el.children.cast<Object>(), baseUri: baseUri));
   },
   'next': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
@@ -480,7 +495,8 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     final List<html_dom.Element> siblings = el.parent?.children ?? <html_dom.Element>[];
     final int idx = siblings.indexOf(el);
     if (idx < 0 || idx + 1 >= siblings.length) return -1;
-    return store.add(HtmlDocumentResource(siblings[idx + 1]));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlDocumentResource(siblings[idx + 1], baseUri: baseUri));
   },
   'previous': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
@@ -488,14 +504,16 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     final List<html_dom.Element> siblings = el.parent?.children ?? <html_dom.Element>[];
     final int idx = siblings.indexOf(el);
     if (idx <= 0) return -1;
-    return store.add(HtmlDocumentResource(siblings[idx - 1]));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlDocumentResource(siblings[idx - 1], baseUri: baseUri));
   },
   'siblings': (int rid) {
     final html_dom.Element? el = _asElement(store, rid);
     final html_dom.Element? parent = el?.parent;
     if (parent == null) return -1;
     final List<html_dom.Element> sibs = parent.children.where((html_dom.Element c) => c != el).toList();
-    return store.add(HtmlNodeListResource(sibs.cast<Object>()));
+    final String baseUri = _resolveBaseUri(store, rid);
+    return store.add(HtmlNodeListResource(sibs.cast<Object>(), baseUri: baseUri));
   },
   'set_text': (int rid, int ptr, int len) {
     final html_dom.Element? el = _asElement(store, rid);
@@ -874,6 +892,15 @@ Map<String, Function> _jsImports() => <String, Function>{
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
+
+/// Resolve the base URI for a resource, checking both HtmlDocumentResource
+/// and HtmlNodeListResource.
+String _resolveBaseUri(HostStore store, int rid) {
+  final HtmlDocumentResource? doc = store.get<HtmlDocumentResource>(rid);
+  if (doc != null) return doc.baseUri;
+  final HtmlNodeListResource? list = store.get<HtmlNodeListResource>(rid);
+  return list?.baseUri ?? '';
+}
 
 html_dom.Element? _asElement(HostStore store, int rid) {
   final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);

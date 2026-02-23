@@ -32,8 +32,9 @@ class HtmlDocumentResource extends HostResource {
 }
 
 class HtmlNodeListResource extends HostResource {
-  HtmlNodeListResource(this.nodes);
+  HtmlNodeListResource(this.nodes, {this.baseUri = ''});
   final List<Object> nodes; // List of html.Element
+  final String baseUri;
 }
 
 class CanvasContextResource extends HostResource {
