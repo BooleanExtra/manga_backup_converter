@@ -226,7 +226,7 @@ class LiveSearchSelect {
               screen.clear();
 
               final detailsScreen = MangaDetailsScreen();
-              await detailsScreen.run(
+              final bool confirmed = await detailsScreen.run(
                 context: context,
                 result: result,
                 fetchDetails: (String mangaKey) {
@@ -236,6 +236,12 @@ class LiveSearchSelect {
                   return onFetchDetails(result.pluginSourceId, mangaKey);
                 },
               );
+
+              if (confirmed) {
+                selected = result;
+                unawaited(events.close());
+                break;
+              }
 
               keySub = context.keyInput.stream.listen(
                 (KeyEvent key) => events.add(_KeyEvent(key)),

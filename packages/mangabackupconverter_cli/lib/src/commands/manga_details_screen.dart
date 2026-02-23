@@ -5,7 +5,7 @@ import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 
 class MangaDetailsScreen {
-  Future<void> run({
+  Future<bool> run({
     required TerminalContext context,
     required PluginSearchResult result,
     required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(String mangaKey) fetchDetails,
@@ -26,17 +26,17 @@ class MangaDetailsScreen {
     if (fetchResult == null) {
       screen.render([bold(result.title), '', '  ${yellow('Failed to load details.')}', '', dim('Esc to back')]);
       final StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen(null);
-      final completer = Completer<void>();
+      final completer = Completer<bool>();
       keySub.onData((KeyEvent k) {
         if ((k is Escape || k is Enter) && !completer.isCompleted) {
-          completer.complete();
+          completer.complete(false);
         }
       });
       await completer.future;
       await keySub.cancel();
       screen.clear();
       context.showCursor();
-      return;
+      return false;
     }
 
     final (PluginMangaDetails details, List<PluginChapter> chapters) = fetchResult;
@@ -102,18 +102,20 @@ class MangaDetailsScreen {
       }
 
       lines.add('');
-      lines.add(dim('Esc to back'));
+      lines.add(dim('Enter select · Esc back'));
       screen.render(lines);
     }
 
     render();
 
     final StreamSubscription<KeyEvent> keySub = context.keyInput.stream.listen(null);
-    final completer = Completer<void>();
+    final completer = Completer<bool>();
     keySub.onData((KeyEvent key) {
       switch (key) {
-        case Escape() || Enter():
-          if (!completer.isCompleted) completer.complete();
+        case Escape():
+          if (!completer.isCompleted) completer.complete(false);
+        case Enter():
+          if (!completer.isCompleted) completer.complete(true);
         case ArrowUp():
           chapterScrollOffset = max(0, chapterScrollOffset - 1);
           render();
@@ -128,10 +130,11 @@ class MangaDetailsScreen {
       }
     });
 
-    await completer.future;
+    final bool confirmed = await completer.future;
     await keySub.cancel();
     screen.clear();
     context.showCursor();
+    return confirmed;
   }
 }
 
