@@ -48,7 +48,7 @@ class MangaDetailsScreen {
     var chapterScrollOffset = 0;
     final int width = context.width;
 
-    // Build static header lines.
+    // Build static header lines (used by both render() and key handler).
     final headerLines = <String>[];
     final String titleText = details.url != null
         ? hyperlink(green(details.title), details.url!)
@@ -69,15 +69,21 @@ class MangaDetailsScreen {
       headerLines.add(bold('   Chapters (${sortedChapters.length})'));
     }
 
+    // Total lines available for chapters + scroll indicators.
+    final int chapterAreaLines = max(1, context.height - headerLines.length - 2);
+
     void render() {
       final lines = List<String>.of(headerLines);
 
       if (sortedChapters.isNotEmpty) {
-        // Reserve header + 3 footer lines.
-        final int maxChapterLines = max(1, context.height - headerLines.length - 3);
-        final int visibleEnd = min(sortedChapters.length, chapterScrollOffset + maxChapterLines);
+        final bool hasAbove = chapterScrollOffset > 0;
+        final int tentativeVisible = chapterAreaLines - (hasAbove ? 1 : 0);
+        final int tentativeEnd = min(sortedChapters.length, chapterScrollOffset + tentativeVisible);
+        final bool hasBelow = tentativeEnd < sortedChapters.length;
+        final int visibleCount = hasBelow ? tentativeVisible - 1 : tentativeVisible;
+        final int visibleEnd = min(sortedChapters.length, chapterScrollOffset + visibleCount);
 
-        if (chapterScrollOffset > 0) lines.add(dim('↑ more above'));
+        if (hasAbove) lines.add(dim('↑ more above'));
 
         for (var i = chapterScrollOffset; i < visibleEnd; i++) {
           final PluginChapter ch = sortedChapters[i];
@@ -92,7 +98,7 @@ class MangaDetailsScreen {
           lines.add(truncate('   $linkedChapter${dim('$scanlator$lang')}', width));
         }
 
-        if (visibleEnd < sortedChapters.length) lines.add(dim('↓ more below'));
+        if (hasBelow) lines.add(dim('↓ more below'));
       }
 
       lines.add('');
@@ -112,10 +118,10 @@ class MangaDetailsScreen {
           chapterScrollOffset = max(0, chapterScrollOffset - 1);
           render();
         case ArrowDown():
-          chapterScrollOffset = min(
-            max(0, sortedChapters.length - 1),
-            chapterScrollOffset + 1,
-          );
+          final int maxOffset = sortedChapters.length <= chapterAreaLines
+              ? 0
+              : sortedChapters.length - (chapterAreaLines - 1);
+          chapterScrollOffset = min(maxOffset, chapterScrollOffset + 1);
           render();
         default:
           break;
