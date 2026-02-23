@@ -50,7 +50,10 @@ class MangaDetailsScreen {
 
     // Build static header lines.
     final headerLines = <String>[];
-    headerLines.add(bold(details.title));
+    final String titleText = details.url != null
+        ? hyperlink(green(details.title), details.url!)
+        : bold(details.title);
+    headerLines.add(titleText);
 
     final String authors = <String>{...details.authors, ...details.artists}.join(', ');
     if (authors.isNotEmpty) headerLines.add('Author: $authors');

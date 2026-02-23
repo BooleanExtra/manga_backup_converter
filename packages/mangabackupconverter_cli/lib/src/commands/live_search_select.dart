@@ -158,7 +158,10 @@ class LiveSearchSelect {
             if (r.details != null) ...r.details!.artists,
           }.join(', ');
           final authorStr = detailAuthors.isNotEmpty ? ' · $detailAuthors' : '';
-          final line = '[${r.pluginSourceId}] ${r.title}$authorStr';
+          final String? url = r.details?.url;
+          final String titleText =
+              url != null ? hyperlink(green(r.title), url) : r.title;
+          final line = '[${r.pluginSourceId}] $titleText$authorStr';
           lines.add(truncate('$prefix$line', width));
         }
 
