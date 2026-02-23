@@ -1,10 +1,8 @@
-// ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/canvas_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
-import 'package:aidoku_plugin_loader/src/codec/postcard_writer.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:html/dom.dart' as html_dom;
 import 'package:html/parser.dart' as html_parser;
@@ -49,15 +47,16 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
   AsyncHttpDispatch? asyncHttp,
   AsyncSleepDispatch? asyncSleep,
   RateLimitCallback? onRateLimitSet,
+  void Function(String message)? onLog,
 }) {
   return <String, Map<String, Function>>{
-    'std': _stdImports(runner, store),
-    'env': _envImports(runner, store, asyncSleep),
+    'std': _stdImports(runner, store, onLog),
+    'env': _envImports(runner, store, asyncSleep, onLog),
     'net': _netImports(runner, store, asyncHttp, onRateLimitSet),
-    'html': _htmlImports(runner, store),
+    'html': _htmlImports(runner, store, onLog),
     'defaults': _defaultsImports(runner, store, sourceId),
-    'canvas': _canvasImports(runner, store),
-    'js': _jsImports(),
+    'canvas': _canvasImports(runner, store, onLog),
+    'js': _jsImports(onLog),
   };
 }
 
@@ -65,7 +64,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
 // std module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String, Function>{
+Map<String, Function> _stdImports(WasmRunner runner, HostStore store, void Function(String)? onLog) => <String, Function>{
   'destroy': (int rid) {
     store.remove(rid);
   },
@@ -113,7 +112,7 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
         } on Exception catch (e) {
-          print('[aidoku] _parse_date failed: $e');
+          onLog?.call('[aidoku] _parse_date failed: $e');
           return -1.0;
         }
       },
@@ -134,7 +133,7 @@ Map<String, Function> _stdImports(WasmRunner runner, HostStore store) => <String
           final DateTime? parsed = _tryParseDate(dateStr);
           return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
         } on Exception catch (e) {
-          print('[aidoku] parse_date failed: $e');
+          onLog?.call('[aidoku] parse_date failed: $e');
           return -1.0;
         }
       },
@@ -159,16 +158,17 @@ Map<String, Function> _envImports(
   WasmRunner runner,
   HostStore store,
   AsyncSleepDispatch? asyncSleep,
+  void Function(String)? onLog,
 ) => <String, Function>{
   '_print': (int ptr, int len) {
     if (len > 0) {
-      print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
+      onLog?.call('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
     }
   },
   // Alias without leading underscore (used by newer compiled plugins).
   'print': (int ptr, int len) {
     if (len > 0) {
-      print('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
+      onLog?.call('[aidoku] ${utf8.decode(runner.readMemory(ptr, len))}');
     }
   },
   '_sleep': (int seconds) {
@@ -180,7 +180,7 @@ Map<String, Function> _envImports(
   // Rust panic/abort — called when the WASM module panics.
   // Log and return; the host will see a corrupt result and handle it gracefully.
   'abort': () {
-    print('[aidoku] WASM abort called (plugin panic)');
+    onLog?.call('[aidoku] WASM abort called (plugin panic)');
   },
   '_send_partial_result': (int ptr) {
     try {
@@ -192,7 +192,7 @@ Map<String, Function> _envImports(
         store.addPartialResult(data);
       }
     } on Exception catch (e) {
-      print('[aidoku] _send_partial_result failed: $e');
+      onLog?.call('[aidoku] _send_partial_result failed: $e');
     }
   },
   // Alias without leading underscore (used by newer compiled plugins).
@@ -205,7 +205,7 @@ Map<String, Function> _envImports(
         store.addPartialResult(data);
       }
     } on Exception catch (e) {
-      print('[aidoku] send_partial_result failed: $e');
+      onLog?.call('[aidoku] send_partial_result failed: $e');
     }
   },
 };
@@ -336,7 +336,7 @@ Map<String, Function> _netImports(
 // html module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <String, Function>{
+Map<String, Function> _htmlImports(WasmRunner runner, HostStore store, void Function(String)? onLog) => <String, Function>{
   // ABI: html::parse(ptr: i32, len: i32 [, base_uri_ptr, base_uri_len]) -> rid
   'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
     try {
@@ -348,31 +348,36 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
       }
       return store.add(HtmlDocumentResource(doc, baseUri: baseUri));
     } on Exception catch (e) {
-      print('[aidoku] html::parse failed: $e');
+      onLog?.call('[aidoku] html::parse failed: $e');
       return -1;
     }
   },
   'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
     try {
       final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
-      final html_dom.DocumentFragment nodes = html_parser.parseFragment(htmlStr);
-      final List<html_dom.Element> elements = nodes.children.whereType<html_dom.Element>().toList();
-      return store.add(HtmlNodeListResource(elements));
+      // The SDK returns a Document(Element(rid)) — a single queryable element.
+      // Parse as a full document so querySelectorAll works on the result.
+      final html_dom.Document doc = html_parser.parse(htmlStr);
+      var baseUri = '';
+      if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
+        baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
+      }
+      return store.add(HtmlDocumentResource(doc, baseUri: baseUri));
     } on Exception catch (e) {
-      print('[aidoku] html::parse_fragment failed: $e');
+      onLog?.call('[aidoku] html::parse_fragment failed: $e');
       return -1;
     }
   },
   'select': (int rid, int selectorPtr, int selectorLen) {
     final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-    final List<html_dom.Element>? elements = _querySelectorAll(store, rid, selector);
+    final List<html_dom.Element>? elements = _querySelectorAll(store, rid, selector, onLog);
     if (elements == null) return -1;
     final String baseUri = _resolveBaseUri(store, rid);
     return store.add(HtmlNodeListResource(elements, baseUri: baseUri));
   },
   'select_first': (int rid, int selectorPtr, int selectorLen) {
     final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-    final html_dom.Element? element = _querySelector(store, rid, selector);
+    final html_dom.Element? element = _querySelector(store, rid, selector, onLog);
     if (element == null) return -1;
     final String baseUri = store.get<HtmlDocumentResource>(rid)?.baseUri ?? '';
     return store.add(HtmlDocumentResource(element, baseUri: baseUri));
@@ -385,9 +390,6 @@ Map<String, Function> _htmlImports(WasmRunner runner, HostStore store) => <Strin
     final bool resolveAbsolute = key.startsWith('abs:');
     if (resolveAbsolute) key = key.substring(4);
     final String? val = el.attributes[key];
-    print(
-      '[html::attr] key="$key" abs=$resolveAbsolute val=${val != null ? '"${val.length > 80 ? '${val.substring(0, 80)}...' : val}"' : 'null'} baseUri=${store.get<HtmlDocumentResource>(rid)?.baseUri ?? 'N/A'}',
-    );
     if (val == null) return -1;
     if (resolveAbsolute) {
       final String baseUri = store.get<HtmlDocumentResource>(rid)?.baseUri ?? '';
@@ -633,7 +635,7 @@ Map<String, Function> _defaultsImports(
 // canvas module
 // ---------------------------------------------------------------------------
 
-Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <String, Function>{
+Map<String, Function> _canvasImports(WasmRunner runner, HostStore store, void Function(String)? onLog) => <String, Function>{
   'new_context': (double width, double height) {
     try {
       final image = img.Image(
@@ -643,7 +645,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       );
       return store.add(CanvasContextResource(image));
     } on Exception catch (e) {
-      print('[aidoku] canvas::new_context: $e');
+      onLog?.call('[aidoku] canvas::new_context: $e');
       return -1;
     }
   },
@@ -691,7 +693,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
           );
           return 0;
         } on Exception catch (e) {
-          print('[aidoku] canvas::draw_image: $e');
+          onLog?.call('[aidoku] canvas::draw_image: $e');
           return -1;
         }
       },
@@ -727,7 +729,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
           );
           return 0;
         } on Exception catch (e) {
-          print('[aidoku] canvas::copy_image: $e');
+          onLog?.call('[aidoku] canvas::copy_image: $e');
           return -1;
         }
       },
@@ -741,7 +743,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       fillPath(c.image, ops, r, g, b, a);
       return 0;
     } on Exception catch (e) {
-      print('[aidoku] canvas::fill: $e');
+      onLog?.call('[aidoku] canvas::fill: $e');
       return -1;
     }
   },
@@ -757,7 +759,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       strokePath(c.image, ops, style);
       return 0;
     } on Exception catch (e) {
-      print('[aidoku] canvas::stroke: $e');
+      onLog?.call('[aidoku] canvas::stroke: $e');
       return -1;
     }
   },
@@ -790,7 +792,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
           img.drawString(c.image, text, font: img.arial14, x: x.toInt(), y: y.toInt(), color: color);
           return 0;
         } on Exception catch (e) {
-          print('[aidoku] canvas::draw_text: $e');
+          onLog?.call('[aidoku] canvas::draw_text: $e');
           return -1;
         }
       },
@@ -800,7 +802,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       if (c == null) return -1;
       return store.add(ImageResource(c.image.clone()));
     } on Exception catch (e) {
-      print('[aidoku] canvas::get_image: $e');
+      onLog?.call('[aidoku] canvas::get_image: $e');
       return -1;
     }
   },
@@ -810,7 +812,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       final String name = utf8.decode(runner.readMemory(namePtr, nameLen));
       return store.add(FontResource(name: name, weight: 4));
     } on Exception catch (e) {
-      print('[aidoku] canvas::new_font: $e');
+      onLog?.call('[aidoku] canvas::new_font: $e');
       return -1;
     }
   },
@@ -822,10 +824,10 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
   'load_font': (int urlPtr, int urlLen) {
     try {
       final String url = utf8.decode(runner.readMemory(urlPtr, urlLen));
-      print('[aidoku] canvas::load_font: font loading not supported (url=$url)');
+      onLog?.call('[aidoku] canvas::load_font: font loading not supported (url=$url)');
       return store.add(FontResource(name: 'loaded', weight: 4));
     } on Exception catch (e) {
-      print('[aidoku] canvas::load_font: $e');
+      onLog?.call('[aidoku] canvas::load_font: $e');
       return -1;
     }
   },
@@ -836,7 +838,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       if (decoded == null) return -1;
       return store.add(ImageResource(decoded));
     } on Exception catch (e) {
-      print('[aidoku] canvas::new_image: $e');
+      onLog?.call('[aidoku] canvas::new_image: $e');
       return -1;
     }
   },
@@ -847,7 +849,7 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
       final Uint8List pngBytes = img.encodePng(r.image);
       return store.addBytes(pngBytes);
     } on Exception catch (e) {
-      print('[aidoku] canvas::get_image_data: $e');
+      onLog?.call('[aidoku] canvas::get_image_data: $e');
       return -1;
     }
   },
@@ -868,9 +870,9 @@ Map<String, Function> _canvasImports(WasmRunner runner, HostStore store) => <Str
 // ---------------------------------------------------------------------------
 
 // TODO: implement JS/webview execution (requires embedding a JS engine)
-Map<String, Function> _jsImports() => <String, Function>{
+Map<String, Function> _jsImports(void Function(String)? onLog) => <String, Function>{
   'context_create': () {
-    print('[aidoku] js module not implemented');
+    onLog?.call('[aidoku] js module not implemented');
     return -1;
   },
   'context_eval': (int ctx, int strPtr, int len) => -1,
@@ -911,7 +913,7 @@ html_dom.Element? _asElement(HostStore store, int rid) {
   return null;
 }
 
-List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selector) {
+List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selector, void Function(String)? onLog) {
   final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
   final Object doc = r.document;
@@ -919,12 +921,12 @@ List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selec
     if (doc is html_dom.Element) return doc.querySelectorAll(selector);
     if (doc is html_dom.Document) return doc.querySelectorAll(selector);
   } on Exception catch (e) {
-    print('[aidoku] querySelectorAll("$selector") failed: $e');
+    onLog?.call('[aidoku] querySelectorAll("$selector") failed: $e');
   }
   return null;
 }
 
-html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
+html_dom.Element? _querySelector(HostStore store, int rid, String selector, void Function(String)? onLog) {
   final HtmlDocumentResource? r = store.get<HtmlDocumentResource>(rid);
   if (r == null) return null;
   final Object doc = r.document;
@@ -932,10 +934,14 @@ html_dom.Element? _querySelector(HostStore store, int rid, String selector) {
     if (doc is html_dom.Element) return doc.querySelector(selector);
     if (doc is html_dom.Document) return doc.querySelector(selector);
   } on Exception catch (e) {
-    print('[aidoku] querySelector("$selector") failed: $e');
+    onLog?.call('[aidoku] querySelector("$selector") failed: $e');
   }
   return null;
 }
 
-/// Encode a Dart string as Postcard bytes (varint length + UTF-8).
-Uint8List _encodeString(String s) => (PostcardWriter()..writeString(s)).bytes;
+/// Encode a Dart string as raw UTF-8 bytes for aidoku-rs `read_string_and_destroy`.
+///
+/// The SDK reads host-buffered strings via `String::from_utf8(buffer)` — raw
+/// UTF-8, no postcard framing. Postcard is only used for structured results
+/// returned from WASM exports, not for individual string-valued host imports.
+Uint8List _encodeString(String s) => Uint8List.fromList(utf8.encode(s));

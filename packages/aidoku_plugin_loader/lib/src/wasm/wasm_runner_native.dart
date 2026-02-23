@@ -55,6 +55,7 @@ class WasmRunner {
   static Future<WasmRunner> fromBytes(
     Uint8List wasmBytes, {
     Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
+    void Function(String message)? onLog,
   }) async {
     final ffi.DynamicLibrary lib = _openWasmer();
     final bindings = WasmerBindings(lib);
@@ -112,6 +113,7 @@ class WasmRunner {
         dartFn,
         resultKind: resultKind,
         debugName: '$modName::$fnName',
+        onLog: onLog,
       );
       nativeCallables.add(callable);
       externPtrs.add(bindings.funcAsExtern(bindings.funcNew(store, funcType, callable.nativeFunction)));
@@ -239,9 +241,9 @@ class WasmRunner {
 
   dynamic call(String name, List<Object?> args) {
     final ffi.Pointer<WasmExternT>? extern = _exports[name];
-    if (extern == null) throw ArgumentError('No WASM export: $name');
+    if (extern == null) throw WasmRuntimeException('No WASM export: $name');
     final ffi.Pointer<WasmFuncT> func = _bindings.externAsFunc(extern);
-    if (func.address == 0) throw ArgumentError('Export $name is not a func');
+    if (func.address == 0) throw WasmRuntimeException('Export $name is not a func');
 
     final ffi.Pointer<WasmValVec> argsVec = calloc<WasmValVec>();
     final ffi.Pointer<WasmValVec> resultsVec = calloc<WasmValVec>();
@@ -275,18 +277,18 @@ class WasmRunner {
   }
 
   Uint8List readMemory(int offset, int length) {
-    if (_memory.address == 0) throw StateError('No memory export');
+    if (_memory.address == 0) throw const WasmRuntimeException('No memory export');
     if (length == 0) return Uint8List(0);
     final int size = memorySize;
     if (offset < 0 || length < 0 || offset + length > size) {
-      throw RangeError('readMemory($offset, $length): out of WASM memory bounds ($size bytes)');
+      throw WasmRuntimeException('readMemory($offset, $length): out of WASM memory bounds ($size bytes)');
     }
     final ffi.Pointer<ffi.Uint8> data = _bindings.memoryData(_memory);
     return Uint8List.fromList(List<int>.generate(length, (int i) => (data + offset + i).value));
   }
 
   void writeMemory(int offset, Uint8List bytes) {
-    if (_memory.address == 0) throw StateError('No memory export');
+    if (_memory.address == 0) throw const WasmRuntimeException('No memory export');
     final ffi.Pointer<ffi.Uint8> data = _bindings.memoryData(_memory);
     for (var i = 0; i < bytes.length; i++) {
       (data + offset + i).value = bytes[i];
@@ -340,6 +342,7 @@ class WasmRunner {
     Function? dartFn, {
     int resultKind = -1,
     String debugName = '',
+    void Function(String message)? onLog,
   }) {
     return ffi.NativeCallable<WasmFuncCallbackC>.isolateLocal(
       (ffi.Pointer<WasmValVec> args, ffi.Pointer<WasmValVec> results) {
@@ -365,8 +368,7 @@ class WasmRunner {
           }
         } on Exception catch (e, st) {
           if (results.ref.size > 0) _setDefaultVal(results.ref.data, resultKind);
-          // ignore: avoid_print
-          print('[CB] exception in host import $debugName: $e\n$st');
+          onLog?.call('[CB] exception in host import $debugName: $e\n$st');
         }
         return ffi.nullptr;
       },

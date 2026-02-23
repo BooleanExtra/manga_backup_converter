@@ -340,6 +340,10 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
 
   // Lazy runner proxy (breaks circular dep between imports and runner).
   final lazyRunner = _LazyRunner();
+  void sendLog(String message) {
+    init.asyncPort.send(WasmLogMsg(message: message, stackTrace: ''));
+  }
+
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
@@ -349,11 +353,12 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     onRateLimitSet: (int permits, int periodMs) {
       init.asyncPort.send(WasmRateLimitMsg(permits: permits, periodMs: periodMs));
     },
+    onLog: sendLog,
   );
 
   late final WasmRunner runner;
   try {
-    runner = await WasmRunner.fromBytes(init.wasmBytes, imports: imports);
+    runner = await WasmRunner.fromBytes(init.wasmBytes, imports: imports, onLog: sendLog);
   } on Exception catch (e) {
     init.handshakePort.send('error:$e');
     cmdPort.close();
@@ -391,8 +396,8 @@ void _processCmd(
     final int filtersRid = store.addBytes(cmd.filtersBytes);
     try {
       final int ptr = (runner.call('get_search_manga_list', <Object?>[queryRid, cmd.page, filtersRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
-    } on Object catch (e, st) {
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
+    } on Exception catch (e, st) {
       error = 'get_search_manga_list: $e';
       logPort.send(WasmLogMsg(message: error, stackTrace: st.toString()));
     } finally {
@@ -409,9 +414,10 @@ void _processCmd(
     // manga_descriptor is postcard-encoded Manga struct with the key set.
     final int mangaRid = store.addBytes(encodeMangaKey(utf8.decode(cmd.keyBytes)));
     try {
-      final int ptr = (runner.call('get_manga_update', <Object?>[mangaRid, 1, if (cmd.includeChapters) 1 else 0]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
-    } on Object catch (e, st) {
+      final int ptr =
+          (runner.call('get_manga_update', <Object?>[mangaRid, 1, if (cmd.includeChapters) 1 else 0]) as num).toInt();
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
+    } on Exception catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_manga_update: $e', stackTrace: st.toString()));
     } finally {
@@ -429,7 +435,7 @@ void _processCmd(
     final int chapterRid = store.addBytes(cmd.chapterBytes);
     try {
       final int ptr = (runner.call('get_page_list', <Object?>[mangaRid, chapterRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: 'get_page_list: $e', stackTrace: st.toString()));
@@ -449,7 +455,7 @@ void _processCmd(
       final int listingRid = store.addBytes(cmd.listingBytes!);
       try {
         final int ptr = (runner.call('get_manga_list', <Object?>[listingRid, cmd.page]) as num).toInt();
-        if (ptr > 0) result = _readResult(runner, ptr);
+        if (ptr > 0) result = _readResult(runner, ptr, logPort);
       } on Exception catch (e, st) {
         logPort.send(WasmLogMsg(message: 'get_manga_list: $e', stackTrace: st.toString()));
       } finally {
@@ -464,7 +470,7 @@ void _processCmd(
       try {
         final int ptr = (runner.call('get_search_manga_list', <Object?>[queryRid, cmd.page, filtersRid]) as num)
             .toInt();
-        if (ptr > 0) result = _readResult(runner, ptr);
+        if (ptr > 0) result = _readResult(runner, ptr, logPort);
       } on Exception catch (e, st) {
         logPort.send(WasmLogMsg(message: 'get_search_manga_list (fallback): $e', stackTrace: st.toString()));
       } finally {
@@ -481,7 +487,7 @@ void _processCmd(
     Uint8List? result;
     try {
       final int ptr = (runner.call(cmd.funcName, <Object?>[]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       result = null;
       logPort.send(WasmLogMsg(message: '${cmd.funcName}: $e', stackTrace: st.toString()));
@@ -495,7 +501,7 @@ void _processCmd(
     final int mangaRid = store.addBytes(cmd.mangaBytes);
     try {
       final int ptr = (runner.call('get_alternate_covers', <Object?>[mangaRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_alternate_covers: $e', stackTrace: st.toString()));
     } finally {
@@ -511,7 +517,7 @@ void _processCmd(
     final int contextRid = store.addBytes(cmd.contextBytes);
     try {
       final int ptr = (runner.call('get_image_request', <Object?>[urlRid, contextRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_image_request: $e', stackTrace: st.toString()));
     } finally {
@@ -526,7 +532,7 @@ void _processCmd(
     Uint8List? result;
     try {
       final int ptr = (runner.call('get_base_url', <Object?>[]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_base_url: $e', stackTrace: st.toString()));
     }
@@ -539,7 +545,7 @@ void _processCmd(
     final int pageRid = store.addBytes(cmd.pageBytes);
     try {
       final int ptr = (runner.call('get_page_description', <Object?>[pageRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'get_page_description: $e', stackTrace: st.toString()));
     } finally {
@@ -555,7 +561,7 @@ void _processCmd(
     final int contextRid = store.addBytes(cmd.contextBytes);
     try {
       final int ptr = (runner.call('process_page_image', <Object?>[imageRid, contextRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'process_page_image: $e', stackTrace: st.toString()));
     } finally {
@@ -584,7 +590,7 @@ void _processCmd(
     final int rid = store.addBytes(cmd.urlBytes);
     try {
       final int ptr = (runner.call('handle_deep_link', <Object?>[rid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_deep_link: $e', stackTrace: st.toString()));
     } finally {
@@ -635,7 +641,7 @@ void _processCmd(
     final int keyRid = store.addBytes(cmd.keyBytes);
     try {
       final int ptr = (runner.call('handle_key_migration', <Object?>[keyRid, -1]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_key_migration (manga): $e', stackTrace: st.toString()));
     } finally {
@@ -651,7 +657,7 @@ void _processCmd(
     final int chapterRid = store.addBytes(cmd.chapterKeyBytes);
     try {
       final int ptr = (runner.call('handle_key_migration', <Object?>[mangaRid, chapterRid]) as num).toInt();
-      if (ptr > 0) result = _readResult(runner, ptr);
+      if (ptr > 0) result = _readResult(runner, ptr, logPort);
     } on Exception catch (e, st) {
       logPort.send(WasmLogMsg(message: 'handle_key_migration (chapter): $e', stackTrace: st.toString()));
     } finally {
@@ -673,7 +679,7 @@ void _processCmd(
 /// AidokuError::Message returns a positive ptr where bytes[0..4] = -1_i32 LE.
 /// All other negative return codes (−1, −2, −3) arrive as a negative i32
 /// ptr directly (not as a buffer), so they never reach this function.
-Uint8List _readResult(WasmRunner runner, int ptr) {
+Uint8List _readResult(WasmRunner runner, int ptr, SendPort logPort) {
   final Uint8List lenBytes = runner.readMemory(ptr, 4);
   final int totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
   if (totalLen < 0) {
@@ -687,14 +693,12 @@ Uint8List _readResult(WasmRunner runner, int ptr) {
         message = 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}';
       }
     } on Exception catch (e) {
-      // ignore: avoid_print
-      print('[aidoku] failed to extract error message: $e');
+      logPort.send(WasmLogMsg(message: '[aidoku] failed to extract error message: $e', stackTrace: ''));
     }
     try {
       runner.call('free_result', <Object?>[ptr]);
     } on Exception catch (e) {
-      // ignore: avoid_print
-      print('[aidoku] free_result failed after error result: $e');
+      logPort.send(WasmLogMsg(message: '[aidoku] free_result failed after error result: $e', stackTrace: ''));
     }
     throw FormatException(message);
   }
@@ -703,8 +707,7 @@ Uint8List _readResult(WasmRunner runner, int ptr) {
   try {
     runner.call('free_result', <Object?>[ptr]);
   } on Exception catch (e) {
-    // ignore: avoid_print
-    print('[aidoku] free_result failed: $e');
+    logPort.send(WasmLogMsg(message: '[aidoku] free_result failed: $e', stackTrace: ''));
   }
   return data;
 }

@@ -92,8 +92,9 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/pipeline/plugin_source_stub.dart` — `StubPluginSource` implements `PluginSource`; must be updated when the interface changes
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
-- **Postcard integer encoding**: `u8`–`u64` → unsigned varint (LEB128); `i8`–`i64` → zigzag varint; `f32` → 4 LE bytes; `f64` → 8 LE bytes. `PostcardReader.readI64` uses zigzag varint, NOT raw bytes
-- `wasm_isolate.dart` command handlers must catch `on Object` (not `on Exception`) — `readMemory` throws `RangeError` which is an `Error`, not `Exception`
+- **Postcard integer encoding**: `u8`–`u64` → unsigned varint (LEB128); `i8`–`i64` → zigzag varint; `f32` → 4 LE bytes; `f64` → 8 LE bytes. Both `PostcardReader.readI64` and `PostcardWriter.writeI64` use zigzag varint, NOT raw bytes
+- `wasm_runner_native.dart` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`) — `_makeCallable`'s `on Exception catch` handles these naturally; do not use `on Object catch`
+- **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and `wasm_runner_native.dart` route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them
 - WASM plugins are single-threaded — never call `search`/`getMangaWithChapters` concurrently on the same `PluginSource`; the migration dashboard serializes searches (one manga at a time) and `_streamSearch` enriches results with `getMangaWithChapters` before emitting so the TUI receives complete data (URL, chapters) upfront
 - `migration_dashboard.dart` search lifecycle: `activeEntry` tracks the entry being searched; `pendingRetries` queues re-selected entries; `startNextSearch` drains retries before the linear index scan — when skipping a deselected entry in the scan, `searching` is set to `false`, so re-select logic must check `match == null` (not `searching`) to decide whether to retrigger
 - `migration_dashboard.dart` `_findBestMatch` must evaluate ALL `entry.candidates` (not just the latest plugin's `results`) — using `=` not `??=` — so the best match across all plugins wins regardless of response order
@@ -179,6 +180,9 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - `HostStore` is shared between web (Worker) and native (WASM isolate) — stores raw `Uint8List` resources
   - Decoding postcard results must happen at the consumer level (`aidoku_plugin_io.dart` / `aidoku_plugin_web.dart`), not inside `HostStore`
   - Native isolate forwards raw bytes via `WasmPartialResultMsg`
+- `_encodeString` in `aidoku_host.dart` returns **raw UTF-8** (`utf8.encode`), NOT postcard-encoded — aidoku-rs SDK reads host strings via `String::from_utf8(buffer)` which expects no length prefix
+- `html::attr` supports `abs:` prefix (Jsoup convention) — strips prefix, gets raw attribute, resolves against `baseUri`; all HTML resources (`HtmlDocumentResource`, `HtmlNodeListResource`) carry `baseUri` propagated from `net::html` (request URL) through child resource creation
+- `html::parse_fragment` returns `HtmlDocumentResource` (not `HtmlNodeListResource`) so CSS selectors work; Dart `html` package does NOT support `:contains()` pseudo-selector (Jsoup-specific)
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a JS Web Worker (`lib/src/web/wasm_worker_js.dart`) with sync XHR for HTTP
   - Sync XHR is required because WASM host imports must return synchronously; allowed in workers (only deprecated on main thread)

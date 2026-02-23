@@ -36,10 +36,7 @@ class PostcardWriter {
     _buf.addAll(bd.buffer.asUint8List());
   }
 
-  void writeI64(int v) {
-    final bd = ByteData(8)..setInt64(0, v, Endian.little);
-    _buf.addAll(bd.buffer.asUint8List());
-  }
+  void writeI64(int v) => writeSignedVarInt(v);
 
   void writeString(String v) {
     final Uint8List encoded = utf8.encode(v);
