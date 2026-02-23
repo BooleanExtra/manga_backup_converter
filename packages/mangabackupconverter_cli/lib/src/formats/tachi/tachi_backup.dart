@@ -16,6 +16,7 @@ import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_preferen
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_source_preferences.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup_tracking.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 import 'package:mangabackupconverter_cli/src/proto/schema_j2k.proto/proto/schema_j2k.pb.dart' as j2k;
@@ -200,6 +201,10 @@ class TachiBackup with TachiBackupMappable implements ConvertableBackup {
 
   static const TachiBackup Function(Map<String, dynamic> map) fromMap = TachiBackupMapper.fromMap;
   static const TachiBackup Function(String json) fromJson = TachiBackupMapper.fromJson;
+
+  TachimangaBackup toTachimangaBackup() {
+    throw UnimplementedError('TachiBackup.toTachimangaBackup() is not yet implemented');
+  }
 
   @override
   void verbosePrint(bool verbose) {

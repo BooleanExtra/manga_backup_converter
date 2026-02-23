@@ -92,6 +92,32 @@ class ConvertCommand extends Command<void> {
     final List<String> repoUrls = results.multiOption('repos');
     final bool interactive = hasTerminal;
 
+    final ConversionStrategy strategy = determineStrategy(resolvedInputFormat, outputFormat);
+    var forceMigration = false;
+
+    if (interactive) {
+      if (strategy is DirectConversion) {
+        io.stdout.writeln(
+          '${resolvedInputFormat.alias} can be converted directly to '
+          '${outputFormat.alias} without plugins.',
+        );
+        io.stdout.write('Use plugin migration instead? [y/N] ');
+        final response = io.stdin.readLineSync()?.trim().toLowerCase();
+        forceMigration = response == 'y' || response == 'yes';
+      } else if (_isSameBackupFormat(resolvedInputFormat, outputFormat)) {
+        io.stdout.writeln(
+          'Source (${resolvedInputFormat.alias}) and target (${outputFormat.alias}) '
+          'use the same backup format. '
+          'This will re-migrate all manga through plugins.',
+        );
+        io.stdout.write('Continue? [y/N] ');
+        final response = io.stdin.readLineSync()?.trim().toLowerCase();
+        if (response != 'y' && response != 'yes') {
+          throw UsageException('Aborted.', usage);
+        }
+      }
+    }
+
     String outputPath =
         results.option('output') ??
         '${p.basenameWithoutExtension(backupFile.uri.toString())}_converted${outputFormat.extensions.first}';
@@ -217,6 +243,7 @@ class ConvertCommand extends Command<void> {
             sourceBackup: importedBackup,
             sourceFormat: resolvedInputFormat,
             targetFormat: outputFormat,
+            forceMigration: forceMigration,
           );
 
           if (verbose) {
@@ -297,3 +324,6 @@ Future<List<MangaMatchConfirmation>> _autoAcceptMatches(
   }
   return confirmations;
 }
+
+bool _isSameBackupFormat(BackupFormat source, BackupFormat target) =>
+    source == target || (source is Tachiyomi && target is Tachiyomi);

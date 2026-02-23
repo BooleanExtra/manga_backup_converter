@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mangabackupconverter_cli/src/common/convertable.dart';
 import 'package:mangabackupconverter_cli/src/exceptions/migration_exception.dart';
+import 'package:mangabackupconverter_cli/src/formats/tachi/tachi_backup.dart';
 import 'package:mangabackupconverter_cli/src/formats/tachimanga/tachimanga_backup.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/backup_format.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/conversion_strategy.dart';
@@ -67,13 +68,21 @@ class MigrationPipeline {
     required ConvertableBackup sourceBackup,
     required BackupFormat sourceFormat,
     required BackupFormat targetFormat,
+    bool forceMigration = false,
   }) async {
     final ConversionStrategy strategy = determineStrategy(sourceFormat, targetFormat);
     return switch (strategy) {
-      Skip() => sourceBackup,
-      DirectConversion() => (sourceBackup as TachimangaBackup).toTachiBackup(),
+      DirectConversion() => forceMigration
+          ? _runMigration(sourceBackup, sourceFormat, targetFormat)
+          : _directConvert(sourceBackup),
       Migration() => _runMigration(sourceBackup, sourceFormat, targetFormat),
     };
+  }
+
+  ConvertableBackup _directConvert(ConvertableBackup sourceBackup) {
+    if (sourceBackup is TachimangaBackup) return sourceBackup.toTachiBackup();
+    if (sourceBackup is TachiBackup) return sourceBackup.toTachimangaBackup();
+    throw StateError('Unexpected source type for direct conversion: ${sourceBackup.runtimeType}');
   }
 
   Future<ConvertableBackup> _runMigration(
