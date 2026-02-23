@@ -226,7 +226,12 @@ class LiveSearchSelect {
               await detailsScreen.run(
                 context: context,
                 result: result,
-                fetchDetails: (String mangaKey) => onFetchDetails(result.pluginSourceId, mangaKey),
+                fetchDetails: (String mangaKey) {
+                  if (result.details != null) {
+                    return Future.value((result.details!, result.chapters));
+                  }
+                  return onFetchDetails(result.pluginSourceId, mangaKey);
+                },
               );
 
               keySub = context.keyInput.stream.listen(
