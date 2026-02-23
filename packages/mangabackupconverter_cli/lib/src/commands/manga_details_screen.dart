@@ -61,7 +61,7 @@ class MangaDetailsScreen {
 
     if (details.description != null && details.description!.isNotEmpty) {
       headerLines.add('');
-      headerLines.addAll(wordWrap(details.description!, max(20, width - 4)).map((String l) => '  $l'));
+      headerLines.addAll(wordWrap(details.description!, max(20, width - 4)).map((String l) => '  ${renderMarkdown(l)}'));
     }
 
     if (sortedChapters.isNotEmpty) {

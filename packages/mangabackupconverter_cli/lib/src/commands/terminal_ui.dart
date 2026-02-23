@@ -24,6 +24,23 @@ String hyperlink(String text, String url) => '\x1b]8;;$url\x1b\\$text\x1b]8;;\x1
 
 final _ansiRe = RegExp(r'\x1b\][^\x1b]*\x1b\\|\x1b\[[0-9;]*[a-zA-Z]');
 
+final _linkRe = RegExp(r'\[([^\]]+)\]\(([^)]+)\)');
+final _boldRe = RegExp(r'\*\*(.+?)\*\*');
+final _italicRe = RegExp(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)');
+
+/// Converts common markdown syntax in a single [line] to ANSI terminal escapes.
+///
+/// Handles `[text](url)` → clickable green hyperlink, `**text**` → bold,
+/// `*text*` → italic. Processed in that order to avoid double-processing.
+String renderMarkdown(String line) {
+  var result = line.replaceAllMapped(_linkRe, (Match m) {
+    return hyperlink(green(m[1]!), m[2]!);
+  });
+  result = result.replaceAllMapped(_boldRe, (Match m) => bold(m[1]!));
+  result = result.replaceAllMapped(_italicRe, (Match m) => italic(m[1]!));
+  return result;
+}
+
 /// Whether a Unicode code point occupies two terminal columns.
 bool _isDoubleWidth(int rune) {
   return (rune >= 0x1100 && rune <= 0x115F) ||
