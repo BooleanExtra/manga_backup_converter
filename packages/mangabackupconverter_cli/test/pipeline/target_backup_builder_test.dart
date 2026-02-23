@@ -163,12 +163,12 @@ void main() {
           sourceManga: SourceMangaData(
             details: MangaSearchDetails(title: 'With Chapters'),
             chapters: <SourceChapter>[
-              const SourceChapter(
+              SourceChapter(
                 title: 'Chapter 1',
                 chapterNumber: 1,
                 isRead: true,
               ),
-              const SourceChapter(
+              SourceChapter(
                 title: 'Chapter 2',
                 chapterNumber: 2,
                 sourceOrder: 1,
@@ -181,8 +181,8 @@ void main() {
             title: 'With Chapters',
           ),
           targetChapters: <PluginChapter>[
-            const PluginChapter(chapterId: 'ch-1', title: 'Chapter 1', chapterNumber: 1),
-            const PluginChapter(chapterId: 'ch-2', title: 'Chapter 2', chapterNumber: 2, sourceOrder: 1),
+            PluginChapter(chapterId: 'ch-1', title: 'Chapter 1', chapterNumber: 1),
+            PluginChapter(chapterId: 'ch-2', title: 'Chapter 2', chapterNumber: 2, sourceOrder: 1),
           ],
         ),
       ];

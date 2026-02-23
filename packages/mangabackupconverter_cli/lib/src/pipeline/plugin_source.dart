@@ -1,3 +1,4 @@
+import 'package:mangabackupconverter_cli/src/common/normalize_chapter_number.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/chapter_data.dart';
 
 abstract interface class PluginSource {
@@ -66,17 +67,21 @@ class PluginMangaDetails {
 }
 
 class PluginChapter implements ChapterData {
-  const PluginChapter({
+  PluginChapter({
     required this.chapterId,
     this.title,
-    this.chapterNumber,
-    this.volumeNumber,
+    double? chapterNumber,
+    double? volumeNumber,
     this.scanlator,
     this.language,
     this.dateUploaded,
     this.url,
     this.sourceOrder = 0,
-  });
+  })  : chapterNumber = chapterNumber == null
+            ? null
+            : normalizeChapterNumber(chapterNumber),
+        volumeNumber =
+            volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
 
   @override
   final String chapterId;

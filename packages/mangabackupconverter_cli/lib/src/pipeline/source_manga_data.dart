@@ -1,3 +1,4 @@
+import 'package:mangabackupconverter_cli/src/common/normalize_chapter_number.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/manga_details.dart';
 
 class SourceMangaData {
@@ -29,10 +30,10 @@ class SourceMangaData {
 }
 
 class SourceChapter {
-  const SourceChapter({
+  SourceChapter({
     required this.title,
-    this.chapterNumber,
-    this.volumeNumber,
+    double? chapterNumber,
+    double? volumeNumber,
     this.scanlator,
     this.language,
     this.isRead = false,
@@ -40,7 +41,11 @@ class SourceChapter {
     this.lastPageRead = 0,
     this.dateUploaded,
     this.sourceOrder = 0,
-  });
+  })  : chapterNumber = chapterNumber == null
+            ? null
+            : normalizeChapterNumber(chapterNumber),
+        volumeNumber =
+            volumeNumber == null ? null : normalizeChapterNumber(volumeNumber);
 
   final String title;
   final double? chapterNumber;
@@ -55,14 +60,16 @@ class SourceChapter {
 }
 
 class SourceHistoryEntry {
-  const SourceHistoryEntry({
+  SourceHistoryEntry({
     required this.chapterTitle,
-    this.chapterNumber,
+    double? chapterNumber,
     this.dateRead,
     this.completed = false,
     this.progress,
     this.total,
-  });
+  }) : chapterNumber = chapterNumber == null
+            ? null
+            : normalizeChapterNumber(chapterNumber);
 
   final String chapterTitle;
   final double? chapterNumber;
@@ -73,19 +80,21 @@ class SourceHistoryEntry {
 }
 
 class SourceTrackingEntry {
-  const SourceTrackingEntry({
+  SourceTrackingEntry({
     required this.syncId,
     this.libraryId,
     this.mediaId,
     this.trackingUrl,
     this.title,
-    this.lastChapterRead,
+    double? lastChapterRead,
     this.totalChapters,
     this.score,
     this.status,
     this.startedReadingDate,
     this.finishedReadingDate,
-  });
+  }) : lastChapterRead = lastChapterRead == null
+            ? null
+            : normalizeChapterNumber(lastChapterRead);
 
   final int syncId;
   final int? libraryId;
