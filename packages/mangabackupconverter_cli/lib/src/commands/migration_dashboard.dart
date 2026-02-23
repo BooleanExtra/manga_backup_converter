@@ -248,6 +248,7 @@ class MigrationDashboard {
           case _SearchResultEvent(:final entry, event: PluginSearchError(:final failure)):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
             entry.failures.add(failure);
+            render();
 
           case _SearchDoneEvent(:final entry):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
@@ -357,6 +358,9 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
         if (chapterCount != null) chapterCount,
       ].join(' · ');
       lines.add(infoLine.isNotEmpty ? truncate('$indent  ${dim(infoLine)}', width) : indent);
+    } else if (entry.failures.isNotEmpty && entry.candidates.isEmpty) {
+      lines.add('$indent  ${yellow('⚠ search failed')}');
+      lines.add(indent);
     } else {
       lines.add('$indent  ${dim('No match found')}');
       lines.add(indent);
