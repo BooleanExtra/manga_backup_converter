@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:characters/characters.dart';
 import 'package:collection/collection.dart';
 import 'package:mangabackupconverter_cli/mangabackupconverter_lib.dart';
 import 'package:mangabackupconverter_cli/src/commands/caching_plugin_loader.dart';
@@ -69,28 +70,33 @@ class ConvertCommand extends Command<void> {
     final bool verbose = results.flag('verbose');
     final bool interactive = hasTerminal;
 
+    // Single TerminalContext for the entire interactive session — stdin's
+    // broadcast subscription is killed on dispose(), so we must not create
+    // multiple short-lived contexts.
+    final TerminalContext? context = interactive ? TerminalContext() : null;
+
     // --- Backup file path ---
     String? backupPath = results.option('backup');
     if (backupPath == null) {
       if (!interactive) {
+        context?.showCursor();
+        context?.dispose();
         throw UsageException('--backup is required in non-interactive mode.', usage);
       }
-      io.stdout.write('Backup file path: ');
-      backupPath = io.stdin.readLineSync()?.trim();
+      backupPath = await _readPath(context!, prompt: 'Backup file path: ');
       if (backupPath == null || backupPath.isEmpty) {
+        context.showCursor();
+        context.dispose();
         throw UsageException('No backup file path provided.', usage);
       }
     }
 
     final backupFile = io.File(backupPath);
     if (!backupFile.existsSync()) {
+      context?.showCursor();
+      context?.dispose();
       throw UsageException('Backup file does not exist: ${backupFile.path}', usage);
     }
-
-    // Single TerminalContext for the entire interactive session — stdin's
-    // broadcast subscription is killed on dispose(), so we must not create
-    // multiple short-lived contexts.
-    final TerminalContext? context = interactive ? TerminalContext() : null;
 
     try {
       return await _runWithContext(results, verbose, interactive, backupFile, context);
@@ -194,9 +200,7 @@ class ConvertCommand extends Command<void> {
     final bool willMigrate = strategy is Migration || forceMigration;
     if (interactive && willMigrate && repoUrls.isEmpty) {
       final required = strategy is Migration;
-      final promptLabel = required
-          ? 'Extension repo URL: '
-          : 'Extension repo URL (Enter to skip): ';
+      final promptLabel = required ? 'Extension repo URL: ' : 'Extension repo URL (Enter to skip): ';
       String? repoInput;
       do {
         repoInput = await _readLine(context!, prompt: promptLabel);
@@ -223,7 +227,7 @@ class ConvertCommand extends Command<void> {
     if (results.wasParsed('output')) {
       outputPath = results.option('output')!;
     } else if (interactive) {
-      final String? customPath = await _readLine(
+      final String? customPath = await _readPath(
         context!,
         prompt: 'Output path: ',
         defaultValue: defaultOutputPath,
@@ -457,6 +461,104 @@ Future<bool> _readYesNo(TerminalContext context) async {
 
 bool _isSameBackupFormat(BackupFormat source, BackupFormat target) =>
     source == target || (source is Tachiyomi && target is Tachiyomi);
+
+/// Reads a file path from the user with Tab completion support.
+///
+/// Renders a prompt line with an inverse-video block cursor and shows
+/// completion candidates when multiple Tab matches exist.
+/// Returns `null` on Escape; returns [defaultValue] (or `''`) on empty Enter.
+Future<String?> _readPath(
+  TerminalContext context, {
+  String prompt = '',
+  String? defaultValue,
+}) async {
+  final state = PathInputState(defaultValue ?? '');
+  final region = ScreenRegion(context);
+  const maxCompletionRows = 8;
+
+  void render() {
+    final lines = <String>[];
+    lines.add(_renderPathInput(prompt, state, context.width));
+    // Show completion candidates below the input line.
+    final List<String> completions = state.completions;
+    if (completions.isNotEmpty) {
+      final int count = completions.length.clamp(0, maxCompletionRows);
+      for (var i = 0; i < count; i++) {
+        final String entry = completions[i];
+        final String label = truncate(entry, context.width - 2);
+        if (i == state.completionIndex) {
+          lines.add(green('❯ $label'));
+        } else {
+          lines.add('  $label');
+        }
+      }
+      if (completions.length > maxCompletionRows) {
+        lines.add(dim('  … ${completions.length - maxCompletionRows} more'));
+      }
+    }
+    region.render(lines);
+  }
+
+  context.hideCursor();
+  render();
+
+  await for (final KeyEvent key in context.keyInput.stream) {
+    final PathInputResult result = state.handleKey(key);
+    switch (result) {
+      case PathInputResult.submitted:
+        region.clear();
+        context.showCursor();
+        final String text = state.text.trim();
+        final String resolved = text.isEmpty ? (defaultValue ?? '') : text;
+        context.write('$prompt$resolved\r\n');
+        return resolved;
+      case PathInputResult.cancelled:
+        region.clear();
+        context.showCursor();
+        context.write('$prompt\r\n');
+        return null;
+      case PathInputResult.textChanged:
+      case PathInputResult.cursorMoved:
+      case PathInputResult.tabCompleted:
+        render();
+      case PathInputResult.ignored:
+        break;
+    }
+  }
+  context.showCursor();
+  return null;
+}
+
+/// Renders the path input line with an inverse-video block cursor.
+String _renderPathInput(String prompt, PathInputState state, int width) {
+  final String text = state.text;
+  final int cursorPos = state.cursorPos;
+  final int promptWidth = displayWidth(prompt);
+  final int availableWidth = width - promptWidth;
+
+  if (availableWidth <= 0) return truncate(prompt, width);
+
+  final List<String> chars = text.characters.toList();
+  final int clampedPos = cursorPos.clamp(0, chars.length);
+
+  final buf = StringBuffer(prompt);
+  var col = 0;
+  for (var i = 0; i < chars.length; i++) {
+    final int gw = displayWidth(chars[i]);
+    if (col + gw > availableWidth) break;
+    if (i == clampedPos) {
+      buf.write('\x1b[7m${chars[i]}\x1b[27m');
+    } else {
+      buf.write(chars[i]);
+    }
+    col += gw;
+  }
+  if (clampedPos == chars.length && col < availableWidth) {
+    buf.write('\x1b[7m \x1b[27m');
+  }
+
+  return buf.toString();
+}
 
 /// Reads a line of text from [KeyInput] in raw mode, echoing characters.
 /// Returns `null` on Escape; returns [defaultValue] (or `''`) on empty Enter.

@@ -7,6 +7,7 @@ import 'package:characters/characters.dart';
 import 'package:mangabackupconverter_cli/src/commands/win_console_stub.dart'
     if (dart.library.ffi) 'package:mangabackupconverter_cli/src/commands/win_console_native.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as p;
 
 // ---------------------------------------------------------------------------
 // ANSI helpers (pure functions — no I/O dependency)
@@ -33,7 +34,7 @@ final _italicRe = RegExp(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)');
 /// Handles `[text](url)` → clickable green hyperlink, `**text**` → bold,
 /// `*text*` → italic. Processed in that order to avoid double-processing.
 String renderMarkdown(String line) {
-  var result = line.replaceAllMapped(_linkRe, (Match m) {
+  String result = line.replaceAllMapped(_linkRe, (Match m) {
     return hyperlink(green(m[1]!), m[2]!);
   });
   result = result.replaceAllMapped(_boldRe, (Match m) => bold(m[1]!));
@@ -735,5 +736,271 @@ class ScreenRegion {
       _context.clearDown();
       _renderedLines = 0;
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Path input state — text editing + Tab file path completion
+// ---------------------------------------------------------------------------
+
+/// Result of [PathInputState.handleKey].
+enum PathInputResult {
+  /// Key consumed, text changed (caller should re-render).
+  textChanged,
+
+  /// Key consumed, only cursor moved (caller should re-render).
+  cursorMoved,
+
+  /// Tab pressed — completion resolved (caller should re-render).
+  tabCompleted,
+
+  /// Enter pressed — user submitted the path.
+  submitted,
+
+  /// Escape pressed — user cancelled.
+  cancelled,
+
+  /// Key not handled.
+  ignored,
+}
+
+/// Manages path text editing, cursor position, and Tab file-path completion.
+class PathInputState {
+  PathInputState([String initialText = ''])
+    : _chars = initialText.characters.toList(),
+      cursorPos = initialText.characters.length;
+
+  List<String> _chars;
+  int cursorPos;
+
+  // Tab completion state.
+  List<String> _completions = [];
+  int _completionIndex = -1;
+  bool _tabActive = false;
+
+  /// The current text.
+  String get text => _chars.join();
+
+  set text(String value) {
+    _chars = value.characters.toList();
+    cursorPos = _chars.length;
+    _resetCompletions();
+  }
+
+  /// Current completion candidates (empty when no Tab cycle is active).
+  List<String> get completions => _tabActive ? _completions : const [];
+
+  /// Index of the highlighted completion, or -1 if none.
+  int get completionIndex => _tabActive ? _completionIndex : -1;
+
+  /// Processes a [KeyEvent] and returns what happened.
+  PathInputResult handleKey(KeyEvent key) {
+    switch (key) {
+      case Tab():
+        return _handleTab();
+
+      case Enter():
+        _resetCompletions();
+        return PathInputResult.submitted;
+
+      case Escape():
+        if (_tabActive) {
+          _resetCompletions();
+          return PathInputResult.textChanged;
+        }
+        return PathInputResult.cancelled;
+
+      case CharKey(:final char):
+        _chars.insert(cursorPos, char);
+        cursorPos++;
+        _resetCompletions();
+        return PathInputResult.textChanged;
+
+      case Space():
+        _chars.insert(cursorPos, ' ');
+        cursorPos++;
+        _resetCompletions();
+        return PathInputResult.textChanged;
+
+      case Backspace():
+        if (cursorPos > 0) {
+          _chars.removeAt(cursorPos - 1);
+          cursorPos--;
+          _resetCompletions();
+          return PathInputResult.textChanged;
+        }
+        return PathInputResult.ignored;
+
+      case Delete():
+        if (cursorPos < _chars.length) {
+          _chars.removeAt(cursorPos);
+          _resetCompletions();
+          return PathInputResult.textChanged;
+        }
+        return PathInputResult.ignored;
+
+      case ArrowUp():
+        if (_tabActive && _completions.isNotEmpty) {
+          _completionIndex = (_completionIndex - 1) % _completions.length;
+          _applyCompletion(_completions[_completionIndex]);
+          return PathInputResult.tabCompleted;
+        }
+        return PathInputResult.ignored;
+
+      case ArrowDown():
+        if (_tabActive && _completions.isNotEmpty) {
+          _completionIndex = (_completionIndex + 1) % _completions.length;
+          _applyCompletion(_completions[_completionIndex]);
+          return PathInputResult.tabCompleted;
+        }
+        return PathInputResult.ignored;
+
+      case ArrowLeft():
+        if (cursorPos > 0) {
+          cursorPos--;
+          _resetCompletions();
+          return PathInputResult.cursorMoved;
+        }
+        return PathInputResult.ignored;
+
+      case ArrowRight():
+        if (_tabActive && _completions.isNotEmpty) {
+          // Accept the current completion and dismiss the list.
+          _resetCompletions();
+          // If accepted path is a directory, auto-trigger new Tab cycle.
+          if (text.endsWith(p.separator) || text.endsWith('/')) {
+            return _handleTab();
+          }
+          return PathInputResult.tabCompleted;
+        }
+        if (cursorPos < _chars.length) {
+          cursorPos++;
+          return PathInputResult.cursorMoved;
+        }
+        return PathInputResult.ignored;
+
+      case Home():
+        cursorPos = 0;
+        _resetCompletions();
+        return PathInputResult.cursorMoved;
+
+      case End():
+        cursorPos = _chars.length;
+        _resetCompletions();
+        return PathInputResult.cursorMoved;
+    }
+  }
+
+  PathInputResult _handleTab() {
+    if (_tabActive && _completions.isNotEmpty) {
+      // Cycle to next completion.
+      _completionIndex = (_completionIndex + 1) % _completions.length;
+      _applyCompletion(_completions[_completionIndex]);
+      return PathInputResult.tabCompleted;
+    }
+
+    // First Tab press — resolve completions.
+    _completions = resolveCompletions(text);
+    if (_completions.isEmpty) {
+      return PathInputResult.ignored;
+    }
+
+    _tabActive = true;
+
+    if (_completions.length == 1) {
+      // Single match — complete inline.
+      _completionIndex = 0;
+      _applyCompletion(_completions[0]);
+      _tabActive = false;
+      _completions = [];
+      _completionIndex = -1;
+      return PathInputResult.tabCompleted;
+    }
+
+    // Multiple matches — complete longest common prefix.
+    final String prefix = _longestCommonPrefix(_completions);
+    if (prefix.length > text.length) {
+      _applyCompletion(prefix);
+    }
+    _completionIndex = 0;
+    return PathInputResult.tabCompleted;
+  }
+
+  void _applyCompletion(String completed) {
+    _chars = completed.characters.toList();
+    cursorPos = _chars.length;
+  }
+
+  void _resetCompletions() {
+    _tabActive = false;
+    _completions = [];
+    _completionIndex = -1;
+  }
+
+  /// Resolves file system completions for [path].
+  ///
+  /// Exposed as a static-like method so tests can exercise it directly.
+  @visibleForTesting
+  static List<String> resolveCompletions(String path) {
+    if (path.isEmpty) return [];
+
+    // Expand ~ to home directory.
+    var expanded = path;
+    final String home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '';
+    if (expanded.startsWith('~')) {
+      expanded = home + expanded.substring(1);
+    }
+
+    // Split into directory + partial filename.
+    String dirPath;
+    String partial;
+    if (expanded.endsWith(p.separator) || expanded.endsWith('/')) {
+      dirPath = expanded;
+      partial = '';
+    } else {
+      dirPath = p.dirname(expanded);
+      partial = p.basename(expanded);
+    }
+
+    final dir = Directory(dirPath);
+    if (!dir.existsSync()) return [];
+
+    final String lowerPartial = partial.toLowerCase();
+    final matches = <String>[];
+
+    try {
+      for (final FileSystemEntity entity in dir.listSync()) {
+        final String name = p.basename(entity.path);
+        if (!name.toLowerCase().startsWith(lowerPartial)) continue;
+
+        String fullPath = p.join(dirPath, name);
+        // Re-apply ~ prefix if the user typed it.
+        if (path.startsWith('~') && home.isNotEmpty && fullPath.startsWith(home)) {
+          fullPath = '~${fullPath.substring(home.length)}';
+        }
+        if (entity is Directory) {
+          fullPath = '$fullPath${p.separator}';
+        }
+        matches.add(fullPath);
+      }
+    } on FileSystemException {
+      return [];
+    }
+
+    matches.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return matches;
+  }
+
+  static String _longestCommonPrefix(List<String> strings) {
+    if (strings.isEmpty) return '';
+    String prefix = strings[0];
+    for (var i = 1; i < strings.length; i++) {
+      while (!strings[i].toLowerCase().startsWith(prefix.toLowerCase())) {
+        prefix = prefix.substring(0, prefix.length - 1);
+        if (prefix.isEmpty) return '';
+      }
+    }
+    // Use the casing from the first match up to prefix length.
+    return strings[0].substring(0, prefix.length);
   }
 }
