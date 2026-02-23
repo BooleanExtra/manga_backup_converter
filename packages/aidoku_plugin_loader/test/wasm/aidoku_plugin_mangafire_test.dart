@@ -49,7 +49,7 @@ void main() {
 
       tearDown(() {
         final warnings = plugin.drainWarnings();
-        check(because: 'Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
+        check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
             .isEmpty();
       });
 

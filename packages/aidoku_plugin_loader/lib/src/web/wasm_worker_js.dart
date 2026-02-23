@@ -396,7 +396,7 @@ function buildHtmlImports() {
         const elements = Array.from(el.querySelectorAll(selector));
         return storeAdd({ type: 'htmlList', nodes: elements });
       } catch (e) {
-        console.warn('[aidoku] querySelectorAll("' + selector + '") failed:', e);
+        console.warn('[CB] querySelectorAll("' + selector + '") failed:', e);
         return -1;
       }
     },
@@ -409,7 +409,7 @@ function buildHtmlImports() {
         if (!found) return -1;
         return storeAdd({ type: 'html', node: found, baseUri: '' });
       } catch (e) {
-        console.warn('[aidoku] querySelector("' + selector + '") failed:', e);
+        console.warn('[CB] querySelector("' + selector + '") failed:', e);
         return -1;
       }
     },

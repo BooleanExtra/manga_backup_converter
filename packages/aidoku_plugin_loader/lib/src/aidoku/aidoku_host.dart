@@ -924,7 +924,7 @@ List<html_dom.Element>? _querySelectorAll(HostStore store, int rid, String selec
     if (doc is html_dom.Element) return doc.querySelectorAll(selector);
     if (doc is html_dom.Document) return doc.querySelectorAll(selector);
   } on Exception catch (e) {
-    onLog?.call('[aidoku] querySelectorAll("$selector") failed: $e');
+    onLog?.call('[CB] querySelectorAll("$selector") failed: $e');
   }
   return null;
 }
@@ -937,7 +937,7 @@ html_dom.Element? _querySelector(HostStore store, int rid, String selector, void
     if (doc is html_dom.Element) return doc.querySelector(selector);
     if (doc is html_dom.Document) return doc.querySelector(selector);
   } on Exception catch (e) {
-    onLog?.call('[aidoku] querySelector("$selector") failed: $e');
+    onLog?.call('[CB] querySelector("$selector") failed: $e');
   }
   return null;
 }
