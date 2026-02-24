@@ -173,21 +173,30 @@ class AidokuPlugin {
     );
 
     asyncPort.listen((Object? msg) async {
-      if (msg is WasmHttpMsg) {
-        await plugin._handleHttpMsg(msg);
-      } else if (msg is WasmSleepMsg) {
-        await Future<void>.delayed(Duration(seconds: msg.seconds));
-        WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
-      } else if (msg is WasmLogMsg) {
+      try {
+        if (msg is WasmHttpMsg) {
+          await plugin._handleHttpMsg(msg);
+        } else if (msg is WasmSleepMsg) {
+          try {
+            await Future<void>.delayed(Duration(seconds: msg.seconds));
+          } finally {
+            WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
+          }
+        } else if (msg is WasmLogMsg) {
+          // ignore: avoid_print
+          print('[wasm] ${msg.message}\n${msg.stackTrace}');
+        } else if (msg is WasmRateLimitMsg) {
+          plugin._rateLimiter = RateLimiter(
+            RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
+          );
+        } else if (msg is WasmPartialResultMsg) {
+          final HomePartialResult? decoded =
+              decodeHomePartialResultFromBytes(msg.data);
+          if (decoded != null) plugin._partialResultsController.add(decoded);
+        }
+      } on Object catch (e, st) {
         // ignore: avoid_print
-        print('[wasm] ${msg.message}\n${msg.stackTrace}');
-      } else if (msg is WasmRateLimitMsg) {
-        plugin._rateLimiter = RateLimiter(
-          RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
-        );
-      } else if (msg is WasmPartialResultMsg) {
-        final HomePartialResult? decoded = decodeHomePartialResultFromBytes(msg.data);
-        if (decoded != null) plugin._partialResultsController.add(decoded);
+        print('[wasm/async] unhandled error: $e\n$st');
       }
     });
 
@@ -211,10 +220,12 @@ class AidokuPlugin {
         // ignore: avoid_print
         print('[wasm/net] error: relative URL from plugin: ${msg.url}');
         _sharedState.writeError();
-        WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
         return;
       }
-      final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
+      final String methodStr =
+          msg.method < _httpMethodNames.length
+              ? _httpMethodNames[msg.method]
+              : 'GET';
       // ignore: avoid_print
       print('[wasm/net] $methodStr ${msg.url}');
       final request = http.Request(methodStr, uri);
@@ -222,19 +233,22 @@ class AidokuPlugin {
       if (msg.body != null) {
         request.bodyBytes = Uint8List.fromList(msg.body!);
       }
+      final int timeoutSeconds =
+          msg.timeout.isFinite ? msg.timeout.toInt() : 30;
       final http.StreamedResponse response = await _httpClient
           .send(request)
-          .timeout(Duration(seconds: msg.timeout.toInt()));
+          .timeout(Duration(seconds: timeoutSeconds));
       final Uint8List body = await response.stream.toBytes();
       // ignore: avoid_print
       print('[wasm/net] ${response.statusCode} ${body.length}b');
       _sharedState.writeResponse(statusCode: response.statusCode, body: body);
-    } on Exception catch (e) {
+    } on Object catch (e) {
       // ignore: avoid_print
       print('[wasm/net] error: $e');
       _sharedState.writeError();
+    } finally {
+      WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
     }
-    WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
   }
 
   // ---------------------------------------------------------------------------
@@ -280,12 +294,13 @@ class AidokuPlugin {
         includeChapters: includeChapters,
       ),
     );
-    final (Uint8List? data, List<String> warnings) = await port.first as (Uint8List?, List<String>);
+    final (Object? data, List<String> warnings) = await port.first as (Object?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
+    if (data is String) throw Exception(data);
     if (data == null) return null;
     try {
-      return decodeManga(PostcardReader(data));
+      return decodeManga(PostcardReader(data as Uint8List));
     } on Object {
       return null;
     }
