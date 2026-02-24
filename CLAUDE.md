@@ -202,6 +202,8 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - Node type discrimination in `jsoup_parser.dart`: `_addNode()` checks `nodeName() == "#text"` then casts with `.as(TextNode.type)` or `.as(Element.type)`
 - JNI inherited methods (not in jnigen bindings): use raw FFI `ProtectedJniExtensions.lookup` pattern — see `_callBooleanMethodWithObject` for `List.add`, `_callIntMethod` for `List.size`
 - `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
+- **JAR discovery**: `JreManager._findJsoupJar()` checks `JSOUP_JAR_PATH` env → exe-relative paths → walks upward from `Directory.current` for `.dart_tool/hooks_runner/shared/jsoup/build/jsoup-<version>/`; version constant in `lib/src/jsoup_version.dart`
+- **JNI test prereq**: Tests using JNI (e.g. `aidoku_plugin_native_test.dart`) require `dart run jni:setup` to generate `dartjni.dll` in the JRE's `bin/server/` directory
 - **Web backend** (Cheerio): `CheerioParser` in `lib/src/web/jsoup_web.dart` — loads Cheerio via Blob URL + `importScripts` (Worker-only); `_ensureCheerioLoaded()` checks `globalThis.cheerio` first so pre-loaded contexts skip loading
 - `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
 - `jsoup_selector.dart` — Dart port of jsoup pseudo-selector engine from `wasm_worker_js.dart`; mid-chain pseudo-selectors apply to final results only (same limitation as the JS version)

@@ -15,11 +15,11 @@ import 'package:code_assets/code_assets.dart';
 import 'package:hooks/hooks.dart';
 import 'package:http/http.dart' as http;
 import 'package:jsoup/src/jre/jre_manager.dart' show JreManager;
+import 'package:jsoup/src/jsoup_version.dart';
 
 const _jreVersion = '17';
-const _jsoupVersion = '1.18.3';
 
-const _jsoupMavenUrl = 'https://repo1.maven.org/maven2/org/jsoup/jsoup/$_jsoupVersion/jsoup-$_jsoupVersion.jar';
+const _jsoupMavenUrl = 'https://repo1.maven.org/maven2/org/jsoup/jsoup/$jsoupVersion/jsoup-$jsoupVersion.jar';
 
 /// Maps (OS, Architecture) to JRE download info from Adoptium.
 const _jreDownloadInfo = <(OS, Architecture), ({String os, String arch, String jvmLibPath, bool isZip})>{
@@ -95,12 +95,12 @@ void main(List<String> args) async {
 /// The JAR is stored at a predictable path so [JreManager] can locate it.
 Future<void> _downloadJsoupJar(Uri outputDirectoryShared) async {
   final cacheDir = Directory.fromUri(
-    outputDirectoryShared.resolve('jsoup-$_jsoupVersion/'),
+    outputDirectoryShared.resolve('jsoup-$jsoupVersion/'),
   );
-  final jarFile = File.fromUri(cacheDir.uri.resolve('jsoup-$_jsoupVersion.jar'));
+  final jarFile = File.fromUri(cacheDir.uri.resolve('jsoup-$jsoupVersion.jar'));
 
   if (!await jarFile.exists()) {
-    print('Downloading Jsoup $_jsoupVersion from Maven Central ...');
+    print('Downloading Jsoup $jsoupVersion from Maven Central ...');
     final http.Response response = await http.get(Uri.parse(_jsoupMavenUrl));
     if (response.statusCode != 200) {
       throw Exception(
@@ -113,7 +113,7 @@ Future<void> _downloadJsoupJar(Uri outputDirectoryShared) async {
       await cacheDir.create(recursive: true);
     }
     await jarFile.writeAsBytes(response.bodyBytes);
-    print('Jsoup $_jsoupVersion cached at ${jarFile.path}');
+    print('Jsoup $jsoupVersion cached at ${jarFile.path}');
   }
 }
 

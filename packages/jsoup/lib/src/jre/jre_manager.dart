@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:jni/jni.dart';
+import 'package:jsoup/src/jsoup_version.dart';
 
 /// Manages JVM lifecycle for desktop platforms (Windows/Linux).
 ///
@@ -52,6 +53,20 @@ class JreManager {
 
     for (final path in candidates) {
       if (File(path).existsSync()) return path;
+    }
+
+    // Search upward from working directory for build hook output
+    // (development/test).
+    Directory dir = Directory.current;
+    for (var i = 0; i < 10; i++) {
+      final jar = File(
+        '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
+        'jsoup-$jsoupVersion/jsoup-$jsoupVersion.jar',
+      );
+      if (jar.existsSync()) return jar.path;
+      final Directory parent = dir.parent;
+      if (parent.path == dir.path) break; // filesystem root
+      dir = parent;
     }
 
     throw StateError(
