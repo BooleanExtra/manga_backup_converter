@@ -369,8 +369,18 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   late final WasmRunner runner;
   try {
     runner = await WasmRunner.fromBytes(init.wasmBytes, imports: imports, onLog: sendLog);
-  } on Exception catch (e) {
-    init.handshakePort.send('error:$e');
+  } on Object catch (e) {
+    // Handshake already sent cmdPort — can't send error on handshakePort.
+    // Stay alive and reply with errors so callers' port.first doesn't hang.
+    init.asyncPort.send(WasmLogMsg(
+      message: '[wasm] failed to create WASM runner: $e',
+      stackTrace: '',
+    ));
+    await for (final Object? cmd in cmdPort) {
+      if (cmd is WasmShutdownCmd) break;
+      _sendErrorReply(cmd!, 'WASM runner failed to initialize: $e');
+    }
+    store.dispose();
     cmdPort.close();
     return;
   }
