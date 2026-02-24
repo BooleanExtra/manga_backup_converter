@@ -73,11 +73,7 @@ class TextNode extends jni$_.JObject {
             >
           >('globalEnv_NewObject')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void <init>(java.lang.String text)`
@@ -91,11 +87,7 @@ class TextNode extends jni$_.JObject {
   ) {
     final _$text = text?.reference ?? jni$_.jNullReference;
     return TextNode.fromReference(
-      _new$(
-        _class.reference.pointer,
-        _id_new$ as jni$_.JMethodIDPtr,
-        _$text.pointer,
-      ).reference,
+      _new$(_class.reference.pointer, _id_new$ as jni$_.JMethodIDPtr, _$text.pointer).reference,
     );
   }
 
@@ -179,11 +171,7 @@ class TextNode extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.TextNode text(java.lang.String text)`
@@ -262,10 +250,7 @@ class TextNode extends jni$_.JObject {
   /// Test if this text node is blank -- that is, empty or only whitespace (including newlines).
   ///@return true if this document is empty or only whitespace, false if it contains any text content.
   bool isBlank() {
-    return _isBlank(
-      reference.pointer,
-      _id_isBlank as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _isBlank(reference.pointer, _id_isBlank as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_splitText = _class.instanceMethodId(
@@ -276,20 +261,10 @@ class TextNode extends jni$_.JObject {
   static final _splitText =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.TextNode splitText(int offset)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -384,11 +359,7 @@ class TextNode extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.TextNode createFromEncoded(java.lang.String encodedText)`

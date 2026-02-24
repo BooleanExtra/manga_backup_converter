@@ -117,13 +117,7 @@ class Jsoup extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                  )
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallStaticObjectMethod')
@@ -228,11 +222,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document parse(java.lang.String html)`
@@ -270,11 +260,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.Connection connect(java.lang.String url)`
@@ -364,13 +350,7 @@ class Jsoup extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                  )
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallStaticObjectMethod')
@@ -475,11 +455,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document parse(java.io.File file)`
@@ -583,13 +559,7 @@ class Jsoup extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                  )
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallStaticObjectMethod')
@@ -696,11 +666,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document parse(java.nio.file.Path path)`
@@ -804,13 +770,7 @@ class Jsoup extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                  )
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallStaticObjectMethod')
@@ -978,11 +938,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document parseBodyFragment(java.lang.String bodyHtml)`
@@ -1019,12 +975,7 @@ class Jsoup extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-              int,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>, int)
           >();
 
   /// from: `static public org.jsoup.nodes.Document parse(java.net.URL url, int timeoutMillis)`
@@ -1066,13 +1017,7 @@ class Jsoup extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                    jni$_.Pointer<jni$_.Void>,
-                  )
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallStaticObjectMethod')

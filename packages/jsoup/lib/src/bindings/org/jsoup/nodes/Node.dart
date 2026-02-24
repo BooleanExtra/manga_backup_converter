@@ -145,11 +145,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean nameIs(java.lang.String normalName)`
@@ -162,11 +158,7 @@ class Node extends jni$_.JObject {
     jni$_.JString? normalName,
   ) {
     final _$normalName = normalName?.reference ?? jni$_.jNullReference;
-    return _nameIs(
-      reference.pointer,
-      _id_nameIs as jni$_.JMethodIDPtr,
-      _$normalName.pointer,
-    ).boolean;
+    return _nameIs(reference.pointer, _id_nameIs as jni$_.JMethodIDPtr, _$normalName.pointer).boolean;
   }
 
   static final _id_parentNameIs = _class.instanceMethodId(
@@ -185,11 +177,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean parentNameIs(java.lang.String normalName)`
@@ -202,11 +190,7 @@ class Node extends jni$_.JObject {
     jni$_.JString? normalName,
   ) {
     final _$normalName = normalName?.reference ?? jni$_.jNullReference;
-    return _parentNameIs(
-      reference.pointer,
-      _id_parentNameIs as jni$_.JMethodIDPtr,
-      _$normalName.pointer,
-    ).boolean;
+    return _parentNameIs(reference.pointer, _id_parentNameIs as jni$_.JMethodIDPtr, _$normalName.pointer).boolean;
   }
 
   static final _id_parentElementIs = _class.instanceMethodId(
@@ -281,10 +265,7 @@ class Node extends jni$_.JObject {
   ///     to an existing node, or if they are a \#shallowClone(). In such cases, \#parent() will return {@code null}.
   ///@return if this node has a parent.
   bool hasParent() {
-    return _hasParent(
-      reference.pointer,
-      _id_hasParent as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _hasParent(reference.pointer, _id_hasParent as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_attr = _class.instanceMethodId(
@@ -303,11 +284,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public java.lang.String attr(java.lang.String attributeKey)`
@@ -397,10 +374,7 @@ class Node extends jni$_.JObject {
   ///@return the number of attributes
   ///@since 1.14.2
   int attributesSize() {
-    return _attributesSize(
-      reference.pointer,
-      _id_attributesSize as jni$_.JMethodIDPtr,
-    ).integer;
+    return _attributesSize(reference.pointer, _id_attributesSize as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_attr$1 = _class.instanceMethodId(
@@ -465,11 +439,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean hasAttr(java.lang.String attributeKey)`
@@ -481,11 +451,7 @@ class Node extends jni$_.JObject {
     jni$_.JString? attributeKey,
   ) {
     final _$attributeKey = attributeKey?.reference ?? jni$_.jNullReference;
-    return _hasAttr(
-      reference.pointer,
-      _id_hasAttr as jni$_.JMethodIDPtr,
-      _$attributeKey.pointer,
-    ).boolean;
+    return _hasAttr(reference.pointer, _id_hasAttr as jni$_.JMethodIDPtr, _$attributeKey.pointer).boolean;
   }
 
   static final _id_removeAttr = _class.instanceMethodId(
@@ -504,11 +470,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node removeAttr(java.lang.String attributeKey)`
@@ -612,11 +574,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallVoidMethod')
           .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void setBaseUri(java.lang.String baseUri)`
@@ -627,11 +585,7 @@ class Node extends jni$_.JObject {
     jni$_.JString? baseUri,
   ) {
     final _$baseUri = baseUri?.reference ?? jni$_.jNullReference;
-    _setBaseUri(
-      reference.pointer,
-      _id_setBaseUri as jni$_.JMethodIDPtr,
-      _$baseUri.pointer,
-    ).check();
+    _setBaseUri(reference.pointer, _id_setBaseUri as jni$_.JMethodIDPtr, _$baseUri.pointer).check();
   }
 
   static final _id_absUrl = _class.instanceMethodId(
@@ -650,11 +604,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public java.lang.String absUrl(java.lang.String attributeKey)`
@@ -702,20 +652,10 @@ class Node extends jni$_.JObject {
   static final _childNode =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Node childNode(int index)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -765,9 +705,7 @@ class Node extends jni$_.JObject {
     return _childNodes(
       reference.pointer,
       _id_childNodes as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<Node?>?>(
-      const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()),
-    );
+    ).object<jni$_.JList<Node?>?>(const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()));
   }
 
   static final _id_childNodesCopy = _class.instanceMethodId(
@@ -801,9 +739,7 @@ class Node extends jni$_.JObject {
     return _childNodesCopy(
       reference.pointer,
       _id_childNodesCopy as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<Node?>?>(
-      const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()),
-    );
+    ).object<jni$_.JList<Node?>?>(const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()));
   }
 
   static final _id_childNodeSize = _class.instanceMethodId(
@@ -832,10 +768,7 @@ class Node extends jni$_.JObject {
   /// Get the number of child nodes that this node holds.
   ///@return the number of child nodes that this node holds.
   int childNodeSize() {
-    return _childNodeSize(
-      reference.pointer,
-      _id_childNodeSize as jni$_.JMethodIDPtr,
-    ).integer;
+    return _childNodeSize(reference.pointer, _id_childNodeSize as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_empty = _class.instanceMethodId(
@@ -865,10 +798,7 @@ class Node extends jni$_.JObject {
   /// Delete all this node's children.
   ///@return this node, for chaining
   Node? empty() {
-    return _empty(
-      reference.pointer,
-      _id_empty as jni$_.JMethodIDPtr,
-    ).object<Node?>(const $Node$NullableType$());
+    return _empty(reference.pointer, _id_empty as jni$_.JMethodIDPtr).object<Node?>(const $Node$NullableType$());
   }
 
   static final _id_parent = _class.instanceMethodId(
@@ -899,10 +829,7 @@ class Node extends jni$_.JObject {
   ///@return parent node; or null if no parent.
   ///@see \#hasParent()
   Node? parent() {
-    return _parent(
-      reference.pointer,
-      _id_parent as jni$_.JMethodIDPtr,
-    ).object<Node?>(const $Node$NullableType$());
+    return _parent(reference.pointer, _id_parent as jni$_.JMethodIDPtr).object<Node?>(const $Node$NullableType$());
   }
 
   static final _id_parentNode = _class.instanceMethodId(
@@ -965,10 +892,7 @@ class Node extends jni$_.JObject {
   /// Get this node's root node; that is, its topmost ancestor. If this node is the top ancestor, returns {@code this}.
   ///@return topmost ancestor.
   Node? root() {
-    return _root(
-      reference.pointer,
-      _id_root as jni$_.JMethodIDPtr,
-    ).object<Node?>(const $Node$NullableType$());
+    return _root(reference.pointer, _id_root as jni$_.JMethodIDPtr).object<Node?>(const $Node$NullableType$());
   }
 
   static final _id_ownerDocument = _class.instanceMethodId(
@@ -1049,11 +973,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node before(java.lang.String html)`
@@ -1090,11 +1010,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node before(org.jsoup.nodes.Node node)`
@@ -1131,11 +1047,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node after(java.lang.String html)`
@@ -1172,11 +1084,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node after(org.jsoup.nodes.Node node)`
@@ -1213,11 +1121,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node wrap(java.lang.String html)`
@@ -1278,10 +1182,7 @@ class Node extends jni$_.JObject {
   ///@see \#remove()
   ///@see \#wrap(String)
   Node? unwrap() {
-    return _unwrap(
-      reference.pointer,
-      _id_unwrap as jni$_.JMethodIDPtr,
-    ).object<Node?>(const $Node$NullableType$());
+    return _unwrap(reference.pointer, _id_unwrap as jni$_.JMethodIDPtr).object<Node?>(const $Node$NullableType$());
   }
 
   static final _id_replaceWith = _class.instanceMethodId(
@@ -1300,11 +1201,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallVoidMethod')
           .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void replaceWith(org.jsoup.nodes.Node in)`
@@ -1315,11 +1212,7 @@ class Node extends jni$_.JObject {
     Node? in$,
   ) {
     final _$in$ = in$?.reference ?? jni$_.jNullReference;
-    _replaceWith(
-      reference.pointer,
-      _id_replaceWith as jni$_.JMethodIDPtr,
-      _$in$.pointer,
-    ).check();
+    _replaceWith(reference.pointer, _id_replaceWith as jni$_.JMethodIDPtr, _$in$.pointer).check();
   }
 
   static final _id_siblingNodes = _class.instanceMethodId(
@@ -1353,9 +1246,7 @@ class Node extends jni$_.JObject {
     return _siblingNodes(
       reference.pointer,
       _id_siblingNodes as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<Node?>?>(
-      const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()),
-    );
+    ).object<jni$_.JList<Node?>?>(const jni$_.$JList$NullableType$<Node?>($Node$NullableType$()));
   }
 
   static final _id_nextSibling = _class.instanceMethodId(
@@ -1452,10 +1343,7 @@ class Node extends jni$_.JObject {
   ///@return position in node sibling list
   ///@see org.jsoup.nodes.Element\#elementSiblingIndex()
   int siblingIndex() {
-    return _siblingIndex(
-      reference.pointer,
-      _id_siblingIndex as jni$_.JMethodIDPtr,
-    ).integer;
+    return _siblingIndex(reference.pointer, _id_siblingIndex as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_firstChild = _class.instanceMethodId(
@@ -1547,11 +1435,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node traverse(org.jsoup.select.NodeVisitor nodeVisitor)`
@@ -1587,11 +1471,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node forEachNode(java.util.function.Consumer<? super org.jsoup.nodes.Node> action)`
@@ -1629,11 +1509,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Node filter(org.jsoup.select.NodeFilter nodeFilter)`
@@ -1704,11 +1580,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public java.util.stream.Stream<T> nodeStream(java.lang.Class<T> type)`
@@ -1783,11 +1655,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public T html(T appendable)`
@@ -1801,11 +1669,7 @@ class Node extends jni$_.JObject {
     required jni$_.JType<$T> T,
   }) {
     final _$appendable = appendable?.reference ?? jni$_.jNullReference;
-    return _html(
-      reference.pointer,
-      _id_html as jni$_.JMethodIDPtr,
-      _$appendable.pointer,
-    ).object<$T?>(T.nullableType);
+    return _html(reference.pointer, _id_html as jni$_.JMethodIDPtr, _$appendable.pointer).object<$T?>(T.nullableType);
   }
 
   static final _id_sourceRange = _class.instanceMethodId(
@@ -1898,11 +1762,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean equals(java.lang.Object o)`
@@ -1917,11 +1777,7 @@ class Node extends jni$_.JObject {
     jni$_.JObject? o,
   ) {
     final _$o = o?.reference ?? jni$_.jNullReference;
-    return _equals(
-      reference.pointer,
-      _id_equals as jni$_.JMethodIDPtr,
-      _$o.pointer,
-    ).boolean;
+    return _equals(reference.pointer, _id_equals as jni$_.JMethodIDPtr, _$o.pointer).boolean;
   }
 
   static final _id_hashCode$1 = _class.instanceMethodId(
@@ -1951,10 +1807,7 @@ class Node extends jni$_.JObject {
   ///     result.
   ///@return an object identity based hashcode for this Node
   int hashCode$1() {
-    return _hashCode$1(
-      reference.pointer,
-      _id_hashCode$1 as jni$_.JMethodIDPtr,
-    ).integer;
+    return _hashCode$1(reference.pointer, _id_hashCode$1 as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_hasSameValue = _class.instanceMethodId(
@@ -1973,11 +1826,7 @@ class Node extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean hasSameValue(java.lang.Object o)`
@@ -1990,11 +1839,7 @@ class Node extends jni$_.JObject {
     jni$_.JObject? o,
   ) {
     final _$o = o?.reference ?? jni$_.jNullReference;
-    return _hasSameValue(
-      reference.pointer,
-      _id_hasSameValue as jni$_.JMethodIDPtr,
-      _$o.pointer,
-    ).boolean;
+    return _hasSameValue(reference.pointer, _id_hasSameValue as jni$_.JMethodIDPtr, _$o.pointer).boolean;
   }
 
   static final _id_clone = _class.instanceMethodId(
@@ -2029,10 +1874,7 @@ class Node extends jni$_.JObject {
   ///@return a stand-alone cloned node, including clones of any children
   ///@see \#shallowClone()
   Node? clone() {
-    return _clone(
-      reference.pointer,
-      _id_clone as jni$_.JMethodIDPtr,
-    ).object<Node?>(const $Node$NullableType$());
+    return _clone(reference.pointer, _id_clone as jni$_.JMethodIDPtr).object<Node?>(const $Node$NullableType$());
   }
 
   static final _id_shallowClone = _class.instanceMethodId(

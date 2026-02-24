@@ -7,8 +7,7 @@ import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 /// is ready.
 class LazyWasmRunner implements WasmRunner {
   WasmRunner? delegate;
-  WasmRunner get _r =>
-      delegate ?? (throw StateError('WasmRunner not yet initialized'));
+  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
 
   @override
   dynamic call(String name, List<Object?> args) => _r.call(name, args);

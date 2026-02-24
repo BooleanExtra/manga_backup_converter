@@ -27,6 +27,7 @@ git config core.hooksPath .githooks   # Enable .githooks/post-checkout for workt
 ```bash
 melos bootstrap                  # Install deps + generate env files + activate coverage
                                  # If bare `melos` is not on PATH, use `dart run melos` as fallback
+                                 # Melos config is in root pubspec.yaml (workspace: key), NOT melos.yaml
 melos run generate               # Run all code generation (assets, env, build_runner, format)
 melos run generate:pkg           # Run build_runner for a specific package (interactive)
 melos run watch:pkg              # Watch mode for build_runner in a specific package
@@ -38,6 +39,8 @@ melos run dart_test:pkg          # Dart tests for a specific package
                                  # run `dart test --reporter expanded` directly in the package directory instead
                                  # Native WASM tests skip automatically if test fixture is absent
 melos run cli                    # Run CLI directly (args forwarded automatically)
+melos run jnigen                 # Generate JNI bindings for jsoup (uses system JDK for javadoc)
+melos run jni_setup              # Build dartjni.dll (auto-discovers system JDK, handles MSYS2)
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
@@ -203,7 +206,8 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - JNI inherited methods (not in jnigen bindings): use raw FFI `ProtectedJniExtensions.lookup` pattern — see `_callBooleanMethodWithObject` for `List.add`, `_callIntMethod` for `List.size`
 - `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
 - **JAR discovery**: `JreManager._findJsoupJar()` checks `JSOUP_JAR_PATH` env → exe-relative paths → walks upward from `Directory.current` for `.dart_tool/hooks_runner/shared/jsoup/build/jsoup-<version>/`; version constant in `lib/src/jsoup_version.dart`
-- **JNI test prereq**: Tests using JNI (e.g. `aidoku_plugin_native_test.dart`) require `dart run jni:setup` to generate `dartjni.dll` in the JRE's `bin/server/` directory
+- **MSYS2/MinGW CMake**: Windows backslash paths cause `Invalid character escape` in CMake; use `/c/...` format (not `C:\...`); `jni:setup` expects MSVC `Debug/` layout — `generate_jni_bindings.dart --jni-setup` works around this by rescuing `libdartjni.so` from the temp dir
+- **JNI test prereq**: Run `melos run jni_setup` (or `dart run tool/generate_jni_bindings.dart --jni-setup` from `packages/jsoup/`) — auto-discovers system JDK and handles MSYS2/MinGW CMake path issues; raw `dart run jni:setup` fails under MSYS2
 - **Web backend** (TeaVM): `TeaVMParser` in `lib/src/web/jsoup_teavm.dart` — loads TeaVM-compiled Java Jsoup via Blob URL + `importScripts` (Worker-only); the UMD module exports all bridge functions on `self`
 - `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
 - `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)

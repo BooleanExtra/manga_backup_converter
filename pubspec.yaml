@@ -264,6 +264,18 @@ melos:
       run: dart run packages/mangabackupconverter_cli/bin/mangabackupconverter_cli.dart
       description: Run the CLI directly (faster than `dart run mangabackupconverter_cli:mangabackupconverter_cli`).
 
+    jnigen:
+      exec: dart run tool/generate_jni_bindings.dart
+      description: Generate JNI bindings for jsoup (prepends bundled JRE to PATH).
+      packageFilters:
+        scope: jsoup
+
+    jni_setup:
+      exec: dart run tool/generate_jni_bindings.dart --jni-setup
+      description: Build dartjni.dll via jni:setup with auto-discovered system JDK.
+      packageFilters:
+        scope: jsoup
+
     dart_test:
       run: melos run dart_test:pkg --no-select
       description: Run all Flutter tests in this project.

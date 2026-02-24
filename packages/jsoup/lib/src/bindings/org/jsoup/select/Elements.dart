@@ -89,9 +89,7 @@ class Elements extends jni$_.JObject {
   /// from: `public void <init>()`
   /// The returned object must be released after use, by calling the [release] method.
   factory Elements() {
-    return Elements.fromReference(
-      _new$(_class.reference.pointer, _id_new$ as jni$_.JMethodIDPtr).reference,
-    );
+    return Elements.fromReference(_new$(_class.reference.pointer, _id_new$ as jni$_.JMethodIDPtr).reference);
   }
 
   static final _id_new$1 = _class.constructorId(
@@ -101,20 +99,10 @@ class Elements extends jni$_.JObject {
   static final _new$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_NewObject')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public void <init>(int initialCapacity)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -122,11 +110,7 @@ class Elements extends jni$_.JObject {
     int initialCapacity,
   ) {
     return Elements.fromReference(
-      _new$1(
-        _class.reference.pointer,
-        _id_new$1 as jni$_.JMethodIDPtr,
-        initialCapacity,
-      ).reference,
+      _new$1(_class.reference.pointer, _id_new$1 as jni$_.JMethodIDPtr, initialCapacity).reference,
     );
   }
 
@@ -145,11 +129,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_NewObject')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void <init>(java.util.Collection<org.jsoup.nodes.Element> elements)`
@@ -159,11 +139,7 @@ class Elements extends jni$_.JObject {
   ) {
     final _$elements = elements?.reference ?? jni$_.jNullReference;
     return Elements.fromReference(
-      _new$2(
-        _class.reference.pointer,
-        _id_new$2 as jni$_.JMethodIDPtr,
-        _$elements.pointer,
-      ).reference,
+      _new$2(_class.reference.pointer, _id_new$2 as jni$_.JMethodIDPtr, _$elements.pointer).reference,
     );
   }
 
@@ -182,11 +158,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_NewObject')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void <init>(java.util.List<org.jsoup.nodes.Element> elements)`
@@ -196,11 +168,7 @@ class Elements extends jni$_.JObject {
   ) {
     final _$elements = elements?.reference ?? jni$_.jNullReference;
     return Elements.fromReference(
-      _new$3(
-        _class.reference.pointer,
-        _id_new$3 as jni$_.JMethodIDPtr,
-        _$elements.pointer,
-      ).reference,
+      _new$3(_class.reference.pointer, _id_new$3 as jni$_.JMethodIDPtr, _$elements.pointer).reference,
     );
   }
 
@@ -219,11 +187,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_NewObject')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void <init>(org.jsoup.nodes.Element[] elements)`
@@ -233,11 +197,7 @@ class Elements extends jni$_.JObject {
   ) {
     final _$elements = elements?.reference ?? jni$_.jNullReference;
     return Elements.fromReference(
-      _new$4(
-        _class.reference.pointer,
-        _id_new$4 as jni$_.JMethodIDPtr,
-        _$elements.pointer,
-      ).reference,
+      _new$4(_class.reference.pointer, _id_new$4 as jni$_.JMethodIDPtr, _$elements.pointer).reference,
     );
   }
 
@@ -290,11 +250,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public java.lang.String attr(java.lang.String attributeKey)`
@@ -332,11 +288,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean hasAttr(java.lang.String attributeKey)`
@@ -348,11 +300,7 @@ class Elements extends jni$_.JObject {
     jni$_.JString? attributeKey,
   ) {
     final _$attributeKey = attributeKey?.reference ?? jni$_.jNullReference;
-    return _hasAttr(
-      reference.pointer,
-      _id_hasAttr as jni$_.JMethodIDPtr,
-      _$attributeKey.pointer,
-    ).boolean;
+    return _hasAttr(reference.pointer, _id_hasAttr as jni$_.JMethodIDPtr, _$attributeKey.pointer).boolean;
   }
 
   static final _id_eachAttr = _class.instanceMethodId(
@@ -371,11 +319,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public java.util.List<java.lang.String> eachAttr(java.lang.String attributeKey)`
@@ -395,9 +339,7 @@ class Elements extends jni$_.JObject {
       _id_eachAttr as jni$_.JMethodIDPtr,
       _$attributeKey.pointer,
     ).object<jni$_.JList<jni$_.JString?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JString?>(
-        jni$_.$JString$NullableType$(),
-      ),
+      const jni$_.$JList$NullableType$<jni$_.JString?>(jni$_.$JString$NullableType$()),
     );
   }
 
@@ -462,11 +404,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements removeAttr(java.lang.String attributeKey)`
@@ -502,11 +440,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements addClass(java.lang.String className)`
@@ -542,11 +476,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements removeClass(java.lang.String className)`
@@ -582,11 +512,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements toggleClass(java.lang.String className)`
@@ -622,11 +548,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean hasClass(java.lang.String className)`
@@ -638,11 +560,7 @@ class Elements extends jni$_.JObject {
     jni$_.JString? className,
   ) {
     final _$className = className?.reference ?? jni$_.jNullReference;
-    return _hasClass(
-      reference.pointer,
-      _id_hasClass as jni$_.JMethodIDPtr,
-      _$className.pointer,
-    ).boolean;
+    return _hasClass(reference.pointer, _id_hasClass as jni$_.JMethodIDPtr, _$className.pointer).boolean;
   }
 
   static final _id_val = _class.instanceMethodId(
@@ -695,11 +613,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements val(java.lang.String value)`
@@ -784,10 +698,7 @@ class Elements extends jni$_.JObject {
   ///@return true if any element has non-blank text content.
   ///@see Element\#hasText()
   bool hasText() {
-    return _hasText(
-      reference.pointer,
-      _id_hasText as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _hasText(reference.pointer, _id_hasText as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_eachText = _class.instanceMethodId(
@@ -821,13 +732,8 @@ class Elements extends jni$_.JObject {
   ///@see Element\#hasText()
   ///@see \#text()
   jni$_.JList<jni$_.JString?>? eachText() {
-    return _eachText(
-      reference.pointer,
-      _id_eachText as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<jni$_.JString?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JString?>(
-        jni$_.$JString$NullableType$(),
-      ),
+    return _eachText(reference.pointer, _id_eachText as jni$_.JMethodIDPtr).object<jni$_.JList<jni$_.JString?>?>(
+      const jni$_.$JList$NullableType$<jni$_.JString?>(jni$_.$JString$NullableType$()),
     );
   }
 
@@ -952,11 +858,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements tagName(java.lang.String tagName)`
@@ -994,11 +896,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements html(java.lang.String html)`
@@ -1035,11 +933,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements prepend(java.lang.String html)`
@@ -1076,11 +970,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements append(java.lang.String html)`
@@ -1117,11 +1007,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements before(java.lang.String html)`
@@ -1158,11 +1044,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements after(java.lang.String html)`
@@ -1199,11 +1081,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements wrap(java.lang.String html)`
@@ -1381,11 +1259,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements select(java.lang.String query)`
@@ -1421,11 +1295,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements not(java.lang.String query)`
@@ -1458,20 +1328,10 @@ class Elements extends jni$_.JObject {
   static final _eq =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.select.Elements eq(int index)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -1507,11 +1367,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean is(java.lang.String query)`
@@ -1523,11 +1379,7 @@ class Elements extends jni$_.JObject {
     jni$_.JString? query,
   ) {
     final _$query = query?.reference ?? jni$_.jNullReference;
-    return _is$(
-      reference.pointer,
-      _id_is$ as jni$_.JMethodIDPtr,
-      _$query.pointer,
-    ).boolean;
+    return _is$(reference.pointer, _id_is$ as jni$_.JMethodIDPtr, _$query.pointer).boolean;
   }
 
   static final _id_next = _class.instanceMethodId(
@@ -1557,10 +1409,7 @@ class Elements extends jni$_.JObject {
   /// Get the immediate next element sibling of each element in this list.
   ///@return next element siblings.
   Elements? next() {
-    return _next(
-      reference.pointer,
-      _id_next as jni$_.JMethodIDPtr,
-    ).object<Elements?>(const $Elements$NullableType$());
+    return _next(reference.pointer, _id_next as jni$_.JMethodIDPtr).object<Elements?>(const $Elements$NullableType$());
   }
 
   static final _id_next$1 = _class.instanceMethodId(
@@ -1579,11 +1428,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements next(java.lang.String query)`
@@ -1652,11 +1497,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements nextAll(java.lang.String query)`
@@ -1703,10 +1544,7 @@ class Elements extends jni$_.JObject {
   /// Get the immediate previous element sibling of each element in this list.
   ///@return previous element siblings.
   Elements? prev() {
-    return _prev(
-      reference.pointer,
-      _id_prev as jni$_.JMethodIDPtr,
-    ).object<Elements?>(const $Elements$NullableType$());
+    return _prev(reference.pointer, _id_prev as jni$_.JMethodIDPtr).object<Elements?>(const $Elements$NullableType$());
   }
 
   static final _id_prev$1 = _class.instanceMethodId(
@@ -1725,11 +1563,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements prev(java.lang.String query)`
@@ -1798,11 +1632,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements prevAll(java.lang.String query)`
@@ -1937,11 +1767,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements traverse(org.jsoup.select.NodeVisitor nodeVisitor)`
@@ -1977,11 +1803,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.select.Elements filter(org.jsoup.select.NodeFilter nodeFilter)`
@@ -2029,13 +1851,8 @@ class Elements extends jni$_.JObject {
   ///@return a list of FormElements pulled from the matched elements. The list will be empty if the elements contain
   /// no forms.
   jni$_.JList<jni$_.JObject?>? forms() {
-    return _forms(
-      reference.pointer,
-      _id_forms as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<jni$_.JObject?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JObject?>(
-        jni$_.$JObject$NullableType$(),
-      ),
+    return _forms(reference.pointer, _id_forms as jni$_.JMethodIDPtr).object<jni$_.JList<jni$_.JObject?>?>(
+      const jni$_.$JList$NullableType$<jni$_.JObject?>(jni$_.$JObject$NullableType$()),
     );
   }
 
@@ -2066,13 +1883,8 @@ class Elements extends jni$_.JObject {
   /// Get Comment nodes that are direct child nodes of the selected elements.
   ///@return Comment nodes, or an empty list if none.
   jni$_.JList<jni$_.JObject?>? comments() {
-    return _comments(
-      reference.pointer,
-      _id_comments as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<jni$_.JObject?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JObject?>(
-        jni$_.$JObject$NullableType$(),
-      ),
+    return _comments(reference.pointer, _id_comments as jni$_.JMethodIDPtr).object<jni$_.JList<jni$_.JObject?>?>(
+      const jni$_.$JList$NullableType$<jni$_.JObject?>(jni$_.$JObject$NullableType$()),
     );
   }
 
@@ -2107,9 +1919,7 @@ class Elements extends jni$_.JObject {
       reference.pointer,
       _id_textNodes as jni$_.JMethodIDPtr,
     ).object<jni$_.JList<textnode$_.TextNode?>?>(
-      const jni$_.$JList$NullableType$<textnode$_.TextNode?>(
-        textnode$_.$TextNode$NullableType$(),
-      ),
+      const jni$_.$JList$NullableType$<textnode$_.TextNode?>(textnode$_.$TextNode$NullableType$()),
     );
   }
 
@@ -2141,13 +1951,8 @@ class Elements extends jni$_.JObject {
   /// content of tags such as {@code script}, {@code style} etc and are distinct from TextNodes.
   ///@return Comment nodes, or an empty list if none.
   jni$_.JList<jni$_.JObject?>? dataNodes() {
-    return _dataNodes(
-      reference.pointer,
-      _id_dataNodes as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<jni$_.JObject?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JObject?>(
-        jni$_.$JObject$NullableType$(),
-      ),
+    return _dataNodes(reference.pointer, _id_dataNodes as jni$_.JMethodIDPtr).object<jni$_.JList<jni$_.JObject?>?>(
+      const jni$_.$JList$NullableType$<jni$_.JObject?>(jni$_.$JObject$NullableType$()),
     );
   }
 
@@ -2167,12 +1972,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Element set(int index, org.jsoup.nodes.Element element)`
@@ -2204,20 +2004,10 @@ class Elements extends jni$_.JObject {
   static final _remove$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Element remove(int index)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -2252,11 +2042,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean remove(java.lang.Object o)`
@@ -2269,11 +2055,7 @@ class Elements extends jni$_.JObject {
     jni$_.JObject? o,
   ) {
     final _$o = o?.reference ?? jni$_.jNullReference;
-    return _remove$2(
-      reference.pointer,
-      _id_remove$2 as jni$_.JMethodIDPtr,
-      _$o.pointer,
-    ).boolean;
+    return _remove$2(reference.pointer, _id_remove$2 as jni$_.JMethodIDPtr, _$o.pointer).boolean;
   }
 
   static final _id_clear = _class.instanceMethodId(
@@ -2322,11 +2104,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean removeAll(java.util.Collection<?> c)`
@@ -2340,11 +2118,7 @@ class Elements extends jni$_.JObject {
     jni$_.JObject? c,
   ) {
     final _$c = c?.reference ?? jni$_.jNullReference;
-    return _removeAll(
-      reference.pointer,
-      _id_removeAll as jni$_.JMethodIDPtr,
-      _$c.pointer,
-    ).boolean;
+    return _removeAll(reference.pointer, _id_removeAll as jni$_.JMethodIDPtr, _$c.pointer).boolean;
   }
 
   static final _id_retainAll = _class.instanceMethodId(
@@ -2363,11 +2137,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean retainAll(java.util.Collection<?> c)`
@@ -2382,11 +2152,7 @@ class Elements extends jni$_.JObject {
     jni$_.JObject? c,
   ) {
     final _$c = c?.reference ?? jni$_.jNullReference;
-    return _retainAll(
-      reference.pointer,
-      _id_retainAll as jni$_.JMethodIDPtr,
-      _$c.pointer,
-    ).boolean;
+    return _retainAll(reference.pointer, _id_retainAll as jni$_.JMethodIDPtr, _$c.pointer).boolean;
   }
 
   static final _id_removeIf = _class.instanceMethodId(
@@ -2405,11 +2171,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallBooleanMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public boolean removeIf(java.util.function.Predicate<? super org.jsoup.nodes.Element> filter)`
@@ -2422,11 +2184,7 @@ class Elements extends jni$_.JObject {
     jni$_.JObject? filter,
   ) {
     final _$filter = filter?.reference ?? jni$_.jNullReference;
-    return _removeIf(
-      reference.pointer,
-      _id_removeIf as jni$_.JMethodIDPtr,
-      _$filter.pointer,
-    ).boolean;
+    return _removeIf(reference.pointer, _id_removeIf as jni$_.JMethodIDPtr, _$filter.pointer).boolean;
   }
 
   static final _id_replaceAll = _class.instanceMethodId(
@@ -2445,11 +2203,7 @@ class Elements extends jni$_.JObject {
             >
           >('globalEnv_CallVoidMethod')
           .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void replaceAll(java.util.function.UnaryOperator<org.jsoup.nodes.Element> operator)`
@@ -2461,11 +2215,7 @@ class Elements extends jni$_.JObject {
     jni$_.JObject? operator,
   ) {
     final _$operator = operator?.reference ?? jni$_.jNullReference;
-    _replaceAll(
-      reference.pointer,
-      _id_replaceAll as jni$_.JMethodIDPtr,
-      _$operator.pointer,
-    ).check();
+    _replaceAll(reference.pointer, _id_replaceAll as jni$_.JMethodIDPtr, _$operator.pointer).check();
   }
 }
 

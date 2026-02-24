@@ -52,9 +52,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
   ) : $type = type,
       super.fromReference(reference);
 
-  static final _class = jni$_.JClass.forName(
-    r'org/jsoup/nodes/Document$OutputSettings$Syntax',
-  );
+  static final _class = jni$_.JClass.forName(r'org/jsoup/nodes/Document$OutputSettings$Syntax');
 
   /// The type which includes information such as the signature of this class.
   static const jni$_.JType<Document$OutputSettings$Syntax?> nullableType =
@@ -130,11 +128,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document$OutputSettings$Syntax valueOf(java.lang.String name)`
@@ -147,9 +141,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
       _class.reference.pointer,
       _id_valueOf as jni$_.JMethodIDPtr,
       _$name.pointer,
-    ).object<Document$OutputSettings$Syntax?>(
-      const $Document$OutputSettings$Syntax$NullableType$(),
-    );
+    ).object<Document$OutputSettings$Syntax?>(const $Document$OutputSettings$Syntax$NullableType$());
   }
 }
 
@@ -241,9 +233,7 @@ class Document$OutputSettings extends jni$_.JObject {
   ) : $type = type,
       super.fromReference(reference);
 
-  static final _class = jni$_.JClass.forName(
-    r'org/jsoup/nodes/Document$OutputSettings',
-  );
+  static final _class = jni$_.JClass.forName(r'org/jsoup/nodes/Document$OutputSettings');
 
   /// The type which includes information such as the signature of this class.
   static const jni$_.JType<Document$OutputSettings?> nullableType = $Document$OutputSettings$NullableType$();
@@ -338,11 +328,7 @@ class Document$OutputSettings extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings escapeMode(org.jsoup.nodes.Entities$EscapeMode escapeMode)`
@@ -360,9 +346,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_escapeMode$1 as jni$_.JMethodIDPtr,
       _$escapeMode.pointer,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_charset = _class.instanceMethodId(
@@ -418,11 +402,7 @@ class Document$OutputSettings extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings charset(java.nio.charset.Charset charset)`
@@ -439,9 +419,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_charset$1 as jni$_.JMethodIDPtr,
       _$charset.pointer,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_charset$2 = _class.instanceMethodId(
@@ -460,11 +438,7 @@ class Document$OutputSettings extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings charset(java.lang.String charset)`
@@ -481,9 +455,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_charset$2 as jni$_.JMethodIDPtr,
       _$charset.pointer,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_syntax = _class.instanceMethodId(
@@ -516,9 +488,7 @@ class Document$OutputSettings extends jni$_.JObject {
     return _syntax(
       reference.pointer,
       _id_syntax as jni$_.JMethodIDPtr,
-    ).object<Document$OutputSettings$Syntax?>(
-      const $Document$OutputSettings$Syntax$NullableType$(),
-    );
+    ).object<Document$OutputSettings$Syntax?>(const $Document$OutputSettings$Syntax$NullableType$());
   }
 
   static final _id_syntax$1 = _class.instanceMethodId(
@@ -537,11 +507,7 @@ class Document$OutputSettings extends jni$_.JObject {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings syntax(org.jsoup.nodes.Document$OutputSettings$Syntax syntax)`
@@ -562,9 +528,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_syntax$1 as jni$_.JMethodIDPtr,
       _$syntax.pointer,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_prettyPrint = _class.instanceMethodId(
@@ -594,10 +558,7 @@ class Document$OutputSettings extends jni$_.JObject {
   /// the output, and the output will generally look like the input.
   ///@return if pretty printing is enabled.
   bool prettyPrint() {
-    return _prettyPrint(
-      reference.pointer,
-      _id_prettyPrint as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _prettyPrint(reference.pointer, _id_prettyPrint as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_prettyPrint$1 = _class.instanceMethodId(
@@ -608,20 +569,10 @@ class Document$OutputSettings extends jni$_.JObject {
   static final _prettyPrint$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings prettyPrint(boolean pretty)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -636,9 +587,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_prettyPrint$1 as jni$_.JMethodIDPtr,
       pretty ? 1 : 0,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_outline = _class.instanceMethodId(
@@ -668,10 +617,7 @@ class Document$OutputSettings extends jni$_.JObject {
   /// all tags as block.
   ///@return if outline mode is enabled.
   bool outline() {
-    return _outline(
-      reference.pointer,
-      _id_outline as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _outline(reference.pointer, _id_outline as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_outline$1 = _class.instanceMethodId(
@@ -682,20 +628,10 @@ class Document$OutputSettings extends jni$_.JObject {
   static final _outline$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings outline(boolean outlineMode)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -710,9 +646,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_outline$1 as jni$_.JMethodIDPtr,
       outlineMode ? 1 : 0,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_indentAmount = _class.instanceMethodId(
@@ -741,10 +675,7 @@ class Document$OutputSettings extends jni$_.JObject {
   /// Get the current tag indent amount, used when pretty printing.
   ///@return the current indent amount
   int indentAmount() {
-    return _indentAmount(
-      reference.pointer,
-      _id_indentAmount as jni$_.JMethodIDPtr,
-    ).integer;
+    return _indentAmount(reference.pointer, _id_indentAmount as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_indentAmount$1 = _class.instanceMethodId(
@@ -755,20 +686,10 @@ class Document$OutputSettings extends jni$_.JObject {
   static final _indentAmount$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings indentAmount(int indentAmount)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -783,9 +704,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_indentAmount$1 as jni$_.JMethodIDPtr,
       indentAmount,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_maxPaddingWidth = _class.instanceMethodId(
@@ -815,10 +734,7 @@ class Document$OutputSettings extends jni$_.JObject {
   /// so very deeply nested nodes don't get insane padding amounts.
   ///@return the current indent amount
   int maxPaddingWidth() {
-    return _maxPaddingWidth(
-      reference.pointer,
-      _id_maxPaddingWidth as jni$_.JMethodIDPtr,
-    ).integer;
+    return _maxPaddingWidth(reference.pointer, _id_maxPaddingWidth as jni$_.JMethodIDPtr).integer;
   }
 
   static final _id_maxPaddingWidth$1 = _class.instanceMethodId(
@@ -829,20 +745,10 @@ class Document$OutputSettings extends jni$_.JObject {
   static final _maxPaddingWidth$1 =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JniResult Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallObjectMethod')
-          .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public org.jsoup.nodes.Document$OutputSettings maxPaddingWidth(int maxPaddingWidth)`
   /// The returned object must be released after use, by calling the [release] method.
@@ -858,9 +764,7 @@ class Document$OutputSettings extends jni$_.JObject {
       reference.pointer,
       _id_maxPaddingWidth$1 as jni$_.JMethodIDPtr,
       maxPaddingWidth,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_clone = _class.instanceMethodId(
@@ -890,9 +794,7 @@ class Document$OutputSettings extends jni$_.JObject {
     return _clone(
       reference.pointer,
       _id_clone as jni$_.JMethodIDPtr,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 }
 
@@ -979,9 +881,7 @@ class Document$QuirksMode extends jni$_.JObject {
   ) : $type = type,
       super.fromReference(reference);
 
-  static final _class = jni$_.JClass.forName(
-    r'org/jsoup/nodes/Document$QuirksMode',
-  );
+  static final _class = jni$_.JClass.forName(r'org/jsoup/nodes/Document$QuirksMode');
 
   /// The type which includes information such as the signature of this class.
   static const jni$_.JType<Document$QuirksMode?> nullableType = $Document$QuirksMode$NullableType$();
@@ -1043,9 +943,7 @@ class Document$QuirksMode extends jni$_.JObject {
       _class.reference.pointer,
       _id_values as jni$_.JMethodIDPtr,
     ).object<jni$_.JArray<Document$QuirksMode?>?>(
-      const jni$_.$JArray$NullableType$<Document$QuirksMode?>(
-        $Document$QuirksMode$NullableType$(),
-      ),
+      const jni$_.$JArray$NullableType$<Document$QuirksMode?>($Document$QuirksMode$NullableType$()),
     );
   }
 
@@ -1065,11 +963,7 @@ class Document$QuirksMode extends jni$_.JObject {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document$QuirksMode valueOf(java.lang.String name)`
@@ -1216,12 +1110,7 @@ class Document extends element$_.Element {
     final _$namespace = namespace?.reference ?? jni$_.jNullReference;
     final _$baseUri = baseUri?.reference ?? jni$_.jNullReference;
     return Document.fromReference(
-      _new$(
-        _class.reference.pointer,
-        _id_new$ as jni$_.JMethodIDPtr,
-        _$namespace.pointer,
-        _$baseUri.pointer,
-      ).reference,
+      _new$(_class.reference.pointer, _id_new$ as jni$_.JMethodIDPtr, _$namespace.pointer, _$baseUri.pointer).reference,
     );
   }
 
@@ -1240,11 +1129,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_NewObject')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void <init>(java.lang.String baseUri)`
@@ -1259,11 +1144,7 @@ class Document extends element$_.Element {
   ) {
     final _$baseUri = baseUri?.reference ?? jni$_.jNullReference;
     return Document.fromReference(
-      _new1(
-        _class.reference.pointer,
-        _id_new1 as jni$_.JMethodIDPtr,
-        _$baseUri.pointer,
-      ).reference,
+      _new1(_class.reference.pointer, _id_new1 as jni$_.JMethodIDPtr, _$baseUri.pointer).reference,
     );
   }
 
@@ -1283,11 +1164,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallStaticObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `static public org.jsoup.nodes.Document createShell(java.lang.String baseUri)`
@@ -1513,13 +1390,8 @@ class Document extends element$_.Element {
   ///@see FormElement\#elements()
   ///@since 1.15.4
   jni$_.JList<jni$_.JObject?>? forms() {
-    return _forms(
-      reference.pointer,
-      _id_forms as jni$_.JMethodIDPtr,
-    ).object<jni$_.JList<jni$_.JObject?>?>(
-      const jni$_.$JList$NullableType$<jni$_.JObject?>(
-        jni$_.$JObject$NullableType$(),
-      ),
+    return _forms(reference.pointer, _id_forms as jni$_.JMethodIDPtr).object<jni$_.JList<jni$_.JObject?>?>(
+      const jni$_.$JList$NullableType$<jni$_.JObject?>(jni$_.$JObject$NullableType$()),
     );
   }
 
@@ -1539,11 +1411,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.FormElement expectForm(java.lang.String cssQuery)`
@@ -1615,11 +1483,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallVoidMethod')
           .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void title(java.lang.String title)`
@@ -1631,11 +1495,7 @@ class Document extends element$_.Element {
     jni$_.JString? title,
   ) {
     final _$title = title?.reference ?? jni$_.jNullReference;
-    _title$1(
-      reference.pointer,
-      _id_title$1 as jni$_.JMethodIDPtr,
-      _$title.pointer,
-    ).check();
+    _title$1(reference.pointer, _id_title$1 as jni$_.JMethodIDPtr, _$title.pointer).check();
   }
 
   static final _id_createElement = _class.instanceMethodId(
@@ -1654,11 +1514,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Element createElement(java.lang.String tagName)`
@@ -1724,11 +1580,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Element text(java.lang.String text)`
@@ -1794,11 +1646,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallVoidMethod')
           .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public void charset(java.nio.charset.Charset charset)`
@@ -1829,11 +1677,7 @@ class Document extends element$_.Element {
     jni$_.JObject? charset,
   ) {
     final _$charset = charset?.reference ?? jni$_.jNullReference;
-    _charset(
-      reference.pointer,
-      _id_charset as jni$_.JMethodIDPtr,
-      _$charset.pointer,
-    ).check();
+    _charset(reference.pointer, _id_charset as jni$_.JMethodIDPtr, _$charset.pointer).check();
   }
 
   static final _id_charset$1 = _class.instanceMethodId(
@@ -1879,20 +1723,10 @@ class Document extends element$_.Element {
   static final _updateMetaCharsetElement =
       jni$_.ProtectedJniExtensions.lookup<
             jni$_.NativeFunction<
-              jni$_.JThrowablePtr Function(
-                jni$_.Pointer<jni$_.Void>,
-                jni$_.JMethodIDPtr,
-                jni$_.VarArgs<(jni$_.Int32,)>,
-              )
+              jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.VarArgs<(jni$_.Int32,)>)
             >
           >('globalEnv_CallVoidMethod')
-          .asFunction<
-            jni$_.JThrowablePtr Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              int,
-            )
-          >();
+          .asFunction<jni$_.JThrowablePtr Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, int)>();
 
   /// from: `public void updateMetaCharsetElement(boolean update)`
   ///
@@ -1943,10 +1777,7 @@ class Document extends element$_.Element {
   ///@return Returns <tt>true</tt> if the element is updated on charset
   /// changes, <tt>false</tt> if not
   bool updateMetaCharsetElement$1() {
-    return _updateMetaCharsetElement$1(
-      reference.pointer,
-      _id_updateMetaCharsetElement$1 as jni$_.JMethodIDPtr,
-    ).boolean;
+    return _updateMetaCharsetElement$1(reference.pointer, _id_updateMetaCharsetElement$1 as jni$_.JMethodIDPtr).boolean;
   }
 
   static final _id_clone$2 = _class.instanceMethodId(
@@ -2039,9 +1870,7 @@ class Document extends element$_.Element {
     return _outputSettings(
       reference.pointer,
       _id_outputSettings as jni$_.JMethodIDPtr,
-    ).object<Document$OutputSettings?>(
-      const $Document$OutputSettings$NullableType$(),
-    );
+    ).object<Document$OutputSettings?>(const $Document$OutputSettings$NullableType$());
   }
 
   static final _id_outputSettings$1 = _class.instanceMethodId(
@@ -2060,11 +1889,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document outputSettings(org.jsoup.nodes.Document$OutputSettings outputSettings)`
@@ -2130,11 +1955,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document quirksMode(org.jsoup.nodes.Document$QuirksMode quirksMode)`
@@ -2199,11 +2020,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document parser(org.jsoup.parser.Parser parser)`
@@ -2240,11 +2057,7 @@ class Document extends element$_.Element {
             >
           >('globalEnv_CallObjectMethod')
           .asFunction<
-            jni$_.JniResult Function(
-              jni$_.Pointer<jni$_.Void>,
-              jni$_.JMethodIDPtr,
-              jni$_.Pointer<jni$_.Void>,
-            )
+            jni$_.JniResult Function(jni$_.Pointer<jni$_.Void>, jni$_.JMethodIDPtr, jni$_.Pointer<jni$_.Void>)
           >();
 
   /// from: `public org.jsoup.nodes.Document connection(org.jsoup.Connection connection)`
