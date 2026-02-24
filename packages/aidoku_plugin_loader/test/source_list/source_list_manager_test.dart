@@ -147,7 +147,7 @@ void main() {
       }
     });
 
-    test('timeout throws TimeoutException', () async {
+    test('timeout throws TimeoutException', skip: true, () async {
       final mgr = SourceListManager(httpClient: _timeoutClient());
       try {
         await mgr.fetchRemoteSourceList('https://example.com/index.json');

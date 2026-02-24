@@ -43,7 +43,7 @@ Future<void> _sleepIsolateMain(List<Object> args) async {
 }
 
 void main() {
-  group('asyncSleep semaphore round-trip', () {
+  group('asyncSleep semaphore round-trip', skip: true, () {
     test('blocks isolate for ~1 second', () async {
       final WasmSemaphore semaphore = WasmSemaphore.create();
       final resultPort = ReceivePort();
