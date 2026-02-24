@@ -38,6 +38,8 @@ melos run dart_test:pkg          # Dart tests for a specific package
                                  # Interactive melos scripts (dart_test:pkg, generate:pkg) fail in non-TTY shells;
                                  # run `dart test --reporter expanded` directly in the package directory instead
                                  # Native WASM tests skip automatically if test fixture is absent
+                                 # Root pubspec.yaml must depend on packages with build hooks (native code assets)
+                                 # for `dart test` from root to discover them (e.g. aidoku_plugin_loader, jsoup)
 melos run cli                    # Run CLI directly (args forwarded automatically)
 melos run jnigen                 # Generate JNI bindings for jsoup (uses system JDK for javadoc)
 melos run jni_setup              # Build dartjni.dll (uses bundled JDK, handles MSYS2)
@@ -102,6 +104,9 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `wasm_runner_native.dart` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`) — `_makeCallable`'s `on Exception catch` handles these naturally; do not use `on Object catch`
 - **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and `wasm_runner_native.dart` route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them
 - `_processCmd` in `wasm_isolate.dart` replies via `cmd.replyPort.send()` — when changing reply format (e.g. to a tuple), update ALL corresponding `await port.first as ...` casts in `aidoku_plugin_io.dart`
+- **Isolate error handling**: `wasmIsolateMain` and `_processCmd` use `on Object catch` (not `on Exception catch`) — `Error` subtypes (`ArgumentError`, `RangeError`, `StateError`) from wasmer/FFI must be caught or the isolate dies silently, causing `port.first` hangs on the main isolate
+- **Isolate init failure**: Runner creation happens AFTER the handshake sends cmdPort — if `WasmRunner.fromBytes` fails, the isolate enters a command-drain loop replying with errors (can't send on the already-consumed handshake port)
+- **`_sendErrorReply` in `wasm_isolate.dart`**: Best-effort error reply for all command types; `WasmSearchCmd`/`WasmMangaDetailsCmd` reply with `(String error, List<String>)`, all others reply with `null`
 - `aidoku_plugin_io.dart` (native) and `aidoku_plugin_web.dart` (web) are conditional exports of `aidoku_plugin.dart` — any public method added to one MUST be added to the other
 - Host import errors (CSS selector failures, HTML parse errors) are logged with `[CB]` prefix via `onLog` — `wasm_isolate.dart` accumulates these during WASM calls and returns them as warnings alongside results; `PluginSearchPageResult.warnings` carries them to the pipeline; `_streamSearch` emits `PluginSearchError` for non-empty warnings; web worker `console.warn` calls in `wasm_worker_js.dart` must also use `[CB]` prefix for consistency
 - WASM plugins are single-threaded — never call `search`/`getMangaWithChapters` concurrently on the same `PluginSource`; the migration dashboard serializes searches (one manga at a time) and `_streamSearch` enriches results with `getMangaWithChapters` before emitting so the TUI receives complete data (URL, chapters) upfront

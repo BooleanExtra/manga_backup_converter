@@ -39,7 +39,7 @@ void main() {
       });
 
       group('searchManga', () {
-        test('empty query returns non-empty results (no VRF needed)', () async {
+        test('empty query returns non-empty results', () async {
           final MangaPageResult result = await plugin.searchManga('', 1);
           // ignore: avoid_print
           print(
@@ -66,7 +66,7 @@ void main() {
         late String mangaKey;
 
         setUpAll(() async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           mangaKey = result.manga.first.key;
         });
 
