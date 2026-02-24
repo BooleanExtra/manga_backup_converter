@@ -19,8 +19,6 @@ import 'package:aidoku_plugin_loader/src/native/wasm_isolate.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:http/http.dart' as http;
-// ignore: implementation_imports
-import 'package:jsoup/src/jre/jre_manager.dart';
 
 /// A loaded Aidoku WASM source plugin (native implementation).
 ///
@@ -130,10 +128,6 @@ class AidokuPlugin {
         }
       }
     }
-
-    // Ensure the JVM is running before spawning the WASM isolate.
-    // The isolate's JsoupParser reuses the process-global JVM.
-    JreManager.ensureInitialized();
 
     final WasmSemaphore semaphore = WasmSemaphore.create();
     final sharedState = WasmSharedState();

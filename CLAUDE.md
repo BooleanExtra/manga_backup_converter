@@ -199,8 +199,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
   - Decoding postcard results must happen at the consumer level (`aidoku_plugin_io.dart` / `aidoku_plugin_web.dart`), not inside `HostStore`
   - Native isolate forwards raw bytes via `WasmPartialResultMsg`
 - `_encodeString` in `aidoku_host.dart` returns **raw UTF-8** (`utf8.encode`), NOT postcard-encoded — aidoku-rs SDK reads host strings via `String::from_utf8(buffer)` which expects no length prefix
-- `html::attr` supports `abs:` prefix (Jsoup convention) — uses `element.absUrl(key)`; `HtmlElementResource`/`HtmlElementsResource` in `host_store.dart` hold `Element`/`Elements` objects; `baseUri` propagates via `Element.baseUri`
-- `html::parse_fragment` returns `HtmlElementResource` (wrapping a `Document`) so CSS selectors work
+- **html:: WASM imports are stubbed** — jsoup removed from aidoku_plugin_loader due to wasmer v7.0.1 VEH (Vectored Exception Handler) conflicting with JNI signals on Windows. HTML-scraping plugins (mangafire, asurascans, weebcentral) return empty results on native; JSON-API plugins (MangaDex) are unaffected. `escape`/`unescape` remain functional (pure string ops).
 - **jsoup OO API** (`packages/jsoup/`): public classes `Jsoup`, `Document extends Element`, `Element extends Node`, `Elements extends Iterable<Element>`, `Node` (base class), `TextNode extends Node`; `NativeHtmlParser` is internal (not exported from barrel `package:jsoup/jsoup.dart`)
 - `Jsoup.parser` is `@internal`; `Element.fromHandle`/`Elements.fromHandle`/`Document.fromHandle` are `@internal` — external code uses `Jsoup()`, `jsoup.parse()`, `element.select()` etc.
 - `Elements` is always native-backed; public constructor `Elements(Jsoup, List<Element>)` creates via `createElements`; for empty fallback use `Elements.fromHandle(parser, parser.createElements(const <int>[]))`
@@ -217,7 +216,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - **JVM is process-global**: Use `Jni.spawnIfNotExists` (not `Jni.spawn`) — child isolates share the JVM created by the main isolate; `DynamicLibrary.open(jvm.dll)` also creates a JVM as a side effect, so never pre-load it
 - **Web backend** (TeaVM): `TeaVMParser` in `lib/src/web/jsoup_teavm.dart` — loads TeaVM-compiled Java Jsoup via Blob URL + `importScripts` (Worker-only); the UMD module exports all bridge functions on `self`
 - `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
-- `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)
+- `host_store.dart`: HTML resource classes removed (jsoup decoupled); only `BytesResource`, `HttpRequestResource`, canvas/image/font resources remain
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a Dart isolate (`lib/src/web/wasm_worker_isolate.dart`) compiled to a Web Worker
   - Reuses `buildAidokuHostImports()`, `HostStore`, `WasmRunner` (web), `Jsoup()` (TeaVMParser) — unified with native

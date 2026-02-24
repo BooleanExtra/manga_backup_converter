@@ -15,6 +15,7 @@ class Jsoup {
   Jsoup() : parser = createParser();
 
   /// Create a Jsoup instance from a specific parser implementation.
+  @internal
   Jsoup.fromParser(this.parser);
 
   /// The underlying native parser. Package-internal.

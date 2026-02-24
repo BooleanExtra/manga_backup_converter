@@ -8,7 +8,6 @@ import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
-import 'package:jsoup/jsoup.dart' as jsoup;
 
 // ---------------------------------------------------------------------------
 // Sync XHR bindings (only allowed in Web Workers, not the main thread)
@@ -111,9 +110,6 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     mainPort.send(<String, Object?>{'type': 'partial_result', 'data': bytes});
   });
 
-  // Jsoup on web creates a TeaVMParser (real Java Jsoup compiled to JS).
-  final htmlParser = jsoup.Jsoup();
-
   // In-worker rate limiter — on web, HTTP is synchronous (XHR) so the limiter
   // must live in-worker rather than on the main isolate.
   RateLimiter? rateLimiter;
@@ -143,7 +139,6 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     onRateLimitSet: (int permits, int periodMs) {
       rateLimiter = RateLimiter(RateLimitConfig(permits: permits, periodMs: periodMs));
     },
-    htmlParser: htmlParser,
     onLog: sendLog,
   );
 
