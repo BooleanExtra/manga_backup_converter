@@ -30,8 +30,17 @@ function storeGet(rid) {
 }
 
 function storeRemove(rid) {
+  const removed = store.get(rid);
   store.delete(rid);
-  if (store.size === 0) nextRid = 1;
+  // Clean up cheerio context if no other resources reference it.
+  if (removed && removed.ctxId != null) {
+    var inUse = false;
+    for (const [, v] of store) {
+      if (v.ctxId === removed.ctxId) { inUse = true; break; }
+    }
+    if (!inUse) cheerioContexts.delete(removed.ctxId);
+  }
+  if (store.size === 0) { nextRid = 1; cheerioContexts.clear(); nextCtxId = 1; }
 }
 
 // ---------------------------------------------------------------------------
@@ -336,8 +345,11 @@ function buildNetImports() {
       const r = storeGet(rid);
       if (!r || r.type !== 'http' || !r.responseBody) return -1;
       const htmlStr = new TextDecoder().decode(r.responseBody);
-      const doc = new DOMParser().parseFromString(htmlStr, 'text/html');
-      return storeAdd({ type: 'html', node: doc.documentElement, baseUri: '' });
+      const baseUri = r.url || '';
+      const $ = cheerio.load(htmlStr);
+      const ctxId = nextCtxId++;
+      cheerioContexts.set(ctxId, $);
+      return storeAdd({ type: 'html', node: $.root()[0], ctxId: ctxId, baseUri: baseUri });
     },
     get_image(rid) {
       const r = storeGet(rid);
@@ -352,13 +364,201 @@ function buildNetImports() {
 }
 
 // ---------------------------------------------------------------------------
-// html module — using native browser DOM APIs (DOMParser in Worker)
+// html module — using Cheerio (self.cheerio loaded before this script)
 // ---------------------------------------------------------------------------
 
-function asElement(rid) {
+// Cheerio context management: each cheerio.load() creates a $ function.
+// Resources track which $ they belong to via ctxId.
+const cheerioContexts = new Map();
+let nextCtxId = 1;
+
+// Access cheerio — loaded as a UMD global before this script.
+const cheerio = (typeof self !== 'undefined' && self.cheerio) || {};
+if (typeof cheerio.load !== 'function') {
+  console.error('[aidoku] cheerio not loaded — HTML parsing will fail');
+}
+
+function getCtx(ctxId) {
+  return cheerioContexts.get(ctxId) || null;
+}
+
+function resolveUrl(baseUri, raw) {
+  if (!baseUri || !raw) return raw || '';
+  try { return new URL(raw, baseUri).href; }
+  catch (e) { return raw; }
+}
+
+// Get the resource and its cheerio context for an html-type RID.
+function asHtml(rid) {
   const r = storeGet(rid);
   if (!r || r.type !== 'html') return null;
-  return r.node;
+  return r;
+}
+
+// ---------------------------------------------------------------------------
+// Jsoup pseudo-selector engine
+// ---------------------------------------------------------------------------
+
+// Text helpers for jsoup pseudo-selectors.
+function getOwnText($, el) {
+  return $(el).contents().filter(function(_, n) { return n.type === 'text'; })
+    .map(function(_, n) { return n.data || ''; }).get().join('').trim();
+}
+
+function getOwnWholeText($, el) {
+  return $(el).contents().filter(function(_, n) { return n.type === 'text'; })
+    .map(function(_, n) { return n.data || ''; }).get().join('');
+}
+
+function getDataText($, el) {
+  // In Cheerio, elements have type:'tag' and name:'script'/'style'.
+  var tagName = (el.name || '').toLowerCase();
+  if (tagName === 'script' || tagName === 'style') {
+    return $(el).html() || '';
+  }
+  // For comments and nested script/style, check children.
+  var text = '';
+  $(el).contents().each(function(_, n) {
+    if (n.type === 'comment') text += n.data || '';
+    var nTag = (n.name || '').toLowerCase();
+    if (nTag === 'script' || nTag === 'style') text += $(n).html() || '';
+  });
+  return text || $(el).text() || '';
+}
+
+// Whole text (preserves original whitespace, unlike $.text() which normalizes).
+function getWholeText($, el) {
+  var text = '';
+  $(el).contents().each(function walk(_, n) {
+    if (n.type === 'text') text += n.data || '';
+    else $(n).contents().each(walk);
+  });
+  return text;
+}
+
+// Filter factories for jsoup-specific pseudo-selectors.
+const jsoupFilters = {
+  'contains': function(arg) { return function($, el) {
+    return $(el).text().toLowerCase().indexOf(arg.toLowerCase()) >= 0;
+  }; },
+  'containsOwn': function(arg) { return function($, el) {
+    return getOwnText($, el).toLowerCase().indexOf(arg.toLowerCase()) >= 0;
+  }; },
+  'containsWholeText': function(arg) { return function($, el) {
+    return getWholeText($, el).indexOf(arg) >= 0;
+  }; },
+  'containsWholeOwnText': function(arg) { return function($, el) {
+    return getOwnWholeText($, el).indexOf(arg) >= 0;
+  }; },
+  'containsData': function(arg) { return function($, el) {
+    return getDataText($, el).indexOf(arg) >= 0;
+  }; },
+  'matches': function(arg) { return function($, el) {
+    return new RegExp(arg).test($(el).text());
+  }; },
+  'matchesOwn': function(arg) { return function($, el) {
+    return new RegExp(arg).test(getOwnText($, el));
+  }; },
+  'matchesWholeText': function(arg) { return function($, el) {
+    return new RegExp(arg).test(getWholeText($, el));
+  }; },
+  'matchesWholeOwnText': function(arg) { return function($, el) {
+    return new RegExp(arg).test(getOwnWholeText($, el));
+  }; },
+};
+
+// Parse a selector that may contain jsoup-specific pseudo-selectors.
+// Returns { cssSelector: string, filters: [($, el) => bool] }.
+//
+// Limitation: jsoup pseudo-selectors mid-chain (e.g. "div:contains(x) > a")
+// apply the filter to the FINAL matched elements, not the intermediate segment.
+// In practice, Aidoku plugins always use pseudo-selectors at the end of a
+// selector chain, so this does not cause issues.
+function parseJsoupSelector(selector) {
+  var filters = [];
+  var remaining = selector;
+  var cssSelector = '';
+
+  // Process the selector, extracting jsoup pseudo-selectors.
+  while (remaining.length > 0) {
+    // Find the next : that might be a pseudo-selector.
+    var colonIdx = -1;
+    var inBrackets = 0;
+    for (var i = 0; i < remaining.length; i++) {
+      var ch = remaining[i];
+      if (ch === '[') inBrackets++;
+      else if (ch === ']') inBrackets--;
+      else if (ch === ':' && inBrackets === 0) {
+        // Check if this is a jsoup pseudo-selector.
+        var after = remaining.substring(i + 1);
+        var matchedName = null;
+        var names = Object.keys(jsoupFilters);
+        for (var n = 0; n < names.length; n++) {
+          if (after.indexOf(names[n] + '(') === 0) {
+            matchedName = names[n];
+            break;
+          }
+        }
+        if (matchedName) {
+          colonIdx = i;
+          break;
+        }
+      }
+    }
+
+    if (colonIdx < 0) {
+      // No more jsoup pseudo-selectors — rest is CSS.
+      cssSelector += remaining;
+      break;
+    }
+
+    // Add the CSS part before this pseudo-selector.
+    cssSelector += remaining.substring(0, colonIdx);
+
+    // Extract the pseudo-selector name and argument.
+    var afterColon = remaining.substring(colonIdx + 1);
+    var name = null;
+    var names2 = Object.keys(jsoupFilters);
+    for (var n2 = 0; n2 < names2.length; n2++) {
+      if (afterColon.indexOf(names2[n2] + '(') === 0) {
+        name = names2[n2];
+        break;
+      }
+    }
+
+    // Find the matching closing paren (balanced).
+    var argStart = name.length + 1; // after "name("
+    var depth = 1;
+    var argEnd = argStart;
+    for (; argEnd < afterColon.length && depth > 0; argEnd++) {
+      if (afterColon[argEnd] === '(') depth++;
+      else if (afterColon[argEnd] === ')') depth--;
+    }
+    var arg = afterColon.substring(argStart, argEnd - 1);
+
+    filters.push(jsoupFilters[name](arg));
+    remaining = afterColon.substring(argEnd);
+  }
+
+  return { cssSelector: cssSelector.trim(), filters: filters };
+}
+
+// Select elements using a selector that may include jsoup pseudo-selectors.
+function jsoupSelect($, context, selector) {
+  var parsed = parseJsoupSelector(selector);
+  var css = parsed.cssSelector || '*';
+  var results;
+  try {
+    results = $(context).find(css).toArray();
+  } catch (e) {
+    console.warn('[CB] cheerio find("' + css + '") failed:', e);
+    return [];
+  }
+  for (var i = 0; i < parsed.filters.length; i++) {
+    var filter = parsed.filters[i];
+    results = results.filter(function(el) { return filter($, el); });
+  }
+  return results;
 }
 
 function buildHtmlImports() {
@@ -366,12 +566,14 @@ function buildHtmlImports() {
     parse(ptr, len, baseUriPtr, baseUriLen) {
       try {
         const htmlStr = readString(ptr, len);
-        const doc = new DOMParser().parseFromString(htmlStr, 'text/html');
         let baseUri = '';
         if (baseUriPtr && baseUriLen && baseUriLen > 0) {
           baseUri = readString(baseUriPtr, baseUriLen);
         }
-        return storeAdd({ type: 'html', node: doc.documentElement, baseUri: baseUri });
+        const $ = cheerio.load(htmlStr);
+        const ctxId = nextCtxId++;
+        cheerioContexts.set(ctxId, $);
+        return storeAdd({ type: 'html', node: $.root()[0], ctxId: ctxId, baseUri: baseUri });
       } catch (e) {
         console.warn('[aidoku] html::parse failed:', e);
         return -1;
@@ -380,95 +582,130 @@ function buildHtmlImports() {
     parse_fragment(ptr, len, baseUriPtr, baseUriLen) {
       try {
         const htmlStr = readString(ptr, len);
-        const doc = new DOMParser().parseFromString('<body>' + htmlStr + '</body>', 'text/html');
-        const elements = Array.from(doc.body.children);
-        return storeAdd({ type: 'htmlList', nodes: elements });
+        let baseUri = '';
+        if (baseUriPtr && baseUriLen && baseUriLen > 0) {
+          baseUri = readString(baseUriPtr, baseUriLen);
+        }
+        const $ = cheerio.load(htmlStr);
+        const ctxId = nextCtxId++;
+        cheerioContexts.set(ctxId, $);
+        // Always return root node (matches native which returns a Document).
+        return storeAdd({ type: 'html', node: $.root()[0], ctxId: ctxId, baseUri: baseUri });
       } catch (e) {
         console.warn('[aidoku] html::parse_fragment failed:', e);
         return -1;
       }
     },
     select(rid, selectorPtr, selectorLen) {
-      const el = asElement(rid);
-      if (!el) return -1;
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
       const selector = readString(selectorPtr, selectorLen);
       try {
-        const elements = Array.from(el.querySelectorAll(selector));
-        return storeAdd({ type: 'htmlList', nodes: elements });
+        const elements = jsoupSelect($, r.node, selector);
+        return storeAdd({ type: 'htmlList', nodes: elements, ctxId: r.ctxId, baseUri: r.baseUri || '' });
       } catch (e) {
-        console.warn('[CB] querySelectorAll("' + selector + '") failed:', e);
+        console.warn('[CB] select("' + selector + '") failed:', e);
         return -1;
       }
     },
     select_first(rid, selectorPtr, selectorLen) {
-      const el = asElement(rid);
-      if (!el) return -1;
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
       const selector = readString(selectorPtr, selectorLen);
       try {
-        const found = el.querySelector(selector);
-        if (!found) return -1;
-        return storeAdd({ type: 'html', node: found, baseUri: '' });
+        const elements = jsoupSelect($, r.node, selector);
+        if (elements.length === 0) return -1;
+        return storeAdd({ type: 'html', node: elements[0], ctxId: r.ctxId, baseUri: r.baseUri || '' });
       } catch (e) {
-        console.warn('[CB] querySelector("' + selector + '") failed:', e);
+        console.warn('[CB] select_first("' + selector + '") failed:', e);
         return -1;
       }
     },
     attr(rid, kp, kl) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      const key = readString(kp, kl);
-      const val = el.getAttribute(key);
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      let key = readString(kp, kl);
+      // Handle abs: prefix (Jsoup convention) — resolve relative URLs.
+      if (key.indexOf('abs:') === 0) {
+        const realKey = key.substring(4);
+        const raw = $(r.node).attr(realKey);
+        if (raw == null) return -1;
+        const resolved = resolveUrl(r.baseUri || '', raw);
+        return storeAddBytes(postcardEncodeString(resolved));
+      }
+      const val = $(r.node).attr(key);
       if (val == null) return -1;
       return storeAddBytes(postcardEncodeString(val));
     },
     has_attr(rid, kp, kl) {
-      const el = asElement(rid);
-      if (!el) return 0;
-      return el.hasAttribute(readString(kp, kl)) ? 1 : 0;
+      const r = asHtml(rid);
+      if (!r) return 0;
+      const $ = getCtx(r.ctxId);
+      if (!$) return 0;
+      return $(r.node).attr(readString(kp, kl)) !== undefined ? 1 : 0;
     },
     text(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString((el.textContent || '').trim()));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($(r.node).text().trim()));
     },
     own_text(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      let ownText = '';
-      for (const child of el.childNodes) {
-        if (child.nodeType === 3) ownText += child.textContent;
-      }
-      return storeAddBytes(postcardEncodeString(ownText.trim()));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString(getOwnText($, r.node)));
     },
     untrimmed_text(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString(el.textContent || ''));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($(r.node).text()));
     },
     html(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString(el.innerHTML || ''));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($(r.node).html() || ''));
     },
     outer_html(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString(el.outerHTML || ''));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($.html(r.node) || ''));
     },
     tag_name(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString((el.localName || el.tagName || '').toLowerCase()));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const name = r.node.name || r.node.tagName || '';
+      return storeAddBytes(postcardEncodeString(name.toLowerCase()));
     },
     id(rid) {
-      const el = asElement(rid);
-      if (!el || !el.id) return -1;
-      return storeAddBytes(postcardEncodeString(el.id));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      const val = $(r.node).attr('id');
+      if (!val) return -1;
+      return storeAddBytes(postcardEncodeString(val));
     },
     class_name(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString(el.className || ''));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($(r.node).attr('class') || ''));
     },
     base_uri(rid) {
       const r = storeGet(rid);
@@ -478,22 +715,22 @@ function buildHtmlImports() {
     first(rid) {
       const r = storeGet(rid);
       if (!r || r.type !== 'htmlList' || !r.nodes.length) return -1;
-      return storeAdd({ type: 'html', node: r.nodes[0], baseUri: '' });
+      return storeAdd({ type: 'html', node: r.nodes[0], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     last(rid) {
       const r = storeGet(rid);
       if (!r || r.type !== 'htmlList' || !r.nodes.length) return -1;
-      return storeAdd({ type: 'html', node: r.nodes[r.nodes.length - 1], baseUri: '' });
+      return storeAdd({ type: 'html', node: r.nodes[r.nodes.length - 1], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     get(rid, index) {
       const r = storeGet(rid);
       if (!r || r.type !== 'htmlList' || index < 0 || index >= r.nodes.length) return -1;
-      return storeAdd({ type: 'html', node: r.nodes[index], baseUri: '' });
+      return storeAdd({ type: 'html', node: r.nodes[index], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     html_get(rid, index) {
       const r = storeGet(rid);
       if (!r || r.type !== 'htmlList' || index < 0 || index >= r.nodes.length) return -1;
-      return storeAdd({ type: 'html', node: r.nodes[index], baseUri: '' });
+      return storeAdd({ type: 'html', node: r.nodes[index], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     size(rid) {
       const r = storeGet(rid);
@@ -501,56 +738,63 @@ function buildHtmlImports() {
       return r.nodes.length;
     },
     parent(rid) {
-      const el = asElement(rid);
-      if (!el || !el.parentElement) return -1;
-      return storeAdd({ type: 'html', node: el.parentElement, baseUri: '' });
+      const r = asHtml(rid);
+      if (!r || !r.node.parent) return -1;
+      return storeAdd({ type: 'html', node: r.node.parent, ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     children(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAdd({ type: 'htmlList', nodes: Array.from(el.children) });
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAdd({ type: 'htmlList', nodes: $(r.node).children().toArray(), ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     next(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      const parent = el.parentElement;
-      if (!parent) return -1;
-      const siblings = Array.from(parent.children);
-      const idx = siblings.indexOf(el);
-      if (idx < 0 || idx + 1 >= siblings.length) return -1;
-      return storeAdd({ type: 'html', node: siblings[idx + 1], baseUri: '' });
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      const nextEl = $(r.node).next();
+      if (nextEl.length === 0) return -1;
+      return storeAdd({ type: 'html', node: nextEl[0], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     previous(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      const parent = el.parentElement;
-      if (!parent) return -1;
-      const siblings = Array.from(parent.children);
-      const idx = siblings.indexOf(el);
-      if (idx <= 0) return -1;
-      return storeAdd({ type: 'html', node: siblings[idx - 1], baseUri: '' });
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      const prevEl = $(r.node).prev();
+      if (prevEl.length === 0) return -1;
+      return storeAdd({ type: 'html', node: prevEl[0], ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     siblings(rid) {
-      const el = asElement(rid);
-      if (!el || !el.parentElement) return -1;
-      const sibs = Array.from(el.parentElement.children).filter(c => c !== el);
-      return storeAdd({ type: 'htmlList', nodes: sibs });
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAdd({ type: 'htmlList', nodes: $(r.node).siblings().toArray(), ctxId: r.ctxId, baseUri: r.baseUri || '' });
     },
     set_text(rid, ptr, len) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.textContent = readString(ptr, len);
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).text(readString(ptr, len));
       return 0;
     },
     set_html(rid, ptr, len) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.innerHTML = readString(ptr, len);
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).html(readString(ptr, len));
       return 0;
     },
     remove(rid) {
-      const el = asElement(rid);
-      if (el && el.parentElement) el.parentElement.removeChild(el);
+      const r = asHtml(rid);
+      if (!r) return 0;
+      const $ = getCtx(r.ctxId);
+      if ($) $(r.node).remove();
       return 0;
     },
     escape(ptr, len) {
@@ -575,48 +819,64 @@ function buildHtmlImports() {
       return storeAddBytes(postcardEncodeString(unescaped));
     },
     has_class(rid, classPtr, classLen) {
-      const el = asElement(rid);
-      if (!el) return 0;
-      return el.classList.contains(readString(classPtr, classLen)) ? 1 : 0;
+      const r = asHtml(rid);
+      if (!r) return 0;
+      const $ = getCtx(r.ctxId);
+      if (!$) return 0;
+      return $(r.node).hasClass(readString(classPtr, classLen)) ? 1 : 0;
     },
     add_class(rid, classPtr, classLen) {
-      const el = asElement(rid);
-      if (el) el.classList.add(readString(classPtr, classLen));
+      const r = asHtml(rid);
+      if (!r) return 0;
+      const $ = getCtx(r.ctxId);
+      if ($) $(r.node).addClass(readString(classPtr, classLen));
       return 0;
     },
     remove_class(rid, classPtr, classLen) {
-      const el = asElement(rid);
-      if (el) el.classList.remove(readString(classPtr, classLen));
+      const r = asHtml(rid);
+      if (!r) return 0;
+      const $ = getCtx(r.ctxId);
+      if ($) $(r.node).removeClass(readString(classPtr, classLen));
       return 0;
     },
     set_attr(rid, kp, kl, vp, vl) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.setAttribute(readString(kp, kl), readString(vp, vl));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).attr(readString(kp, kl), readString(vp, vl));
       return 0;
     },
     remove_attr(rid, kp, kl) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.removeAttribute(readString(kp, kl));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).removeAttr(readString(kp, kl));
       return 0;
     },
     prepend(rid, ptr, len) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.innerHTML = readString(ptr, len) + el.innerHTML;
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).prepend(readString(ptr, len));
       return 0;
     },
     append(rid, ptr, len) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      el.innerHTML = el.innerHTML + readString(ptr, len);
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      $(r.node).append(readString(ptr, len));
       return 0;
     },
     data(rid) {
-      const el = asElement(rid);
-      if (!el) return -1;
-      return storeAddBytes(postcardEncodeString(el.textContent || ''));
+      const r = asHtml(rid);
+      if (!r) return -1;
+      const $ = getCtx(r.ctxId);
+      if (!$) return -1;
+      return storeAddBytes(postcardEncodeString($(r.node).text() || ''));
     },
   };
 }

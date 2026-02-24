@@ -12,7 +12,7 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
 - `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (native wasmer FFI + web WebAssembly)
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
-- `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS)
+- `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS, Cheerio on Web)
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
 
@@ -153,6 +153,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - Base: `solid_lints` via `packages/app_lints`
 - `prefer_single_quotes`, `strict-inference: true`, `dart analyze --fatal-infos`
 - `omit_obvious_local_variable_types` + `specify_nonobvious_local_variable_types` + `avoid_multiple_declarations_per_line` — use `dart fix --apply <directory>` after writing new code (only accepts one path argument)
+- `dart fix --apply` may add incorrect imports on web-only files (e.g. importing `dart:io` transitives) — always review changes after running
 - `avoid_catching_errors` lint: don't use `on UnimplementedError catch` in tests — use `on Object catch (e)` + `check(e).isA<UnimplementedError>()` instead
 - `directives_ordering` — all `package:` imports must be in one alphabetically-sorted section; conditional imports (`if (dart.library.ffi)`) count as their primary URI for sorting
 - **Directional UI required**: Use `EdgeInsetsDirectional`, `PositionedDirectional`, `AlignmentDirectional`, `BorderDirectional`, `BorderRadiusDirectional` instead of their non-directional counterparts
@@ -200,9 +201,16 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - Node type discrimination in `jsoup_parser.dart`: `_addNode()` checks `nodeName() == "#text"` then casts with `.as(TextNode.type)` or `.as(Element.type)`
 - JNI inherited methods (not in jnigen bindings): use raw FFI `ProtectedJniExtensions.lookup` pattern — see `_callBooleanMethodWithObject` for `List.add`, `_callIntMethod` for `List.size`
 - `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
+- **Web backend** (Cheerio): `CheerioParser` in `lib/src/web/jsoup_web.dart` — loads Cheerio via Blob URL + `importScripts` (Worker-only); `_ensureCheerioLoaded()` checks `globalThis.cheerio` first so pre-loaded contexts skip loading
+- `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
+- `jsoup_selector.dart` — Dart port of jsoup pseudo-selector engine from `wasm_worker_js.dart`; mid-chain pseudo-selectors apply to final results only (same limitation as the JS version)
 - `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a JS Web Worker (`lib/src/web/wasm_worker_js.dart`) with sync XHR for HTTP
   - Sync XHR is required because WASM host imports must return synchronously; allowed in workers (only deprecated on main thread)
   - Avoids SharedArrayBuffer/COOP+COEP requirements; main thread communicates via `postMessage`
   - JS source is embedded as a `const String` and loaded as a Blob URL
+  - Web worker HTML module uses Cheerio (not browser DOM); custom jsoup pseudo-selector engine (`parseJsoupSelector` + `jsoupSelect`) handles `:containsOwn`, `:matches`, `:matchesOwn`, `:containsData`, etc. via post-filter; Cheerio contexts (`$`) tracked per `ctxId` with cleanup on resource removal
+  - Cheerio domhandler nodes: elements have `type: 'tag'` + `name` property (NOT `type: 'script'`); text nodes have `type: 'text'` + `data` property; `$(el).text()` normalizes whitespace — walk text nodes directly for "whole text" semantics
+- **Cheerio web bundle** (`packages/jsoup/`): `tool/bundle_cheerio.dart` generates `lib/src/web/cheerio_bundle.dart` — cheerio 1.2.0 UMD via browserify + custom `node:` prefix stripping transform + `undici` excluded; `package:jsoup/cheerio.dart` exports the `cheerioJs` const string
+- **`code_assets` `OS` class**: No `web` constant — only native OS values (android, iOS, linux, macOS, windows, fuchsia); `buildCodeAssets` is already false for web targets, so build hooks return early

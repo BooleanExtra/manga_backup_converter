@@ -18,6 +18,7 @@ import 'package:aidoku_plugin_loader/src/models/setting_item.dart';
 import 'package:aidoku_plugin_loader/src/models/source_info.dart';
 import 'package:aidoku_plugin_loader/src/web/wasm_worker_js.dart';
 import 'package:aidoku_plugin_loader/src/web/wasm_worker_launcher.dart';
+import 'package:jsoup/cheerio.dart';
 
 /// A loaded Aidoku WASM source plugin (web implementation).
 ///
@@ -115,8 +116,9 @@ class AidokuPlugin {
       }
     }
 
-    // Create the worker.
-    final (:JSWorker worker, :JSString blobUrl) = createWasmWorker(workerJs);
+    // Create the worker. Prepend cheerio so `self.cheerio` is available when
+    // the worker script executes.
+    final (:JSWorker worker, :JSString blobUrl) = createWasmWorker('$cheerioJs\n$workerJs');
 
     final plugin = AidokuPlugin._(
       worker: worker,

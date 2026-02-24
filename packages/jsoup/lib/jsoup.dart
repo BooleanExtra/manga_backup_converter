@@ -3,7 +3,7 @@
 /// Uses platform-native libraries:
 /// - Android/Windows/Linux: Jsoup via JNI
 /// - iOS/macOS: SwiftSoup (TODO)
-/// - Web: Stub (browser DOM used directly by WASM worker)
+/// - Web: Cheerio (import `package:jsoup/cheerio.dart` for the JS bundle)
 library;
 
 export 'src/document.dart';

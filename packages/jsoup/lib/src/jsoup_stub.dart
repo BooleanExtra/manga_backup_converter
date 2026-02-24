@@ -1,21 +1,14 @@
 import 'package:jsoup/src/jsoup_api.dart';
+import 'package:jsoup/src/web/jsoup_web.dart';
 
-/// Creates a [NativeHtmlParser] for the current platform.
+/// Creates a [NativeHtmlParser] for web.
 ///
-/// On web, this throws [UnsupportedError] because the browser DOM is used
-/// directly by the WASM worker instead.
-NativeHtmlParser createParser() {
-  throw UnsupportedError(
-    'NativeHtmlParser is not available on web. '
-    'Use browser DOM APIs instead.',
-  );
-}
+/// Returns a [CheerioParser] backed by Cheerio via `dart:js_interop`.
+NativeHtmlParser createParser() => CheerioParser();
 
 class JreManager {
   JreManager._();
-  static void ensureInitialized() {
-    throw UnsupportedError(
-      'JreManager is not available on web.',
-    );
-  }
+
+  /// No-op on web — JVM is not needed.
+  static void ensureInitialized() {}
 }
