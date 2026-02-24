@@ -14,8 +14,7 @@ class Jsoup {
   /// Create a Jsoup instance using the platform backend.
   Jsoup() : parser = createParser();
 
-  /// Create a Jsoup instance from a specific parser (for testing).
-  @visibleForTesting
+  /// Create a Jsoup instance from a specific parser implementation.
   Jsoup.fromParser(this.parser);
 
   /// The underlying native parser. Package-internal.

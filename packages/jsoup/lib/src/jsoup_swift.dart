@@ -193,5 +193,8 @@ class SwiftSoupParser implements NativeHtmlParser {
   void free(int handle) {}
 
   @override
+  void releaseAll() {}
+
+  @override
   void dispose() {}
 }

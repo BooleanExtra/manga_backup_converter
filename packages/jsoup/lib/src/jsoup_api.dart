@@ -177,6 +177,12 @@ abstract class NativeHtmlParser {
   /// Free a handle (element or node list). Must be called when done.
   void free(int handle);
 
+  /// Release all handles and reset internal state, but keep the parser alive.
+  ///
+  /// Unlike [dispose], this does not shut down the underlying engine (e.g. JVM).
+  /// Call between WASM export invocations to free accumulated JNI/JS handles.
+  void releaseAll();
+
   /// Dispose the parser and release all resources (e.g. JVM shutdown).
   void dispose();
 }

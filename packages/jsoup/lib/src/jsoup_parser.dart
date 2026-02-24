@@ -132,7 +132,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_node.Node? node = _resolveNode(handle);
     if (node == null) return null;
     try {
-      return node.baseUri()?.toDartString();
+      return _readAndRelease(node.baseUri());
     } on JniException catch (_) {
       return null;
     }
@@ -143,7 +143,10 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_node.Node? node = _resolveNode(handle);
     if (node == null) return null;
     try {
-      return node.absUrl(key.toJString())?.toDartString();
+      final JString jKey = _jstr(key);
+      final String? result = _readAndRelease(node.absUrl(jKey));
+      jKey.release();
+      return result;
     } on JniException catch (_) {
       return null;
     }
@@ -154,7 +157,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_node.Node? node = _resolveNode(handle);
     if (node == null) return;
     try {
-      node.setBaseUri(value.toJString());
+      final JString jValue = _jstr(value);
+      node.setBaseUri(jValue);
+      jValue.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -163,17 +168,35 @@ class JsoupParser implements NativeHtmlParser {
   @override
   int createElement(String tag) {
     try {
-      final el = jsoup_el.Element.new$1(tag.toJString());
+      final JString jTag = _jstr(tag);
+      final el = jsoup_el.Element.new$1(jTag);
+      jTag.release();
       return _addElement(el);
     } on JniException catch (_) {
       return -1;
     }
   }
 
+  /// Convert a Dart string to JString, use it, then release.
+  /// Avoids JGlobalReference leaks from [toJString()].
+  static JString _jstr(String s) => s.toJString();
+
+  /// Read a JString as Dart string and immediately release the JNI reference.
+  static String? _readAndRelease(JString? js) {
+    if (js == null) return null;
+    final String s = js.toDartString();
+    js.release();
+    return s;
+  }
+
   @override
   int parse(String html, {String baseUri = ''}) {
     try {
-      final Document? doc = jsoup_lib.Jsoup.parse(html.toJString(), baseUri.toJString());
+      final JString jHtml = _jstr(html);
+      final JString jBaseUri = _jstr(baseUri);
+      final Document? doc = jsoup_lib.Jsoup.parse(jHtml, jBaseUri);
+      jHtml.release();
+      jBaseUri.release();
       if (doc == null) return -1;
       return _addElement(doc);
     } on JniException catch (_) {
@@ -192,7 +215,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return -1;
     try {
-      final jsoup_els.Elements? elements = el.select(selector.toJString());
+      final JString jSel = _jstr(selector);
+      final jsoup_els.Elements? elements = el.select(jSel);
+      jSel.release();
       if (elements == null) return -1;
       return _addNodeList(elements);
     } on JniException catch (_) {
@@ -205,7 +230,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return -1;
     try {
-      final jsoup_el.Element? result = el.selectFirst(selector.toJString());
+      final JString jSel = _jstr(selector);
+      final jsoup_el.Element? result = el.selectFirst(jSel);
+      jSel.release();
       if (result == null) return -1;
       return _addElement(result);
     } on JniException catch (_) {
@@ -218,9 +245,12 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      final JString? result = el.attr(key.toJString());
+      final JString jKey = _jstr(key);
+      final JString? result = el.attr(jKey);
+      jKey.release();
       if (result == null) return null;
       final String val = result.toDartString();
+      result.release();
       // Jsoup returns empty string for missing attributes.
       if (val.isEmpty && !hasAttr(handle, key)) return null;
       return val;
@@ -234,7 +264,10 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return false;
     try {
-      return el.hasAttr(key.toJString());
+      final JString jKey = _jstr(key);
+      final bool result = el.hasAttr(jKey);
+      jKey.release();
+      return result;
     } on JniException catch (_) {
       return false;
     }
@@ -245,7 +278,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.text()?.toDartString();
+      return _readAndRelease(el.text());
     } on JniException catch (_) {
       return null;
     }
@@ -256,7 +289,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.ownText()?.toDartString();
+      return _readAndRelease(el.ownText());
     } on JniException catch (_) {
       return null;
     }
@@ -268,7 +301,7 @@ class JsoupParser implements NativeHtmlParser {
     if (el == null) return null;
     try {
       // Element.html() returns inner HTML.
-      return el.html$1()?.toDartString();
+      return _readAndRelease(el.html$1());
     } on JniException catch (_) {
       return null;
     }
@@ -279,7 +312,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.outerHtml()?.toDartString();
+      return _readAndRelease(el.outerHtml());
     } on JniException catch (_) {
       return null;
     }
@@ -290,7 +323,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.tagName()?.toDartString();
+      return _readAndRelease(el.tagName());
     } on JniException catch (_) {
       return null;
     }
@@ -301,7 +334,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      final String? result = el.id()?.toDartString();
+      final String? result = _readAndRelease(el.id());
       if (result != null && result.isEmpty) return null;
       return result;
     } on JniException catch (_) {
@@ -314,7 +347,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.className()?.toDartString();
+      return _readAndRelease(el.className());
     } on JniException catch (_) {
       return null;
     }
@@ -325,7 +358,10 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return false;
     try {
-      return el.hasClass(name.toJString());
+      final JString jName = _jstr(name);
+      final bool result = el.hasClass(jName);
+      jName.release();
+      return result;
     } on JniException catch (_) {
       return false;
     }
@@ -459,7 +495,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.text$1(text.toJString());
+      final JString jText = _jstr(text);
+      el.text$1(jText);
+      jText.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -470,7 +508,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.html$2(html.toJString());
+      final JString jHtml = _jstr(html);
+      el.html$2(jHtml);
+      jHtml.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -492,7 +532,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.prepend(html.toJString());
+      final JString jHtml = _jstr(html);
+      el.prepend(jHtml);
+      jHtml.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -503,7 +545,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.append(html.toJString());
+      final JString jHtml = _jstr(html);
+      el.append(jHtml);
+      jHtml.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -514,7 +558,11 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.attr$1(key.toJString(), value.toJString());
+      final JString jKey = _jstr(key);
+      final JString jValue = _jstr(value);
+      el.attr$1(jKey, jValue);
+      jKey.release();
+      jValue.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -525,7 +573,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.removeAttr(key.toJString());
+      final JString jKey = _jstr(key);
+      el.removeAttr(jKey);
+      jKey.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -536,7 +586,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.addClass(name.toJString());
+      final JString jName = _jstr(name);
+      el.addClass(jName);
+      jName.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -547,7 +599,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return;
     try {
-      el.removeClass(name.toJString());
+      final JString jName = _jstr(name);
+      el.removeClass(jName);
+      jName.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -558,7 +612,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el == null) return null;
     try {
-      return el.data()?.toDartString();
+      return _readAndRelease(el.data());
     } on JniException catch (_) {
       return null;
     }
@@ -569,7 +623,9 @@ class JsoupParser implements NativeHtmlParser {
   @override
   int createTextNode(String text) {
     try {
-      final tn = jsoup_tn.TextNode(text.toJString());
+      final JString jText = _jstr(text);
+      final tn = jsoup_tn.TextNode(jText);
+      jText.release();
       return _addTextNode(tn);
     } on JniException catch (_) {
       return -1;
@@ -607,7 +663,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_el.Element? el = _elements[handle];
     if (el != null) {
       try {
-        return el.nodeName()?.toDartString();
+        return _readAndRelease(el.nodeName());
       } on JniException catch (_) {
         return null;
       }
@@ -615,7 +671,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_tn.TextNode? tn = _textNodes[handle];
     if (tn != null) {
       try {
-        return tn.nodeName()?.toDartString();
+        return _readAndRelease(tn.nodeName());
       } on JniException catch (_) {
         return null;
       }
@@ -696,7 +752,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_node.Node? node = _resolveNode(handle);
     if (node == null) return null;
     try {
-      return node.outerHtml()?.toDartString();
+      return _readAndRelease(node.outerHtml());
     } on JniException catch (_) {
       return null;
     }
@@ -742,7 +798,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_tn.TextNode? tn = _textNodes[handle];
     if (tn == null) return null;
     try {
-      return tn.text()?.toDartString();
+      return _readAndRelease(tn.text());
     } on JniException catch (_) {
       return null;
     }
@@ -753,7 +809,9 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_tn.TextNode? tn = _textNodes[handle];
     if (tn == null) return;
     try {
-      tn.text$1(text.toJString());
+      final JString jText = _jstr(text);
+      tn.text$1(jText);
+      jText.release();
     } on JniException catch (_) {
       // Ignore.
     }
@@ -764,7 +822,7 @@ class JsoupParser implements NativeHtmlParser {
     final jsoup_tn.TextNode? tn = _textNodes[handle];
     if (tn == null) return null;
     try {
-      return tn.getWholeText()?.toDartString();
+      return _readAndRelease(tn.getWholeText());
     } on JniException catch (_) {
       return null;
     }
@@ -789,7 +847,7 @@ class JsoupParser implements NativeHtmlParser {
   }
 
   @override
-  void dispose() {
+  void releaseAll() {
     for (final jsoup_el.Element obj in _elements.values) {
       obj.release();
     }
@@ -802,5 +860,11 @@ class JsoupParser implements NativeHtmlParser {
       obj.release();
     }
     _nodeLists.clear();
+    _nextHandle = 1;
+  }
+
+  @override
+  void dispose() {
+    releaseAll();
   }
 }

@@ -360,5 +360,8 @@ class TeaVMParser implements NativeHtmlParser {
   void free(int handle) => _callVoid('free', <JSAny?>[handle.toJS]);
 
   @override
+  void releaseAll() => _callVoid('disposeAll');
+
+  @override
   void dispose() => _callVoid('disposeAll');
 }
