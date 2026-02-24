@@ -7,6 +7,7 @@ import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
+import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:jsoup/jsoup.dart' as jsoup;
 
@@ -340,7 +341,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   }
 
   // Lazy runner proxy (breaks circular dep between imports and runner).
-  final lazyRunner = _LazyRunner();
+  final lazyRunner = LazyWasmRunner();
   final List<String> callErrors = [];
   void sendLog(String message) {
     init.asyncPort.send(WasmLogMsg(message: message, stackTrace: ''));
@@ -726,25 +727,4 @@ Uint8List _readResult(WasmRunner runner, int ptr, SendPort logPort) {
     logPort.send(WasmLogMsg(message: '[aidoku] free_result failed: $e', stackTrace: ''));
   }
   return data;
-}
-
-// ---------------------------------------------------------------------------
-// Lazy WasmRunner proxy (identical to the one in aidoku_plugin.dart)
-// ---------------------------------------------------------------------------
-
-class _LazyRunner implements WasmRunner {
-  WasmRunner? delegate;
-  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
-
-  @override
-  dynamic call(String name, List<Object?> args) => _r.call(name, args);
-
-  @override
-  Uint8List readMemory(int offset, int length) => _r.readMemory(offset, length);
-
-  @override
-  void writeMemory(int offset, Uint8List bytes) => _r.writeMemory(offset, bytes);
-
-  @override
-  int get memorySize => _r.memorySize;
 }

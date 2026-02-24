@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
+import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:jsoup/jsoup.dart' as jsoup;
 
@@ -69,7 +70,12 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
 
 /// Busy-wait sleep — blocks the worker thread.
 void _busyWaitSleep(int seconds) {
-  final int endMs = DateTime.now().millisecondsSinceEpoch + seconds * 1000;
+  _busyWaitMs(seconds * 1000);
+}
+
+/// Busy-wait for [ms] milliseconds — blocks the worker thread.
+void _busyWaitMs(int ms) {
+  final int endMs = DateTime.now().millisecondsSinceEpoch + ms;
   while (DateTime.now().millisecondsSinceEpoch < endMs) {
     // spin
   }
@@ -92,7 +98,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
   final store = HostStore();
   store.defaults.addAll(initialDefaults);
 
-  final lazyRunner = _LazyRunner();
+  final lazyRunner = LazyWasmRunner();
   final callErrors = <String>[];
 
   void sendLog(String message) {
@@ -108,19 +114,34 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
   // Jsoup on web creates a CheerioParser.
   final htmlParser = jsoup.Jsoup();
 
+  // In-worker rate limiter — on web, HTTP is synchronous (XHR) so the limiter
+  // must live in-worker rather than on the main isolate.
+  RateLimiter? rateLimiter;
+
+  ({int statusCode, Uint8List? body}) rateLimitedXhr(
+    String url,
+    int method,
+    Map<String, String> headers,
+    Uint8List? body,
+    double timeout,
+  ) {
+    final limiter = rateLimiter;
+    if (limiter != null) {
+      final Duration wait = limiter.waitDuration();
+      if (wait > Duration.zero) _busyWaitMs(wait.inMilliseconds);
+      limiter.recordRequest();
+    }
+    return _syncXhr(url, method, headers, body, timeout);
+  }
+
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
     sourceId: sourceId,
-    asyncHttp: _syncXhr,
+    asyncHttp: rateLimitedXhr,
     asyncSleep: _busyWaitSleep,
     onRateLimitSet: (int permits, int periodMs) {
-      // Rate limiting is fire-and-forget to the main isolate.
-      mainPort.send(<String, Object?>{
-        'type': 'rate_limit',
-        'permits': permits,
-        'periodMs': periodMs,
-      });
+      rateLimiter = RateLimiter(RateLimitConfig(permits: permits, periodMs: periodMs));
     },
     htmlParser: htmlParser,
     onLog: sendLog,
@@ -259,7 +280,7 @@ void _processCall(
     }
 
     // Read result buffer.
-    final Uint8List? data = _readResult(runner, ptrInt, mainPort);
+    final Uint8List data = _readResult(runner, ptrInt, mainPort);
     mainPort.send(<String, Object?>{
       'type': 'result',
       'id': id,
@@ -294,20 +315,18 @@ void _processCall(
 ///   bytes[0..4] = (8 + payload_len) as i32 LE
 ///   bytes[4..8] = capacity as i32 LE
 ///   bytes[8..]  = postcard payload
-Uint8List? _readResult(WasmRunner runner, int ptr, SendPort logPort) {
+Uint8List _readResult(WasmRunner runner, int ptr, SendPort logPort) {
   final Uint8List lenBytes = runner.readMemory(ptr, 4);
   final int totalLen = ByteData.sublistView(lenBytes).getInt32(0, Endian.little);
   if (totalLen < 0) {
-    // AidokuError::Message buffer — log and return null.
+    // AidokuError::Message — extract message, free buffer, throw (matches native).
+    var message = 'AidokuError from WASM result buffer';
     try {
       final Uint8List msgLenBytes = runner.readMemory(ptr + 8, 4);
       final int msgBufLen = ByteData.sublistView(msgLenBytes).getInt32(0, Endian.little);
       if (msgBufLen > 12) {
         final Uint8List msgBytes = runner.readMemory(ptr + 12, msgBufLen - 12);
-        logPort.send(<String, Object?>{
-          'type': 'log',
-          'message': 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}',
-        });
+        message = 'AidokuError: ${utf8.decode(msgBytes, allowMalformed: true)}';
       }
     } on Exception catch (e) {
       logPort.send(<String, Object?>{
@@ -320,10 +339,10 @@ Uint8List? _readResult(WasmRunner runner, int ptr, SendPort logPort) {
     } on Exception catch (e) {
       logPort.send(<String, Object?>{
         'type': 'log',
-        'message': '[aidoku] free_result failed after error: $e',
+        'message': '[aidoku] free_result failed after error result: $e',
       });
     }
-    return null;
+    throw FormatException(message);
   }
   final int payloadLen = totalLen - 8;
   final Uint8List data = runner.readMemory(ptr + 8, payloadLen);
@@ -333,25 +352,4 @@ Uint8List? _readResult(WasmRunner runner, int ptr, SendPort logPort) {
     logPort.send(<String, Object?>{'type': 'log', 'message': '[aidoku] free_result failed: $e'});
   }
   return data;
-}
-
-// ---------------------------------------------------------------------------
-// Lazy WasmRunner proxy
-// ---------------------------------------------------------------------------
-
-class _LazyRunner implements WasmRunner {
-  WasmRunner? delegate;
-  WasmRunner get _r => delegate ?? (throw StateError('WasmRunner not yet initialized'));
-
-  @override
-  dynamic call(String name, List<Object?> args) => _r.call(name, args);
-
-  @override
-  Uint8List readMemory(int offset, int length) => _r.readMemory(offset, length);
-
-  @override
-  void writeMemory(int offset, Uint8List bytes) => _r.writeMemory(offset, bytes);
-
-  @override
-  int get memorySize => _r.memorySize;
 }
