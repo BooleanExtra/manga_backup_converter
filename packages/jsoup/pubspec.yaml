@@ -1,7 +1,7 @@
 name: jsoup
 description: >-
   Jsoup-compatible HTML parsing and CSS selector engine for Dart.
-  Uses Jsoup (JNI) on Android/Windows/Linux and SwiftSoup on iOS/macOS.
+  Uses Jsoup (JNI) on Android/Windows/Linux, SwiftSoup on iOS/macOS, and TeaVM-compiled Jsoup on Web.
 version: 0.0.1
 publish_to: none
 

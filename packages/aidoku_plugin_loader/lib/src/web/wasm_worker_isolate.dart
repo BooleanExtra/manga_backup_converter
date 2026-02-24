@@ -111,7 +111,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     mainPort.send(<String, Object?>{'type': 'partial_result', 'data': bytes});
   });
 
-  // Jsoup on web creates a CheerioParser.
+  // Jsoup on web creates a TeaVMParser (real Java Jsoup compiled to JS).
   final htmlParser = jsoup.Jsoup();
 
   // In-worker rate limiter — on web, HTTP is synchronous (XHR) so the limiter

@@ -3,7 +3,7 @@
 /// Uses platform-native libraries:
 /// - Android/Windows/Linux: Jsoup via JNI
 /// - iOS/macOS: SwiftSoup (TODO)
-/// - Web: Cheerio (import `package:jsoup/cheerio.dart` for the JS bundle)
+/// - Web: TeaVM-compiled Java Jsoup (exact behavioral parity with JNI)
 library;
 
 export 'src/document.dart';

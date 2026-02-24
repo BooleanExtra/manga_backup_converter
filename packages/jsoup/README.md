@@ -6,7 +6,7 @@ It uses platform-native libraries:
 
 - Android/Windows/Linux: Jsoup via JNI
 - iOS/macOS: SwiftSoup (TODO)
-- Web: Cheerio/Browserify (experimental)
+- Web: TeaVM-compiled Java Jsoup (exact behavioral parity with JNI)
 
 ## Usage
 
@@ -43,4 +43,4 @@ print(element.outerHtml()); // <h1>Hello, World!</h1>
 
 ## Web Support
 
-This package supports the web platform via Cheerio/Browserify. The implementation is experimental and untested.
+This package supports the web platform via TeaVM — the real Java Jsoup library is AOT-compiled to JavaScript, providing exact behavioral parity with the JNI backend (including all pseudo-selectors like `:contains`, `:matchesOwn`, etc.).

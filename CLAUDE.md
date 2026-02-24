@@ -12,7 +12,7 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
 - `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (native wasmer FFI + web WebAssembly)
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
-- `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS, Cheerio on Web)
+- `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS, TeaVM-compiled Java Jsoup on Web)
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
 
@@ -204,17 +204,18 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
 - **JAR discovery**: `JreManager._findJsoupJar()` checks `JSOUP_JAR_PATH` env → exe-relative paths → walks upward from `Directory.current` for `.dart_tool/hooks_runner/shared/jsoup/build/jsoup-<version>/`; version constant in `lib/src/jsoup_version.dart`
 - **JNI test prereq**: Tests using JNI (e.g. `aidoku_plugin_native_test.dart`) require `dart run jni:setup` to generate `dartjni.dll` in the JRE's `bin/server/` directory
-- **Web backend** (Cheerio): `CheerioParser` in `lib/src/web/jsoup_web.dart` — loads Cheerio via Blob URL + `importScripts` (Worker-only); `_ensureCheerioLoaded()` checks `globalThis.cheerio` first so pre-loaded contexts skip loading
+- **Web backend** (TeaVM): `TeaVMParser` in `lib/src/web/jsoup_teavm.dart` — loads TeaVM-compiled Java Jsoup via Blob URL + `importScripts` (Worker-only); the UMD module exports all bridge functions on `self`
 - `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
-- `jsoup_selector.dart` — Dart port of jsoup pseudo-selector engine from `wasm_worker_js.dart`; mid-chain pseudo-selectors apply to final results only (same limitation as the JS version)
 - `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a Dart isolate (`lib/src/web/wasm_worker_isolate.dart`) compiled to a Web Worker
-  - Reuses `buildAidokuHostImports()`, `HostStore`, `WasmRunner` (web), `Jsoup()` (CheerioParser) — unified with native
+  - Reuses `buildAidokuHostImports()`, `HostStore`, `WasmRunner` (web), `Jsoup()` (TeaVMParser) — unified with native
   - `Isolate.spawn(wasmWorkerMain, initMap)` + `SendPort`/`ReceivePort` with Map-based messages (structured-cloneable)
   - Sync XHR via `dart:js_interop` (`_JSXMLHttpRequest`) — required because WASM host imports must return synchronously
   - `LazyWasmRunner` (`lib/src/wasm/lazy_wasm_runner.dart`) breaks circular dependency — shared by both native `wasm_isolate.dart` and web `wasm_worker_isolate.dart`
   - Rate limiting enforced in-worker via `RateLimiter` + busy-wait before each sync XHR (unlike native where it's on the main isolate, because web HTTP is synchronous)
 - **Web JS interop arity**: dart2js `.toJS` creates fixed-arity JS functions; WASM imports need variable-arity. `_varArgsFactory` in `wasm_runner_web.dart` uses `eval` to create wrappers that forward `arguments` as JSArray to a 1-arg Dart bridge. Requires `eval` (already needed since WASM uses `wasm-eval`)
-- **Cheerio web bundle** (`packages/jsoup/`): `tool/bundle_cheerio.dart` generates `lib/src/web/cheerio_bundle.dart` — cheerio 1.2.0 UMD via browserify + custom `node:` prefix stripping transform + `undici` excluded; `package:jsoup/cheerio.dart` exports the `cheerioJs` const string
+- **TeaVM web bundle** (`packages/jsoup/`): `tool/build_teavm.dart` compiles `tool/teavm/` (Maven + TeaVM 0.13.0 + Jsoup 1.18.3) → `lib/src/web/teavm_bundle.dart` (567 KB minified JS as const string); `package:jsoup/teavm.dart` exports `teavmJsoupJs`
+- **TeaVM build requirements**: JDK 17+ and Maven 3.x; `tool/teavm/pom.xml` must include `teavm-core` as explicit dependency (contains `PlatformDetector` needed by classlib); `JsoupBridge.java` uses `@JSExport` (not `@Export`) from `org.teavm.jso.JSExport`; ADVANCED optimization produces smaller output than FULL
+- **TeaVM Java bridge** (`tool/teavm/src/main/java/.../JsoupBridge.java`): 54 `@JSExport` static methods wrapping Jsoup API with `HashMap<Integer, Object>` handle store; method renames: `id`→`elementId`, `get`→`getAt`, `remove`→`removeElement`, `dispose`→`disposeAll` (mapped back in `TeaVMParser`)
 - **`code_assets` `OS` class**: No `web` constant — only native OS values (android, iOS, linux, macOS, windows, fuchsia); `buildCodeAssets` is already false for web targets, so build hooks return early
