@@ -147,10 +147,7 @@ class Element extends Node {
     final List<int> handles = parser.childNodeHandles(handle);
     return <Node>[
       for (final int h in handles)
-        if (parser.isTextNode(h))
-          TextNode.fromHandle(parser, h)
-        else
-          Element.fromHandle(parser, h),
+        if (parser.isTextNode(h)) TextNode.fromHandle(parser, h) else Element.fromHandle(parser, h),
     ];
   }
 

@@ -53,8 +53,7 @@ void main() {
 
       tearDown(() {
         final List<String> warnings = plugin.drainWarnings();
-        check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
-            .isEmpty();
+        check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings).isEmpty();
       });
 
       group('searchManga', () {

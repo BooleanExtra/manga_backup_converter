@@ -220,9 +220,7 @@ class Node extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallBooleanMethod')
@@ -416,9 +414,7 @@ class Node extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -2107,8 +2103,7 @@ final class $Node$NullableType$ extends jni$_.JType<Node?> {
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Node$NullableType$) &&
-        other is $Node$NullableType$;
+    return other.runtimeType == ($Node$NullableType$) && other is $Node$NullableType$;
   }
 }
 

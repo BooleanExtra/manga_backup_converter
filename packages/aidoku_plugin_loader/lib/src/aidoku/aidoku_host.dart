@@ -344,283 +344,282 @@ Map<String, Function> _htmlImports(
   HostStore store,
   jsoup.Jsoup? htmlParser,
   void Function(String)? onLog,
-) =>
-    <String, Function>{
-      // ABI: html::parse(ptr: i32, len: i32 [, base_uri_ptr, base_uri_len]) -> rid
-      'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
-        if (htmlParser == null) return -1;
-        try {
-          final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
-          var baseUri = '';
-          if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
-            baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
-          }
-          final jsoup.Document doc = htmlParser.parse(htmlStr, baseUri: baseUri);
-          return store.add(HtmlElementResource(doc));
-        } on Exception catch (e) {
-          onLog?.call('[aidoku] html::parse failed: $e');
-          return -1;
-        }
-      },
-      'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
-        if (htmlParser == null) return -1;
-        try {
-          final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
-          var baseUri = '';
-          if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
-            baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
-          }
-          final jsoup.Document doc = htmlParser.parseFragment(htmlStr, baseUri: baseUri);
-          return store.add(HtmlElementResource(doc));
-        } on Exception catch (e) {
-          onLog?.call('[aidoku] html::parse_fragment failed: $e');
-          return -1;
-        }
-      },
-      'select': (int rid, int selectorPtr, int selectorLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-        try {
-          final jsoup.Elements elements = r.element.select(selector);
-          return store.add(HtmlElementsResource(elements));
-        } on Exception catch (e) {
-          onLog?.call('[CB] select("$selector") failed: $e');
-          return -1;
-        }
-      },
-      'select_first': (int rid, int selectorPtr, int selectorLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
-        try {
-          final jsoup.Element? el = r.element.selectFirst(selector);
-          if (el == null) return -1;
-          return store.add(HtmlElementResource(el));
-        } on Exception catch (e) {
-          onLog?.call('[CB] selectFirst("$selector") failed: $e');
-          return -1;
-        }
-      },
-      'attr': (int rid, int keyPtr, int keyLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-        // Jsoup convention: "abs:href" resolves the attribute against the base URI.
-        if (key.startsWith('abs:')) {
-          key = key.substring(4);
-          final String resolved = r.element.absUrl(key);
-          if (resolved.isEmpty) return -1;
-          return store.addBytes(_encodeString(resolved));
-        }
-        if (!r.element.hasAttr(key)) return -1;
-        return store.addBytes(_encodeString(r.element.attr(key)));
-      },
-      'has_attr': (int rid, int keyPtr, int keyLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-        return r.element.hasAttr(key) ? 1 : 0;
-      },
-      'text': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.text.trim()));
-      },
-      'own_text': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.ownText.trim()));
-      },
-      'untrimmed_text': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.text));
-      },
-      'html': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.html));
-      },
-      'outer_html': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.outerHtml));
-      },
-      'tag_name': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.tagName));
-      },
-      'id': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final String val = r.element.id;
-        if (val.isEmpty) return -1;
-        return store.addBytes(_encodeString(val));
-      },
-      'class_name': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.className));
-      },
-      'base_uri': (int rid) {
-        final HtmlElementResource? elR = store.get<HtmlElementResource>(rid);
-        if (elR != null) return store.addBytes(_encodeString(elR.element.baseUri));
-        final HtmlElementsResource? elsR = store.get<HtmlElementsResource>(rid);
-        return store.addBytes(_encodeString(elsR?.elements.baseUri ?? ''));
-      },
-      'first': (int rid) {
-        final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
-        if (list == null) return -1;
-        final jsoup.Element? el = list.elements.firstOrNull;
-        if (el == null) return -1;
-        return store.add(HtmlElementResource(el));
-      },
-      'last': (int rid) {
-        final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
-        if (list == null) return -1;
-        final jsoup.Element? el = list.elements.lastOrNull;
-        if (el == null) return -1;
-        return store.add(HtmlElementResource(el));
-      },
-      'get': (int rid, int index) {
-        final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
-        if (list == null) return -1;
-        if (index < 0 || index >= list.elements.length) return -1;
-        return store.add(HtmlElementResource(list.elements[index]));
-      },
-      // Alias kept for any legacy WASM binaries compiled with the old name.
-      'html_get': (int rid, int index) {
-        final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
-        if (list == null) return -1;
-        if (index < 0 || index >= list.elements.length) return -1;
-        return store.add(HtmlElementResource(list.elements[index]));
-      },
-      'size': (int rid) {
-        final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
-        if (list == null) return -1;
-        return list.elements.length;
-      },
-      'parent': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final jsoup.Element? p = r.element.parent;
-        if (p == null) return -1;
-        return store.add(HtmlElementResource(p));
-      },
-      'children': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.add(HtmlElementsResource(r.element.children));
-      },
-      'next': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final jsoup.Element? sib = r.element.nextElementSibling;
-        if (sib == null) return -1;
-        return store.add(HtmlElementResource(sib));
-      },
-      'previous': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        final jsoup.Element? sib = r.element.previousElementSibling;
-        if (sib == null) return -1;
-        return store.add(HtmlElementResource(sib));
-      },
-      'siblings': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.add(HtmlElementsResource(r.element.siblingElements));
-      },
-      'set_text': (int rid, int ptr, int len) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        r.element.text = utf8.decode(runner.readMemory(ptr, len));
-        return 0;
-      },
-      'set_html': (int rid, int ptr, int len) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        r.element.html = utf8.decode(runner.readMemory(ptr, len));
-        return 0;
-      },
-      'remove': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r != null) r.element.remove();
-        return 0;
-      },
-      'escape': (int ptr, int len) {
-        final String str = utf8.decode(runner.readMemory(ptr, len));
-        final String escaped = str
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;')
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", '&#x27;');
-        return store.addBytes(_encodeString(escaped));
-      },
-      'unescape': (int ptr, int len) {
-        final String str = utf8.decode(runner.readMemory(ptr, len));
-        final String unescaped = str
-            .replaceAll('&amp;', '&')
-            .replaceAll('&lt;', '<')
-            .replaceAll('&gt;', '>')
-            .replaceAll('&quot;', '"')
-            .replaceAll('&#x27;', "'")
-            .replaceAll('&#39;', "'");
-        return store.addBytes(_encodeString(unescaped));
-      },
-      'has_class': (int rid, int classPtr, int classLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        final String name = utf8.decode(runner.readMemory(classPtr, classLen));
-        return r.element.hasClass(name) ? 1 : 0;
-      },
-      'add_class': (int rid, int classPtr, int classLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        r.element.addClass(utf8.decode(runner.readMemory(classPtr, classLen)));
-        return 0;
-      },
-      'remove_class': (int rid, int classPtr, int classLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        r.element.removeClass(utf8.decode(runner.readMemory(classPtr, classLen)));
-        return 0;
-      },
-      'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
-        final String val = utf8.decode(runner.readMemory(valPtr, valLen));
-        r.element.setAttr(key, val);
-        return 0;
-      },
-      'remove_attr': (int rid, int keyPtr, int keyLen) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return 0;
-        r.element.removeAttr(utf8.decode(runner.readMemory(keyPtr, keyLen)));
-        return 0;
-      },
-      'prepend': (int rid, int ptr, int len) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        r.element.prepend(utf8.decode(runner.readMemory(ptr, len)));
-        return 0;
-      },
-      'append': (int rid, int ptr, int len) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        r.element.append(utf8.decode(runner.readMemory(ptr, len)));
-        return 0;
-      },
-      'data': (int rid) {
-        final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
-        if (r == null) return -1;
-        return store.addBytes(_encodeString(r.element.data));
-      },
-    };
+) => <String, Function>{
+  // ABI: html::parse(ptr: i32, len: i32 [, base_uri_ptr, base_uri_len]) -> rid
+  'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
+    if (htmlParser == null) return -1;
+    try {
+      final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
+      var baseUri = '';
+      if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
+        baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
+      }
+      final jsoup.Document doc = htmlParser.parse(htmlStr, baseUri: baseUri);
+      return store.add(HtmlElementResource(doc));
+    } on Exception catch (e) {
+      onLog?.call('[aidoku] html::parse failed: $e');
+      return -1;
+    }
+  },
+  'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
+    if (htmlParser == null) return -1;
+    try {
+      final String htmlStr = utf8.decode(runner.readMemory(ptr, len));
+      var baseUri = '';
+      if (baseUriPtr != null && baseUriLen != null && baseUriLen > 0) {
+        baseUri = utf8.decode(runner.readMemory(baseUriPtr, baseUriLen));
+      }
+      final jsoup.Document doc = htmlParser.parseFragment(htmlStr, baseUri: baseUri);
+      return store.add(HtmlElementResource(doc));
+    } on Exception catch (e) {
+      onLog?.call('[aidoku] html::parse_fragment failed: $e');
+      return -1;
+    }
+  },
+  'select': (int rid, int selectorPtr, int selectorLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+    try {
+      final jsoup.Elements elements = r.element.select(selector);
+      return store.add(HtmlElementsResource(elements));
+    } on Exception catch (e) {
+      onLog?.call('[CB] select("$selector") failed: $e');
+      return -1;
+    }
+  },
+  'select_first': (int rid, int selectorPtr, int selectorLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+    try {
+      final jsoup.Element? el = r.element.selectFirst(selector);
+      if (el == null) return -1;
+      return store.add(HtmlElementResource(el));
+    } on Exception catch (e) {
+      onLog?.call('[CB] selectFirst("$selector") failed: $e');
+      return -1;
+    }
+  },
+  'attr': (int rid, int keyPtr, int keyLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    // Jsoup convention: "abs:href" resolves the attribute against the base URI.
+    if (key.startsWith('abs:')) {
+      key = key.substring(4);
+      final String resolved = r.element.absUrl(key);
+      if (resolved.isEmpty) return -1;
+      return store.addBytes(_encodeString(resolved));
+    }
+    if (!r.element.hasAttr(key)) return -1;
+    return store.addBytes(_encodeString(r.element.attr(key)));
+  },
+  'has_attr': (int rid, int keyPtr, int keyLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    return r.element.hasAttr(key) ? 1 : 0;
+  },
+  'text': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.text.trim()));
+  },
+  'own_text': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.ownText.trim()));
+  },
+  'untrimmed_text': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.text));
+  },
+  'html': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.html));
+  },
+  'outer_html': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.outerHtml));
+  },
+  'tag_name': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.tagName));
+  },
+  'id': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final String val = r.element.id;
+    if (val.isEmpty) return -1;
+    return store.addBytes(_encodeString(val));
+  },
+  'class_name': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.className));
+  },
+  'base_uri': (int rid) {
+    final HtmlElementResource? elR = store.get<HtmlElementResource>(rid);
+    if (elR != null) return store.addBytes(_encodeString(elR.element.baseUri));
+    final HtmlElementsResource? elsR = store.get<HtmlElementsResource>(rid);
+    return store.addBytes(_encodeString(elsR?.elements.baseUri ?? ''));
+  },
+  'first': (int rid) {
+    final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
+    if (list == null) return -1;
+    final jsoup.Element? el = list.elements.firstOrNull;
+    if (el == null) return -1;
+    return store.add(HtmlElementResource(el));
+  },
+  'last': (int rid) {
+    final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
+    if (list == null) return -1;
+    final jsoup.Element? el = list.elements.lastOrNull;
+    if (el == null) return -1;
+    return store.add(HtmlElementResource(el));
+  },
+  'get': (int rid, int index) {
+    final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
+    if (list == null) return -1;
+    if (index < 0 || index >= list.elements.length) return -1;
+    return store.add(HtmlElementResource(list.elements[index]));
+  },
+  // Alias kept for any legacy WASM binaries compiled with the old name.
+  'html_get': (int rid, int index) {
+    final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
+    if (list == null) return -1;
+    if (index < 0 || index >= list.elements.length) return -1;
+    return store.add(HtmlElementResource(list.elements[index]));
+  },
+  'size': (int rid) {
+    final HtmlElementsResource? list = store.get<HtmlElementsResource>(rid);
+    if (list == null) return -1;
+    return list.elements.length;
+  },
+  'parent': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final jsoup.Element? p = r.element.parent;
+    if (p == null) return -1;
+    return store.add(HtmlElementResource(p));
+  },
+  'children': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.add(HtmlElementsResource(r.element.children));
+  },
+  'next': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final jsoup.Element? sib = r.element.nextElementSibling;
+    if (sib == null) return -1;
+    return store.add(HtmlElementResource(sib));
+  },
+  'previous': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    final jsoup.Element? sib = r.element.previousElementSibling;
+    if (sib == null) return -1;
+    return store.add(HtmlElementResource(sib));
+  },
+  'siblings': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.add(HtmlElementsResource(r.element.siblingElements));
+  },
+  'set_text': (int rid, int ptr, int len) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    r.element.text = utf8.decode(runner.readMemory(ptr, len));
+    return 0;
+  },
+  'set_html': (int rid, int ptr, int len) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    r.element.html = utf8.decode(runner.readMemory(ptr, len));
+    return 0;
+  },
+  'remove': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r != null) r.element.remove();
+    return 0;
+  },
+  'escape': (int ptr, int len) {
+    final String str = utf8.decode(runner.readMemory(ptr, len));
+    final String escaped = str
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#x27;');
+    return store.addBytes(_encodeString(escaped));
+  },
+  'unescape': (int ptr, int len) {
+    final String str = utf8.decode(runner.readMemory(ptr, len));
+    final String unescaped = str
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#x27;', "'")
+        .replaceAll('&#39;', "'");
+    return store.addBytes(_encodeString(unescaped));
+  },
+  'has_class': (int rid, int classPtr, int classLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    final String name = utf8.decode(runner.readMemory(classPtr, classLen));
+    return r.element.hasClass(name) ? 1 : 0;
+  },
+  'add_class': (int rid, int classPtr, int classLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    r.element.addClass(utf8.decode(runner.readMemory(classPtr, classLen)));
+    return 0;
+  },
+  'remove_class': (int rid, int classPtr, int classLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    r.element.removeClass(utf8.decode(runner.readMemory(classPtr, classLen)));
+    return 0;
+  },
+  'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+    final String val = utf8.decode(runner.readMemory(valPtr, valLen));
+    r.element.setAttr(key, val);
+    return 0;
+  },
+  'remove_attr': (int rid, int keyPtr, int keyLen) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return 0;
+    r.element.removeAttr(utf8.decode(runner.readMemory(keyPtr, keyLen)));
+    return 0;
+  },
+  'prepend': (int rid, int ptr, int len) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    r.element.prepend(utf8.decode(runner.readMemory(ptr, len)));
+    return 0;
+  },
+  'append': (int rid, int ptr, int len) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    r.element.append(utf8.decode(runner.readMemory(ptr, len)));
+    return 0;
+  },
+  'data': (int rid) {
+    final HtmlElementResource? r = store.get<HtmlElementResource>(rid);
+    if (r == null) return -1;
+    return store.addBytes(_encodeString(r.element.data));
+  },
+};
 
 // ---------------------------------------------------------------------------
 // defaults module

@@ -19,12 +19,10 @@ import 'package:jsoup/src/jre/jre_manager.dart' show JreManager;
 const _jreVersion = '17';
 const _jsoupVersion = '1.18.3';
 
-const _jsoupMavenUrl =
-    'https://repo1.maven.org/maven2/org/jsoup/jsoup/$_jsoupVersion/jsoup-$_jsoupVersion.jar';
+const _jsoupMavenUrl = 'https://repo1.maven.org/maven2/org/jsoup/jsoup/$_jsoupVersion/jsoup-$_jsoupVersion.jar';
 
 /// Maps (OS, Architecture) to JRE download info from Adoptium.
-const _jreDownloadInfo = <(OS, Architecture),
-    ({String os, String arch, String jvmLibPath, bool isZip})>{
+const _jreDownloadInfo = <(OS, Architecture), ({String os, String arch, String jvmLibPath, bool isZip})>{
   (OS.windows, Architecture.x64): (
     os: 'windows',
     arch: 'x64',
@@ -99,8 +97,7 @@ Future<void> _downloadJsoupJar(Uri outputDirectoryShared) async {
   final cacheDir = Directory.fromUri(
     outputDirectoryShared.resolve('jsoup-$_jsoupVersion/'),
   );
-  final jarFile =
-      File.fromUri(cacheDir.uri.resolve('jsoup-$_jsoupVersion.jar'));
+  final jarFile = File.fromUri(cacheDir.uri.resolve('jsoup-$_jsoupVersion.jar'));
 
   if (!await jarFile.exists()) {
     print('Downloading Jsoup $_jsoupVersion from Maven Central ...');
@@ -168,8 +165,7 @@ Future<Uri> _downloadJre(
       await targetFile.writeAsBytes(file.content as List<int>);
     }
   } else {
-    final List<int> gzDecoded =
-        const GZipDecoder().decodeBytes(response.bodyBytes);
+    final List<int> gzDecoded = const GZipDecoder().decodeBytes(response.bodyBytes);
     final Archive archive = TarDecoder().decodeBytes(gzDecoded);
     for (final file in archive) {
       if (!file.isFile) continue;
@@ -185,8 +181,7 @@ Future<Uri> _downloadJre(
 
   if (!await resolvedFile.exists()) {
     // List what was extracted to help debug.
-    final String contents =
-        cacheDir.listSync().map((e) => e.path).join('\n  ');
+    final String contents = cacheDir.listSync().map((e) => e.path).join('\n  ');
     throw Exception(
       'Expected JVM library not found after extraction.\n'
       'Looked for: ${info.jvmLibPath}\n'
@@ -211,9 +206,7 @@ String _findJreSubdir(Directory cacheDir, String libPath) {
       if (candidate.existsSync()) {
         // Directory URIs end with '/', so pathSegments.last is empty.
         // Use the directory's basename from the filesystem path.
-        final String dirName = entry.uri.pathSegments
-            .where((s) => s.isNotEmpty)
-            .last;
+        final String dirName = entry.uri.pathSegments.where((s) => s.isNotEmpty).last;
         return '$dirName/$libPath';
       }
     }

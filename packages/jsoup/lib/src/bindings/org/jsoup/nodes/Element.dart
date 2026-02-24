@@ -75,9 +75,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_NewObject')
@@ -221,9 +219,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_NewObject')
@@ -457,9 +453,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallBooleanMethod')
@@ -546,9 +540,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -734,9 +726,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -1673,9 +1663,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -2069,9 +2057,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -2157,9 +2143,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3197,9 +3181,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3244,9 +3226,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3280,11 +3260,10 @@ class Element extends node$_.Node {
     ).object<elements$_.Elements?>(const elements$_.$Elements$NullableType$());
   }
 
-  static final _id_getElementsByAttributeValueStarting = _class
-      .instanceMethodId(
-        r'getElementsByAttributeValueStarting',
-        r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
-      );
+  static final _id_getElementsByAttributeValueStarting = _class.instanceMethodId(
+    r'getElementsByAttributeValueStarting',
+    r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
+  );
 
   static final _getElementsByAttributeValueStarting =
       jni$_.ProtectedJniExtensions.lookup<
@@ -3292,9 +3271,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3339,9 +3316,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3375,11 +3350,10 @@ class Element extends node$_.Node {
     ).object<elements$_.Elements?>(const elements$_.$Elements$NullableType$());
   }
 
-  static final _id_getElementsByAttributeValueContaining = _class
-      .instanceMethodId(
-        r'getElementsByAttributeValueContaining',
-        r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
-      );
+  static final _id_getElementsByAttributeValueContaining = _class.instanceMethodId(
+    r'getElementsByAttributeValueContaining',
+    r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
+  );
 
   static final _getElementsByAttributeValueContaining =
       jni$_.ProtectedJniExtensions.lookup<
@@ -3387,9 +3361,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3434,9 +3406,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -3470,11 +3440,10 @@ class Element extends node$_.Node {
     ).object<elements$_.Elements?>(const elements$_.$Elements$NullableType$());
   }
 
-  static final _id_getElementsByAttributeValueMatching$1 = _class
-      .instanceMethodId(
-        r'getElementsByAttributeValueMatching',
-        r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
-      );
+  static final _id_getElementsByAttributeValueMatching$1 = _class.instanceMethodId(
+    r'getElementsByAttributeValueMatching',
+    r'(Ljava/lang/String;Ljava/lang/String;)Lorg/jsoup/select/Elements;',
+  );
 
   static final _getElementsByAttributeValueMatching$1 =
       jni$_.ProtectedJniExtensions.lookup<
@@ -3482,9 +3451,7 @@ class Element extends node$_.Node {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -5025,8 +4992,7 @@ final class $Element$NullableType$ extends jni$_.JType<Element?> {
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Element$NullableType$) &&
-        other is $Element$NullableType$;
+    return other.runtimeType == ($Element$NullableType$) && other is $Element$NullableType$;
   }
 }
 

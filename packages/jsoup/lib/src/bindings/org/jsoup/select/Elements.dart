@@ -412,9 +412,7 @@ class Elements extends jni$_.JObject {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_CallObjectMethod')
@@ -2503,8 +2501,7 @@ final class $Elements$NullableType$ extends jni$_.JType<Elements?> {
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Elements$NullableType$) &&
-        other is $Elements$NullableType$;
+    return other.runtimeType == ($Elements$NullableType$) && other is $Elements$NullableType$;
   }
 }
 

@@ -441,8 +441,7 @@ final class $TextNode$NullableType$ extends jni$_.JType<TextNode?> {
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($TextNode$NullableType$) &&
-        other is $TextNode$NullableType$;
+    return other.runtimeType == ($TextNode$NullableType$) && other is $TextNode$NullableType$;
   }
 }
 

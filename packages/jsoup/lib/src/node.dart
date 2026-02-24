@@ -13,7 +13,7 @@ class Node {
     NativeHtmlParser parser,
     int handle,
   ) : _parser = parser,
-       _handle = handle;
+      _handle = handle;
 
   final NativeHtmlParser _parser;
   final int _handle;
@@ -66,10 +66,7 @@ class Node {
     final List<int> handles = _parser.childNodeHandles(_handle);
     return <Node>[
       for (final int h in handles)
-        if (_parser.isTextNode(h))
-          TextNode.fromHandle(_parser, h)
-        else
-          Element.fromHandle(_parser, h),
+        if (_parser.isTextNode(h)) TextNode.fromHandle(_parser, h) else Element.fromHandle(_parser, h),
     ];
   }
 

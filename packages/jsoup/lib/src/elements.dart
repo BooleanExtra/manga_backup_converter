@@ -18,7 +18,7 @@ class Elements extends Iterable<Element> {
     NativeHtmlParser parser,
     int handle,
   ) : _parser = parser,
-       _handle = handle;
+      _handle = handle;
 
   final NativeHtmlParser _parser;
   final int _handle;

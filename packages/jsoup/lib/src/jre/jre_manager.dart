@@ -66,9 +66,7 @@ class JreManager {
   /// Falls back to JAVA_HOME if no bundled JRE is found.
   static String _findJvmLibrary() {
     final libName = Platform.isWindows ? 'jvm.dll' : 'libjvm.so';
-    final serverSubdir = Platform.isWindows
-        ? 'bin/server/$libName'
-        : 'lib/server/$libName';
+    final serverSubdir = Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
 
     // Check environment variable.
     final String? envPath = Platform.environment['JVM_LIB_PATH'];

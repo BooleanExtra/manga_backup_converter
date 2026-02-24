@@ -61,8 +61,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
       $Document$OutputSettings$Syntax$NullableType$();
 
   /// The type which includes information such as the signature of this class.
-  static const jni$_.JType<Document$OutputSettings$Syntax> type =
-      $Document$OutputSettings$Syntax$Type$();
+  static const jni$_.JType<Document$OutputSettings$Syntax> type = $Document$OutputSettings$Syntax$Type$();
   static final _id_html = _class.staticFieldId(
     r'html',
     r'Lorg/jsoup/nodes/Document$OutputSettings$Syntax;',
@@ -70,8 +69,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
 
   /// from: `static public final org.jsoup.nodes.Document$OutputSettings$Syntax html`
   /// The returned object must be released after use, by calling the [release] method.
-  static Document$OutputSettings$Syntax get html =>
-      _id_html.get(_class, const $Document$OutputSettings$Syntax$Type$());
+  static Document$OutputSettings$Syntax get html => _id_html.get(_class, const $Document$OutputSettings$Syntax$Type$());
 
   static final _id_xml = _class.staticFieldId(
     r'xml',
@@ -80,8 +78,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
 
   /// from: `static public final org.jsoup.nodes.Document$OutputSettings$Syntax xml`
   /// The returned object must be released after use, by calling the [release] method.
-  static Document$OutputSettings$Syntax get xml =>
-      _id_xml.get(_class, const $Document$OutputSettings$Syntax$Type$());
+  static Document$OutputSettings$Syntax get xml => _id_xml.get(_class, const $Document$OutputSettings$Syntax$Type$());
 
   static final _id_values = _class.staticMethodId(
     r'values',
@@ -156,8 +153,7 @@ class Document$OutputSettings$Syntax extends jni$_.JObject {
   }
 }
 
-final class $Document$OutputSettings$Syntax$NullableType$
-    extends jni$_.JType<Document$OutputSettings$Syntax?> {
+final class $Document$OutputSettings$Syntax$NullableType$ extends jni$_.JType<Document$OutputSettings$Syntax?> {
   @jni$_.internal
   const $Document$OutputSettings$Syntax$NullableType$();
 
@@ -167,8 +163,7 @@ final class $Document$OutputSettings$Syntax$NullableType$
 
   @jni$_.internal
   @core$_.override
-  Document$OutputSettings$Syntax? fromReference(jni$_.JReference reference) =>
-      reference.isNull
+  Document$OutputSettings$Syntax? fromReference(jni$_.JReference reference) => reference.isNull
       ? null
       : Document$OutputSettings$Syntax.fromReference(
           reference,
@@ -190,14 +185,12 @@ final class $Document$OutputSettings$Syntax$NullableType$
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType ==
-            ($Document$OutputSettings$Syntax$NullableType$) &&
+    return other.runtimeType == ($Document$OutputSettings$Syntax$NullableType$) &&
         other is $Document$OutputSettings$Syntax$NullableType$;
   }
 }
 
-final class $Document$OutputSettings$Syntax$Type$
-    extends jni$_.JType<Document$OutputSettings$Syntax> {
+final class $Document$OutputSettings$Syntax$Type$ extends jni$_.JType<Document$OutputSettings$Syntax> {
   @jni$_.internal
   const $Document$OutputSettings$Syntax$Type$();
 
@@ -253,12 +246,10 @@ class Document$OutputSettings extends jni$_.JObject {
   );
 
   /// The type which includes information such as the signature of this class.
-  static const jni$_.JType<Document$OutputSettings?> nullableType =
-      $Document$OutputSettings$NullableType$();
+  static const jni$_.JType<Document$OutputSettings?> nullableType = $Document$OutputSettings$NullableType$();
 
   /// The type which includes information such as the signature of this class.
-  static const jni$_.JType<Document$OutputSettings> type =
-      $Document$OutputSettings$Type$();
+  static const jni$_.JType<Document$OutputSettings> type = $Document$OutputSettings$Type$();
   static final _id_new$ = _class.constructorId(
     r'()V',
   );
@@ -905,8 +896,7 @@ class Document$OutputSettings extends jni$_.JObject {
   }
 }
 
-final class $Document$OutputSettings$NullableType$
-    extends jni$_.JType<Document$OutputSettings?> {
+final class $Document$OutputSettings$NullableType$ extends jni$_.JType<Document$OutputSettings?> {
   @jni$_.internal
   const $Document$OutputSettings$NullableType$();
 
@@ -916,8 +906,7 @@ final class $Document$OutputSettings$NullableType$
 
   @jni$_.internal
   @core$_.override
-  Document$OutputSettings? fromReference(jni$_.JReference reference) =>
-      reference.isNull
+  Document$OutputSettings? fromReference(jni$_.JReference reference) => reference.isNull
       ? null
       : Document$OutputSettings.fromReference(
           reference,
@@ -944,8 +933,7 @@ final class $Document$OutputSettings$NullableType$
   }
 }
 
-final class $Document$OutputSettings$Type$
-    extends jni$_.JType<Document$OutputSettings> {
+final class $Document$OutputSettings$Type$ extends jni$_.JType<Document$OutputSettings> {
   @jni$_.internal
   const $Document$OutputSettings$Type$();
 
@@ -955,18 +943,16 @@ final class $Document$OutputSettings$Type$
 
   @jni$_.internal
   @core$_.override
-  Document$OutputSettings fromReference(jni$_.JReference reference) =>
-      Document$OutputSettings.fromReference(
-        reference,
-      );
+  Document$OutputSettings fromReference(jni$_.JReference reference) => Document$OutputSettings.fromReference(
+    reference,
+  );
   @jni$_.internal
   @core$_.override
   jni$_.JType get superType => const jni$_.$JObject$NullableType$();
 
   @jni$_.internal
   @core$_.override
-  jni$_.JType<Document$OutputSettings?> get nullableType =>
-      const $Document$OutputSettings$NullableType$();
+  jni$_.JType<Document$OutputSettings?> get nullableType => const $Document$OutputSettings$NullableType$();
 
   @jni$_.internal
   @core$_.override
@@ -977,8 +963,7 @@ final class $Document$OutputSettings$Type$
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Document$OutputSettings$Type$) &&
-        other is $Document$OutputSettings$Type$;
+    return other.runtimeType == ($Document$OutputSettings$Type$) && other is $Document$OutputSettings$Type$;
   }
 }
 
@@ -999,12 +984,10 @@ class Document$QuirksMode extends jni$_.JObject {
   );
 
   /// The type which includes information such as the signature of this class.
-  static const jni$_.JType<Document$QuirksMode?> nullableType =
-      $Document$QuirksMode$NullableType$();
+  static const jni$_.JType<Document$QuirksMode?> nullableType = $Document$QuirksMode$NullableType$();
 
   /// The type which includes information such as the signature of this class.
-  static const jni$_.JType<Document$QuirksMode> type =
-      $Document$QuirksMode$Type$();
+  static const jni$_.JType<Document$QuirksMode> type = $Document$QuirksMode$Type$();
   static final _id_noQuirks = _class.staticFieldId(
     r'noQuirks',
     r'Lorg/jsoup/nodes/Document$QuirksMode;',
@@ -1012,8 +995,7 @@ class Document$QuirksMode extends jni$_.JObject {
 
   /// from: `static public final org.jsoup.nodes.Document$QuirksMode noQuirks`
   /// The returned object must be released after use, by calling the [release] method.
-  static Document$QuirksMode get noQuirks =>
-      _id_noQuirks.get(_class, const $Document$QuirksMode$Type$());
+  static Document$QuirksMode get noQuirks => _id_noQuirks.get(_class, const $Document$QuirksMode$Type$());
 
   static final _id_quirks = _class.staticFieldId(
     r'quirks',
@@ -1022,8 +1004,7 @@ class Document$QuirksMode extends jni$_.JObject {
 
   /// from: `static public final org.jsoup.nodes.Document$QuirksMode quirks`
   /// The returned object must be released after use, by calling the [release] method.
-  static Document$QuirksMode get quirks =>
-      _id_quirks.get(_class, const $Document$QuirksMode$Type$());
+  static Document$QuirksMode get quirks => _id_quirks.get(_class, const $Document$QuirksMode$Type$());
 
   static final _id_limitedQuirks = _class.staticFieldId(
     r'limitedQuirks',
@@ -1032,8 +1013,7 @@ class Document$QuirksMode extends jni$_.JObject {
 
   /// from: `static public final org.jsoup.nodes.Document$QuirksMode limitedQuirks`
   /// The returned object must be released after use, by calling the [release] method.
-  static Document$QuirksMode get limitedQuirks =>
-      _id_limitedQuirks.get(_class, const $Document$QuirksMode$Type$());
+  static Document$QuirksMode get limitedQuirks => _id_limitedQuirks.get(_class, const $Document$QuirksMode$Type$());
 
   static final _id_values = _class.staticMethodId(
     r'values',
@@ -1106,8 +1086,7 @@ class Document$QuirksMode extends jni$_.JObject {
   }
 }
 
-final class $Document$QuirksMode$NullableType$
-    extends jni$_.JType<Document$QuirksMode?> {
+final class $Document$QuirksMode$NullableType$ extends jni$_.JType<Document$QuirksMode?> {
   @jni$_.internal
   const $Document$QuirksMode$NullableType$();
 
@@ -1117,8 +1096,7 @@ final class $Document$QuirksMode$NullableType$
 
   @jni$_.internal
   @core$_.override
-  Document$QuirksMode? fromReference(jni$_.JReference reference) =>
-      reference.isNull
+  Document$QuirksMode? fromReference(jni$_.JReference reference) => reference.isNull
       ? null
       : Document$QuirksMode.fromReference(
           reference,
@@ -1140,13 +1118,11 @@ final class $Document$QuirksMode$NullableType$
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Document$QuirksMode$NullableType$) &&
-        other is $Document$QuirksMode$NullableType$;
+    return other.runtimeType == ($Document$QuirksMode$NullableType$) && other is $Document$QuirksMode$NullableType$;
   }
 }
 
-final class $Document$QuirksMode$Type$
-    extends jni$_.JType<Document$QuirksMode> {
+final class $Document$QuirksMode$Type$ extends jni$_.JType<Document$QuirksMode> {
   @jni$_.internal
   const $Document$QuirksMode$Type$();
 
@@ -1156,18 +1132,16 @@ final class $Document$QuirksMode$Type$
 
   @jni$_.internal
   @core$_.override
-  Document$QuirksMode fromReference(jni$_.JReference reference) =>
-      Document$QuirksMode.fromReference(
-        reference,
-      );
+  Document$QuirksMode fromReference(jni$_.JReference reference) => Document$QuirksMode.fromReference(
+    reference,
+  );
   @jni$_.internal
   @core$_.override
   jni$_.JType get superType => const jni$_.$JObject$NullableType$();
 
   @jni$_.internal
   @core$_.override
-  jni$_.JType<Document$QuirksMode?> get nullableType =>
-      const $Document$QuirksMode$NullableType$();
+  jni$_.JType<Document$QuirksMode?> get nullableType => const $Document$QuirksMode$NullableType$();
 
   @jni$_.internal
   @core$_.override
@@ -1178,8 +1152,7 @@ final class $Document$QuirksMode$Type$
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Document$QuirksMode$Type$) &&
-        other is $Document$QuirksMode$Type$;
+    return other.runtimeType == ($Document$QuirksMode$Type$) && other is $Document$QuirksMode$Type$;
   }
 }
 
@@ -1215,9 +1188,7 @@ class Document extends element$_.Element {
               jni$_.JniResult Function(
                 jni$_.Pointer<jni$_.Void>,
                 jni$_.JMethodIDPtr,
-                jni$_.VarArgs<
-                  (jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)
-                >,
+                jni$_.VarArgs<(jni$_.Pointer<jni$_.Void>, jni$_.Pointer<jni$_.Void>)>,
               )
             >
           >('globalEnv_NewObject')
@@ -2329,8 +2300,7 @@ final class $Document$NullableType$ extends jni$_.JType<Document?> {
 
   @core$_.override
   bool operator ==(Object other) {
-    return other.runtimeType == ($Document$NullableType$) &&
-        other is $Document$NullableType$;
+    return other.runtimeType == ($Document$NullableType$) && other is $Document$NullableType$;
   }
 }
 
