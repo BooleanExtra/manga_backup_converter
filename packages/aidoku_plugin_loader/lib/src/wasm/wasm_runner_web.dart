@@ -13,6 +13,12 @@ external JSPromise<JSObject> _wasmCompile(JSAny bytes);
 @JS('WebAssembly.instantiate')
 external JSPromise<JSObject> _wasmInstantiateModule(JSObject module, JSObject imports);
 
+@JS('Reflect.apply')
+external JSAny? _jsReflectApply(JSFunction target, JSAny? thisArg, JSArray<JSAny?> args);
+
+@JS('eval')
+external JSAny _jsEval(JSString code);
+
 @JS()
 extension type _WasmInstance._(JSObject _) implements JSObject {
   external JSObject get exports;
@@ -24,6 +30,23 @@ extension type _WasmMemory._(JSObject _) implements JSObject {
 }
 
 // ---------------------------------------------------------------------------
+// Variable-arity JS wrapper factory
+// ---------------------------------------------------------------------------
+
+/// A JS function `(bridge) => function() { return bridge(arguments); }`.
+///
+/// dart2js's `.toJS` creates fixed-arity JS functions matching the Dart
+/// function's parameter count. But WASM imports call with their exact declared
+/// arity, causing a mismatch when using a 12-param Dart wrapper. This factory
+/// creates a variable-arity JS function that captures the Dart bridge and
+/// forwards all `arguments` as a JS array.
+final JSFunction _varArgsFactory =
+    _jsEval(
+          '(function(bridge) { return function() { return bridge(Array.prototype.slice.call(arguments)); }; })'.toJS,
+        )
+        as JSFunction;
+
+// ---------------------------------------------------------------------------
 // Helper: convert nested Dart import map to JS object tree
 // ---------------------------------------------------------------------------
 
@@ -33,12 +56,17 @@ JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
     final inner = JSObject();
     for (final MapEntry<String, Function> fnEntry in moduleEntry.value.entries) {
       final Function dartFn = fnEntry.value;
-      // 4-arg JS wrapper; extra args beyond the function's arity are ignored
-      final JSExportedDartFunction jsFn = (JSAny? a, JSAny? b, JSAny? c, JSAny? d) {
-        final List<Object?> dartArgs = <JSAny?>[a, b, c, d].where((JSAny? x) => x != null).map(_jsToValue).toList();
+      // Create a 1-arg Dart bridge that receives a JS array of args.
+      final JSExportedDartFunction dartBridge = (JSArray<JSAny?> jsArgs) {
+        final int count = jsArgs.length;
+        final dartArgs = <Object?>[
+          for (var idx = 0; idx < count; idx++) _jsToValue(jsArgs[idx]),
+        ];
         final Object? result = Function.apply(dartFn, dartArgs);
         return _valueToJs(result is Future ? null : result);
       }.toJS;
+      // Wrap in a variable-arity JS function via the factory.
+      final jsFn = _varArgsFactory.callAsFunction(null, dartBridge)! as JSFunction;
       inner.setProperty(fnEntry.key.toJS, jsFn);
     }
     outer.setProperty(moduleEntry.key.toJS, inner);
@@ -48,7 +76,15 @@ JSObject _buildImportObject(Map<String, Map<String, Function>> imports) {
 
 Object? _jsToValue(JSAny? v) {
   if (v == null) return null;
-  return v.dartify();
+  if (v.isUndefinedOrNull) return null;
+  final Object? dart = v.dartify();
+  // JS numbers are always doubles. Convert integer-valued doubles to int
+  // because host import functions expect int parameters.
+  if (dart is double) {
+    final int asInt = dart.toInt();
+    if (dart == asInt.toDouble()) return asInt;
+  }
+  return dart;
 }
 
 JSAny? _valueToJs(Object? v) {
@@ -98,11 +134,11 @@ class WasmRunner {
   dynamic call(String name, List<Object?> args) {
     final JSAny? fn = _exports.getProperty(name.toJS);
     if (fn == null) throw ArgumentError('WASM export not found: $name');
-    final List<JSAny?> jsArgs = args.map(_valueToJs).toList();
-    final JSAny? result = (fn as JSFunction).callAsFunction(
-      null,
-      jsArgs.jsify()! as JSArray<JSAny?>,
-    );
+    final JSArray<JSAny?> jsArgs = <JSAny?>[
+      for (final Object? arg in args) _valueToJs(arg),
+    ].toJS;
+    // Use Reflect.apply to spread the args array as individual parameters.
+    final JSAny? result = _jsReflectApply(fn as JSFunction, null, jsArgs);
     return _jsToValue(result);
   }
 

@@ -170,6 +170,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - **Testing**: mocktail, patrol (integration tests)
 - **Testing assertions**: `package:checks` (not `package:matcher`) — use `check(val).equals()`, `isCloseTo()`, `isA<T>()`, `isNotNull()`, `isEmpty()`; import from `package:checks/checks.dart` + `package:test/scaffolding.dart` (not `package:test/test.dart`)
 - **Testing imports**: avoid barrel import (`mangabackupconverter_lib.dart`) in tests when names clash with `package:test`; use specific imports or `hide`
+- **Web-only tests**: `@TestOn('browser')` + `dart test --reporter expanded --platform chrome test/web/` — hand-crafted WASM binaries as `Uint8List` constants for testing without .aix fixtures
 - **CLI formats**: protobuf, archive, sqflite_common
 
 ## CI
@@ -206,11 +207,11 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - `jsoup_selector.dart` — Dart port of jsoup pseudo-selector engine from `wasm_worker_js.dart`; mid-chain pseudo-selectors apply to final results only (same limitation as the JS version)
 - `aidoku_host.dart` takes `Jsoup? htmlParser`; `wasm_isolate.dart` creates `Jsoup()` per isolate (JVM is process-global)
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
-- **Aidoku web WASM**: Runs in a JS Web Worker (`lib/src/web/wasm_worker_js.dart`) with sync XHR for HTTP
-  - Sync XHR is required because WASM host imports must return synchronously; allowed in workers (only deprecated on main thread)
-  - Avoids SharedArrayBuffer/COOP+COEP requirements; main thread communicates via `postMessage`
-  - JS source is embedded as a `const String` and loaded as a Blob URL
-  - Web worker HTML module uses Cheerio (not browser DOM); custom jsoup pseudo-selector engine (`parseJsoupSelector` + `jsoupSelect`) handles `:containsOwn`, `:matches`, `:matchesOwn`, `:containsData`, etc. via post-filter; Cheerio contexts (`$`) tracked per `ctxId` with cleanup on resource removal
-  - Cheerio domhandler nodes: elements have `type: 'tag'` + `name` property (NOT `type: 'script'`); text nodes have `type: 'text'` + `data` property; `$(el).text()` normalizes whitespace — walk text nodes directly for "whole text" semantics
+- **Aidoku web WASM**: Runs in a Dart isolate (`lib/src/web/wasm_worker_isolate.dart`) compiled to a Web Worker
+  - Reuses `buildAidokuHostImports()`, `HostStore`, `WasmRunner` (web), `Jsoup()` (CheerioParser) — unified with native
+  - `Isolate.spawn(wasmWorkerMain, initMap)` + `SendPort`/`ReceivePort` with Map-based messages (structured-cloneable)
+  - Sync XHR via `dart:js_interop` (`_JSXMLHttpRequest`) — required because WASM host imports must return synchronously
+  - `_LazyRunner` proxy breaks circular dependency (same pattern as native `wasm_isolate.dart`)
+- **Web JS interop arity**: dart2js `.toJS` creates fixed-arity JS functions; WASM imports need variable-arity. `_varArgsFactory` in `wasm_runner_web.dart` uses `eval` to create wrappers that forward `arguments` as JSArray to a 1-arg Dart bridge. Requires `eval` (already needed since WASM uses `wasm-eval`)
 - **Cheerio web bundle** (`packages/jsoup/`): `tool/bundle_cheerio.dart` generates `lib/src/web/cheerio_bundle.dart` — cheerio 1.2.0 UMD via browserify + custom `node:` prefix stripping transform + `undici` excluded; `package:jsoup/cheerio.dart` exports the `cheerioJs` const string
 - **`code_assets` `OS` class**: No `web` constant — only native OS values (android, iOS, linux, macOS, windows, fuchsia); `buildCodeAssets` is already false for web targets, so build hooks return early
