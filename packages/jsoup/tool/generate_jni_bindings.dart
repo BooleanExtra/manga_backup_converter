@@ -1,12 +1,9 @@
-// Runs `dart run jnigen --config jnigen.yaml` with the bundled JRE on PATH,
-// or runs `dart run jni:setup` with JAVA_HOME pointing to a system JDK.
+// Runs `dart run jnigen --config jnigen.yaml` or `dart run jni:setup` using
+// the JDK downloaded by the build hook.
 //
-// The build hook downloads an Adoptium JRE 17 into .dart_tool/, but jnigen
-// hardcodes `java` as the command. This script finds the downloaded JRE and
-// prepends its bin/ directory to PATH before invoking jnigen.
-//
-// For jni:setup, a full JDK (with include/jni.h) is needed — the bundled JRE
-// lacks headers. The script discovers system JDK installations automatically.
+// The build hook downloads an Adoptium JDK 17 into .dart_tool/. This script
+// finds it and uses it for both jnigen (needs javadoc) and jni:setup (needs
+// include/jni.h).
 //
 // Usage:
 //   cd packages/jsoup
@@ -28,27 +25,20 @@ void main(List<String> args) async {
 }
 
 Future<void> _runJnigen() async {
-  // jnigen's ApiSummarizer needs javadoc, which is only in a full JDK.
-  // Prefer a system JDK, fall back to the bundled JRE (will fail at
-  // ApiSummarizer but still works for non-summary generation).
-  final String? jdkHome = _findJdkHome();
-  final String? javaBin = jdkHome != null ? '$jdkHome/bin' : _findJavaBin();
-  if (jdkHome != null) {
-    print('Using JDK: $jdkHome');
-  } else if (javaBin != null) {
-    print('Using java from: $javaBin (JRE only — javadoc unavailable)');
-  } else {
-    print('No JDK or JRE found. Falling back to system PATH.');
+  final String? jdkHome = _findBundledJdk();
+  if (jdkHome == null) {
+    print('No bundled JDK found. Run a build first to trigger the build hook,');
+    print('or run: dart run tool/generate_jni_bindings.dart --jni-setup');
+    exit(1);
   }
 
+  print('Using bundled JDK: $jdkHome');
+
   final env = Map<String, String>.of(Platform.environment);
-  if (javaBin != null) {
-    final separator = Platform.isWindows ? ';' : ':';
-    env['PATH'] = '$javaBin$separator${env['PATH'] ?? ''}';
-  }
-  if (jdkHome != null) {
-    env['JAVA_HOME'] = jdkHome;
-  }
+  final javaBin = '$jdkHome/bin';
+  final separator = Platform.isWindows ? ';' : ':';
+  env['PATH'] = '$javaBin$separator${env['PATH'] ?? ''}';
+  env['JAVA_HOME'] = jdkHome;
 
   print('Running jnigen ...');
   final Process process = await Process.start(
@@ -63,18 +53,17 @@ Future<void> _runJnigen() async {
 }
 
 Future<void> _runJniSetup() async {
-  final String? jdkHome = _findJdkHome();
+  final String? jdkHome = _findBundledJdk();
   if (jdkHome == null) {
-    print('Error: No JDK found with include/jni.h.');
+    print('No bundled JDK found. Run a build first to trigger the build hook.');
     print('');
-    print('jni:setup requires a full JDK (not just a JRE).');
-    print('Install Adoptium JDK 17: https://adoptium.net/');
-    print('');
-    print('Or set JAVA_HOME to your JDK installation directory.');
+    print('For example:');
+    print('  cd <monorepo_root>');
+    print('  dart run --define=JSOUP_TRIGGER=1 packages/jsoup/hook/build.dart');
     exit(1);
   }
 
-  print('Using JDK: $jdkHome');
+  print('Using bundled JDK: $jdkHome');
 
   final env = Map<String, String>.of(Platform.environment);
   // Use MSYS2-compatible paths — CMake chokes on Windows backslash paths.
@@ -117,7 +106,37 @@ Future<void> _runJniSetup() async {
     }
   }
 
+  // Copy dartjni.dll next to jvm.dll in the bundled JDK — JreManager sets
+  // dylibDir to the directory containing jvm.dll.
+  _installDartJni(monorepoRoot, jdkHome);
+
   print('jni:setup complete.');
+}
+
+/// Copies dartjni.dll from build/jni_libs/ to the bundled JDK's server dir.
+void _installDartJni(String monorepoRoot, String jdkHome) {
+  final libName = Platform.isWindows ? 'dartjni.dll' : 'libdartjni.so';
+  final source = File('$monorepoRoot/build/jni_libs/$libName');
+  if (!source.existsSync()) {
+    print('Warning: $libName not found in build/jni_libs/, skipping install.');
+    return;
+  }
+
+  final serverDir = Platform.isWindows
+      ? '$jdkHome/bin/server'
+      : '$jdkHome/lib/server';
+  if (!Directory(serverDir).existsSync()) {
+    print('Warning: Server directory not found at $serverDir');
+    return;
+  }
+
+  final target = '$serverDir/$libName';
+  try {
+    source.copySync(target);
+    print('Installed $libName → $target');
+  } on FileSystemException catch (e) {
+    print('Warning: Could not copy to $target: ${e.message}');
+  }
 }
 
 /// On MinGW/MSYS2, jni:setup crashes looking for Debug/ but the library
@@ -156,70 +175,44 @@ bool _rescueMinGWBuild(String monorepoRoot) {
   return false;
 }
 
-/// Finds the root directory of a JDK that has `include/jni.h`.
+/// Finds the root directory of the bundled Adoptium JDK.
 ///
-/// Discovery order:
-/// 1. JAVA_HOME env var (if it contains include/jni.h)
-/// 2. Well-known system JDK paths (prefer JDK 17, accept others)
-String? _findJdkHome() {
-  // 1. Check JAVA_HOME.
-  final String? javaHome = Platform.environment['JAVA_HOME'];
-  if (javaHome != null && _isJdk(javaHome)) {
-    return javaHome;
-  }
+/// Walks upward from [Directory.current] looking for the build hook's JDK
+/// output at `.dart_tool/hooks_runner/shared/jsoup/build/jdk-17-{os}-{arch}/`.
+String? _findBundledJdk() {
+  final os = Platform.isWindows ? 'windows' : 'linux';
+  final String arch = _arch();
 
-  // 2. Scan well-known system directories.
-  final candidates = <String>[];
-  if (Platform.isWindows) {
-    for (final base in [
-      r'C:\Program Files\Eclipse Adoptium',
-      r'C:\Program Files\Java',
-      r'C:\Program Files\Microsoft',
-    ]) {
-      _addJdkCandidates(base, candidates);
-    }
-  } else if (Platform.isLinux) {
-    _addJdkCandidates('/usr/lib/jvm', candidates);
-  } else if (Platform.isMacOS) {
-    // macOS: /Library/Java/JavaVirtualMachines/*/Contents/Home
-    final vmsDir = Directory('/Library/Java/JavaVirtualMachines');
-    if (vmsDir.existsSync()) {
-      for (final FileSystemEntity entry in vmsDir.listSync()) {
+  Directory dir = Directory.current;
+  for (var i = 0; i < 10; i++) {
+    final jdkDir = Directory(
+      '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
+      'jdk-17-$os-$arch',
+    );
+    if (jdkDir.existsSync()) {
+      // JDK extracts to a subdirectory like `jdk-17.0.x+y/`.
+      for (final FileSystemEntity entry in jdkDir.listSync()) {
         if (entry is Directory) {
-          final home = '${entry.path}/Contents/Home';
-          if (_isJdk(home)) candidates.add(home);
+          // Verify it has include/jni.h (confirms it's a full JDK).
+          if (File('${entry.path}/include/jni.h').existsSync()) {
+            return entry.path;
+          }
         }
       }
     }
+    final Directory parent = dir.parent;
+    if (parent.path == dir.path) break;
+    dir = parent;
   }
 
-  if (candidates.isEmpty) return null;
-
-  // Prefer JDK 17, then sort by path (higher version numbers sort later).
-  candidates.sort((a, b) {
-    final bool a17 = a.contains('17');
-    final bool b17 = b.contains('17');
-    if (a17 && !b17) return -1;
-    if (!a17 && b17) return 1;
-    return b.compareTo(a); // Higher versions first within same preference.
-  });
-
-  return candidates.first;
-}
-
-/// Scans [baseDir] for subdirectories that contain `include/jni.h`.
-void _addJdkCandidates(String baseDir, List<String> candidates) {
-  final dir = Directory(baseDir);
-  if (!dir.existsSync()) return;
-  for (final FileSystemEntity entry in dir.listSync()) {
-    if (entry is Directory && _isJdk(entry.path)) {
-      candidates.add(entry.path);
-    }
+  // Fall back to JAVA_HOME if it's a full JDK.
+  final String? javaHome = Platform.environment['JAVA_HOME'];
+  if (javaHome != null && File('$javaHome/include/jni.h').existsSync()) {
+    return javaHome;
   }
-}
 
-/// Returns true if [path] looks like a JDK root (has `include/jni.h`).
-bool _isJdk(String path) => File('$path/include/jni.h').existsSync() || File('$path\\include\\jni.h').existsSync();
+  return null;
+}
 
 /// Converts a Windows path to a CMake-compatible path.
 ///
@@ -296,48 +289,6 @@ String? _findMonorepoRoot() {
     if (parent.path == dir.path) break;
     dir = parent;
   }
-  return null;
-}
-
-/// Finds the `bin/` directory of the downloaded Adoptium JRE.
-///
-/// Walks upward from [Directory.current] looking for the build hook's JRE
-/// output, then falls back to JAVA_HOME.
-String? _findJavaBin() {
-  final javaExe = Platform.isWindows ? 'java.exe' : 'java';
-  final os = Platform.isWindows ? 'windows' : 'linux';
-  final String arch = _arch();
-
-  // Walk upward looking for .dart_tool/hooks_runner/shared/jsoup/build/
-  Directory dir = Directory.current;
-  for (var i = 0; i < 10; i++) {
-    final jreDir = Directory(
-      '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
-      'jre-17-$os-$arch',
-    );
-    if (jreDir.existsSync()) {
-      // JRE extracts to a subdirectory like `jdk-17.0.x+y-jre/`.
-      for (final FileSystemEntity entry in jreDir.listSync()) {
-        if (entry is Directory) {
-          final bin = Directory('${entry.path}/bin');
-          if (File('${bin.path}/$javaExe').existsSync()) {
-            return bin.path;
-          }
-        }
-      }
-    }
-    final Directory parent = dir.parent;
-    if (parent.path == dir.path) break;
-    dir = parent;
-  }
-
-  // Fall back to JAVA_HOME.
-  final String? javaHome = Platform.environment['JAVA_HOME'];
-  if (javaHome != null) {
-    final bin = '$javaHome/bin';
-    if (File('$bin/$javaExe').existsSync()) return bin;
-  }
-
   return null;
 }
 

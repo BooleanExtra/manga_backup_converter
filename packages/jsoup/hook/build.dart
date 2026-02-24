@@ -1,12 +1,15 @@
-// Build hook that downloads a minimal JRE and Jsoup JAR for desktop platforms.
+// Build hook that downloads a JDK and Jsoup JAR for desktop platforms.
 // On Android the JVM is already available; on iOS/macOS SwiftSoup is used.
 //
 // Downloads:
-// 1. Adoptium JRE 17 (Windows x64, Linux x64/arm64)
+// 1. Adoptium JDK 17 (Windows x64, Linux x64/arm64)
 // 2. Jsoup 1.18.3 JAR from Maven Central
 //
 // The JVM library is registered as a CodeAsset. The Jsoup JAR is placed in the
 // shared output directory where JreManager finds it at runtime.
+//
+// A full JDK (not just a JRE) is used so that jnigen (needs javadoc) and
+// jni:setup (needs include/jni.h) can use the same bundled installation.
 // ignore_for_file: avoid_print
 import 'dart:io';
 
@@ -17,12 +20,12 @@ import 'package:http/http.dart' as http;
 import 'package:jsoup/src/jre/jre_manager.dart' show JreManager;
 import 'package:jsoup/src/jsoup_version.dart';
 
-const _jreVersion = '17';
+const _jdkVersion = '17';
 
 const _jsoupMavenUrl = 'https://repo1.maven.org/maven2/org/jsoup/jsoup/$jsoupVersion/jsoup-$jsoupVersion.jar';
 
-/// Maps (OS, Architecture) to JRE download info from Adoptium.
-const _jreDownloadInfo = <(OS, Architecture), ({String os, String arch, String jvmLibPath, bool isZip})>{
+/// Maps (OS, Architecture) to JDK download info from Adoptium.
+const _jdkDownloadInfo = <(OS, Architecture), ({String os, String arch, String jvmLibPath, bool isZip})>{
   (OS.windows, Architecture.x64): (
     os: 'windows',
     arch: 'x64',
@@ -66,16 +69,16 @@ void main(List<String> args) async {
       return;
     }
 
-    final ({String arch, bool isZip, String jvmLibPath, String os})? info = _jreDownloadInfo[key];
+    final ({String arch, bool isZip, String jvmLibPath, String os})? info = _jdkDownloadInfo[key];
     if (info == null) {
       throw UnsupportedError(
-        'jsoup: JRE not available for '
+        'jsoup: JDK not available for '
         '${codeConfig.targetOS}-${codeConfig.targetArchitecture}.',
       );
     }
 
-    // Download JRE and Jsoup JAR to the shared output directory.
-    final Uri jvmLib = await _downloadJre(input.outputDirectoryShared, info);
+    // Download JDK and Jsoup JAR to the shared output directory.
+    final Uri jvmLib = await _downloadJdk(input.outputDirectoryShared, info);
     await _downloadJsoupJar(input.outputDirectoryShared);
 
     // Register the JVM library so Jni.spawn() can find it.
@@ -117,19 +120,19 @@ Future<void> _downloadJsoupJar(Uri outputDirectoryShared) async {
   }
 }
 
-/// Downloads the Adoptium JRE and extracts it.
-Future<Uri> _downloadJre(
+/// Downloads the Adoptium JDK and extracts it.
+Future<Uri> _downloadJdk(
   Uri outputDirectoryShared,
   ({String os, String arch, String jvmLibPath, bool isZip}) info,
 ) async {
   final cacheDir = Directory.fromUri(
-    outputDirectoryShared.resolve('jre-$_jreVersion-${info.os}-${info.arch}/'),
+    outputDirectoryShared.resolve('jdk-$_jdkVersion-${info.os}-${info.arch}/'),
   );
 
-  // The JRE extracts to a subdirectory like `jdk-17.0.x+y-jre/`.
+  // The JDK extracts to a subdirectory like `jdk-17.0.x+y/`.
   // We need to find that directory after extraction.
   final jvmLibFile = File.fromUri(
-    cacheDir.uri.resolve(_findJreSubdir(cacheDir, info.jvmLibPath)),
+    cacheDir.uri.resolve(_findJdkSubdir(cacheDir, info.jvmLibPath)),
   );
 
   if (await jvmLibFile.exists()) {
@@ -137,15 +140,15 @@ Future<Uri> _downloadJre(
   }
 
   final Uri url = Uri.parse(
-    'https://api.adoptium.net/v3/binary/latest/$_jreVersion/ga/'
-    '${info.os}/${info.arch}/jre/hotspot/normal/eclipse',
+    'https://api.adoptium.net/v3/binary/latest/$_jdkVersion/ga/'
+    '${info.os}/${info.arch}/jdk/hotspot/normal/eclipse',
   );
 
-  print('Downloading Adoptium JRE $_jreVersion for ${info.os}/${info.arch} ...');
+  print('Downloading Adoptium JDK $_jdkVersion for ${info.os}/${info.arch} ...');
   final http.Response response = await http.get(url);
   if (response.statusCode != 200) {
     throw Exception(
-      'Failed to download JRE: HTTP ${response.statusCode}\n'
+      'Failed to download JDK: HTTP ${response.statusCode}\n'
       'URL: $url',
     );
   }
@@ -155,7 +158,7 @@ Future<Uri> _downloadJre(
   }
 
   // Extract archive.
-  print('Extracting JRE ...');
+  print('Extracting JDK ...');
   if (info.isZip) {
     final Archive archive = ZipDecoder().decodeBytes(response.bodyBytes);
     for (final file in archive) {
@@ -176,7 +179,7 @@ Future<Uri> _downloadJre(
   }
 
   // Find the actual JVM library path (inside the extracted subdirectory).
-  final String resolvedPath = _findJreSubdir(cacheDir, info.jvmLibPath);
+  final String resolvedPath = _findJdkSubdir(cacheDir, info.jvmLibPath);
   final resolvedFile = File.fromUri(cacheDir.uri.resolve(resolvedPath));
 
   if (!await resolvedFile.exists()) {
@@ -189,15 +192,15 @@ Future<Uri> _downloadJre(
     );
   }
 
-  print('JRE $_jreVersion cached at ${cacheDir.path}');
+  print('JDK $_jdkVersion cached at ${cacheDir.path}');
   return resolvedFile.uri;
 }
 
-/// Finds the JRE subdirectory inside the cache dir.
+/// Finds the JDK subdirectory inside the cache dir.
 ///
-/// Adoptium extracts to `jdk-17.x.x+y-jre/`, so we need to find that dir
+/// Adoptium extracts to `jdk-17.x.x+y/`, so we need to find that dir
 /// and prepend it to the library path.
-String _findJreSubdir(Directory cacheDir, String libPath) {
+String _findJdkSubdir(Directory cacheDir, String libPath) {
   if (!cacheDir.existsSync()) return libPath;
   final List<FileSystemEntity> entries = cacheDir.listSync();
   for (final entry in entries) {
