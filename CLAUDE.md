@@ -211,7 +211,8 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
   - Reuses `buildAidokuHostImports()`, `HostStore`, `WasmRunner` (web), `Jsoup()` (CheerioParser) — unified with native
   - `Isolate.spawn(wasmWorkerMain, initMap)` + `SendPort`/`ReceivePort` with Map-based messages (structured-cloneable)
   - Sync XHR via `dart:js_interop` (`_JSXMLHttpRequest`) — required because WASM host imports must return synchronously
-  - `_LazyRunner` proxy breaks circular dependency (same pattern as native `wasm_isolate.dart`)
+  - `LazyWasmRunner` (`lib/src/wasm/lazy_wasm_runner.dart`) breaks circular dependency — shared by both native `wasm_isolate.dart` and web `wasm_worker_isolate.dart`
+  - Rate limiting enforced in-worker via `RateLimiter` + busy-wait before each sync XHR (unlike native where it's on the main isolate, because web HTTP is synchronous)
 - **Web JS interop arity**: dart2js `.toJS` creates fixed-arity JS functions; WASM imports need variable-arity. `_varArgsFactory` in `wasm_runner_web.dart` uses `eval` to create wrappers that forward `arguments` as JSArray to a 1-arg Dart bridge. Requires `eval` (already needed since WASM uses `wasm-eval`)
 - **Cheerio web bundle** (`packages/jsoup/`): `tool/bundle_cheerio.dart` generates `lib/src/web/cheerio_bundle.dart` — cheerio 1.2.0 UMD via browserify + custom `node:` prefix stripping transform + `undici` excluded; `package:jsoup/cheerio.dart` exports the `cheerioJs` const string
 - **`code_assets` `OS` class**: No `web` constant — only native OS values (android, iOS, linux, macOS, windows, fuchsia); `buildCodeAssets` is already false for web targets, so build hooks return early
