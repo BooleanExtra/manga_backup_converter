@@ -18,19 +18,30 @@ class JreManager {
   ///
   /// This is idempotent — calling it multiple times is safe.
   /// The Jsoup JAR path is resolved relative to the executable.
+  ///
+  /// In child Dart isolates on Windows, the JVM is already running and
+  /// jvm.dll is already loaded. The full setup is skipped because any PEB
+  /// environment access (`Platform.environment`, `SetEnvironmentVariableW`)
+  /// from a child isolate corrupts the JVM's VEH handler, causing 0xC0000005
+  /// crashes on subsequent `FindClass` calls.
   static void ensureInitialized() {
     if (_initialized) return;
     _initialized = true;
+
+    // On Windows, if jvm.dll is already loaded, the main isolate has already
+    // set up everything. Skip all setup.
+    if (Platform.isWindows && _isModuleLoaded('jvm.dll')) {
+      return;
+    }
 
     final String jsoupJarPath = _findJsoupJar();
     final String jvmLibPath = _findJvmLibrary();
     final String jvmDir = File(jvmLibPath).parent.path;
 
-    // dartjni.dll depends on jvm.dll at load time. On Windows, add the
-    // directory containing jvm.dll to the DLL search path so the OS can
-    // resolve it when DynamicLibrary.open loads dartjni.dll.
+    // dartjni.dll depends on jvm.dll at load time. Pre-load jvm.dll by full
+    // path so the OS linker can resolve it when dartjni.dll is opened.
     if (Platform.isWindows) {
-      _addDllDirectory(jvmDir);
+      DynamicLibrary.open(jvmLibPath);
     }
 
     Jni.spawnIfNotExists(
@@ -45,14 +56,8 @@ class JreManager {
   /// Looks in several locations:
   /// 1. Next to the executable (bundled app)
   /// 2. In the package's `jar/` directory (development)
-  /// 3. Via JSOUP_JAR_PATH environment variable
+  /// 3. Upward from working directory for build hook output (development/test)
   static String _findJsoupJar() {
-    // Check environment variable first.
-    final String? envPath = Platform.environment['JSOUP_JAR_PATH'];
-    if (envPath != null && File(envPath).existsSync()) {
-      return envPath;
-    }
-
     // Check next to executable.
     final String exeDir = File(Platform.resolvedExecutable).parent.path;
     final candidates = <String>[
@@ -80,24 +85,18 @@ class JreManager {
     }
 
     throw StateError(
-      'Could not find jsoup.jar. Set JSOUP_JAR_PATH environment variable '
-      'or place jsoup.jar next to the executable.',
+      'Could not find jsoup.jar. Place jsoup.jar next to the executable '
+      'or ensure the build hook has run.',
     );
   }
 
   /// Locate the JVM shared library.
   ///
   /// On desktop platforms the JDK is bundled by the build hook.
-  /// Falls back to JAVA_HOME if no bundled JDK is found.
   static String _findJvmLibrary() {
     final libName = Platform.isWindows ? 'jvm.dll' : 'libjvm.so';
-    final serverSubdir = Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
-
-    // Check environment variable.
-    final String? envPath = Platform.environment['JVM_LIB_PATH'];
-    if (envPath != null && File(envPath).existsSync()) {
-      return envPath;
-    }
+    final serverSubdir =
+        Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
 
     // Check next to executable (bundled app).
     final String exeDir = File(Platform.resolvedExecutable).parent.path;
@@ -133,54 +132,25 @@ class JreManager {
       dir = parent;
     }
 
-    // Fall back to JAVA_HOME.
-    final String? javaHome = Platform.environment['JAVA_HOME'];
-    if (javaHome != null) {
-      final path = '$javaHome/$serverSubdir';
-      if (File(path).existsSync()) return path;
-    }
-
     throw StateError(
-      'Could not find $libName. Set JVM_LIB_PATH or JAVA_HOME environment '
-      'variable, or ensure a bundled JDK is present.',
+      'Could not find $libName. Ensure a bundled JDK is present.',
     );
   }
 
-  /// Adds [directory] to the Windows DLL search path via `SetEnvironmentVariableW`.
+  /// Returns true if a DLL with [name] is already loaded in the process.
   ///
-  /// Prepends [directory] to the process-level PATH so that when `dartjni.dll`
-  /// is loaded, the OS can find `jvm.dll` in the same directory.
-  static void _addDllDirectory(String directory) {
+  /// Uses `GetModuleHandleW` which queries the loaded modules list without
+  /// loading the DLL or accessing the PEB environment block.
+  static bool _isModuleLoaded(String name) {
     final kernel32 = DynamicLibrary.open('kernel32.dll');
-
-    // DWORD GetEnvironmentVariableW(LPCWSTR name, LPWSTR buffer, DWORD size)
-    final int Function(Pointer<Utf16>, Pointer<Utf16>, int) getEnvVar = kernel32
-        .lookupFunction<
-          Uint32 Function(Pointer<Utf16>, Pointer<Utf16>, Uint32),
-          int Function(Pointer<Utf16>, Pointer<Utf16>, int)
-        >(
-          'GetEnvironmentVariableW',
-        );
-
-    // BOOL SetEnvironmentVariableW(LPCWSTR name, LPCWSTR value)
-    final int Function(Pointer<Utf16>, Pointer<Utf16>) setEnvVar = kernel32
-        .lookupFunction<Int32 Function(Pointer<Utf16>, Pointer<Utf16>), int Function(Pointer<Utf16>, Pointer<Utf16>)>(
-          'SetEnvironmentVariableW',
-        );
-
-    final Pointer<Utf16> pathName = 'PATH'.toNativeUtf16();
-
-    // Get current PATH length (returns size in chars including null).
-    final int needed = getEnvVar(pathName, nullptr, 0);
-    final Pointer<Utf16> currentPath = malloc.allocate<Utf16>(needed * sizeOf<Uint16>());
-    getEnvVar(pathName, currentPath, needed);
-
-    // Prepend jvmDir to PATH.
-    final Pointer<Utf16> newPath = '$directory;${currentPath.toDartString()}'.toNativeUtf16();
-    setEnvVar(pathName, newPath);
-
-    malloc.free(pathName);
-    malloc.free(currentPath);
-    malloc.free(newPath);
+    final Pointer<Void> Function(Pointer<Utf16>) getModuleHandle =
+        kernel32.lookupFunction<
+          Pointer<Void> Function(Pointer<Utf16>),
+          Pointer<Void> Function(Pointer<Utf16>)
+        >('GetModuleHandleW');
+    final Pointer<Utf16> namePtr = name.toNativeUtf16();
+    final Pointer<Void> handle = getModuleHandle(namePtr);
+    malloc.free(namePtr);
+    return handle != nullptr;
   }
 }
