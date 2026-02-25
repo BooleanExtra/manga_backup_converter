@@ -694,27 +694,54 @@ jobs:
       - name: Bootstrap Melos
         run: melos bootstrap
 
-      - name: Compile CLI
+      - name: Build CLI
         run: |
           cd packages/mangabackupconverter_cli
-          dart compile exe bin/mangabackupconverter_cli.dart -o mangabackupconverter_cli.exe
+          dart build cli
 
-      - name: Rename Artifact
+      - name: Package CLI
         run: |
-          cd packages/mangabackupconverter_cli
-          mv mangabackupconverter_cli.exe ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+          cd packages/mangabackupconverter_cli/build/cli/_/bundle
+          mv bin/mangabackupconverter_cli.exe bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+        shell: bash
 
-      - name: Upload CLI Binary
+      - name: Upload CLI Bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows
-          path: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+          path: packages/mangabackupconverter_cli/build/cli/_/bundle/
 
-      - name: Release CLI Binary
+      - name: Compile Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: packages/mangabackupconverter_cli/installer/windows_setup.iss
+          options: /DBundleDir=${{ github.workspace }}\packages\mangabackupconverter_cli\build\cli\_\bundle /DAppVersion=${{ env.BRANCH_NAME }} /O${{ github.workspace }}\installer-output
+
+      - name: Rename Installer
+        run: |
+          mv installer-output/mangabackupconverter-cli-windows-setup.exe "installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe"
+        shell: bash
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup
+          path: installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe
+
+      - name: Create Release Archive
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/_
+          Compress-Archive -Path bundle/* -DestinationPath ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
+        shell: pwsh
+
+      - name: Release CLI
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+          artifacts: |
+            packages/mangabackupconverter_cli/build/cli/_/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
+            installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe
           allowUpdates: true
           omitBodyDuringUpdate: true
 
@@ -773,27 +800,33 @@ jobs:
       - name: Bootstrap Melos
         run: melos bootstrap
 
-      - name: Compile CLI
+      - name: Build CLI
         run: |
           cd packages/mangabackupconverter_cli
-          dart compile exe bin/mangabackupconverter_cli.dart -o mangabackupconverter_cli
+          dart build cli
 
-      - name: Rename Artifact
+      - name: Package CLI
         run: |
-          cd packages/mangabackupconverter_cli
-          mv mangabackupconverter_cli ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          cd packages/mangabackupconverter_cli/build/cli/_/bundle
+          mv bin/mangabackupconverter_cli bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
 
-      - name: Upload CLI Binary
+      - name: Upload CLI Bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
-          path: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          path: packages/mangabackupconverter_cli/build/cli/_/bundle/
 
-      - name: Release CLI Binary
+      - name: Create Release Archive
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/_
+          tar -czf ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz -C bundle .
+
+      - name: Release CLI
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          artifacts: packages/mangabackupconverter_cli/build/cli/_/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz
           allowUpdates: true
           omitBodyDuringUpdate: true
 
