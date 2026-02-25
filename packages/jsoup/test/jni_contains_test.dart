@@ -82,10 +82,8 @@ void main() {
   });
 
   test(':contains with parentheses in search text', () {
-    final Document d =
-        jsoup.parse('<p>One Piece (Digital Colored)</p><p>Other</p>');
-    final Elements els =
-        d.select('p:contains(One Piece (Digital Colored))');
+    final Document d = jsoup.parse('<p>One Piece (Digital Colored)</p><p>Other</p>');
+    final Elements els = d.select('p:contains(One Piece (Digital Colored))');
     check(els.length).equals(1);
     check(els[0].text).equals('One Piece (Digital Colored)');
   });
@@ -102,16 +100,14 @@ void main() {
   });
 
   test(':containsWholeText is case-sensitive', () {
-    final Document d =
-        jsoup.parse('<p>Hello World</p><p>hello world</p>');
+    final Document d = jsoup.parse('<p>Hello World</p><p>hello world</p>');
     final Elements els = d.select('p:containsWholeText(Hello World)');
     check(els.length).equals(1);
     check(els[0].text).equals('Hello World');
   });
 
   test(':containsWholeOwnText matches own raw text', () {
-    final Document d =
-        jsoup.parse('<div>Own <span>Child</span></div>');
+    final Document d = jsoup.parse('<div>Own <span>Child</span></div>');
     final Elements els = d.select('div:containsWholeOwnText(Own )');
     check(els.length).equals(1);
   });

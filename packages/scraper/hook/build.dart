@@ -19,8 +19,7 @@ void main(List<String> args) async {
     final CodeConfig codeConfig = input.config.code;
 
     // iOS/macOS use SwiftSoup, web uses TeaVM — nothing to build.
-    if (codeConfig.targetOS == OS.iOS ||
-        codeConfig.targetOS == OS.macOS) {
+    if (codeConfig.targetOS == OS.iOS || codeConfig.targetOS == OS.macOS) {
       return;
     }
 
@@ -30,7 +29,7 @@ void main(List<String> args) async {
     );
 
     final Uri cargoDir = input.packageRoot.resolve('rust/');
-    final Directory cargoDirFs = Directory.fromUri(cargoDir);
+    final cargoDirFs = Directory.fromUri(cargoDir);
     if (!cargoDirFs.existsSync()) {
       throw StateError('Rust crate not found at ${cargoDirFs.path}');
     }
@@ -69,8 +68,8 @@ String _rustTarget(OS os, Architecture arch) {
     (OS.android, Architecture.arm) => 'armv7-linux-androideabi',
     (OS.android, Architecture.x64) => 'x86_64-linux-android',
     _ => throw UnsupportedError(
-        'scraper: unsupported target $os-$arch',
-      ),
+      'scraper: unsupported target $os-$arch',
+    ),
   };
 }
 
@@ -93,11 +92,11 @@ Future<String> _ensureCargo(Uri sharedDir) async {
   }
 
   // Check if rustup was previously installed by us.
-  final Directory rustupDir = Directory.fromUri(
+  final rustupDir = Directory.fromUri(
     sharedDir.resolve('rustup/'),
   );
-  final String cargoHome = '${rustupDir.path}${Platform.pathSeparator}cargo';
-  final String cargoBin =
+  final cargoHome = '${rustupDir.path}${Platform.pathSeparator}cargo';
+  final cargoBin =
       '$cargoHome${Platform.pathSeparator}bin${Platform.pathSeparator}cargo${Platform.isWindows ? '.exe' : ''}';
   if (File(cargoBin).existsSync()) {
     return cargoBin;
@@ -108,12 +107,12 @@ Future<String> _ensureCargo(Uri sharedDir) async {
     rustupDir.createSync(recursive: true);
   }
 
-  final String rustupInit = Platform.isWindows
+  final rustupInit = Platform.isWindows
       ? '${rustupDir.path}${Platform.pathSeparator}rustup-init.exe'
       : '${rustupDir.path}${Platform.pathSeparator}rustup-init';
 
   // Download rustup-init.
-  final String url = Platform.isWindows
+  final url = Platform.isWindows
       ? 'https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe'
       : 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init';
 
@@ -165,10 +164,10 @@ Future<Uri> _cargoBuild({
   required OS targetOS,
 }) async {
   // Check if already built and cached.
-  final Directory buildCacheDir = Directory.fromUri(
+  final buildCacheDir = Directory.fromUri(
     cacheDir.resolve('scraper-$target/'),
   );
-  final File cachedLib = File('${buildCacheDir.path}${Platform.pathSeparator}$libName');
+  final cachedLib = File('${buildCacheDir.path}${Platform.pathSeparator}$libName');
   if (cachedLib.existsSync()) {
     return cachedLib.uri;
   }
@@ -198,7 +197,7 @@ Future<Uri> _cargoBuild({
   }
 
   // Copy the built library to the cache.
-  final File builtLib = File(
+  final builtLib = File(
     '${cargoDir.path}${Platform.pathSeparator}target${Platform.pathSeparator}$target${Platform.pathSeparator}release${Platform.pathSeparator}$libName',
   );
   if (!builtLib.existsSync()) {
@@ -226,11 +225,11 @@ void _setupAndroidNdk(Map<String, String> env, String target) {
   }
 
   // NDK clang is at: <ndk>/toolchains/llvm/prebuilt/<host>/bin/<triple><api>-clang
-  final String host = Platform.isWindows
+  final host = Platform.isWindows
       ? 'windows-x86_64'
       : Platform.isMacOS
-          ? 'darwin-x86_64'
-          : 'linux-x86_64';
+      ? 'darwin-x86_64'
+      : 'linux-x86_64';
 
   // Map Rust target triple to NDK clang prefix.
   final String ndkTriple = switch (target) {
@@ -240,12 +239,10 @@ void _setupAndroidNdk(Map<String, String> env, String target) {
     _ => throw UnsupportedError('Unknown Android target: $target'),
   };
 
-  const String api = '21';
-  final String clang =
-      '$ndkHome/toolchains/llvm/prebuilt/$host/bin/$ndkTriple$api-clang${Platform.isWindows ? '.cmd' : ''}';
+  const api = '21';
+  final clang = '$ndkHome/toolchains/llvm/prebuilt/$host/bin/$ndkTriple$api-clang${Platform.isWindows ? '.cmd' : ''}';
 
   // CARGO_TARGET_<TRIPLE>_LINKER env var (triple in UPPER_SNAKE_CASE).
-  final String envKey =
-      'CARGO_TARGET_${target.toUpperCase().replaceAll('-', '_')}_LINKER';
+  final envKey = 'CARGO_TARGET_${target.toUpperCase().replaceAll('-', '_')}_LINKER';
   env[envKey] = clang;
 }

@@ -3,7 +3,8 @@ import 'package:jsoup/src/nodes/document.dart';
 import 'package:jsoup/src/nodes/element.dart';
 import 'package:jsoup/src/nodes/elements.dart';
 import 'package:jsoup/src/nodes/text_node.dart';
-import 'package:jsoup/src/platform/parser_web.dart' if (dart.library.ffi) 'package:jsoup/src/platform/parser_native.dart';
+import 'package:jsoup/src/platform/parser_web.dart'
+    if (dart.library.ffi) 'package:jsoup/src/platform/parser_native.dart';
 import 'package:meta/meta.dart';
 
 /// Entry point for Jsoup HTML parsing.

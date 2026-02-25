@@ -95,8 +95,7 @@ class JreManager {
   /// On desktop platforms the JDK is bundled by the build hook.
   static String _findJvmLibrary() {
     final libName = Platform.isWindows ? 'jvm.dll' : 'libjvm.so';
-    final serverSubdir =
-        Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
+    final serverSubdir = Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
 
     // Check next to executable (bundled app).
     final String exeDir = File(Platform.resolvedExecutable).parent.path;
@@ -143,11 +142,10 @@ class JreManager {
   /// loading the DLL or accessing the PEB environment block.
   static bool _isModuleLoaded(String name) {
     final kernel32 = DynamicLibrary.open('kernel32.dll');
-    final Pointer<Void> Function(Pointer<Utf16>) getModuleHandle =
-        kernel32.lookupFunction<
-          Pointer<Void> Function(Pointer<Utf16>),
-          Pointer<Void> Function(Pointer<Utf16>)
-        >('GetModuleHandleW');
+    final Pointer<Void> Function(Pointer<Utf16>) getModuleHandle = kernel32
+        .lookupFunction<Pointer<Void> Function(Pointer<Utf16>), Pointer<Void> Function(Pointer<Utf16>)>(
+          'GetModuleHandleW',
+        );
     final Pointer<Utf16> namePtr = name.toNativeUtf16();
     final Pointer<Void> handle = getModuleHandle(namePtr);
     malloc.free(namePtr);

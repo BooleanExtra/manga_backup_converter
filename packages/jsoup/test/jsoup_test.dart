@@ -683,8 +683,7 @@ void main() {
     });
 
     test('absUrl returns absolute URL even without baseUri', () {
-      final Document doc =
-          jsoup.parse('<a href="https://example.com/page">link</a>');
+      final Document doc = jsoup.parse('<a href="https://example.com/page">link</a>');
       final Element a = doc.selectFirst('a')!;
       check(a.absUrl('href')).equals('https://example.com/page');
     });
@@ -725,22 +724,20 @@ void main() {
         <div><p>Chapter 123</p></div>
         <div><p>Volume 1</p></div>
       ''');
-      final Elements els = doc.select('div:matches(Chapter \\d+)');
+      final Elements els = doc.select(r'div:matches(Chapter \d+)');
       check(els.length).equals(1);
       check(els[0].text).contains('Chapter 123');
     });
 
     test(':matchesOwn(regex) filters by own text only', () {
-      final Document doc =
-          jsoup.parse('<div>Item 42<span>Child</span></div>');
-      final Elements els = doc.select('div:matchesOwn(Item \\d+)');
+      final Document doc = jsoup.parse('<div>Item 42<span>Child</span></div>');
+      final Elements els = doc.select(r'div:matchesOwn(Item \d+)');
       check(els.length).equals(1);
     });
 
     test(':matchesOwn(regex) does not match child text', () {
-      final Document doc =
-          jsoup.parse('<div>Parent<span>Item 42</span></div>');
-      final Elements els = doc.select('div:matchesOwn(Item \\d+)');
+      final Document doc = jsoup.parse('<div>Parent<span>Item 42</span></div>');
+      final Elements els = doc.select(r'div:matchesOwn(Item \d+)');
       check(els.length).equals(0);
     });
 

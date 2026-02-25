@@ -8,7 +8,7 @@
 // environment access (Platform.environment, SetEnvironmentVariableW) which
 // would corrupt the JVM's VEH handler.
 //
-// ignore_for_file: avoid_print
+// ignore_for_file: invalid_use_of_internal_member, avoid_print
 @TestOn('vm')
 library;
 
@@ -18,6 +18,8 @@ import 'dart:isolate';
 import 'package:checks/checks.dart';
 import 'package:ffi/ffi.dart';
 import 'package:jni/jni.dart';
+import 'package:jni/src/third_party/global_env_extensions.dart';
+import 'package:jni/src/third_party/jni_bindings_generated.dart';
 import 'package:jsoup/jsoup.dart';
 import 'package:test/scaffolding.dart';
 
@@ -31,7 +33,7 @@ void main() {
         return 'OK';
       });
       // Without the _isModuleLoaded fix, this crashes with 0xC0000005.
-      final cls = _mainFindClass('java/lang/String');
+      final Pointer<Void> cls = _mainFindClass('java/lang/String');
       check(cls).not((it) => it.equals(nullptr));
       Jni.env.DeleteLocalRef(cls);
       print('[fix] JreManager.ensureInitialized in child: OK');
@@ -43,8 +45,8 @@ void main() {
         return 'OK';
       });
       final jsoup = Jsoup();
-      final doc = jsoup.parse('<p>Hello</p>');
-      final text = doc.select('p').first.text;
+      final Document doc = jsoup.parse('<p>Hello</p>');
+      final String text = doc.select('p').first.text;
       jsoup.dispose();
       check(text).equals('Hello');
       print('[fix] JreManager in child + Jsoup.parse: OK');
@@ -57,7 +59,7 @@ void main() {
           return 'OK';
         });
       }
-      final cls = _mainFindClass('java/lang/String');
+      final Pointer<Void> cls = _mainFindClass('java/lang/String');
       check(cls).not((it) => it.equals(nullptr));
       Jni.env.DeleteLocalRef(cls);
       print('[fix] 3x JreManager in children: OK');
@@ -67,7 +69,7 @@ void main() {
   group('Baseline: no PEB access in child', () {
     test('Empty child + FindClass on main', () async {
       await Isolate.run(() => 'OK');
-      final cls = _mainFindClass('java/lang/String');
+      final Pointer<Void> cls = _mainFindClass('java/lang/String');
       check(cls).not((it) => it.equals(nullptr));
       Jni.env.DeleteLocalRef(cls);
       print('[safe] Empty child: OK');
@@ -75,7 +77,7 @@ void main() {
 
     test('JNI on main only — 20x FindClass', () {
       for (var i = 0; i < 20; i++) {
-        final cls = _mainFindClass('java/lang/String');
+        final Pointer<Void> cls = _mainFindClass('java/lang/String');
         check(cls).not((it) => it.equals(nullptr));
         Jni.env.DeleteLocalRef(cls);
       }
@@ -84,8 +86,8 @@ void main() {
 
     test('Full Jsoup parse on main', () {
       final jsoup = Jsoup();
-      final doc = jsoup.parse('<div class="m"><a>Title</a></div>');
-      final text = doc.select('div.m a').first.text;
+      final Document doc = jsoup.parse('<div class="m"><a>Title</a></div>');
+      final String text = doc.select('div.m a').first.text;
       jsoup.dispose();
       check(text).equals('Title');
       print('[safe] Jsoup.parse: OK');
@@ -94,17 +96,17 @@ void main() {
 }
 
 Pointer<Void> _mainFindClass(String name) {
-  final env = Jni.env;
-  final clsName = name.toNativeChars();
-  final cls = env.FindClass(clsName);
+  final GlobalJniEnv env = Jni.env;
+  final Pointer<Char> clsName = name.toNativeChars();
+  final JClassPtr cls = env.FindClass(clsName);
   calloc.free(clsName);
   return cls;
 }
 
 extension on String {
   Pointer<Char> toNativeChars() {
-    final units = codeUnits;
-    final ptr = calloc<Char>(units.length + 1);
+    final List<int> units = codeUnits;
+    final Pointer<Char> ptr = calloc<Char>(units.length + 1);
     for (var i = 0; i < units.length; i++) {
       (ptr + i).value = units[i];
     }
