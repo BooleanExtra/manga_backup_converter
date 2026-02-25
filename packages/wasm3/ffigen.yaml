@@ -1,0 +1,64 @@
+output: lib/src/wasm3_bindings_generated.dart
+name: NativeWasm3Bindings
+
+description: >
+  Auto-generated bindings for the wasm3 WebAssembly interpreter (wasm3.h).
+  Run: dart run ffigen --config ffigen.yaml
+  Do not edit by hand — edit ffigen.yaml and regenerate.
+
+headers:
+  entry-points:
+    - vendor/wasm3/source/wasm3.h
+
+ffi-native:
+  asset-id: 'package:wasm3/src/wasm3_bindings_generated.dart'
+
+preamble: |
+  // ignore_for_file: camel_case_types, non_constant_identifier_names
+  // ignore_for_file: always_specify_types, lines_longer_than_80_chars
+  // ignore_for_file: unreachable_from_main, unused_element, type=lint
+
+functions:
+  include:
+    # Environment
+    - 'm3_NewEnvironment'
+    - 'm3_FreeEnvironment'
+    # Runtime
+    - 'm3_NewRuntime'
+    - 'm3_FreeRuntime'
+    - 'm3_GetMemory'
+    - 'm3_GetMemorySize'
+    - 'm3_GetUserData'
+    # Module
+    - 'm3_ParseModule'
+    - 'm3_FreeModule'
+    - 'm3_LoadModule'
+    - 'm3_RunStart'
+    # Function linking
+    - 'm3_LinkRawFunctionEx'
+    # Function invocation
+    - 'm3_FindFunction'
+    - 'm3_Call'
+    - 'm3_GetResults'
+    - 'm3_GetArgCount'
+    - 'm3_GetRetCount'
+    - 'm3_GetRetType'
+    - 'm3_GetArgType'
+    - 'm3_GetFunctionName'
+    # Error
+    - 'm3_GetErrorInfo'
+    - 'm3_ResetErrorInfo'
+
+enums:
+  include:
+    - 'M3ValueType'
+
+structs:
+  dependency-only: opaque
+  include:
+    - 'M3ErrorInfo'
+    - 'M3ImportContext'
+
+typedefs:
+  include:
+    - 'M3RawCall'

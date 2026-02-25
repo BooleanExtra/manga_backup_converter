@@ -18,6 +18,8 @@ dependencies:
     path: packages/aidoku_plugin_loader
   assets:
     path: packages/assets
+  wasm3:
+    path: packages/wasm3
   awesome_flutter_extensions: ^1.2.0
   collection: ^1.18.0
   connectivity_plus: ^6.0.2

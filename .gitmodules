@@ -1,0 +1,3 @@
+[submodule "packages/wasm3/vendor/wasm3"]
+	path = packages/wasm3/vendor/wasm3
+	url = https://github.com/wasm3/wasm3.git
