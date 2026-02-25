@@ -1,6 +1,6 @@
-import 'package:jsoup/src/element.dart';
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/jsoup_class.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/jsoup.dart';
+import 'package:jsoup/src/nodes/element.dart';
 import 'package:meta/meta.dart';
 
 /// A list of [Element]s, similar to Java Jsoup's `Elements`.

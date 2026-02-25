@@ -1,5 +1,5 @@
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/web/jsoup_teavm.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/web/teavm_parser.dart';
 
 /// Creates a [NativeHtmlParser] for web.
 ///

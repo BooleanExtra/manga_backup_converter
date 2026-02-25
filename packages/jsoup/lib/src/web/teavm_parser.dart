@@ -3,7 +3,7 @@
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 
-import 'package:jsoup/src/jsoup_api.dart';
+import 'package:jsoup/src/html_parser.dart';
 import 'package:jsoup/teavm.dart';
 
 /// Whether the TeaVM Jsoup bridge has been loaded into `globalThis`.

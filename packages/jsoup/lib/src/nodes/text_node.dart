@@ -1,5 +1,5 @@
-import 'package:jsoup/src/jsoup_class.dart';
-import 'package:jsoup/src/node.dart';
+import 'package:jsoup/src/jsoup.dart';
+import 'package:jsoup/src/nodes/node.dart';
 import 'package:meta/meta.dart';
 
 /// A text node in the HTML DOM.

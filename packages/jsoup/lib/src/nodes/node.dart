@@ -1,6 +1,6 @@
-import 'package:jsoup/src/element.dart';
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/text_node.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/nodes/element.dart';
+import 'package:jsoup/src/nodes/text_node.dart';
 import 'package:meta/meta.dart';
 
 /// Base class for all HTML nodes (elements, text nodes, etc.).

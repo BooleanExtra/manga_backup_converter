@@ -1,4 +1,4 @@
-import 'package:jsoup/src/jsoup_api.dart';
+import 'package:jsoup/src/html_parser.dart';
 
 /// SwiftSoup-backed [NativeHtmlParser] for iOS and macOS.
 ///

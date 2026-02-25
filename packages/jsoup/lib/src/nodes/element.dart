@@ -1,8 +1,8 @@
-import 'package:jsoup/src/elements.dart';
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/jsoup_class.dart';
-import 'package:jsoup/src/node.dart';
-import 'package:jsoup/src/text_node.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/jsoup.dart';
+import 'package:jsoup/src/nodes/elements.dart';
+import 'package:jsoup/src/nodes/node.dart';
+import 'package:jsoup/src/nodes/text_node.dart';
 import 'package:meta/meta.dart';
 
 /// A single HTML element, wrapping a native handle from [NativeHtmlParser].

@@ -214,7 +214,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - `Node` base class: `nodeName`, `parentNode`, `childNode(index)`, `childNodes`, `childNodeSize`, `outerHtml`, `remove()`
 - `TextNode extends Node`: `text` (get/set), `wholeText`, `isBlank`; `Element.textNodes` returns `List<TextNode>`, `Element.childNodes` returns `List<Node>` (mixed)
 - `Jsoup` factory methods: `element(tag)`, `textNode(text)`, `elements(list)` — preferred entry points alongside `parse`/`parseFragment`
-- Node type discrimination in `jsoup_parser.dart`: `_addNode()` checks `nodeName() == "#text"` then casts with `.as(TextNode.type)` or `.as(Element.type)`
+- Node type discrimination in `jni/jni_parser.dart`: `_addNode()` checks `nodeName() == "#text"` then casts with `.as(TextNode.type)` or `.as(Element.type)`
 - JNI inherited methods (not in jnigen bindings): use raw FFI `ProtectedJniExtensions.lookup` pattern — see `_callBooleanMethodWithObject` for `List.add`, `_callIntMethod` for `List.size`
 - `Element.absUrl(key)` resolves relative URLs via `Uri.parse(baseUri).resolve(raw)` — replaces manual `abs:` prefix handling
 - **JAR discovery**: `JreManager._findJsoupJar()` checks exe-relative paths → walks upward from `Directory.current` for `.dart_tool/hooks_runner/shared/jsoup/build/jsoup-<version>/`; no env var fallbacks; version constant in `lib/src/jsoup_version.dart`
@@ -223,8 +223,8 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - **jsoup tests**: `@TestOn('vm')` required (JNI is native-only); `setUpAll(JreManager.ensureInitialized)` in each test file; create fresh `Jsoup()` in `setUp`, call `jsoup.dispose()` in `tearDown`
 - **Windows DLL loading**: `dartjni.dll` depends on `jvm.dll` at load time; `JreManager` pre-loads `jvm.dll` by full path (`DynamicLibrary.open(jvmLibPath)`) before `Jni.spawnIfNotExists` — no PATH modification needed
 - **JVM is process-global**: Use `Jni.spawnIfNotExists` (not `Jni.spawn`) — child isolates share the JVM created by the main isolate; `JreManager.ensureInitialized()` is safe in child isolates (early return via `GetModuleHandleW` when jvm.dll already loaded)
-- **Web backend** (TeaVM): `TeaVMParser` in `lib/src/web/jsoup_teavm.dart` — loads TeaVM-compiled Java Jsoup via Blob URL + `importScripts` (Worker-only); the UMD module exports all bridge functions on `self`
-- `jsoup_stub.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
+- **Web backend** (TeaVM): `TeaVMParser` in `lib/src/web/teavm_parser.dart` — loads TeaVM-compiled Java Jsoup via Blob URL + `importScripts` (Worker-only); the UMD module exports all bridge functions on `self`
+- `platform/parser_web.dart` is the web branch of the conditional export — MUST NOT import files that use `dart:io` or `dart:ffi` (transitive imports included)
 - `host_store.dart`: `HtmlElementResource`, `HtmlElementsResource`, `BytesResource`, `HttpRequestResource`, canvas/image/font resources
 - **Web JS interop**: `dart:js_interop_unsafe` is required for `JSObject.getProperty`/`setProperty`; `JSNull`/`JSUndefined` are not types — use `jsValue.isUndefinedOrNull` instead; extension types with setters need matching getters (`avoid_setters_without_getters`)
 - **Aidoku web WASM**: Runs in a Dart isolate (`lib/src/web/wasm_worker_isolate.dart`) compiled to a Web Worker

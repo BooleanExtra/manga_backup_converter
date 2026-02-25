@@ -1,6 +1,6 @@
 output:
   dart:
-    path: lib/src/bindings/
+    path: lib/src/jni/bindings/
 
 classes:
   - org.jsoup.Jsoup

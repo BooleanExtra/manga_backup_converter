@@ -1,9 +1,9 @@
-import 'package:jsoup/src/document.dart';
-import 'package:jsoup/src/element.dart';
-import 'package:jsoup/src/elements.dart';
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/jsoup_stub.dart' if (dart.library.ffi) 'package:jsoup/src/jsoup_native.dart';
-import 'package:jsoup/src/text_node.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/nodes/document.dart';
+import 'package:jsoup/src/nodes/element.dart';
+import 'package:jsoup/src/nodes/elements.dart';
+import 'package:jsoup/src/nodes/text_node.dart';
+import 'package:jsoup/src/platform/parser_web.dart' if (dart.library.ffi) 'package:jsoup/src/platform/parser_native.dart';
 import 'package:meta/meta.dart';
 
 /// Entry point for Jsoup HTML parsing.

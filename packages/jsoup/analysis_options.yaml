@@ -4,7 +4,7 @@ analyzer:
   language:
     strict-inference: true
   exclude:
-    - lib/src/bindings/**
+    - lib/src/jni/bindings/**
 
 formatter:
   page_width: 120

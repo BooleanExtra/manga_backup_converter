@@ -1,5 +1,5 @@
-import 'package:jsoup/src/element.dart';
-import 'package:jsoup/src/jsoup_class.dart';
+import 'package:jsoup/src/jsoup.dart';
+import 'package:jsoup/src/nodes/element.dart';
 import 'package:meta/meta.dart';
 
 /// An HTML document, extending [Element] with parse constructors.

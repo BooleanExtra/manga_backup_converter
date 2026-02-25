@@ -17,7 +17,7 @@ import 'package:archive/archive.dart';
 import 'package:code_assets/code_assets.dart';
 import 'package:hooks/hooks.dart';
 import 'package:http/http.dart' as http;
-import 'package:jsoup/src/jre/jre_manager.dart' show JreManager;
+import 'package:jsoup/src/jni/jre_manager.dart' show JreManager;
 import 'package:jsoup/src/jsoup_version.dart';
 
 const _jdkVersion = '17';

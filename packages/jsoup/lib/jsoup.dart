@@ -6,10 +6,10 @@
 /// - Web: TeaVM-compiled Java Jsoup (exact behavioral parity with JNI)
 library;
 
-export 'src/document.dart';
-export 'src/element.dart';
-export 'src/elements.dart';
-export 'src/jsoup_class.dart';
-export 'src/jsoup_stub.dart' if (dart.library.ffi) 'src/jsoup_native.dart';
-export 'src/node.dart';
-export 'src/text_node.dart';
+export 'src/jsoup.dart';
+export 'src/nodes/document.dart';
+export 'src/nodes/element.dart';
+export 'src/nodes/elements.dart';
+export 'src/nodes/node.dart';
+export 'src/nodes/text_node.dart';
+export 'src/platform/parser_web.dart' if (dart.library.ffi) 'src/platform/parser_native.dart';

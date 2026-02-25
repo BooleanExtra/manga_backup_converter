@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:jsoup/src/jsoup_api.dart';
-import 'package:jsoup/src/jsoup_parser.dart';
+import 'package:jsoup/src/html_parser.dart';
+import 'package:jsoup/src/jni/jni_parser.dart';
 
-export 'jre/jre_manager.dart';
+export 'package:jsoup/src/jni/jre_manager.dart';
 
 /// Creates a [NativeHtmlParser] for the current platform.
 ///
