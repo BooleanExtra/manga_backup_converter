@@ -216,11 +216,15 @@ Future<Uri> _cargoBuild({
 }
 
 void _setupAndroidNdk(Map<String, String> env, String target) {
-  // Discover NDK from ANDROID_NDK_HOME or common Flutter locations.
-  final String? ndkHome = env['ANDROID_NDK_HOME'] ?? env['ANDROID_NDK_ROOT'];
+  // Discover NDK from explicit env vars or by scanning the Android SDK.
+  final String? ndkHome =
+      env['ANDROID_NDK_HOME'] ??
+      env['ANDROID_NDK_ROOT'] ??
+      _findNdkInSdk(env);
   if (ndkHome == null || ndkHome.isEmpty) {
     throw Exception(
-      'ANDROID_NDK_HOME not set — required for Android cross-compilation.',
+      'ANDROID_NDK_HOME not set and no NDK found in ANDROID_HOME/ANDROID_SDK_ROOT '
+      '— required for Android cross-compilation.',
     );
   }
 
@@ -245,4 +249,28 @@ void _setupAndroidNdk(Map<String, String> env, String target) {
   // CARGO_TARGET_<TRIPLE>_LINKER env var (triple in UPPER_SNAKE_CASE).
   final envKey = 'CARGO_TARGET_${target.toUpperCase().replaceAll('-', '_')}_LINKER';
   env[envKey] = clang;
+}
+
+/// Scan `<ANDROID_HOME>/ndk/` for the highest-versioned installed NDK.
+String? _findNdkInSdk(Map<String, String> env) {
+  final sdkRoot = env['ANDROID_HOME'] ?? env['ANDROID_SDK_ROOT'];
+  if (sdkRoot == null || sdkRoot.isEmpty) return null;
+
+  final ndkDir = Directory('$sdkRoot${Platform.pathSeparator}ndk');
+  if (!ndkDir.existsSync()) return null;
+
+  // Each subdirectory is a version like "27.0.12077973".
+  final versions =
+      ndkDir
+          .listSync()
+          .whereType<Directory>()
+          .map((d) => d.path)
+          .toList()
+        ..sort();
+
+  if (versions.isEmpty) return null;
+
+  final found = versions.last;
+  print('scraper: auto-discovered NDK at $found');
+  return found;
 }
