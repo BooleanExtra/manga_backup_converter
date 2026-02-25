@@ -151,20 +151,35 @@ pub unsafe extern "C" fn scraper_select(
             // Check if it's an element
             if let Node::Element(_) = node_ref.value() {
                 let el_ref = scraper::ElementRef::wrap(node_ref).unwrap();
-                let entries: Vec<NodeEntry> = el_ref
-                    .select(&sel)
-                    .filter(|el| {
-                        filters.iter().all(|f| {
-                            let nr = doc.html.tree.get(el.id()).unwrap();
-                            contains_filter::matches_filter(f, el, &nr)
-                        })
+                let mut entries: Vec<NodeEntry> = Vec::new();
+                // Jsoup includes the element itself if it matches the selector.
+                if sel.matches(&el_ref)
+                    && filters.iter().all(|f| {
+                        let nr = doc.html.tree.get(el_ref.id()).unwrap();
+                        contains_filter::matches_filter(f, &el_ref, &nr)
                     })
-                    .map(|el| NodeEntry {
-                        node_id: el.id(),
+                {
+                    entries.push(NodeEntry {
+                        node_id: el_ref.id(),
                         doc_handle: entry.doc_handle,
                         is_text: false,
-                    })
-                    .collect();
+                    });
+                }
+                entries.extend(
+                    el_ref
+                        .select(&sel)
+                        .filter(|el| {
+                            filters.iter().all(|f| {
+                                let nr = doc.html.tree.get(el.id()).unwrap();
+                                contains_filter::matches_filter(f, el, &nr)
+                            })
+                        })
+                        .map(|el| NodeEntry {
+                            node_id: el.id(),
+                            doc_handle: entry.doc_handle,
+                            is_text: false,
+                        }),
+                );
                 store_node_list(entries)
             } else {
                 store_node_list(Vec::new())
@@ -218,6 +233,19 @@ pub unsafe extern "C" fn scraper_select_first(
             let node_ref = doc.html.tree.get(entry.node_id)?;
             if let Node::Element(_) = node_ref.value() {
                 let el_ref = scraper::ElementRef::wrap(node_ref)?;
+                // Jsoup includes the element itself if it matches the selector.
+                if sel.matches(&el_ref)
+                    && filters.iter().all(|f| {
+                        let nr = doc.html.tree.get(el_ref.id()).unwrap();
+                        contains_filter::matches_filter(f, &el_ref, &nr)
+                    })
+                {
+                    return Some(store_node(NodeEntry {
+                        node_id: el_ref.id(),
+                        doc_handle: entry.doc_handle,
+                        is_text: false,
+                    }));
+                }
                 el_ref
                     .select(&sel)
                     .find(|el| {
