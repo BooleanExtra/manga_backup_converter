@@ -411,8 +411,11 @@ void main() {
       final Document doc = jsoup.parse('<p>Hello <b>world</b> end</p>');
       final List<TextNode> nodes = doc.selectFirst('p')!.textNodes;
       check(nodes.length).equals(2);
-      check(nodes[0].text).equals('Hello ');
-      check(nodes[1].text).equals(' end');
+      // TextNode.text normalizes whitespace (like Jsoup); use wholeText for raw
+      check(nodes[0].text).equals('Hello');
+      check(nodes[1].text).equals('end');
+      check(nodes[0].wholeText).equals('Hello ');
+      check(nodes[1].wholeText).equals(' end');
     });
 
     test('childNodes returns mixed elements and text nodes', () {
@@ -621,6 +624,130 @@ void main() {
         jsoup.element('b'),
       ]);
       check(els.length).equals(2);
+    });
+  });
+
+  // -- Scraper/Jsoup parity --
+
+  group('Parity: text() whitespace normalization', () {
+    test('text() collapses whitespace runs to single space', () {
+      final Document doc = jsoup.parse('<div>  Hello   World  </div>');
+      check(doc.selectFirst('div')!.text).equals('Hello World');
+    });
+
+    test('text() normalizes nested element whitespace', () {
+      final Document doc = jsoup.parse(
+        '<div>\n  <span>  A  </span>\n  <span>  B  </span>\n</div>',
+      );
+      check(doc.selectFirst('div')!.text).equals('A B');
+    });
+
+    test('text() trims leading/trailing whitespace', () {
+      final Document doc = jsoup.parse('<p>   trimmed   </p>');
+      check(doc.selectFirst('p')!.text).equals('trimmed');
+    });
+  });
+
+  group('Parity: TextNode.text vs wholeText normalization', () {
+    test('TextNode.text normalizes whitespace', () {
+      final Document doc = jsoup.parse('<p>  spaced  text  </p>');
+      final List<TextNode> nodes = doc.selectFirst('p')!.textNodes;
+      check(nodes).isNotEmpty();
+      check(nodes[0].text).equals('spaced text');
+    });
+
+    test('TextNode.wholeText preserves raw whitespace', () {
+      final Document doc = jsoup.parse('<p>  spaced  text  </p>');
+      final List<TextNode> nodes = doc.selectFirst('p')!.textNodes;
+      check(nodes).isNotEmpty();
+      check(nodes[0].wholeText).contains('  spaced  text  ');
+    });
+  });
+
+  group('Parity: nodeOuterHtml text escaping', () {
+    test('outerHtml on text node escapes HTML entities', () {
+      final Document doc = jsoup.parse('<p>1 &lt; 2 &amp; 3 &gt; 0</p>');
+      final List<Node> nodes = doc.selectFirst('p')!.childNodes;
+      final String outer = nodes[0].outerHtml;
+      check(outer).contains('&lt;');
+      check(outer).contains('&amp;');
+      check(outer).contains('&gt;');
+    });
+  });
+
+  group('Parity: absUrl with empty base URI', () {
+    test('absUrl returns empty for relative URL without baseUri', () {
+      final Document doc = jsoup.parse('<a href="/path">link</a>');
+      final Element a = doc.selectFirst('a')!;
+      check(a.absUrl('href')).equals('');
+    });
+
+    test('absUrl returns absolute URL even without baseUri', () {
+      final Document doc =
+          jsoup.parse('<a href="https://example.com/page">link</a>');
+      final Element a = doc.selectFirst('a')!;
+      check(a.absUrl('href')).equals('https://example.com/page');
+    });
+  });
+
+  group('Parity: data() element tag check', () {
+    test('data() returns content for script elements', () {
+      final Document doc = jsoup.parse('<script>var x = 1;</script>');
+      check(doc.selectFirst('script')!.data).contains('var x = 1');
+    });
+
+    test('data() returns content for style elements', () {
+      final Document doc = jsoup.parse('<style>body { color: red; }</style>');
+      check(doc.selectFirst('style')!.data).contains('color: red');
+    });
+
+    test('data() returns empty for non-data elements', () {
+      final Document doc = jsoup.parse('<div>Hello</div>');
+      check(doc.selectFirst('div')!.data).equals('');
+    });
+
+    test('data() returns empty for p elements', () {
+      final Document doc = jsoup.parse('<p>text</p>');
+      check(doc.selectFirst('p')!.data).equals('');
+    });
+  });
+
+  group('Parity: className returns empty for classless elements', () {
+    test('className returns empty string when no class attribute', () {
+      final Document doc = jsoup.parse('<div></div>');
+      check(doc.selectFirst('div')!.className).equals('');
+    });
+  });
+
+  group('Parity: :matches() and :matchesOwn()', () {
+    test(':matches(regex) filters by all text', () {
+      final Document doc = jsoup.parse('''
+        <div><p>Chapter 123</p></div>
+        <div><p>Volume 1</p></div>
+      ''');
+      final Elements els = doc.select('div:matches(Chapter \\d+)');
+      check(els.length).equals(1);
+      check(els[0].text).contains('Chapter 123');
+    });
+
+    test(':matchesOwn(regex) filters by own text only', () {
+      final Document doc =
+          jsoup.parse('<div>Item 42<span>Child</span></div>');
+      final Elements els = doc.select('div:matchesOwn(Item \\d+)');
+      check(els.length).equals(1);
+    });
+
+    test(':matchesOwn(regex) does not match child text', () {
+      final Document doc =
+          jsoup.parse('<div>Parent<span>Item 42</span></div>');
+      final Elements els = doc.select('div:matchesOwn(Item \\d+)');
+      check(els.length).equals(0);
+    });
+
+    test(':matches with invalid regex returns empty', () {
+      final Document doc = jsoup.parse('<p>text</p>');
+      final Elements els = doc.select('p:matches([invalid)');
+      check(els.isEmpty).isTrue();
     });
   });
 

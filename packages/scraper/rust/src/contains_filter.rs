@@ -1,7 +1,8 @@
 use ego_tree::NodeRef;
+use regex::Regex;
 use scraper::Node;
 
-/// Parsed :contains-family pseudo-selector extracted from a CSS selector string.
+/// Parsed :contains-family or :matches-family pseudo-selector extracted from a CSS selector string.
 pub(crate) struct ContainsFilter {
     pub search_text: String,
     pub kind: ContainsKind,
@@ -19,6 +20,10 @@ pub(crate) enum ContainsKind {
     WholeOwnText,
     /// :containsData(text) — case-insensitive, raw, element data
     ContainsData,
+    /// :matches(regex) — regex match against all text
+    Matches,
+    /// :matchesOwn(regex) — regex match against own text
+    MatchesOwn,
 }
 
 fn normalise_whitespace(s: &str) -> String {
@@ -67,6 +72,8 @@ const CONTAINS_PREFIXES: &[(&str, ContainsKind)] = &[
     (":containsData(", ContainsKind::ContainsData),
     (":containsOwn(", ContainsKind::ContainsOwn),
     (":contains(", ContainsKind::Contains),
+    (":matchesOwn(", ContainsKind::MatchesOwn),
+    (":matches(", ContainsKind::Matches),
 ];
 
 /// Find the closing `)` that balances nested parentheses.
@@ -83,7 +90,7 @@ fn find_closing_paren(s: &str) -> Option<usize> {
     None
 }
 
-/// Strip all :contains-family pseudo-selectors from a CSS selector string.
+/// Strip all :contains-family and :matches-family pseudo-selectors from a CSS selector string.
 /// Returns the base selector and a list of filters (all must match).
 pub(crate) fn strip_contains(sel_str: &str) -> (String, Vec<ContainsFilter>) {
     let mut remaining = sel_str.to_string();
@@ -106,6 +113,9 @@ pub(crate) fn strip_contains(sel_str: &str) -> (String, Vec<ContainsFilter>) {
                         }
                         ContainsKind::ContainsData => raw_text.to_lowercase(),
                         ContainsKind::WholeText | ContainsKind::WholeOwnText => {
+                            raw_text.to_string()
+                        }
+                        ContainsKind::Matches | ContainsKind::MatchesOwn => {
                             raw_text.to_string()
                         }
                     };
@@ -142,5 +152,17 @@ pub(crate) fn matches_filter(
         ContainsKind::ContainsData => get_data(node_ref)
             .to_lowercase()
             .contains(&filter.search_text),
+        ContainsKind::Matches => {
+            match Regex::new(&filter.search_text) {
+                Ok(re) => re.is_match(&get_element_text(el)),
+                Err(_) => false,
+            }
+        }
+        ContainsKind::MatchesOwn => {
+            match Regex::new(&filter.search_text) {
+                Ok(re) => re.is_match(&get_own_text(node_ref)),
+                Err(_) => false,
+            }
+        }
     }
 }

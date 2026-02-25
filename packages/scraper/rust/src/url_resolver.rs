@@ -41,9 +41,13 @@ pub unsafe extern "C" fn scraper_node_abs_url(
             return Some(to_cstring(""));
         }
 
-        // Try to resolve against base URI
+        // Jsoup returns "" when base URI is empty and URL is relative
         if doc.base_uri.is_empty() {
-            return Some(to_cstring(attr_val));
+            // If the attr value is already an absolute URL, return it
+            return match Url::parse(attr_val) {
+                Ok(url) => Some(to_cstring(url.as_str())),
+                Err(_) => Some(to_cstring("")),
+            };
         }
 
         match Url::parse(&doc.base_uri) {

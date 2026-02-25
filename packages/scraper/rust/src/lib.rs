@@ -29,6 +29,19 @@ fn to_cstring(s: &str) -> *mut c_char {
     CString::new(s).map(CString::into_raw).unwrap_or(ptr::null_mut())
 }
 
+fn html_escape(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    for c in s.chars() {
+        match c {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            _ => out.push(c),
+        }
+    }
+    out
+}
+
 fn node_to_entry(node_ref: &NodeRef<Node>, doc_handle: i64) -> NodeEntry {
     let is_text = matches!(node_ref.value(), Node::Text(_));
     NodeEntry {
@@ -283,6 +296,10 @@ pub unsafe extern "C" fn scraper_attr(
         Some(s) => s,
         None => return ptr::null_mut(),
     };
+    // Document handles have no attributes — return null (Dart OO layer maps to "")
+    if is_document(handle) {
+        return ptr::null_mut();
+    }
     with_node_doc(handle, |entry, doc| {
         let node_ref = doc.html.tree.get(entry.node_id)?;
         if let Node::Element(el) = node_ref.value() {
@@ -326,8 +343,9 @@ pub unsafe extern "C" fn scraper_text(handle: i64) -> *mut c_char {
     // For a document handle, get text of root element
     if is_document(handle) {
         return with_doc(handle, |doc| {
-            let text: String = doc.html.root_element().text().collect();
-            to_cstring(&text)
+            let raw: String = doc.html.root_element().text().collect();
+            let normalized = raw.split_whitespace().collect::<Vec<&str>>().join(" ");
+            to_cstring(&normalized)
         })
         .unwrap_or(ptr::null_mut());
     }
@@ -335,8 +353,9 @@ pub unsafe extern "C" fn scraper_text(handle: i64) -> *mut c_char {
         let node_ref = doc.html.tree.get(entry.node_id)?;
         if let Node::Element(_) = node_ref.value() {
             let el_ref = scraper::ElementRef::wrap(node_ref)?;
-            let text: String = el_ref.text().collect();
-            Some(to_cstring(&text))
+            let raw: String = el_ref.text().collect();
+            let normalized = raw.split_whitespace().collect::<Vec<&str>>().join(" ");
+            Some(to_cstring(&normalized))
         } else {
             None
         }
@@ -441,7 +460,7 @@ pub unsafe extern "C" fn scraper_class_name(handle: i64) -> *mut c_char {
     with_node_doc(handle, |entry, doc| {
         let node_ref = doc.html.tree.get(entry.node_id)?;
         if let Node::Element(el) = node_ref.value() {
-            el.attr("class").map(|s| to_cstring(s))
+            Some(to_cstring(el.attr("class").unwrap_or("")))
         } else {
             None
         }
@@ -473,8 +492,28 @@ pub unsafe extern "C" fn scraper_has_class(
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn scraper_data(handle: i64) -> *mut c_char {
-    // data() is alias for text() in most impls — returns text content of script/style elements
-    scraper_text(handle)
+    // Jsoup data() returns content only for DataNode parents (script, style, textarea, title).
+    // For all other elements, it returns "".
+    if is_document(handle) {
+        return to_cstring("");
+    }
+    with_node_doc(handle, |entry, doc| {
+        let node_ref = doc.html.tree.get(entry.node_id)?;
+        if let Node::Element(el) = node_ref.value() {
+            let tag = el.name.local.as_ref();
+            if matches!(tag, "script" | "style" | "textarea" | "title") {
+                let el_ref = scraper::ElementRef::wrap(node_ref)?;
+                let raw: String = el_ref.text().collect();
+                Some(to_cstring(&raw))
+            } else {
+                Some(to_cstring(""))
+            }
+        } else {
+            None
+        }
+    })
+    .flatten()
+    .unwrap_or(ptr::null_mut())
 }
 
 // ---------------------------------------------------------------------------
@@ -766,7 +805,7 @@ pub unsafe extern "C" fn scraper_node_outer_html(handle: i64) -> *mut c_char {
                 let el_ref = scraper::ElementRef::wrap(node_ref)?;
                 to_cstring(&el_ref.html())
             }
-            Node::Text(t) => to_cstring(t.text.as_ref()),
+            Node::Text(t) => to_cstring(&html_escape(t.text.as_ref())),
             Node::Comment(c) => to_cstring(&format!("<!--{}-->", c.comment)),
             _ => to_cstring(""),
         })
@@ -825,7 +864,8 @@ pub unsafe extern "C" fn scraper_text_node_text(handle: i64) -> *mut c_char {
     with_node_doc(handle, |entry, doc| {
         let node_ref = doc.html.tree.get(entry.node_id)?;
         if let Node::Text(t) = node_ref.value() {
-            Some(to_cstring(t.text.as_ref()))
+            let normalized = t.text.split_whitespace().collect::<Vec<&str>>().join(" ");
+            Some(to_cstring(&normalized))
         } else {
             None
         }
