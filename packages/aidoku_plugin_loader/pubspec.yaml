@@ -13,13 +13,15 @@ dependencies:
   ffi: ^2.2.0
   http: ^1.2.0
   image: ^4.5.3
+  jsoup:
+    path: ../jsoup
   meta: ^1.12.0
   universal_ffi: ^1.4.0
+  wasm3:
+    path: ../wasm3
   wasm_ffi: ^2.2.0
   wasm_runner:
     path: ../wasm_runner
-  wasm3:
-    path: ../wasm3
   web_wasm_runner:
     path: ../web_wasm_runner
 

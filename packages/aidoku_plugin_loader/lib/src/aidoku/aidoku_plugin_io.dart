@@ -19,6 +19,7 @@ import 'package:aidoku_plugin_loader/src/native/wasm_isolate.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:http/http.dart' as http;
+import 'package:jsoup/jsoup.dart';
 
 /// A loaded Aidoku WASM source plugin (native implementation).
 ///
@@ -85,6 +86,11 @@ class AidokuPlugin {
     Uint8List aixBytes, {
     Map<String, dynamic>? defaults,
   }) async {
+    // Initialize the JVM on the main isolate — child isolates share it via
+    // Jni.spawnIfNotExists. Must happen before spawning WASM isolates that
+    // create Jsoup() instances.
+    JreManager.ensureInitialized();
+
     final AixBundle bundle = AixParser.parse(aixBytes);
 
     final List<SettingItem> settings = bundle.settings ?? const <SettingItem>[];

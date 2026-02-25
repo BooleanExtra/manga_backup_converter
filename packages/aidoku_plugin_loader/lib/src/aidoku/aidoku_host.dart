@@ -5,6 +5,7 @@ import 'package:aidoku_plugin_loader/src/aidoku/canvas_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:image/image.dart' as img;
+import 'package:jsoup/jsoup.dart';
 
 // ---------------------------------------------------------------------------
 // Async dispatch callbacks
@@ -46,12 +47,13 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
   AsyncSleepDispatch? asyncSleep,
   RateLimitCallback? onRateLimitSet,
   void Function(String message)? onLog,
+  Jsoup? htmlParser,
 }) {
   return <String, Map<String, Function>>{
     'std': _stdImports(runner, store, onLog),
     'env': _envImports(runner, store, asyncSleep, onLog),
-    'net': _netImports(runner, store, asyncHttp, onRateLimitSet),
-    'html': _htmlImports(runner, store, onLog),
+    'net': _netImports(runner, store, asyncHttp, onRateLimitSet, htmlParser),
+    'html': _htmlImports(runner, store, onLog, htmlParser),
     'defaults': _defaultsImports(runner, store, sourceId),
     'canvas': _canvasImports(runner, store, onLog),
     'js': _jsImports(onLog),
@@ -218,6 +220,7 @@ Map<String, Function> _netImports(
   HostStore store,
   AsyncHttpDispatch? asyncHttp,
   RateLimitCallback? onRateLimitSet,
+  Jsoup? htmlParser,
 ) {
   return <String, Function>{
     'init': (int method) {
@@ -307,7 +310,17 @@ Map<String, Function> _netImports(
       return store.addBytes(_encodeString(val));
     },
     'html': (int rid) {
-      return -1; // HTML parsing stubbed out (no jsoup)
+      if (htmlParser == null) return -1;
+      final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
+      final Uint8List? body = req?.responseBody;
+      if (body == null) return -1;
+      try {
+        final String html = utf8.decode(body, allowMalformed: true);
+        final Document doc = htmlParser.parse(html, baseUri: req!.url ?? '');
+        return store.add(HtmlElementResource(doc));
+      } on Object {
+        return -1;
+      }
     },
     'get_image': (int rid) {
       final HttpRequestResource? req = store.get<HttpRequestResource>(rid);
@@ -334,37 +347,355 @@ Map<String, Function> _htmlImports(
   WasmRunner runner,
   HostStore store,
   void Function(String)? onLog,
+  Jsoup? htmlParser,
 ) => <String, Function>{
-  // All HTML imports are stubbed — jsoup removed due to wasmer/JNI VEH conflict.
-  // HTML-scraping plugins will not work; JSON-API plugins are unaffected.
-  'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) => -1,
-  'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) => -1,
-  'select': (int rid, int selectorPtr, int selectorLen) => -1,
-  'select_first': (int rid, int selectorPtr, int selectorLen) => -1,
-  'attr': (int rid, int keyPtr, int keyLen) => -1,
-  'has_attr': (int rid, int keyPtr, int keyLen) => 0,
-  'text': (int rid) => -1,
-  'own_text': (int rid) => -1,
-  'untrimmed_text': (int rid) => -1,
-  'html': (int rid) => -1,
-  'outer_html': (int rid) => -1,
-  'tag_name': (int rid) => -1,
-  'id': (int rid) => -1,
-  'class_name': (int rid) => -1,
-  'base_uri': (int rid) => -1,
-  'first': (int rid) => -1,
-  'last': (int rid) => -1,
-  'get': (int rid, int index) => -1,
-  'html_get': (int rid, int index) => -1,
-  'size': (int rid) => -1,
-  'parent': (int rid) => -1,
-  'children': (int rid) => -1,
-  'next': (int rid) => -1,
-  'previous': (int rid) => -1,
-  'siblings': (int rid) => -1,
-  'set_text': (int rid, int ptr, int len) => 0,
-  'set_html': (int rid, int ptr, int len) => 0,
-  'remove': (int rid) => 0,
+  'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
+    if (htmlParser == null) return -1;
+    try {
+      final String html = utf8.decode(runner.readMemory(ptr, len));
+      final String baseUri =
+          baseUriPtr != null && baseUriLen != null && baseUriLen > 0
+              ? utf8.decode(runner.readMemory(baseUriPtr, baseUriLen))
+              : '';
+      final Document doc = htmlParser.parse(html, baseUri: baseUri);
+      return store.add(HtmlElementResource(doc));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::parse failed: $e');
+      return -1;
+    }
+  },
+  'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
+    if (htmlParser == null) return -1;
+    try {
+      final String html = utf8.decode(runner.readMemory(ptr, len));
+      final String baseUri =
+          baseUriPtr != null && baseUriLen != null && baseUriLen > 0
+              ? utf8.decode(runner.readMemory(baseUriPtr, baseUriLen))
+              : '';
+      final Document doc = htmlParser.parseFragment(html, baseUri: baseUri);
+      return store.add(HtmlElementResource(doc));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::parse_fragment failed: $e');
+      return -1;
+    }
+  },
+  'select': (int rid, int selectorPtr, int selectorLen) {
+    if (htmlParser == null) return -1;
+    try {
+      final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res != null) {
+        return store.add(HtmlElementsResource(res.element.select(selector)));
+      }
+      final HtmlElementsResource? listRes = store.get<HtmlElementsResource>(rid);
+      if (listRes == null) return -1;
+      // Select on Elements: select on first element as fallback.
+      if (listRes.elements.isEmpty) return -1;
+      return store.add(HtmlElementsResource(listRes.elements.first.select(selector)));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::select failed: $e');
+      return -1;
+    }
+  },
+  'select_first': (int rid, int selectorPtr, int selectorLen) {
+    if (htmlParser == null) return -1;
+    try {
+      final String selector = utf8.decode(runner.readMemory(selectorPtr, selectorLen));
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res != null) {
+        final Element? el = res.element.selectFirst(selector);
+        if (el == null) return -1;
+        return store.add(HtmlElementResource(el));
+      }
+      final HtmlElementsResource? listRes = store.get<HtmlElementsResource>(rid);
+      if (listRes == null || listRes.elements.isEmpty) return -1;
+      final Element? el = listRes.elements.first.selectFirst(selector);
+      if (el == null) return -1;
+      return store.add(HtmlElementResource(el));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::select_first failed: $e');
+      return -1;
+    }
+  },
+  'attr': (int rid, int keyPtr, int keyLen) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      final String value;
+      if (key.startsWith('abs:')) {
+        value = res.element.absUrl(key.substring(4));
+      } else {
+        value = res.element.attr(key);
+      }
+      return store.addBytes(_encodeString(value));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::attr failed: $e');
+      return -1;
+    }
+  },
+  'has_attr': (int rid, int keyPtr, int keyLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      return res.element.hasAttr(key) ? 1 : 0;
+    } on Object {
+      return 0;
+    }
+  },
+  'text': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.text));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::text failed: $e');
+      return -1;
+    }
+  },
+  'own_text': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.ownText));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::own_text failed: $e');
+      return -1;
+    }
+  },
+  // untrimmed_text maps to Element.wholeText() in Java Jsoup; our OO API
+  // only exposes wholeText on TextNode, so we fall back to Element.text.
+  'untrimmed_text': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.text));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::untrimmed_text failed: $e');
+      return -1;
+    }
+  },
+  'html': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.html));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::html failed: $e');
+      return -1;
+    }
+  },
+  'outer_html': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.outerHtml));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::outer_html failed: $e');
+      return -1;
+    }
+  },
+  'tag_name': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.tagName));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::tag_name failed: $e');
+      return -1;
+    }
+  },
+  'id': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.id));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::id failed: $e');
+      return -1;
+    }
+  },
+  'class_name': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.className));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::class_name failed: $e');
+      return -1;
+    }
+  },
+  'base_uri': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.baseUri));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::base_uri failed: $e');
+      return -1;
+    }
+  },
+  'first': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
+      if (res == null || res.elements.isEmpty) return -1;
+      return store.add(HtmlElementResource(res.elements.first));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::first failed: $e');
+      return -1;
+    }
+  },
+  'last': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
+      if (res == null || res.elements.isEmpty) return -1;
+      return store.add(HtmlElementResource(res.elements.last));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::last failed: $e');
+      return -1;
+    }
+  },
+  'get': (int rid, int index) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
+      if (res == null || index < 0 || index >= res.elements.length) return -1;
+      return store.add(HtmlElementResource(res.elements[index]));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::get failed: $e');
+      return -1;
+    }
+  },
+  'html_get': (int rid, int index) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
+      if (res == null || index < 0 || index >= res.elements.length) return -1;
+      return store.add(HtmlElementResource(res.elements[index]));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::html_get failed: $e');
+      return -1;
+    }
+  },
+  'size': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
+      if (res == null) return -1;
+      return res.elements.length;
+    } on Object catch (e) {
+      onLog?.call('[CB] html::size failed: $e');
+      return -1;
+    }
+  },
+  'parent': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      final Element? p = res.element.parent;
+      if (p == null) return -1;
+      return store.add(HtmlElementResource(p));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::parent failed: $e');
+      return -1;
+    }
+  },
+  'children': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.add(HtmlElementsResource(res.element.children));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::children failed: $e');
+      return -1;
+    }
+  },
+  'next': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      final Element? el = res.element.nextElementSibling;
+      if (el == null) return -1;
+      return store.add(HtmlElementResource(el));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::next failed: $e');
+      return -1;
+    }
+  },
+  'previous': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      final Element? el = res.element.previousElementSibling;
+      if (el == null) return -1;
+      return store.add(HtmlElementResource(el));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::previous failed: $e');
+      return -1;
+    }
+  },
+  'siblings': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.add(HtmlElementsResource(res.element.siblingElements));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::siblings failed: $e');
+      return -1;
+    }
+  },
+  'set_text': (int rid, int ptr, int len) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      res.element.text = utf8.decode(runner.readMemory(ptr, len));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::set_text failed: $e');
+    }
+    return 0;
+  },
+  'set_html': (int rid, int ptr, int len) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      res.element.html = utf8.decode(runner.readMemory(ptr, len));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::set_html failed: $e');
+    }
+    return 0;
+  },
+  'remove': (int rid) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      res.element.remove();
+    } on Object catch (e) {
+      onLog?.call('[CB] html::remove failed: $e');
+    }
+    return 0;
+  },
   'escape': (int ptr, int len) {
     final String str = utf8.decode(runner.readMemory(ptr, len));
     final String escaped = str
@@ -386,14 +717,99 @@ Map<String, Function> _htmlImports(
         .replaceAll('&#39;', "'");
     return store.addBytes(_encodeString(unescaped));
   },
-  'has_class': (int rid, int classPtr, int classLen) => 0,
-  'add_class': (int rid, int classPtr, int classLen) => 0,
-  'remove_class': (int rid, int classPtr, int classLen) => 0,
-  'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) => 0,
-  'remove_attr': (int rid, int keyPtr, int keyLen) => 0,
-  'prepend': (int rid, int ptr, int len) => 0,
-  'append': (int rid, int ptr, int len) => 0,
-  'data': (int rid) => -1,
+  'has_class': (int rid, int classPtr, int classLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String name = utf8.decode(runner.readMemory(classPtr, classLen));
+      return res.element.hasClass(name) ? 1 : 0;
+    } on Object {
+      return 0;
+    }
+  },
+  'add_class': (int rid, int classPtr, int classLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String name = utf8.decode(runner.readMemory(classPtr, classLen));
+      res.element.addClass(name);
+    } on Object catch (e) {
+      onLog?.call('[CB] html::add_class failed: $e');
+    }
+    return 0;
+  },
+  'remove_class': (int rid, int classPtr, int classLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String name = utf8.decode(runner.readMemory(classPtr, classLen));
+      res.element.removeClass(name);
+    } on Object catch (e) {
+      onLog?.call('[CB] html::remove_class failed: $e');
+    }
+    return 0;
+  },
+  'set_attr': (int rid, int keyPtr, int keyLen, int valPtr, int valLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      final String val = utf8.decode(runner.readMemory(valPtr, valLen));
+      res.element.setAttr(key, val);
+    } on Object catch (e) {
+      onLog?.call('[CB] html::set_attr failed: $e');
+    }
+    return 0;
+  },
+  'remove_attr': (int rid, int keyPtr, int keyLen) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      final String key = utf8.decode(runner.readMemory(keyPtr, keyLen));
+      res.element.removeAttr(key);
+    } on Object catch (e) {
+      onLog?.call('[CB] html::remove_attr failed: $e');
+    }
+    return 0;
+  },
+  'prepend': (int rid, int ptr, int len) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      res.element.prepend(utf8.decode(runner.readMemory(ptr, len)));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::prepend failed: $e');
+    }
+    return 0;
+  },
+  'append': (int rid, int ptr, int len) {
+    if (htmlParser == null) return 0;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return 0;
+      res.element.append(utf8.decode(runner.readMemory(ptr, len)));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::append failed: $e');
+    }
+    return 0;
+  },
+  'data': (int rid) {
+    if (htmlParser == null) return -1;
+    try {
+      final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
+      if (res == null) return -1;
+      return store.addBytes(_encodeString(res.element.data));
+    } on Object catch (e) {
+      onLog?.call('[CB] html::data failed: $e');
+      return -1;
+    }
+  },
 };
 
 // ---------------------------------------------------------------------------

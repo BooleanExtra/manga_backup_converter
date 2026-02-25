@@ -9,6 +9,7 @@ import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
 import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
+import 'package:jsoup/jsoup.dart';
 
 // ---------------------------------------------------------------------------
 // Init data (sent to the isolate at spawn time)
@@ -347,6 +348,16 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     if (message.startsWith('[CB]')) callErrors.add(message);
   }
 
+  // Create jsoup HTML parser for this isolate.
+  // JNI requires Jni.setDylibDir / Jni.spawnIfNotExists in each new isolate.
+  // JsoupParser() handles this via JreManager.ensureInitialized().
+  Jsoup? htmlParser;
+  try {
+    htmlParser = Jsoup();
+  } on Object catch (e) {
+    sendLog('[aidoku] HTML parser unavailable (falling back to stubs): $e');
+  }
+
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
@@ -357,6 +368,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
       init.asyncPort.send(WasmRateLimitMsg(permits: permits, periodMs: periodMs));
     },
     onLog: sendLog,
+    htmlParser: htmlParser,
   );
 
   late final WasmRunner runner;
@@ -401,6 +413,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     }
   }
 
+  htmlParser?.dispose();
   store.dispose();
   cmdPort.close();
 }

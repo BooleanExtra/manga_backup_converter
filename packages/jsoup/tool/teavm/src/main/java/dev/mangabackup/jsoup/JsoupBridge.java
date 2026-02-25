@@ -8,7 +8,6 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.teavm.jso.JSExport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class JsoupBridge {
         return h;
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> T get(int handle, Class<T> type) {
         Object obj = store.get(handle);
         if (obj != null && type.isInstance(obj)) return type.cast(obj);

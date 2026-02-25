@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
+import 'package:jsoup/jsoup.dart';
 import 'package:web_wasm_runner/web_wasm_runner.dart';
 
 // ---------------------------------------------------------------------------
@@ -130,6 +131,14 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     return _syncXhr(url, method, headers, body, timeout);
   }
 
+  // Create jsoup HTML parser for this web worker isolate.
+  Jsoup? htmlParser;
+  try {
+    htmlParser = Jsoup();
+  } on Object catch (e) {
+    sendLog('[aidoku] failed to create HTML parser: $e');
+  }
+
   final Map<String, Map<String, Function>> imports = buildAidokuHostImports(
     lazyRunner,
     store,
@@ -140,6 +149,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
       rateLimiter = RateLimiter(RateLimitConfig(permits: permits, periodMs: periodMs));
     },
     onLog: sendLog,
+    htmlParser: htmlParser,
   );
 
   late final WasmRunner runner;
@@ -174,6 +184,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     }
   }
 
+  htmlParser?.dispose();
   store.dispose();
   cmdPort.close();
 }

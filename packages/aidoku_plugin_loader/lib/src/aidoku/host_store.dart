@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
+import 'package:jsoup/jsoup.dart';
 
 /// Resource types held in the host-side store.
 sealed class HostResource {}
@@ -44,6 +45,16 @@ class FontResource extends HostResource {
   FontResource({required this.name, required this.weight});
   final String name;
   final int weight; // FontWeight ordinal 0-8
+}
+
+class HtmlElementResource extends HostResource {
+  HtmlElementResource(this.element);
+  final Element element;
+}
+
+class HtmlElementsResource extends HostResource {
+  HtmlElementsResource(this.elements);
+  final Elements elements;
 }
 
 /// Host-side resource registry mapping i32 Rids to resources.
