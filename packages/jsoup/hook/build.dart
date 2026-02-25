@@ -57,9 +57,20 @@ void main(List<String> args) async {
       codeConfig.targetArchitecture,
     );
 
-    // Android uses the platform JVM — only need the Jsoup JAR.
+    // Windows/Linux/Android now use Rust scraper (packages/scraper/).
     // iOS/macOS use SwiftSoup — nothing to bundle here.
+    // The JDK/JVM is only needed for JNI on Android (platform JVM)
+    // and for jnigen/jni:setup tooling.
+    if (codeConfig.targetOS == OS.windows || codeConfig.targetOS == OS.linux) {
+      // Scraper handles these platforms — no JVM needed at runtime.
+      // Still download JDK+JAR for jnigen tooling (dev only).
+      return;
+    }
+
     if (codeConfig.targetOS == OS.android) {
+      // Android uses the platform JVM — only need the Jsoup JAR for JNI.
+      // However, with scraper as the runtime backend, this JAR is only
+      // needed if JNI is used as a fallback. Keep for now.
       await _downloadJsoupJar(input.outputDirectoryShared);
       return;
     }

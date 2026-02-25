@@ -132,6 +132,79 @@ void main() {
       check(els[0].text).equals('Footer text');
     });
 
+    test(':contains is case-insensitive', () {
+      final Elements els = doc.select('p:contains(footer)');
+      check(els.length).equals(1);
+      check(els[0].text).equals('Footer text');
+    });
+
+    test(':contains matches descendant text', () {
+      // "First" is inside <p class="intro"> which is inside <div id="main">
+      final Elements els = doc.select('div:contains(First)');
+      check(els.length).isGreaterOrEqual(1);
+    });
+
+    test(':containsOwn matches own text only', () {
+      final Document d = jsoup.parse('<div>Hello <span>World</span></div>');
+      // div's own text is "Hello ", span's own text is "World"
+      final Elements els = d.select('div:containsOwn(Hello)');
+      check(els.length).equals(1);
+      // :containsOwn(World) should NOT match div (only the span has "World" as own text)
+      final Elements noMatch = d.select('div:containsOwn(World)');
+      check(noMatch.length).equals(0);
+    });
+
+    test(':contains with selectFirst', () {
+      final Element? el = doc.selectFirst('li:contains(B)');
+      check(el).isNotNull().has((e) => e.text, 'text').equals('B');
+    });
+
+    test(':contains with bare selector (no tag)', () {
+      final Elements els = doc.select(':contains(Footer text)');
+      // Should match elements that contain "Footer text"
+      check(els.length).isGreaterOrEqual(1);
+    });
+
+    test(':contains with parentheses in search text', () {
+      final Document d = jsoup.parse('<p>One Piece (Digital Colored)</p><p>Other</p>');
+      final Elements els = d.select('p:contains(One Piece (Digital Colored))');
+      check(els.length).equals(1);
+      check(els[0].text).equals('One Piece (Digital Colored)');
+    });
+
+    test('chained :contains filters (both must match)', () {
+      final Document d = jsoup.parse('''
+        <p>Hello World</p>
+        <p>Hello</p>
+        <p>World</p>
+      ''');
+      final Elements els = d.select('p:contains(Hello):contains(World)');
+      check(els.length).equals(1);
+      check(els[0].text).equals('Hello World');
+    });
+
+    test(':containsWholeText is case-sensitive', () {
+      final Document d = jsoup.parse('<p>Hello World</p><p>hello world</p>');
+      final Elements els = d.select('p:containsWholeText(Hello World)');
+      check(els.length).equals(1);
+      check(els[0].text).equals('Hello World');
+    });
+
+    test(':containsWholeOwnText matches own raw text', () {
+      final Document d = jsoup.parse('<div>Own <span>Child</span></div>');
+      // div's own text is "Own ", span's is "Child"
+      final Elements els = d.select('div:containsWholeOwnText(Own )');
+      check(els.length).equals(1);
+    });
+
+    test(':containsData matches script content', () {
+      final Document d = jsoup.parse(
+        '<script>var x = 42;</script><script>var y = 0;</script>',
+      );
+      final Elements els = d.select('script:containsData(var x)');
+      check(els.length).equals(1);
+    });
+
     test('selectFirst returns null when no match', () {
       check(doc.selectFirst('.nonexistent')).isNull();
     });

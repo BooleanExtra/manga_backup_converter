@@ -222,3 +222,4 @@ packages/jsoup/tool/teavm/target/
 # Git worktrees
 .worktrees/
 /.playwright-mcp
+/packages/scraper/rust/target

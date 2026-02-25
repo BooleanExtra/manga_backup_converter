@@ -18,6 +18,8 @@ dependencies:
     path: packages/aidoku_plugin_loader
   assets:
     path: packages/assets
+  scraper:
+    path: packages/scraper
   wasm3:
     path: packages/wasm3
   awesome_flutter_extensions: ^1.2.0
