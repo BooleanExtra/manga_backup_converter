@@ -222,8 +222,7 @@ Future<void> _ensureRustTarget(String cargoExe, String target) async {
   // Derive rustup path from cargo path (sibling binary in the same bin dir).
   final cargoFile = File(cargoExe);
   final binDir = cargoFile.parent.path;
-  final rustupExe =
-      '$binDir${Platform.pathSeparator}rustup${Platform.isWindows ? '.exe' : ''}';
+  final rustupExe = '$binDir${Platform.pathSeparator}rustup${Platform.isWindows ? '.exe' : ''}';
   final String exe = File(rustupExe).existsSync() ? rustupExe : 'rustup';
 
   final ProcessResult result = await Process.run(
