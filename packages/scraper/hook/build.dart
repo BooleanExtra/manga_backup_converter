@@ -217,10 +217,7 @@ Future<Uri> _cargoBuild({
 
 void _setupAndroidNdk(Map<String, String> env, String target) {
   // Discover NDK from explicit env vars or by scanning the Android SDK.
-  final String? ndkHome =
-      env['ANDROID_NDK_HOME'] ??
-      env['ANDROID_NDK_ROOT'] ??
-      _findNdkInSdk(env);
+  final String? ndkHome = env['ANDROID_NDK_HOME'] ?? env['ANDROID_NDK_ROOT'] ?? _findNdkInSdk(env);
   if (ndkHome == null || ndkHome.isEmpty) {
     throw Exception(
       'ANDROID_NDK_HOME not set and no NDK found in ANDROID_HOME/ANDROID_SDK_ROOT '
@@ -260,13 +257,7 @@ String? _findNdkInSdk(Map<String, String> env) {
   if (!ndkDir.existsSync()) return null;
 
   // Each subdirectory is a version like "27.0.12077973".
-  final versions =
-      ndkDir
-          .listSync()
-          .whereType<Directory>()
-          .map((d) => d.path)
-          .toList()
-        ..sort();
+  final versions = ndkDir.listSync().whereType<Directory>().map((d) => d.path).toList()..sort();
 
   if (versions.isEmpty) return null;
 
