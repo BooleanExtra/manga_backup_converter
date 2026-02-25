@@ -16,13 +16,11 @@ void main(List<String> args) async {
         'vendor/wasm3/source/m3_code.c',
         'vendor/wasm3/source/m3_compile.c',
         'vendor/wasm3/source/m3_core.c',
-        'vendor/wasm3/source/m3_emit.c',
         'vendor/wasm3/source/m3_env.c',
         'vendor/wasm3/source/m3_exec.c',
         'vendor/wasm3/source/m3_function.c',
         'vendor/wasm3/source/m3_info.c',
         'vendor/wasm3/source/m3_module.c',
-        'vendor/wasm3/source/m3_optimize.c',
         'vendor/wasm3/source/m3_parse.c',
         // MSVC linker pragmas to export wasm3 symbols from the DLL.
         // No-op on other compilers.

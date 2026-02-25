@@ -15,148 +15,151 @@ import 'dart:ffi' as ffi;
 external int __security_cookie;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_none;
+external final ffi.Pointer<ffi.Char> m3Err_none;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_mallocFailed;
+external final ffi.Pointer<ffi.Char> m3Err_mallocFailed;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_incompatibleWasmVersion;
+external final ffi.Pointer<ffi.Char> m3Err_incompatibleWasmVersion;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmMalformed;
+external final ffi.Pointer<ffi.Char> m3Err_wasmMalformed;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_misorderedWasmSection;
+external final ffi.Pointer<ffi.Char> m3Err_misorderedWasmSection;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmUnderrun;
+external final ffi.Pointer<ffi.Char> m3Err_wasmUnderrun;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmOverrun;
+external final ffi.Pointer<ffi.Char> m3Err_wasmOverrun;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmMissingInitExpr;
+external final ffi.Pointer<ffi.Char> m3Err_wasmMissingInitExpr;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_lebOverflow;
+external final ffi.Pointer<ffi.Char> m3Err_lebOverflow;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_missingUTF8;
+external final ffi.Pointer<ffi.Char> m3Err_missingUTF8;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmSectionUnderrun;
+external final ffi.Pointer<ffi.Char> m3Err_wasmSectionUnderrun;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmSectionOverrun;
+external final ffi.Pointer<ffi.Char> m3Err_wasmSectionOverrun;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_invalidTypeId;
+external final ffi.Pointer<ffi.Char> m3Err_invalidTypeId;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_tooManyMemorySections;
+external final ffi.Pointer<ffi.Char> m3Err_tooManyMemorySections;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_tooManyArgsRets;
+external final ffi.Pointer<ffi.Char> m3Err_tooManyArgsRets;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_moduleAlreadyLinked;
+external final ffi.Pointer<ffi.Char> m3Err_moduleNotLinked;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_functionLookupFailed;
+external final ffi.Pointer<ffi.Char> m3Err_moduleAlreadyLinked;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_functionImportMissing;
+external final ffi.Pointer<ffi.Char> m3Err_functionLookupFailed;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_malformedFunctionSignature;
+external final ffi.Pointer<ffi.Char> m3Err_functionImportMissing;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_noCompiler;
+external final ffi.Pointer<ffi.Char> m3Err_malformedFunctionSignature;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_unknownOpcode;
+external final ffi.Pointer<ffi.Char> m3Err_noCompiler;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_restictedOpcode;
+external final ffi.Pointer<ffi.Char> m3Err_unknownOpcode;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_functionStackOverflow;
+external final ffi.Pointer<ffi.Char> m3Err_restrictedOpcode;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_functionStackUnderrun;
+external final ffi.Pointer<ffi.Char> m3Err_functionStackOverflow;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_mallocFailedCodePage;
+external final ffi.Pointer<ffi.Char> m3Err_functionStackUnderrun;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_settingImmutableGlobal;
+external final ffi.Pointer<ffi.Char> m3Err_mallocFailedCodePage;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_typeMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_settingImmutableGlobal;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_typeCountMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_typeMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_missingCompiledCode;
+external final ffi.Pointer<ffi.Char> m3Err_typeCountMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_wasmMemoryOverflow;
+external final ffi.Pointer<ffi.Char> m3Err_missingCompiledCode;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_globalMemoryNotAllocated;
+external final ffi.Pointer<ffi.Char> m3Err_wasmMemoryOverflow;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_globaIndexOutOfBounds;
+external final ffi.Pointer<ffi.Char> m3Err_globalMemoryNotAllocated;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_argumentCountMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_globaIndexOutOfBounds;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_argumentTypeMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_argumentCountMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_globalLookupFailed;
+external final ffi.Pointer<ffi.Char> m3Err_argumentTypeMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_globalTypeMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_globalLookupFailed;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_globalNotMutable;
+external final ffi.Pointer<ffi.Char> m3Err_globalTypeMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapOutOfBoundsMemoryAccess;
+external final ffi.Pointer<ffi.Char> m3Err_globalNotMutable;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapDivisionByZero;
+external final ffi.Pointer<ffi.Char> m3Err_trapOutOfBoundsMemoryAccess;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapIntegerOverflow;
+external final ffi.Pointer<ffi.Char> m3Err_trapDivisionByZero;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapIntegerConversion;
+external final ffi.Pointer<ffi.Char> m3Err_trapIntegerOverflow;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapIndirectCallTypeMismatch;
+external final ffi.Pointer<ffi.Char> m3Err_trapIntegerConversion;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapTableIndexOutOfRange;
+external final ffi.Pointer<ffi.Char> m3Err_trapIndirectCallTypeMismatch;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapTableElementIsNull;
+external final ffi.Pointer<ffi.Char> m3Err_trapTableIndexOutOfRange;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapExit;
+external final ffi.Pointer<ffi.Char> m3Err_trapTableElementIsNull;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapAbort;
+external final ffi.Pointer<ffi.Char> m3Err_trapExit;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapUnreachable;
+external final ffi.Pointer<ffi.Char> m3Err_trapAbort;
 
 @ffi.Native<ffi.Pointer<ffi.Char>>()
-external ffi.Pointer<ffi.Char> m3Err_trapStackOverflow;
+external final ffi.Pointer<ffi.Char> m3Err_trapUnreachable;
+
+@ffi.Native<ffi.Pointer<ffi.Char>>()
+external final ffi.Pointer<ffi.Char> m3Err_trapStackOverflow;
 
 @ffi.Native<ffi.Pointer<M3Environment> Function()>()
 external ffi.Pointer<M3Environment> m3_NewEnvironment();
@@ -432,9 +435,9 @@ const int M3_VERSION_MAJOR = 0;
 
 const int M3_VERSION_MINOR = 5;
 
-const int M3_VERSION_REV = 0;
+const int M3_VERSION_REV = 1;
 
-const String M3_VERSION = '0.5.0';
+const String M3_VERSION = '0.5.1';
 
 const int _VCRT_COMPILER_PREPROCESSOR = 1;
 
