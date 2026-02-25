@@ -644,6 +644,159 @@ jobs:
           allowUpdates: true
           omitBodyDuringUpdate: true
 
+  build_cli_windows:
+    name: Build CLI for Windows x64
+    needs: [flutter_test]
+    runs-on: windows-latest
+    steps:
+      - name: Enable Git Long Paths
+        run: git config --system core.longpaths true
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          $is_tag = "${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}"
+          $flavor = ""
+          if ($is_tag) {
+              $flavor = "prod"
+          }
+          elseif ([string]::IsNullOrEmpty("${{ github.event.inputs.flavor }}")) {
+              $flavor = "dev"
+          }
+          else {
+              $flavor = "${{ github.event.inputs.flavor }}"
+          }
+
+          "FLAVOR=$flavor" | Out-File -Append -LiteralPath $Env:GITHUB_ENV
+          Write-Output "FLAVOR=$flavor"
+
+
+          "BRANCH_NAME=${{ env.BRANCH_NAME }}" | Out-File -Append -LiteralPath $Env:GITHUB_ENV
+          Write-Output "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+        shell: pwsh
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Compile CLI
+        run: |
+          cd packages/mangabackupconverter_cli
+          dart compile exe bin/mangabackupconverter_cli.dart -o mangabackupconverter_cli.exe
+
+      - name: Rename Artifact
+        run: |
+          cd packages/mangabackupconverter_cli
+          mv mangabackupconverter_cli.exe ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+
+      - name: Upload CLI Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows
+          path: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+
+      - name: Release CLI Binary
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+
+  build_cli_linux:
+    name: Build CLI for Linux x64
+    needs: [flutter_test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          echo "Inputs: ${{ toJSON(github.event.inputs) }}"
+
+          is_tag_string=${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
+          is_tag=false
+          if [ "$is_tag_string" = "true" ]; then
+            is_tag=true
+          fi
+
+          flavor=""
+          if $is_tag; then
+            flavor="prod"
+          elif [ -z "${{ github.event.inputs.flavor }}" ]; then
+            flavor="dev"
+          else
+            flavor="${{ github.event.inputs.flavor }}"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+          echo "FLAVOR=$flavor"
+
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libsqlite3-dev
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Compile CLI
+        run: |
+          cd packages/mangabackupconverter_cli
+          dart compile exe bin/mangabackupconverter_cli.dart -o mangabackupconverter_cli
+
+      - name: Rename Artifact
+        run: |
+          cd packages/mangabackupconverter_cli
+          mv mangabackupconverter_cli ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+
+      - name: Upload CLI Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          path: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+
+      - name: Release CLI Binary
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: packages/mangabackupconverter_cli/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+
   build_macos:
     name: Build Flutter for MacOS
     needs: [flutter_test]
