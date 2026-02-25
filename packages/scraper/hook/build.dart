@@ -178,9 +178,11 @@ Future<Uri> _cargoBuild({
     ...Platform.environment,
   };
 
-  // For Android targets, set up NDK linker.
+  // For Android targets, set up NDK linker and ensure the Rust target is
+  // installed (CI runners typically only have the host target).
   if (targetOS == OS.android) {
     _setupAndroidNdk(env, target);
+    await _ensureRustTarget(cargoExe, target);
   }
 
   final ProcessResult result = await Process.run(
@@ -213,6 +215,28 @@ Future<Uri> _cargoBuild({
 
   print('scraper: built $libName for $target');
   return cachedLib.uri;
+}
+
+/// Ensure the given Rust target triple is installed via `rustup target add`.
+Future<void> _ensureRustTarget(String cargoExe, String target) async {
+  // Derive rustup path from cargo path (sibling binary in the same bin dir).
+  final cargoFile = File(cargoExe);
+  final binDir = cargoFile.parent.path;
+  final rustupExe =
+      '$binDir${Platform.pathSeparator}rustup${Platform.isWindows ? '.exe' : ''}';
+  final String exe = File(rustupExe).existsSync() ? rustupExe : 'rustup';
+
+  final ProcessResult result = await Process.run(
+    exe,
+    ['target', 'add', target],
+    runInShell: true,
+  );
+  if (result.exitCode != 0) {
+    throw Exception(
+      'rustup target add $target failed:\n${result.stdout}\n${result.stderr}',
+    );
+  }
+  print('scraper: ensured Rust target $target is installed');
 }
 
 void _setupAndroidNdk(Map<String, String> env, String target) {
