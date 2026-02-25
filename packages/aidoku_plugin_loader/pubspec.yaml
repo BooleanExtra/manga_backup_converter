@@ -18,8 +18,8 @@ dependencies:
   wasm_ffi: ^2.2.0
   wasm_runner:
     path: ../wasm_runner
-  wasmer_runner:
-    path: ../wasmer_runner
+  wasm3:
+    path: ../wasm3
   web_wasm_runner:
     path: ../web_wasm_runner
 

@@ -10,7 +10,11 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 
 - Root: Flutter app (iOS, Android, macOS, Windows, Linux, Web)
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
-- `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (native wasmer FFI + web WebAssembly)
+- `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (host imports, isolate management, picks runtime)
+- `packages/wasm_runner/` — Abstract WASM runner interface (`WasmRunner`, `WasmRuntimeException`, `WasmTrapException`)
+- `packages/wasmer_runner/` — Wasmer FFI runner implementing `WasmRunner` (native platforms, build hook downloads prebuilt wasmer)
+- `packages/web_wasm_runner/` — Browser WebAssembly runner implementing `WasmRunner` (web platform)
+- `packages/wasm3/` — Wasm3 interpreter runner implementing `WasmRunner`
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
 - `packages/jsoup/` — Jsoup-compatible HTML parsing (JNI on Android/Windows/Linux, SwiftSoup on iOS/macOS, TeaVM-compiled Java Jsoup on Web)
 - `packages/assets/` — Asset code generation
@@ -39,7 +43,7 @@ melos run dart_test:pkg          # Dart tests for a specific package
                                  # run `dart test --reporter expanded` directly in the package directory instead
                                  # Native WASM tests skip automatically if test fixture is absent
                                  # Root pubspec.yaml must depend on packages with build hooks (native code assets)
-                                 # for `dart test` from root to discover them (e.g. aidoku_plugin_loader, jsoup)
+                                 # for `dart test` from root to discover them (e.g. wasm3, jsoup)
 melos run cli                    # Run CLI directly (args forwarded automatically)
 melos run jnigen                 # Generate JNI bindings for jsoup (uses system JDK for javadoc)
 melos run jni_setup              # Build dartjni.dll (uses bundled JDK, handles MSYS2)
@@ -99,12 +103,15 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
 - **Postcard integer encoding**: `u8`–`u64` → unsigned varint (LEB128); `i8`–`i64` → zigzag varint; `f32` → 4 LE bytes; `f64` → 8 LE bytes. Both `PostcardReader.readI64` and `PostcardWriter.writeI64` use zigzag varint, NOT raw bytes
-- **Wasmer code assets**: `hook/build.dart` (singular `hook/`, not `hooks/`) downloads prebuilt wasmer v7.0.1 and registers it as a `CodeAsset` with `DynamicLoadingBundled()` — runs automatically during `dart run`, `dart build`, `dart test`; no manual wasmer install needed
-- ffigen uses `ffi-native` mode (`ffi-native:` + `asset-id:` in YAML, hyphenated keys) — generates `@Native`-annotated top-level functions; `WasmerBindings()` constructor is parameterless (no `DynamicLibrary`)
-- `wasm_runner_native.dart` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`) — `_makeCallable`'s `on Exception catch` handles these naturally; do not use `on Object catch`
-- **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and `wasm_runner_native.dart` route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them
+- **Wasm3 code assets**: `packages/wasm3/hook/build.dart` compiles vendored wasm3 C source via `native_toolchain_c` and registers it as a `CodeAsset` with `DynamicLoadingBundled()` — runs automatically during `dart run`, `dart build`, `dart test`; no manual install needed
+- **Wasm3 v0.5.0 LEB overflow**: wasm3 interpreter hits "LEB encoded value overflow" during lazy compilation of complex exports (`get_search_manga_list`) in real .aix plugins (MangaDex, Mangafire); `start` export works fine — likely a wasm3 limitation with certain Rust-compiled WASM features; needs investigation/upgrade
+- ffigen config in `packages/wasm3/ffigen.yaml`; uses `ffi-native` mode — generates `@Native`-annotated top-level functions
+- `Wasm3Runner` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`)
+- **WASM runner conditional export**: `aidoku_plugin_loader/lib/src/wasm/wasm_runner.dart` re-exports `wasm3` on native, `web_wasm_runner` on web via `if (dart.library.js_interop)`
+- Root `pubspec.yaml` must depend on `wasm3` (has build hook) for `dart test` from root to discover code assets
+- **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and the active WASM runner route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them
 - `_processCmd` in `wasm_isolate.dart` replies via `cmd.replyPort.send()` — when changing reply format (e.g. to a tuple), update ALL corresponding `await port.first as ...` casts in `aidoku_plugin_io.dart`
-- **Isolate error handling**: `wasmIsolateMain` and `_processCmd` use `on Object catch` (not `on Exception catch`) — `Error` subtypes (`ArgumentError`, `RangeError`, `StateError`) from wasmer/FFI must be caught or the isolate dies silently, causing `port.first` hangs on the main isolate
+- **Isolate error handling**: `wasmIsolateMain` and `_processCmd` use `on Object catch` (not `on Exception catch`) — `Error` subtypes (`ArgumentError`, `RangeError`, `StateError`) from the WASM runner/FFI must be caught or the isolate dies silently, causing `port.first` hangs on the main isolate
 - **Isolate init failure**: Runner creation happens AFTER the handshake sends cmdPort — if `WasmRunner.fromBytes` fails, the isolate enters a command-drain loop replying with errors (can't send on the already-consumed handshake port)
 - **`_sendErrorReply` in `wasm_isolate.dart`**: Best-effort error reply for all command types; `WasmSearchCmd`/`WasmMangaDetailsCmd` reply with `(String error, List<String>)`, all others reply with `null`
 - `aidoku_plugin_io.dart` (native) and `aidoku_plugin_web.dart` (web) are conditional exports of `aidoku_plugin.dart` — any public method added to one MUST be added to the other
@@ -199,7 +206,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
   - Decoding postcard results must happen at the consumer level (`aidoku_plugin_io.dart` / `aidoku_plugin_web.dart`), not inside `HostStore`
   - Native isolate forwards raw bytes via `WasmPartialResultMsg`
 - `_encodeString` in `aidoku_host.dart` returns **raw UTF-8** (`utf8.encode`), NOT postcard-encoded — aidoku-rs SDK reads host strings via `String::from_utf8(buffer)` which expects no length prefix
-- **html:: WASM imports are stubbed** — jsoup removed from aidoku_plugin_loader due to wasmer v7.0.1 VEH (Vectored Exception Handler) conflicting with JNI signals on Windows. HTML-scraping plugins (mangafire, asurascans, weebcentral) return empty results on native; JSON-API plugins (MangaDex) are unaffected. `escape`/`unescape` remain functional (pure string ops).
+- **html:: WASM imports are stubbed** — jsoup not yet re-integrated into aidoku_plugin_loader (was removed due to wasmer VEH/JNI conflict; wasm3 has no signal handlers so re-integration is possible). HTML-scraping plugins (mangafire, asurascans, weebcentral) return empty results on native; JSON-API plugins (MangaDex) are unaffected. `escape`/`unescape` remain functional (pure string ops).
 - **jsoup OO API** (`packages/jsoup/`): public classes `Jsoup`, `Document extends Element`, `Element extends Node`, `Elements extends Iterable<Element>`, `Node` (base class), `TextNode extends Node`; `NativeHtmlParser` is internal (not exported from barrel `package:jsoup/jsoup.dart`)
 - `Jsoup.parser` is `@internal`; `Element.fromHandle`/`Elements.fromHandle`/`Document.fromHandle` are `@internal` — external code uses `Jsoup()`, `jsoup.parse()`, `element.select()` etc.
 - `Elements` is always native-backed; public constructor `Elements(Jsoup, List<Element>)` creates via `createElements`; for empty fallback use `Elements.fromHandle(parser, parser.createElements(const <int>[]))`
@@ -225,7 +232,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
   - Sync XHR via `dart:js_interop` (`_JSXMLHttpRequest`) — required because WASM host imports must return synchronously
   - `LazyWasmRunner` (`lib/src/wasm/lazy_wasm_runner.dart`) breaks circular dependency — shared by both native `wasm_isolate.dart` and web `wasm_worker_isolate.dart`
   - Rate limiting enforced in-worker via `RateLimiter` + busy-wait before each sync XHR (unlike native where it's on the main isolate, because web HTTP is synchronous)
-- **Web JS interop arity**: dart2js `.toJS` creates fixed-arity JS functions; WASM imports need variable-arity. `_varArgsFactory` in `wasm_runner_web.dart` uses `eval` to create wrappers that forward `arguments` as JSArray to a 1-arg Dart bridge. Requires `eval` (already needed since WASM uses `wasm-eval`)
+- **Web JS interop arity**: dart2js `.toJS` creates fixed-arity JS functions; WASM imports need variable-arity. `_varArgsFactory` in `packages/web_wasm_runner/lib/src/web_wasm_runner.dart` uses `eval` to create wrappers that forward `arguments` as JSArray to a 1-arg Dart bridge. Requires `eval` (already needed since WASM uses `wasm-eval`)
 - **TeaVM web bundle** (`packages/jsoup/`): `tool/build_teavm.dart` compiles `tool/teavm/` (Maven + TeaVM 0.13.0 + Jsoup 1.18.3) → `lib/src/web/teavm_bundle.dart` (567 KB minified JS as const string); `package:jsoup/teavm.dart` exports `teavmJsoupJs`
 - **TeaVM build requirements**: JDK 17+ and Maven 3.x; `tool/teavm/pom.xml` must include `teavm-core` as explicit dependency (contains `PlatformDetector` needed by classlib); `JsoupBridge.java` uses `@JSExport` (not `@Export`) from `org.teavm.jso.JSExport`; ADVANCED optimization produces smaller output than FULL
 - **TeaVM Java bridge** (`tool/teavm/src/main/java/.../JsoupBridge.java`): 54 `@JSExport` static methods wrapping Jsoup API with `HashMap<Integer, Object>` handle store; method renames: `id`→`elementId`, `get`→`getAt`, `remove`→`removeElement`, `dispose`→`disposeAll` (mapped back in `TeaVMParser`)
