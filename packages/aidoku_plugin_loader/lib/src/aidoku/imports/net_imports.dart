@@ -100,7 +100,8 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
         final String html = utf8.decode(body, allowMalformed: true);
         final Document doc = ctx.htmlParser!.parse(html, baseUri: req!.url ?? '');
         return ctx.store.add(HtmlElementResource(doc));
-      } on Object {
+      } on Object catch (e) {
+        ctx.onLog?.call('[CB] net::html failed: $e');
         return -1;
       }
     },

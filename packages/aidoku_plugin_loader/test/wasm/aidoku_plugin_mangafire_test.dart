@@ -67,7 +67,8 @@ void main() {
 
         setUpAll(() async {
           final MangaPageResult result = await plugin.searchManga('Onimai', 1);
-          mangaKey = result.manga.first.key;
+          mangaKey = result.manga.firstOrNull?.key ?? '';
+          check(mangaKey).isNotEmpty();
         });
 
         test('returns populated Manga', () async {
