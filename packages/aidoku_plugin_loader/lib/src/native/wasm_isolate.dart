@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
-import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
+import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';

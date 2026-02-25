@@ -5,7 +5,7 @@ import 'dart:js_interop';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
-import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
+import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
 import 'package:jsoup/jsoup.dart';
 import 'package:web_wasm_runner/web_wasm_runner.dart';

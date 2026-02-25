@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
+import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_writer.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
