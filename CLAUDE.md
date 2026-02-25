@@ -17,7 +17,7 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 - `packages/wasm3/` — Wasm3 interpreter runner implementing `WasmRunner`
 - `packages/app_lints/` — Shared lint rules (based on `solid_lints`)
 - `packages/jsoup/` — Jsoup-compatible HTML parsing (Rust scraper on Windows/Linux/Android, SwiftSoup on iOS/macOS, TeaVM on Web)
-- `packages/scraper/` — Rust scraper crate (html5ever/Servo) FFI bridge; build hook compiles via cargo + registers CodeAsset
+- `packages/scraper/` — Rust scraper crate (html5ever/Servo) FFI bridge; build hook compiles via cargo + registers CodeAsset; for Android, auto-discovers NDK from `ANDROID_HOME/ndk/` and runs `rustup target add` before cross-compiling
 - `packages/assets/` — Asset code generation
 - `packages/constants/` — App-wide constants
 
@@ -54,6 +54,14 @@ melos run fix                    # Auto-fix lint issues
 ```
 
 Build: `flutter build <platform>`
+
+## CLI Build Output
+
+`dart build cli` outputs to platform-specific directories under the CLI package:
+- Windows: `packages/mangabackupconverter_cli/build/cli/windows_x64/bundle/` (bin/ + lib/)
+- Linux: `packages/mangabackupconverter_cli/build/cli/linux_x64/bundle/` (bin/ + lib/)
+- macOS: `packages/mangabackupconverter_cli/build/cli/macos_arm64/bundle/` (bin/ + lib/)
+- Windows installer: `packages/mangabackupconverter_cli/installer/windows_setup.iss` (Inno Setup, compiled in CI)
 
 ## Architecture
 
@@ -104,7 +112,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `lib/src/pipeline/source_manga_data.dart` — `SourceMangaData` normalized type (chapters, history, tracking, categories)
 - `lib/src/pipeline/target_backup_builder.dart` — `TargetBackupBuilder` sealed class; `AidokuBackupBuilder` is the only concrete impl; `build()` accepts optional `sourceFormatAlias` for backup metadata
 - **Postcard integer encoding**: `u8`–`u64` → unsigned varint (LEB128); `i8`–`i64` → zigzag varint; `f32` → 4 LE bytes; `f64` → 8 LE bytes. Both `PostcardReader.readI64` and `PostcardWriter.writeI64` use zigzag varint, NOT raw bytes
-- **Wasm3 code assets**: `packages/wasm3/hook/build.dart` compiles vendored wasm3 C source via `native_toolchain_c` and registers it as a `CodeAsset` with `DynamicLoadingBundled()` — runs automatically during `dart run`, `dart build`, `dart test`; no manual install needed
+- **Wasm3 code assets**: `packages/wasm3/hook/build.dart` compiles vendored wasm3 C source via `native_toolchain_c` and registers it as a `CodeAsset` with `DynamicLoadingBundled()` — runs automatically during `dart run`, `dart build`, `dart test`; no manual install needed; uses `OptimizationLevel.o2` (not o3) — NDK clang crashes on armv7 with O3
 - **Wasm3 version**: vendored at latest HEAD (`79d412e`, post-v0.5.0); `m3_emit.c`, `m3_emit.h`, `m3_optimize.c` were removed upstream (merged into `m3_compile.c`) — `hook/build.dart` reflects this; regenerate bindings with `dart run ffigen --config ffigen.yaml` from `packages/wasm3/`
 - ffigen config in `packages/wasm3/ffigen.yaml`; uses `ffi-native` mode — generates `@Native`-annotated top-level functions
 - `Wasm3Runner` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`)
