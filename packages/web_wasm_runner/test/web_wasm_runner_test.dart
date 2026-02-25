@@ -111,7 +111,7 @@ void main() {
       final WebWasmRunner runner = await WebWasmRunner.fromBytes(_addWasm);
       check(
         () => runner.call('nonexistent', <Object?>[]),
-      ).throws<ArgumentError>();
+      ).throws<WasmRuntimeException>();
     });
   });
 }

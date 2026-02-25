@@ -19,6 +19,10 @@ import 'package:wasmer_runner/wasmer_runner.dart';
 // Guards
 // ---------------------------------------------------------------------------
 
+/// Resolves fixture paths relative to the sibling `aidoku_plugin_loader`
+/// package. This creates a cross-package dependency on
+/// `packages/aidoku_plugin_loader/test/aidoku/fixtures/` — if the fixture
+/// directory moves or is renamed, this function must be updated to match.
 File _findFixture(String relPath) {
   // When run from packages/wasmer_runner/
   final a = File('../aidoku_plugin_loader/$relPath');

@@ -236,6 +236,7 @@ class WasmerRunner implements WasmRunner {
 
   @override
   dynamic call(String name, List<Object?> args) {
+    if (_disposed) throw const WasmRuntimeException('Runner is disposed');
     final ffi.Pointer<WasmExternT>? extern = _exports[name];
     if (extern == null) throw WasmRuntimeException('No WASM export: $name');
     final ffi.Pointer<WasmFuncT> func = _bindings.externAsFunc(extern);

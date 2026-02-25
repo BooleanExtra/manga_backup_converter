@@ -136,7 +136,7 @@ class WebWasmRunner implements WasmRunner {
   @override
   dynamic call(String name, List<Object?> args) {
     final JSAny? fn = _exports.getProperty(name.toJS);
-    if (fn == null) throw ArgumentError('WASM export not found: $name');
+    if (fn == null) throw WasmRuntimeException('WASM export not found: $name');
     final JSArray<JSAny?> jsArgs = <JSAny?>[
       for (final Object? arg in args) _valueToJs(arg),
     ].toJS;
