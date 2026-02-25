@@ -9,6 +9,8 @@ void main(List<String> args) async {
     final cbuilder = CBuilder.library(
       name: 'wasm3',
       assetName: 'src/wasm3_bindings_generated.dart',
+      // O3 causes NDK clang to crash on armv7 (internal compiler error).
+      optimizationLevel: OptimizationLevel.o2,
       sources: [
         // Core wasm3 source files — no WASI/libc/tracer (not needed for aidoku
         // plugins).
