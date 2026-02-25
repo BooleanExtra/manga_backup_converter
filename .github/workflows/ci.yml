@@ -395,20 +395,20 @@ jobs:
       - name: Bootstrap Melos
         run: melos bootstrap
 
-      - name: Build Android Split APK
-        run: |
-          flutter pub get
-          flutter build apk --release --split-per-abi
-          cd build/app/outputs/flutter-apk
-          mv app-arm64-v8a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-arm64-v8a.apk
-          mv app-armeabi-v7a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-armeabi-v7a.apk
-          mv app-x86_64-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-x86_64.apk
+      # - name: Build Android Split APK
+      #   run: |
+      #     flutter pub get
+      #     flutter build apk --release --split-per-abi
+      #     cd build/app/outputs/flutter-apk
+      #     mv app-arm64-v8a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-arm64-v8a.apk
+      #     mv app-armeabi-v7a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-armeabi-v7a.apk
+      #     mv app-x86_64-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-x86_64.apk
 
-      - name: Upload Split APKs
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-split
-          path: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
+      # - name: Upload Split APKs
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-split
+      #     path: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
 
       # - name: Release Split APKs
       #   if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
