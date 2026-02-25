@@ -1,4 +1,5 @@
 @TestOn('vm')
+@Tags(['jni'])
 library;
 
 import 'package:checks/checks.dart';

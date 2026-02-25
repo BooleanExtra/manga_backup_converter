@@ -245,7 +245,7 @@ melos:
       packageFilters:
         dirExists: test
         dependsOn: test
-        noDependsOn: flutter
+        noDependsOn: flutter jni
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
@@ -257,6 +257,7 @@ melos:
         flutter: true
         dirExists: test
         dependsOn: flutter_test
+        noDependsOn: jni
 
     test:
       run: melos run flutter_test && melos run dart_test
