@@ -11,9 +11,9 @@
 // This will:
 // 1. Build the SwiftSoupWrapper Swift package into a .dylib
 // 2. Use swiftgen to generate Dart FFI bindings
-// 3. Output bindings to lib/src/bindings/swiftsoup/
+// 3. Output bindings to lib/src/swift/bindings/
 //
-// After generation, the SwiftSoupParser class in jsoup_swift.dart
+// After generation, the SwiftSoupParser class in swift/swift_parser.dart
 // should be updated to use the generated bindings.
 
 // ignore_for_file: avoid_print

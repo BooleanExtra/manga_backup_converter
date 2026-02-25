@@ -19,7 +19,7 @@ import 'package:jsoup/src/html_parser.dart';
 /// dart run tool/generate_swiftsoup_bindings.dart
 /// ```
 ///
-/// Once bindings are generated to `lib/src/bindings/swiftsoup/`, replace the
+/// Once bindings are generated to `lib/src/swift/bindings/`, replace the
 /// stub implementations below with calls to the generated
 /// `SwiftSoupBridge` class.
 class SwiftSoupParser implements NativeHtmlParser {
