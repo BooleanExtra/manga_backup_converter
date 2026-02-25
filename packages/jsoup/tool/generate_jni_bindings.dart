@@ -122,9 +122,7 @@ void _installDartJni(String monorepoRoot, String jdkHome) {
     return;
   }
 
-  final serverDir = Platform.isWindows
-      ? '$jdkHome/bin/server'
-      : '$jdkHome/lib/server';
+  final serverDir = Platform.isWindows ? '$jdkHome/bin/server' : '$jdkHome/lib/server';
   if (!Directory(serverDir).existsSync()) {
     print('Warning: Server directory not found at $serverDir');
     return;

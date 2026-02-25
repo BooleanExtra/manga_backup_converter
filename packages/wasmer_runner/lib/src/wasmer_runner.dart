@@ -8,8 +8,7 @@ import 'package:wasm_runner/wasm_runner.dart';
 import 'package:wasmer_runner/src/wasmer_bindings.dart';
 import 'package:wasmer_runner/src/wasmer_bindings_generated.dart';
 
-export 'package:wasm_runner/wasm_runner.dart'
-    show WasmRuntimeException, WasmTrapException;
+export 'package:wasm_runner/wasm_runner.dart' show WasmRuntimeException, WasmTrapException;
 
 /// Native WASM runner backed by the wasmer runtime (https://wasmer.io).
 ///

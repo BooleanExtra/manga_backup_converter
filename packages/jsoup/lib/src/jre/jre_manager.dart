@@ -91,8 +91,7 @@ class JreManager {
   /// Falls back to JAVA_HOME if no bundled JDK is found.
   static String _findJvmLibrary() {
     final libName = Platform.isWindows ? 'jvm.dll' : 'libjvm.so';
-    final serverSubdir =
-        Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
+    final serverSubdir = Platform.isWindows ? 'bin/server/$libName' : 'lib/server/$libName';
 
     // Check environment variable.
     final String? envPath = Platform.environment['JVM_LIB_PATH'];
@@ -155,32 +154,29 @@ class JreManager {
     final kernel32 = DynamicLibrary.open('kernel32.dll');
 
     // DWORD GetEnvironmentVariableW(LPCWSTR name, LPWSTR buffer, DWORD size)
-    final int Function(Pointer<Utf16>, Pointer<Utf16>, int) getEnvVar =
-        kernel32.lookupFunction<
-            Uint32 Function(Pointer<Utf16>, Pointer<Utf16>, Uint32),
-            int Function(Pointer<Utf16>, Pointer<Utf16>, int)>(
-      'GetEnvironmentVariableW',
-    );
+    final int Function(Pointer<Utf16>, Pointer<Utf16>, int) getEnvVar = kernel32
+        .lookupFunction<
+          Uint32 Function(Pointer<Utf16>, Pointer<Utf16>, Uint32),
+          int Function(Pointer<Utf16>, Pointer<Utf16>, int)
+        >(
+          'GetEnvironmentVariableW',
+        );
 
     // BOOL SetEnvironmentVariableW(LPCWSTR name, LPCWSTR value)
-    final int Function(Pointer<Utf16>, Pointer<Utf16>) setEnvVar =
-        kernel32.lookupFunction<
-            Int32 Function(Pointer<Utf16>, Pointer<Utf16>),
-            int Function(Pointer<Utf16>, Pointer<Utf16>)>(
-      'SetEnvironmentVariableW',
-    );
+    final int Function(Pointer<Utf16>, Pointer<Utf16>) setEnvVar = kernel32
+        .lookupFunction<Int32 Function(Pointer<Utf16>, Pointer<Utf16>), int Function(Pointer<Utf16>, Pointer<Utf16>)>(
+          'SetEnvironmentVariableW',
+        );
 
     final Pointer<Utf16> pathName = 'PATH'.toNativeUtf16();
 
     // Get current PATH length (returns size in chars including null).
     final int needed = getEnvVar(pathName, nullptr, 0);
-    final Pointer<Utf16> currentPath =
-        malloc.allocate<Utf16>(needed * sizeOf<Uint16>());
+    final Pointer<Utf16> currentPath = malloc.allocate<Utf16>(needed * sizeOf<Uint16>());
     getEnvVar(pathName, currentPath, needed);
 
     // Prepend jvmDir to PATH.
-    final Pointer<Utf16> newPath =
-        '$directory;${currentPath.toDartString()}'.toNativeUtf16();
+    final Pointer<Utf16> newPath = '$directory;${currentPath.toDartString()}'.toNativeUtf16();
     setEnvVar(pathName, newPath);
 
     malloc.free(pathName);

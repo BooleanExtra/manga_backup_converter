@@ -184,8 +184,7 @@ class AidokuPlugin {
             RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
           );
         } else if (msg is WasmPartialResultMsg) {
-          final HomePartialResult? decoded =
-              decodeHomePartialResultFromBytes(msg.data);
+          final HomePartialResult? decoded = decodeHomePartialResultFromBytes(msg.data);
           if (decoded != null) plugin._partialResultsController.add(decoded);
         }
       } on Object catch (e, st) {
@@ -216,10 +215,7 @@ class AidokuPlugin {
         _sharedState.writeError();
         return;
       }
-      final String methodStr =
-          msg.method < _httpMethodNames.length
-              ? _httpMethodNames[msg.method]
-              : 'GET';
+      final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
       // ignore: avoid_print
       print('[wasm/net] $methodStr ${msg.url}');
       final request = http.Request(methodStr, uri);
@@ -227,11 +223,8 @@ class AidokuPlugin {
       if (msg.body != null) {
         request.bodyBytes = Uint8List.fromList(msg.body!);
       }
-      final int timeoutSeconds =
-          msg.timeout.isFinite ? msg.timeout.toInt() : 30;
-      final http.StreamedResponse response = await _httpClient
-          .send(request)
-          .timeout(Duration(seconds: timeoutSeconds));
+      final int timeoutSeconds = msg.timeout.isFinite ? msg.timeout.toInt() : 30;
+      final http.StreamedResponse response = await _httpClient.send(request).timeout(Duration(seconds: timeoutSeconds));
       final Uint8List body = await response.stream.toBytes();
       // ignore: avoid_print
       print('[wasm/net] ${response.statusCode} ${body.length}b');

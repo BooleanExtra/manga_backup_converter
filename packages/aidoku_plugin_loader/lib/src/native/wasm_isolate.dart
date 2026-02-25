@@ -365,10 +365,12 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   } on Object catch (e) {
     // Handshake already sent cmdPort — can't send error on handshakePort.
     // Stay alive and reply with errors so callers' port.first doesn't hang.
-    init.asyncPort.send(WasmLogMsg(
-      message: '[wasm] failed to create WASM runner: $e',
-      stackTrace: '',
-    ));
+    init.asyncPort.send(
+      WasmLogMsg(
+        message: '[wasm] failed to create WASM runner: $e',
+        stackTrace: '',
+      ),
+    );
     await for (final Object? cmd in cmdPort) {
       if (cmd is WasmShutdownCmd) break;
       _sendErrorReply(cmd!, 'WASM runner failed to initialize: $e');
@@ -388,10 +390,12 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     try {
       _processCmd(cmd!, runner, store, init.asyncPort, callErrors);
     } on Object catch (e, st) {
-      init.asyncPort.send(WasmLogMsg(
-        message: '[wasm] unhandled error in _processCmd: $e',
-        stackTrace: st.toString(),
-      ));
+      init.asyncPort.send(
+        WasmLogMsg(
+          message: '[wasm] unhandled error in _processCmd: $e',
+          stackTrace: st.toString(),
+        ),
+      );
       // Send an error reply so the caller's port.first doesn't hang forever.
       _sendErrorReply(cmd!, 'unhandled error in _processCmd: $e');
     }

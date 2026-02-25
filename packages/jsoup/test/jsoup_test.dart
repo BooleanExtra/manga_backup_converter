@@ -310,18 +310,12 @@ void main() {
 
     test('nextElementSibling', () {
       final Element first = doc.selectFirst('#first')!;
-      check(first.nextElementSibling)
-          .isNotNull()
-          .has((e) => e.id, 'id')
-          .equals('second');
+      check(first.nextElementSibling).isNotNull().has((e) => e.id, 'id').equals('second');
     });
 
     test('previousElementSibling', () {
       final Element second = doc.selectFirst('#second')!;
-      check(second.previousElementSibling)
-          .isNotNull()
-          .has((e) => e.id, 'id')
-          .equals('first');
+      check(second.previousElementSibling).isNotNull().has((e) => e.id, 'id').equals('first');
     });
 
     test('nextElementSibling returns null for last', () {
