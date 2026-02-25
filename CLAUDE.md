@@ -192,6 +192,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 ## CI
 
 GitHub Actions runs on all branches: format verification, analysis, tests with coverage (Codecov), then platform builds (iOS, Android, Web, Windows, Linux). Flutter 3.41.1 stable.
+- All `actions/checkout@v4` steps require `submodules: true` — wasm3 vendored source is a git submodule at `packages/wasm3/vendor/wasm3`
 
 ## Commits
 

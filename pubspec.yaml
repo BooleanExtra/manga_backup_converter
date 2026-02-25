@@ -246,6 +246,8 @@ melos:
         dirExists: test
         dependsOn: test
         noDependsOn: flutter jni
+        ignore:
+          - web_wasm_runner
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
