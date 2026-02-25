@@ -701,7 +701,7 @@ jobs:
 
       - name: Package CLI
         run: |
-          cd packages/mangabackupconverter_cli/build/cli/_/bundle
+          cd packages/mangabackupconverter_cli/build/cli/windows_x64/bundle
           mv bin/mangabackupconverter_cli.exe bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
         shell: bash
 
@@ -709,13 +709,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows
-          path: packages/mangabackupconverter_cli/build/cli/_/bundle/
+          path: packages/mangabackupconverter_cli/build/cli/windows_x64/bundle/
 
       - name: Compile Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: packages/mangabackupconverter_cli/installer/windows_setup.iss
-          options: /DBundleDir=${{ github.workspace }}\packages\mangabackupconverter_cli\build\cli\_\bundle /DAppVersion=${{ env.BRANCH_NAME }} /O${{ github.workspace }}\installer-output
+          options: /DBundleDir=${{ github.workspace }}\packages\mangabackupconverter_cli\build\cli\windows_x64\bundle /DAppVersion=${{ env.BRANCH_NAME }} /O${{ github.workspace }}\installer-output
 
       - name: Rename Installer
         run: |
@@ -731,7 +731,7 @@ jobs:
       - name: Create Release Archive
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         run: |
-          cd packages/mangabackupconverter_cli/build/cli/_
+          cd packages/mangabackupconverter_cli/build/cli/windows_x64
           Compress-Archive -Path bundle/* -DestinationPath ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
         shell: pwsh
 
@@ -740,7 +740,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            packages/mangabackupconverter_cli/build/cli/_/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
+            packages/mangabackupconverter_cli/build/cli/windows_x64/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
             installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe
           allowUpdates: true
           omitBodyDuringUpdate: true
@@ -807,26 +807,26 @@ jobs:
 
       - name: Package CLI
         run: |
-          cd packages/mangabackupconverter_cli/build/cli/_/bundle
+          cd packages/mangabackupconverter_cli/build/cli/linux_x64/bundle
           mv bin/mangabackupconverter_cli bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
 
       - name: Upload CLI Bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
-          path: packages/mangabackupconverter_cli/build/cli/_/bundle/
+          path: packages/mangabackupconverter_cli/build/cli/linux_x64/bundle/
 
       - name: Create Release Archive
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         run: |
-          cd packages/mangabackupconverter_cli/build/cli/_
+          cd packages/mangabackupconverter_cli/build/cli/linux_x64
           tar -czf ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz -C bundle .
 
       - name: Release CLI
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/mangabackupconverter_cli/build/cli/_/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz
+          artifacts: packages/mangabackupconverter_cli/build/cli/linux_x64/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz
           allowUpdates: true
           omitBodyDuringUpdate: true
 
