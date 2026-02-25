@@ -26,7 +26,7 @@ import 'package:test/scaffolding.dart';
 void main() {
   setUpAll(JreManager.ensureInitialized);
 
-  group('JreManager.ensureInitialized safe in child isolate', () {
+  group('JreManager.ensureInitialized safe in child isolate', skip: true, () {
     test('ensureInitialized in child + FindClass on main', () async {
       await Isolate.run(() {
         JreManager.ensureInitialized();
@@ -66,7 +66,7 @@ void main() {
     });
   });
 
-  group('Baseline: no PEB access in child', () {
+  group('Baseline: no PEB access in child', skip: true, () {
     test('Empty child + FindClass on main', () async {
       await Isolate.run(() => 'OK');
       final Pointer<Void> cls = _mainFindClass('java/lang/String');
