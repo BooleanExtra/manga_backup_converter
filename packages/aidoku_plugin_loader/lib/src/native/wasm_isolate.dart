@@ -361,7 +361,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
 
   late final WasmRunner runner;
   try {
-    runner = await WasmRunner.fromBytes(init.wasmBytes, imports: imports, onLog: sendLog);
+    runner = await WasmerRunner.fromBytes(init.wasmBytes, imports: imports, onLog: sendLog);
   } on Object catch (e) {
     // Handshake already sent cmdPort — can't send error on handshakePort.
     // Stay alive and reply with errors so callers' port.first doesn't hang.

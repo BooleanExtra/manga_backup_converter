@@ -3,9 +3,9 @@ library;
 
 import 'dart:typed_data';
 
-import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
+import 'package:web_wasm_runner/web_wasm_runner.dart';
 
 /// Minimal WASM module that exports a single function `add(i32, i32) -> i32`.
 ///
@@ -59,15 +59,15 @@ final Uint8List _memWasm = Uint8List.fromList(<int>[
 ]);
 
 void main() {
-  group('WasmRunner (web)', () {
+  group('WebWasmRunner (web)', () {
     test('fromBytes compiles and runs a simple WASM module', () async {
-      final WasmRunner runner = await WasmRunner.fromBytes(_addWasm);
+      final WebWasmRunner runner = await WebWasmRunner.fromBytes(_addWasm);
       final Object? result = runner.call('add', <Object?>[3, 4]);
       check(result).isA<int>().equals(7);
     });
 
     test('call spreads args correctly (not array-as-single-arg)', () async {
-      final WasmRunner runner = await WasmRunner.fromBytes(_addWasm);
+      final WebWasmRunner runner = await WebWasmRunner.fromBytes(_addWasm);
       // If args were passed as a single array, WASM would see [Array, undefined]
       // and either trap or return garbage. Correct spreading gives 10 + 20 = 30.
       final Object? result = runner.call('add', <Object?>[10, 20]);
@@ -76,7 +76,7 @@ void main() {
 
     test('host imports receive correct Dart types', () async {
       var receivedCall = false;
-      final WasmRunner runner = await WasmRunner.fromBytes(
+      final WebWasmRunner runner = await WebWasmRunner.fromBytes(
         _importWasm,
         imports: <String, Map<String, Function>>{
           'env': <String, Function>{
@@ -93,7 +93,7 @@ void main() {
     });
 
     test('readMemory and writeMemory work', () async {
-      final WasmRunner runner = await WasmRunner.fromBytes(_memWasm);
+      final WebWasmRunner runner = await WebWasmRunner.fromBytes(_memWasm);
 
       // Write 4 bytes at offset 0
       runner.writeMemory(0, Uint8List.fromList(<int>[0x2a, 0x00, 0x00, 0x00]));
@@ -108,7 +108,7 @@ void main() {
     });
 
     test('throws on missing export', () async {
-      final WasmRunner runner = await WasmRunner.fromBytes(_addWasm);
+      final WebWasmRunner runner = await WebWasmRunner.fromBytes(_addWasm);
       check(
         () => runner.call('nonexistent', <Object?>[]),
       ).throws<ArgumentError>();

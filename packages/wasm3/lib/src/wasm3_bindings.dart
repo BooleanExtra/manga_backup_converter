@@ -8,9 +8,12 @@ import 'dart:ffi' as ffi;
 
 import 'package:ffi/ffi.dart';
 import 'package:wasm3/src/wasm3_bindings_generated.dart';
+import 'package:wasm_runner/wasm_runner.dart';
 
 export 'package:wasm3/src/wasm3_bindings_generated.dart'
     show M3ErrorInfo, M3ImportContext, M3RawCall, M3ValueType;
+export 'package:wasm_runner/wasm_runner.dart'
+    show WasmRuntimeException, WasmTrapException;
 
 /// The native function signature inside [M3RawCall].
 ///
@@ -178,24 +181,4 @@ class Wasm3Bindings {
     }
     return buf;
   }
-}
-
-// ---------------------------------------------------------------------------
-// Exceptions
-// ---------------------------------------------------------------------------
-
-class WasmRuntimeException implements Exception {
-  const WasmRuntimeException(this.message);
-  final String message;
-
-  @override
-  String toString() => 'WasmRuntimeException: $message';
-}
-
-class WasmTrapException implements Exception {
-  const WasmTrapException(this.message);
-  final String message;
-
-  @override
-  String toString() => 'WasmTrapException: $message';
 }

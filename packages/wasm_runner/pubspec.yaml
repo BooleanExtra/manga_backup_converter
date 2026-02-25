@@ -1,0 +1,14 @@
+name: wasm_runner
+description: Abstract WASM runner interface for pluggable runtimes.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+resolution: workspace
+
+dependencies: {}
+
+dev_dependencies:
+  app_lints:
+    path: ../app_lints

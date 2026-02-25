@@ -1,15 +1,15 @@
-// lib/src/wasm/wasm_bindings_ffi.dart
+// lib/src/wasmer_bindings.dart
 //
 // Thin Dart-friendly wrapper over the ffigen-generated @Native bindings.
-// Preserves the original method names used by wasm_runner_native.dart.
+// Preserves the original method names used by wasmer_runner.dart.
 //
 // Regenerate the generated file with:
-//   cd packages/aidoku_plugin_loader
+//   cd packages/wasmer_runner
 //   dart run ffigen --config ffigen.yaml
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 
-import 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_generated.dart';
+import 'package:wasmer_runner/src/wasmer_bindings_generated.dart';
 
 // ---------------------------------------------------------------------------
 // Re-export generated types under the PascalCase aliases used by the runner.
@@ -35,7 +35,7 @@ typedef WasmImporttypeVec = wasm_importtype_vec_t;
 typedef WasmExporttypeVec = wasm_exporttype_vec_t;
 
 // ---------------------------------------------------------------------------
-// Callback typedef used by NativeCallable in wasm_runner_native.dart.
+// Callback typedef used by NativeCallable in wasmer_runner.dart.
 //
 // This is the *inner* native function type (not the pointer wrapper).
 // wasm_func_callback_t from the generated file is the pointer wrapper:
@@ -47,7 +47,7 @@ typedef WasmFuncCallbackC =
 
 // ---------------------------------------------------------------------------
 // WasmerBindings: thin wrapper preserving the original public API.
-// Calls top-level @Native functions from wasm_bindings_generated.dart.
+// Calls top-level @Native functions from wasmer_bindings_generated.dart.
 // ---------------------------------------------------------------------------
 
 class WasmerBindings {
@@ -55,7 +55,9 @@ class WasmerBindings {
 
   // Engine / Store
   ffi.Pointer<WasmEngineT> engineNew() => wasm_engine_new();
+  void engineDelete(ffi.Pointer<WasmEngineT> e) => wasm_engine_delete(e);
   ffi.Pointer<WasmStoreT> storeNew(ffi.Pointer<WasmEngineT> e) => wasm_store_new(e);
+  void storeDelete(ffi.Pointer<WasmStoreT> s) => wasm_store_delete(s);
 
   // ByteVec
   // wasm_byte_vec_new takes Pointer<Char> — cast from the Uint8 buffer the

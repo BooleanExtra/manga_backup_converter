@@ -1,4 +1,4 @@
-// test/wasm/wasm_imports_audit_test.dart
+// test/wasm_imports_audit_test.dart
 //
 // WASM Import Audit — enumerates every import declared by the 4 fixture binaries
 // and asserts that each is either registered in buildAidokuHostImports() or
@@ -6,22 +6,24 @@
 //
 // Also prints a binary-verified import table useful for updating WASM_ABI.md.
 //
-// Run: dart test packages/aidoku_plugin_loader/test/wasm/wasm_imports_audit_test.dart --reporter expanded
+// Run: dart test packages/wasmer_runner/test/wasm_imports_audit_test.dart --reporter expanded
 // ignore_for_file: avoid_print
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:aidoku_plugin_loader/src/wasm/wasm_runner_native.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
+import 'package:wasmer_runner/wasmer_runner.dart';
 
 // ---------------------------------------------------------------------------
 // Guards
 // ---------------------------------------------------------------------------
 
 File _findFixture(String relPath) {
-  final a = File(relPath);
+  // When run from packages/wasmer_runner/
+  final a = File('../aidoku_plugin_loader/$relPath');
   if (a.existsSync()) return a;
+  // When run from repo root
   return File('packages/aidoku_plugin_loader/$relPath');
 }
 
@@ -198,7 +200,7 @@ void main() {
           final File file = _findFixture(f.wasmPath);
           if (!file.existsSync()) continue;
           final Uint8List bytes = file.readAsBytesSync();
-          allImports[f.label] = WasmRunner.listImports(bytes);
+          allImports[f.label] = WasmerRunner.listImports(bytes);
         }
       });
 

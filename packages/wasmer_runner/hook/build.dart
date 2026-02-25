@@ -69,8 +69,8 @@ void main(List<String> args) async {
 
     output.assets.code.add(
       CodeAsset(
-        package: 'aidoku_plugin_loader',
-        name: 'src/wasm/wasm_bindings_generated.dart',
+        package: 'wasmer_runner',
+        name: 'src/wasmer_bindings_generated.dart',
         linkMode: DynamicLoadingBundled(),
         file: libFile,
       ),

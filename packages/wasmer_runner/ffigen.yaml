@@ -1,4 +1,4 @@
-output: lib/src/wasm/wasm_bindings_generated.dart
+output: lib/src/wasmer_bindings_generated.dart
 name: NativeWasmerBindings
 
 description: >
@@ -14,7 +14,7 @@ compiler-opts:
   - '-Down='
 
 ffi-native:
-  asset-id: 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_generated.dart'
+  asset-id: 'package:wasmer_runner/src/wasmer_bindings_generated.dart'
 
 preamble: |
   // ignore_for_file: camel_case_types

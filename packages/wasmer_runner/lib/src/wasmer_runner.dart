@@ -1,23 +1,27 @@
-// lib/src/wasm/wasm_runner_native.dart
+// lib/src/wasmer_runner.dart
 // ignore_for_file: avoid_dynamic_calls
 import 'dart:ffi' as ffi;
 import 'dart:typed_data' show Uint8List;
 
-import 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_ffi.dart';
-import 'package:aidoku_plugin_loader/src/wasm/wasm_bindings_generated.dart';
 import 'package:ffi/ffi.dart' show calloc;
+import 'package:wasm_runner/wasm_runner.dart';
+import 'package:wasmer_runner/src/wasmer_bindings.dart';
+import 'package:wasmer_runner/src/wasmer_bindings_generated.dart';
+
+export 'package:wasm_runner/wasm_runner.dart'
+    show WasmRuntimeException, WasmTrapException;
 
 /// Native WASM runner backed by the wasmer runtime (https://wasmer.io).
 ///
 /// The wasmer library is bundled automatically via Dart code assets
 /// (see `hook/build.dart`). The `@Native`-annotated FFI functions in
-/// `wasm_bindings_generated.dart` resolve at runtime without manual install.
+/// `wasmer_bindings_generated.dart` resolve at runtime without manual install.
 ///
 /// **HTTP limitation**: WASM host imports are synchronous. The net::* imports
 /// are stubbed (return -1) because async HTTP cannot run inside a synchronous
 /// wasmer callback. Use the web runner for full HTTP support.
-class WasmRunner {
-  WasmRunner._({
+class WasmerRunner implements WasmRunner {
+  WasmerRunner._({
     required WasmerBindings bindings,
     required ffi.Pointer<WasmEngineT> engine,
     required ffi.Pointer<WasmStoreT> store,
@@ -34,23 +38,18 @@ class WasmRunner {
        _nativeCallables = nativeCallables;
 
   final WasmerBindings _bindings;
-  // ignore: unused_field
   final ffi.Pointer<WasmEngineT> _engine;
-  // ignore: unused_field
   final ffi.Pointer<WasmStoreT> _store;
-  // ignore: unused_field
   final ffi.Pointer<WasmInstanceT> _instance;
   final ffi.Pointer<WasmMemoryT> _memory;
   final Map<String, ffi.Pointer<WasmExternT>> _exports;
-  // Keep NativeCallables alive for the lifetime of the runner
-  // ignore: unused_field
   final List<ffi.NativeCallable<WasmFuncCallbackC>> _nativeCallables;
 
   // ---------------------------------------------------------------------------
   // Factory
   // ---------------------------------------------------------------------------
 
-  static Future<WasmRunner> fromBytes(
+  static Future<WasmerRunner> fromBytes(
     Uint8List wasmBytes, {
     Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
     void Function(String message)? onLog,
@@ -162,7 +161,7 @@ class WasmRunner {
     }
     // exportVec data is owned by instance — don't delete the vec contents
 
-    return WasmRunner._(
+    return WasmerRunner._(
       bindings: bindings,
       engine: engine,
       store: store,
@@ -235,6 +234,7 @@ class WasmRunner {
   // Public interface
   // ---------------------------------------------------------------------------
 
+  @override
   dynamic call(String name, List<Object?> args) {
     final ffi.Pointer<WasmExternT>? extern = _exports[name];
     if (extern == null) throw WasmRuntimeException('No WASM export: $name');
@@ -272,6 +272,7 @@ class WasmRunner {
     return result;
   }
 
+  @override
   Uint8List readMemory(int offset, int length) {
     if (_memory.address == 0) throw const WasmRuntimeException('No memory export');
     if (length == 0) return Uint8List(0);
@@ -283,6 +284,7 @@ class WasmRunner {
     return Uint8List.fromList(List<int>.generate(length, (int i) => (data + offset + i).value));
   }
 
+  @override
   void writeMemory(int offset, Uint8List bytes) {
     if (_memory.address == 0) throw const WasmRuntimeException('No memory export');
     final ffi.Pointer<ffi.Uint8> data = _bindings.memoryData(_memory);
@@ -291,9 +293,24 @@ class WasmRunner {
     }
   }
 
+  @override
   int get memorySize {
     if (_memory.address == 0) return 0;
     return _bindings.memoryDataSize(_memory);
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    if (_disposed) return;
+    _disposed = true;
+    for (final ffi.NativeCallable<WasmFuncCallbackC> callable in _nativeCallables) {
+      callable.close();
+    }
+    _bindings.instanceDelete(_instance);
+    _bindings.storeDelete(_store);
+    _bindings.engineDelete(_engine);
   }
 
   // ---------------------------------------------------------------------------
@@ -400,18 +417,4 @@ class WasmRunner {
     calloc.free(msgVec);
     return msg;
   }
-}
-
-class WasmRuntimeException implements Exception {
-  const WasmRuntimeException(this.message);
-  final String message;
-  @override
-  String toString() => 'WasmRuntimeException: $message';
-}
-
-class WasmTrapException implements Exception {
-  const WasmTrapException(this.message);
-  final String message;
-  @override
-  String toString() => 'WasmTrapException: $message';
 }

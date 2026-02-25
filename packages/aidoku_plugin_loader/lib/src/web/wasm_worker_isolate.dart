@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:aidoku_plugin_loader/src/aidoku/aidoku_host.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
 import 'package:aidoku_plugin_loader/src/wasm/lazy_wasm_runner.dart';
-import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
+import 'package:web_wasm_runner/web_wasm_runner.dart';
 
 // ---------------------------------------------------------------------------
 // Sync XHR bindings (only allowed in Web Workers, not the main thread)
@@ -144,7 +144,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
 
   late final WasmRunner runner;
   try {
-    runner = await WasmRunner.fromBytes(wasmBytes, imports: imports);
+    runner = await WebWasmRunner.fromBytes(wasmBytes, imports: imports);
   } on Exception catch (e) {
     mainPort.send(<String, Object?>{'type': 'error', 'id': -1, 'message': 'WASM init failed: $e'});
     return;

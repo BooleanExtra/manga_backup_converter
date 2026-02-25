@@ -1,5 +1,5 @@
-name: wasm3
-description: Dart FFI bindings for the wasm3 WebAssembly interpreter.
+name: wasmer_runner
+description: Wasmer-backed WASM runner implementing the wasm_runner interface.
 version: 0.0.1
 publish_to: none
 
@@ -8,11 +8,12 @@ environment:
 resolution: workspace
 
 dependencies:
+  archive: ^4.0.0
   code_assets: ^1.0.0
+  crypto: ^3.0.0
   ffi: ^2.2.0
   hooks: ^1.0.0
-  meta: ^1.12.0
-  native_toolchain_c: ^0.17.4
+  http: ^1.2.0
   wasm_runner:
     path: ../wasm_runner
 

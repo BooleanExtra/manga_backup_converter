@@ -20,6 +20,8 @@ dependencies:
     path: packages/assets
   wasm3:
     path: packages/wasm3
+  wasmer_runner:
+    path: packages/wasmer_runner
   awesome_flutter_extensions: ^1.2.0
   collection: ^1.18.0
   connectivity_plus: ^6.0.2

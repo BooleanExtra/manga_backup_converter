@@ -3,6 +3,8 @@ import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 import 'dart:typed_data';
 
+import 'package:wasm_runner/wasm_runner.dart';
+
 // ---------------------------------------------------------------------------
 // Browser WebAssembly API bindings via dart:js_interop
 // ---------------------------------------------------------------------------
@@ -96,16 +98,16 @@ JSAny? _valueToJs(Object? v) {
 }
 
 // ---------------------------------------------------------------------------
-// WasmRunner implementation
+// WebWasmRunner implementation
 // ---------------------------------------------------------------------------
 
-class WasmRunner {
-  WasmRunner._(this._exports, this._memBytes);
+class WebWasmRunner implements WasmRunner {
+  WebWasmRunner._(this._exports, this._memBytes);
 
   final JSObject _exports;
   Uint8List _memBytes;
 
-  static Future<WasmRunner> fromBytes(
+  static Future<WebWasmRunner> fromBytes(
     Uint8List wasmBytes, {
     Map<String, Map<String, Function>> imports = const <String, Map<String, Function>>{},
   }) async {
@@ -118,7 +120,7 @@ class WasmRunner {
     final JSObject exports = instance.exports;
     final Uint8List memView = _readMemoryView(exports);
 
-    return WasmRunner._(exports, memView);
+    return WebWasmRunner._(exports, memView);
   }
 
   static Uint8List _readMemoryView(JSObject exports) {
@@ -131,6 +133,7 @@ class WasmRunner {
     _memBytes = _readMemoryView(_exports);
   }
 
+  @override
   dynamic call(String name, List<Object?> args) {
     final JSAny? fn = _exports.getProperty(name.toJS);
     if (fn == null) throw ArgumentError('WASM export not found: $name');
@@ -142,18 +145,26 @@ class WasmRunner {
     return _jsToValue(result);
   }
 
+  @override
   Uint8List readMemory(int offset, int length) {
     _refreshMemory();
     return Uint8List.fromList(_memBytes.sublist(offset, offset + length));
   }
 
+  @override
   void writeMemory(int offset, Uint8List bytes) {
     _refreshMemory();
     _memBytes.setRange(offset, offset + bytes.length, bytes);
   }
 
+  @override
   int get memorySize {
     _refreshMemory();
     return _memBytes.length;
+  }
+
+  @override
+  void dispose() {
+    // Browser GC handles cleanup — no-op.
   }
 }

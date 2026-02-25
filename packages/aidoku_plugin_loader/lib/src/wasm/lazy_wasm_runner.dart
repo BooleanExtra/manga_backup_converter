@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:aidoku_plugin_loader/src/wasm/wasm_runner.dart';
+import 'package:wasm_runner/wasm_runner.dart';
 
 /// Lazy proxy for [WasmRunner] that breaks circular dependencies between
 /// host imports and the runner itself. Set [delegate] once the real runner
@@ -20,4 +20,7 @@ class LazyWasmRunner implements WasmRunner {
 
   @override
   int get memorySize => _r.memorySize;
+
+  @override
+  void dispose() => delegate?.dispose();
 }

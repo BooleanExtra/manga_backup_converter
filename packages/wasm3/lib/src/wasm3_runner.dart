@@ -6,6 +6,7 @@ import 'dart:typed_data' show Uint8List;
 import 'package:ffi/ffi.dart' show calloc, malloc;
 import 'package:wasm3/src/wasm3_bindings.dart';
 import 'package:wasm3/src/wasm3_bindings_generated.dart';
+import 'package:wasm_runner/wasm_runner.dart';
 
 export 'package:wasm3/src/wasm3_bindings.dart'
     show WasmRuntimeException, WasmTrapException;
@@ -17,7 +18,7 @@ export 'package:wasm3/src/wasm3_bindings.dart'
 ///
 /// The wasm3 library is compiled from vendored source via `native_toolchain_c`
 /// (see `hook/build.dart`).
-class Wasm3Runner {
+class Wasm3Runner implements WasmRunner {
   Wasm3Runner._({
     required Wasm3Bindings bindings,
     required ffi.Pointer<M3Environment> environment,
@@ -225,10 +226,7 @@ class Wasm3Runner {
   // Public API
   // ---------------------------------------------------------------------------
 
-  /// Call a WASM export function by name.
-  ///
-  /// Returns `int`, `double`, or `null` depending on the function's return
-  /// type.
+  @override
   dynamic call(String name, List<Object?> args) {
     _checkNotDisposed();
     final ffi.Pointer<ffi.Pointer<M3Function>> funcOut =
@@ -316,7 +314,7 @@ class Wasm3Runner {
     return _readResult(func, retType);
   }
 
-  /// Read [length] bytes from WASM linear memory starting at [offset].
+  @override
   Uint8List readMemory(int offset, int length) {
     _checkNotDisposed();
     if (length == 0) return Uint8List(0);
@@ -334,7 +332,7 @@ class Wasm3Runner {
     );
   }
 
-  /// Write [bytes] to WASM linear memory at [offset].
+  @override
   void writeMemory(int offset, Uint8List bytes) {
     _checkNotDisposed();
     if (bytes.isEmpty) return;
@@ -352,13 +350,13 @@ class Wasm3Runner {
     }
   }
 
-  /// Total WASM linear memory size in bytes.
+  @override
   int get memorySize {
     _checkNotDisposed();
     return _bindings.getMemorySize(_runtime);
   }
 
-  /// Release all native resources.
+  @override
   void dispose() {
     if (_disposed) return;
     _disposed = true;
