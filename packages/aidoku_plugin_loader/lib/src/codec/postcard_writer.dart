@@ -23,7 +23,7 @@ class PostcardWriter {
 
   /// Encode a signed integer using zigzag encoding then LEB128.
   void writeSignedVarInt(int v) {
-    writeVarInt((v << 1) ^ (v >> 63));
+    writeVarInt(v >= 0 ? v * 2 : (-v - 1) * 2 + 1);
   }
 
   void writeF32(double v) {

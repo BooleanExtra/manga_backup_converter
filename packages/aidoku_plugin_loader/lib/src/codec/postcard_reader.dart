@@ -30,7 +30,7 @@ class PostcardReader {
   /// Decode a zigzag-encoded signed variable-length integer.
   int readSignedVarInt() {
     final int n = readVarInt();
-    return (n >> 1) ^ -(n & 1);
+    return n.isOdd ? -(n ~/ 2 + 1) : n ~/ 2;
   }
 
   double readF32() {
