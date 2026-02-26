@@ -126,6 +126,9 @@ external ffi.Pointer<objc.ObjCObjectImpl> _SwiftSoupBindings_protocolTrampoline_
   ffi.Pointer<objc.ObjCBlockImpl> arg2,
 );
 
+@ffi.Native<ffi.Void Function()>()
+external void swiftsoup_init();
+
 late final _class_NSObject = objc.getClass("NSObject");
 late final _sel_version = objc.registerName("version");
 final _objc_msgSend_1hz7y9r = objc.msgSendPointer

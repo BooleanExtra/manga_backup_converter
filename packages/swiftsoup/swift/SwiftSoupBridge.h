@@ -11,6 +11,8 @@
 
 @class NSNumber;
 
+void swiftsoup_init(void);
+
 @interface SwiftSoupBridge : NSObject
 + (int32_t)parse:(NSString * _Nonnull)html baseUri:(NSString * _Nonnull)baseUri;
 + (int32_t)parseFragment:(NSString * _Nonnull)html baseUri:(NSString * _Nonnull)baseUri;

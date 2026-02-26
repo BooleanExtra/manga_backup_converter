@@ -1,6 +1,12 @@
 import Foundation
 import SwiftSoup
 
+// Plain C function to force dylib loading before any ObjC class access.
+// Dart's @ffi.Native resolution triggers code_assets to load the dylib,
+// which registers the ObjC classes.
+@_cdecl("swiftsoup_init")
+public func swiftSoupInit() {}
+
 /// Thin @objc wrapper around SwiftSoup for use with swiftgen/ffigen.
 ///
 /// SwiftSoup's native Swift API uses generics, throws, and non-@objc types.

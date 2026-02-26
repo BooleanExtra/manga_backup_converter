@@ -38,7 +38,7 @@ typedefs:
   exclude:
     - '.*'
 functions:
-  exclude:
-    - '.*'
+  include:
+    - swiftsoup_init
 ffi-native:
   asset-id: package:swiftsoup/src/swiftsoup_bindings_generated.dart

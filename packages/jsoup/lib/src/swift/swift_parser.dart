@@ -10,6 +10,20 @@ import 'package:swiftsoup/swiftsoup.dart';
 /// - Other methods accept handles to identify elements/node lists/text nodes
 /// - `free()` releases a handle; `dispose()` releases all
 class SwiftSoupParser implements NativeHtmlParser {
+  SwiftSoupParser() {
+    _ensureLoaded();
+  }
+
+  static bool _loaded = false;
+
+  /// Forces the SwiftSoup dylib to load via @ffi.Native resolution, which
+  /// registers all ObjC classes before any `objc.getClass()` lookup.
+  static void _ensureLoaded() {
+    if (!_loaded) {
+      swiftsoup_init();
+      _loaded = true;
+    }
+  }
   // -- String helpers --
 
   static objc.NSString _ns(String s) => s.toNSString();

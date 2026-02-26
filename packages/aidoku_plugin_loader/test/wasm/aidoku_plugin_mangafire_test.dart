@@ -40,7 +40,7 @@ void main() {
 
       group('searchManga', () {
         test('empty query returns non-empty results', () async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           // ignore: avoid_print
           print(
             'mangafire search results: ${result.manga.length} manga, '
@@ -54,8 +54,10 @@ void main() {
         });
 
         test('each result has non-empty key and title', () async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           for (final Manga m in result.manga) {
+            // ignore: avoid_print
+            print('  key=${m.key}  title=${m.title}');
             check(m.key).isNotEmpty();
             check(m.title).isNotEmpty();
           }

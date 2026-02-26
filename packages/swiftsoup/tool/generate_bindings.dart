@@ -156,6 +156,17 @@ String? _extractBridgeInterface(String headerContent) {
     interfaceLines.add(line);
   }
 
+  // Collect plain C function declarations (e.g. @_cdecl exports) that appear
+  // before the @interface block.
+  final cFunctionDecls = <String>[];
+  final cFuncPattern = RegExp(r'^(void|int|int32_t|bool)\s+\w+\s*\(');
+  for (var i = 0; i < startIndex; i++) {
+    final trimmed = lines[i].trim();
+    if (cFuncPattern.hasMatch(trimmed)) {
+      cFunctionDecls.add(trimmed);
+    }
+  }
+
   final buf = StringBuffer();
   buf.writeln(
     '// AUTO GENERATED FILE, DO NOT EDIT.',
@@ -178,6 +189,11 @@ String? _extractBridgeInterface(String headerContent) {
   buf.writeln();
   buf.writeln('@class NSNumber;');
   buf.writeln();
+  // Emit plain C function declarations before the ObjC interface.
+  for (final decl in cFunctionDecls) {
+    buf.writeln(decl);
+  }
+  if (cFunctionDecls.isNotEmpty) buf.writeln();
   for (final line in interfaceLines) {
     buf.writeln(line);
   }
