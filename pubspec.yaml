@@ -20,6 +20,8 @@ dependencies:
     path: packages/assets
   scraper:
     path: packages/scraper
+  swiftsoup:
+    path: packages/swiftsoup
   wasm3:
     path: packages/wasm3
   awesome_flutter_extensions: ^1.2.0

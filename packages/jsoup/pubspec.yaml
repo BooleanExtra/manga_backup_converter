@@ -12,8 +12,11 @@ resolution: workspace
 dependencies:
   ffi: ^2.2.0
   meta: ^1.12.0
+  objective_c: ^9.2.0
   scraper:
     path: ../scraper
+  swiftsoup:
+    path: ../swiftsoup
 
 dev_dependencies:
   app_lints:

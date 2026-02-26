@@ -221,9 +221,9 @@ Future<Uri> _cargoBuild({
 Future<void> _ensureRustTarget(String cargoExe, String target) async {
   // Derive rustup path from cargo path (sibling binary in the same bin dir).
   final cargoFile = File(cargoExe);
-  final binDir = cargoFile.parent.path;
+  final String binDir = cargoFile.parent.path;
   final rustupExe = '$binDir${Platform.pathSeparator}rustup${Platform.isWindows ? '.exe' : ''}';
-  final String exe = File(rustupExe).existsSync() ? rustupExe : 'rustup';
+  final exe = File(rustupExe).existsSync() ? rustupExe : 'rustup';
 
   final ProcessResult result = await Process.run(
     exe,
@@ -273,18 +273,18 @@ void _setupAndroidNdk(Map<String, String> env, String target) {
 
 /// Scan `<ANDROID_HOME>/ndk/` for the highest-versioned installed NDK.
 String? _findNdkInSdk(Map<String, String> env) {
-  final sdkRoot = env['ANDROID_HOME'] ?? env['ANDROID_SDK_ROOT'];
+  final String? sdkRoot = env['ANDROID_HOME'] ?? env['ANDROID_SDK_ROOT'];
   if (sdkRoot == null || sdkRoot.isEmpty) return null;
 
   final ndkDir = Directory('$sdkRoot${Platform.pathSeparator}ndk');
   if (!ndkDir.existsSync()) return null;
 
   // Each subdirectory is a version like "27.0.12077973".
-  final versions = ndkDir.listSync().whereType<Directory>().map((d) => d.path).toList()..sort();
+  final List<String> versions = ndkDir.listSync().whereType<Directory>().map((d) => d.path).toList()..sort();
 
   if (versions.isEmpty) return null;
 
-  final found = versions.last;
+  final String found = versions.last;
   print('scraper: auto-discovered NDK at $found');
   return found;
 }
