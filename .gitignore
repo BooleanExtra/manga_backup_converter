@@ -223,3 +223,5 @@ packages/jsoup/tool/teavm/target/
 .worktrees/
 /.playwright-mcp
 /packages/scraper/rust/target
+/packages/jsoup_jni/mvn_jar
+/packages/jsoup_jni/mvn_java
