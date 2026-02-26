@@ -10,6 +10,9 @@
 //   Chapter: 6eb2f8ea-3b6c-4bce-a0d0-d9224fad5b64 — Ch. 108 "Mahiro and Bodyguards" (14 pages)
 //
 // Run: dart test packages/aidoku_plugin_loader/test/wasm/aidoku_plugin_native_test.dart --reporter expanded
+@TestOn('vm')
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 

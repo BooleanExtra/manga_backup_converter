@@ -6,6 +6,9 @@
 // Tests make live network requests to mangafire and assert on real data.
 //
 // Run: dart test packages/aidoku_plugin_loader/test/wasm/aidoku_plugin_mangafire_test.dart --reporter expanded
+@TestOn('vm')
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 

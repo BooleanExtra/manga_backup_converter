@@ -8,6 +8,9 @@
 //
 // Run: dart test packages/wasmer_runner/test/wasm_imports_audit_test.dart --reporter expanded
 // ignore_for_file: avoid_print
+@TestOn('vm')
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 
