@@ -24,4 +24,4 @@ lib/generated/intl/messages*.dart linguist-generated=true
 **/*_bindings_generated.dart linguist-generated=true
 **/bindings/org/jsoup/**/*.dart linguist-generated=true
 packages/jsoup/lib/src/web/teavm_bundle.dart linguist-generated=true
-
+packages/swiftsoup/swift/SwiftSoupBridge.h linguist-generated=true
