@@ -1,3 +1,6 @@
+@TestOn('vm')
+library;
+
 // test/wasm/async_sleep_test.dart
 //
 // Verifies that asyncSleep actually blocks the WASM isolate thread for the
