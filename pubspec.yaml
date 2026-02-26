@@ -62,6 +62,12 @@ dependencies:
   window_manager: ^0.4.2
   wolt_modal_sheet: ^0.11.0
 
+dependency_overrides:
+  propertylistserialization:
+    git:
+      url: https://github.com/getBoolean/dart-propertylistserialization.git
+      ref: fix/webCompatibility
+
 dev_dependencies:
   app_lints:
     path: packages/app_lints

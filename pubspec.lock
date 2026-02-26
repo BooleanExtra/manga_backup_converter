@@ -1160,12 +1160,13 @@ packages:
     source: hosted
     version: "2.0.0"
   propertylistserialization:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: propertylistserialization
-      sha256: "645aaac37e73735286087fc81b27c7eabaa81b6146881bdf84090ba56f4e15ad"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "fix/webCompatibility"
+      resolved-ref: "6b38413ded11f7bce2690d9816ea7de663f91e81"
+      url: "https://github.com/getBoolean/dart-propertylistserialization.git"
+    source: git
     version: "1.4.1"
   protobuf:
     dependency: transitive
