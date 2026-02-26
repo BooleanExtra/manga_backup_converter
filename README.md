@@ -31,6 +31,41 @@ Convert manga backup files between formats. Available as a standalone CLI with a
 - **Plugin migration** uses Aidoku source extensions to search and match manga, then builds a backup in the target format. Currently only Aidoku is supported as a target.
 - **Merge** combines two Aidoku backups into one, deduplicating manga entries.
 
+## CLI Usage
+
+### Convert
+
+Convert a backup to another format. Runs interactively when a terminal is available, prompting for any missing options.
+
+```sh
+mangabackuputil convert -b <backup-file> -f <output-format> [-o <output-path>] [-r <repo-url>...]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-b, --backup` | Path to the backup file |
+| `-f, --output-format` | Target format (`aidoku`, `paperback`, `mihon`, `sy`, `j2k`, `yokai`, `neko`, `tachimanga`, `mangayomi`) |
+| `-i, --input-format` | Override auto-detected input format |
+| `-r, --repos` | Extension repo URLs for plugin-based migration |
+| `-o, --output` | Output file path (default: `<input>_converted.<ext>`) |
+| `-l, --log-file` | Log file path for interactive mode |
+| `-v, --verbose` | Show additional output |
+
+### Merge
+
+Merge two Aidoku backups into one.
+
+```sh
+mangabackuputil merge -f <backup-file> -m <other-backup> [-o <output-folder>]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-f, --backup` | First Aidoku backup file |
+| `-m, --other` | Second Aidoku backup to merge with |
+| `-o, --output` | Output folder (default: current directory) |
+| `-v, --verbose` | Show additional output |
+
 ## Platforms
 
 - Windows, macOS, Linux (standalone CLI)
