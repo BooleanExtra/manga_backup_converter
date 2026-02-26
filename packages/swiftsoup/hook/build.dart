@@ -69,23 +69,46 @@ Future<Uri> _swiftBuild({
 
   print('swiftsoup: building SwiftSoupWrapper for $cacheKey ...');
 
+  final String triple;
   final List<String> buildArgs;
   if (targetOS == OS.macOS) {
-    buildArgs = ['build', '-c', 'release'];
+    triple = switch (targetArch) {
+      Architecture.arm64 => 'arm64-apple-macosx10.15',
+      Architecture.x64 => 'x86_64-apple-macosx10.15',
+      _ => throw UnsupportedError(
+        'swiftsoup: unsupported macOS architecture $targetArch',
+      ),
+    };
+    buildArgs = ['build', '-c', 'release', '--triple', triple];
   } else {
     // iOS: cross-compile for arm64-apple-ios.
-    final String triple = switch (targetArch) {
+    triple = switch (targetArch) {
       Architecture.arm64 => 'arm64-apple-ios13.0',
       _ => throw UnsupportedError(
         'swiftsoup: unsupported iOS architecture $targetArch',
       ),
     };
+    // Discover the iOS SDK so Swift can find standard library headers.
+    final sdkResult = await Process.run(
+      'xcrun',
+      ['--sdk', 'iphoneos', '--show-sdk-path'],
+    );
+    if (sdkResult.exitCode != 0) {
+      throw Exception(
+        'xcrun --sdk iphoneos --show-sdk-path failed:\n${sdkResult.stderr}',
+      );
+    }
+    final sdkPath = sdkResult.stdout.toString().trim();
     buildArgs = [
       'build',
       '-c',
       'release',
       '--triple',
       triple,
+      '-Xswiftc',
+      '-sdk',
+      '-Xswiftc',
+      sdkPath,
     ];
   }
 
@@ -101,17 +124,8 @@ Future<Uri> _swiftBuild({
     );
   }
 
-  // Find the built library.
-  final String buildDir;
-  if (targetOS == OS.macOS) {
-    buildDir = '${swiftDir.path}/.build/release';
-  } else {
-    final String triple = switch (targetArch) {
-      Architecture.arm64 => 'arm64-apple-ios13.0',
-      _ => 'arm64-apple-ios13.0',
-    };
-    buildDir = '${swiftDir.path}/.build/$triple/release';
-  }
+  // Find the built library. With --triple, output goes to .build/<triple>/release.
+  final buildDir = '${swiftDir.path}/.build/$triple/release';
 
   final builtLib = File('$buildDir/$libName');
   if (!builtLib.existsSync()) {
