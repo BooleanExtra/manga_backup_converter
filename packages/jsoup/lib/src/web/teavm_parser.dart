@@ -7,7 +7,7 @@ import 'package:jsoup/src/html_parser.dart';
 import 'package:jsoup/teavm.dart';
 
 /// Whether the TeaVM Jsoup bridge has been loaded into `globalThis`.
-bool _teavmLoaded = false;
+bool _teaVmLoaded = false;
 
 /// Load the TeaVM Jsoup bridge into the global scope if not already present.
 ///
@@ -19,12 +19,12 @@ bool _teavmLoaded = false;
 /// `TeaVMParser` is used on the main browser thread, the caller must load
 /// the bridge into `globalThis` before instantiation.
 void _ensureTeaVMLoaded() {
-  if (_teavmLoaded) return;
+  if (_teaVmLoaded) return;
 
   // Check if already available (e.g. loaded by the WASM worker host).
   final JSAny? existing = globalContext.getProperty('parse'.toJS);
   if (existing != null && !existing.isUndefinedOrNull) {
-    _teavmLoaded = true;
+    _teaVmLoaded = true;
     return;
   }
 
@@ -42,7 +42,7 @@ void _ensureTeaVMLoaded() {
     _jsRevokeObjectURL(blobUrl);
   }
 
-  _teavmLoaded = true;
+  _teaVmLoaded = true;
 }
 
 // JS interop helpers for Blob URL + importScripts.
