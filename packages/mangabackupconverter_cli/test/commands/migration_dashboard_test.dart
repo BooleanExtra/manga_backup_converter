@@ -48,7 +48,8 @@ Future<List<MangaMatchConfirmation>> _runDashboard({
   required Future<(PluginMangaDetails, List<PluginChapter>)?> Function(
     String pluginSourceId,
     String mangaKey,
-  ) onFetchDetails,
+  )
+  onFetchDetails,
   List<String> pluginNames = const ['testPlugin'],
   void Function(StreamController<List<int>> input)? beforeAccept,
 }) async {
@@ -95,14 +96,18 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'pluginA',
-              results: [_result('pluginA', 'Naruto')],
-            ));
-            controller.add(PluginSearchResults(
-              pluginId: 'pluginB',
-              results: [_result('pluginB', 'Naruto')],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'pluginA',
+                results: [_result('pluginA', 'Naruto')],
+              ),
+            );
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'pluginB',
+                results: [_result('pluginB', 'Naruto')],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -133,13 +138,15 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [
-                _result('plugin1', 'One Piece'),
-                _result('plugin1', 'One Piece: Wanted!'),
-              ],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [
+                  _result('plugin1', 'One Piece'),
+                  _result('plugin1', 'One Piece: Wanted!'),
+                ],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -162,10 +169,12 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [_result('plugin1', 'Bleach')],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [_result('plugin1', 'Bleach')],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -187,10 +196,12 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -208,10 +219,12 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [_result('plugin1', query)],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [_result('plugin1', query)],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -239,12 +252,14 @@ void main() {
         onSearch: (String query) {
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [
-                _result('plugin1', 'Test Manga', mangaKey: 'test-key'),
-              ],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [
+                  _result('plugin1', 'Test Manga', mangaKey: 'test-key'),
+                ],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
@@ -265,10 +280,13 @@ void main() {
       final PluginSearchResult match = results.first.confirmedMatch!;
       check(match.authors).deepEquals(['Author A']);
       check(match.chapters).length.equals(42);
-      check(match.details).isNotNull().has(
-        (PluginMangaDetails d) => d.url,
-        'url',
-      ).equals('https://example.com/test');
+      check(match.details)
+          .isNotNull()
+          .has(
+            (PluginMangaDetails d) => d.url,
+            'url',
+          )
+          .equals('https://example.com/test');
     });
 
     test('multiple manga entries searched sequentially', () async {
@@ -280,10 +298,12 @@ void main() {
           searchCount++;
           final controller = StreamController<PluginSearchEvent>();
           scheduleMicrotask(() {
-            controller.add(PluginSearchResults(
-              pluginId: 'plugin1',
-              results: [_result('plugin1', query)],
-            ));
+            controller.add(
+              PluginSearchResults(
+                pluginId: 'plugin1',
+                results: [_result('plugin1', query)],
+              ),
+            );
             controller.close();
           });
           return controller.stream;
