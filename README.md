@@ -19,16 +19,17 @@ Convert manga backup files between formats. Available as a standalone CLI with a
 
 ## Feature Support
 
-| Format | Import | Direct conversion | Export via plugin migration |
-|--------|:------:|:------------------:|:--------------------------:|
-| Aidoku | :white_check_mark: | — | :white_check_mark: |
-| Paperback | :white_check_mark: | — | :x: |
-| Tachi | :white_check_mark: | :arrow_right: Tachimanga | :x: |
-| Tachimanga | :white_check_mark: | :arrow_right: Tachi | :x: |
-| Mangayomi | :white_check_mark: | — | :x: |
+| Format | Import | Direct conversion | Export via plugin migration | Merge |
+|--------|:------:|:------------------:|:--------------------------:|:-----:|
+| Aidoku | :white_check_mark: | — | :white_check_mark: | :white_check_mark: |
+| Paperback | :white_check_mark: | — | :x: | :x: |
+| Tachi | :white_check_mark: | :arrow_right: Tachimanga | :x: | :x: |
+| Tachimanga | :white_check_mark: | :arrow_right: Tachi | :x: | :x: |
+| Mangayomi | :white_check_mark: | — | :x: | :x: |
 
 - **Direct conversion** preserves data 1:1 between Tachi and Tachimanga without needing plugins.
 - **Plugin migration** uses Aidoku source extensions to search and match manga, then builds a backup in the target format. Currently only Aidoku is supported as a target.
+- **Merge** combines two Aidoku backups into one, deduplicating manga entries.
 
 ## Platforms
 
