@@ -14,7 +14,7 @@ class SwiftSoupParser implements NativeHtmlParser {
 
   static objc.NSString _ns(String s) => s.toNSString();
 
-  static String? _str(objc.NSString? ns) => ns?.toString();
+  static String? _str(objc.NSString? ns) => ns?.toDartString();
 
   static List<int> _handleList(objc.NSArray arr) {
     final int count = arr.count;

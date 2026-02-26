@@ -14,6 +14,8 @@ objc-interfaces:
     - SwiftSoupBridge
   exclude:
     - NSObject
+  module:
+    SwiftSoupBridge: SwiftSoupWrapper
 globals:
   exclude:
     - '.*'

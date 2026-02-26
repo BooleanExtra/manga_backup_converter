@@ -140,7 +140,8 @@ String? _extractBridgeInterface(String headerContent) {
   for (var i = startIndex; i <= endIndex; i++) {
     String line = lines[i];
 
-    // Strip SWIFT_CLASS(...) decorator line.
+    // Strip SWIFT_CLASS(...) decorator line — the module mapping in
+    // ffigen.yaml handles the Swift runtime class name.
     if (line.contains('SWIFT_CLASS(')) continue;
 
     // Strip SWIFT_WARN_UNUSED_RESULT.

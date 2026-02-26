@@ -3959,7 +3959,7 @@ extension NSStringDeprecated on objc.NSString {
   }
 }
 
-late final _class_SwiftSoupBridge = objc.getClass("SwiftSoupBridge");
+late final _class_SwiftSoupBridge = objc.getClass("SwiftSoupWrapper.SwiftSoupBridge");
 late final _sel_isKindOfClass_ = objc.registerName("isKindOfClass:");
 late final _sel_parse_baseUri_ = objc.registerName("parse:baseUri:");
 final _objc_msgSend_b7msfs = objc.msgSendPointer
