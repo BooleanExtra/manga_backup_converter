@@ -49,6 +49,7 @@ melos run dart_test:pkg          # Dart tests for a specific package
 melos run cli                    # Run CLI directly (args forwarded automatically)
 melos run jnigen                 # Generate JNI bindings for jsoup (uses system JDK for javadoc)
 melos run jni_setup              # Build dartjni.dll (uses bundled JDK, handles MSYS2)
+melos run web_test               # Run all web-compatible tests in Chrome (flutter + dart)
 melos run lint                   # Run dart analyze + custom_lint
 melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
@@ -196,6 +197,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 - **Testing assertions**: `package:checks` (not `package:matcher`) — use `check(val).equals()`, `isCloseTo()`, `isA<T>()`, `isNotNull()`, `isEmpty()`; import from `package:checks/checks.dart` + `package:test/scaffolding.dart` (not `package:test/test.dart`)
 - **Testing imports**: avoid barrel import (`mangabackupconverter_lib.dart`) in tests when names clash with `package:test`; use specific imports or `hide`
 - **Web-only tests**: `@TestOn('browser')` + `dart test --reporter expanded --platform chrome test/web/` — hand-crafted WASM binaries as `Uint8List` constants for testing without .aix fixtures
+- **Web test platform split**: `dart test --platform chrome` cannot use `flutter_test` (`dart:ui` unavailable) — use `flutter test --platform chrome` for Flutter packages; `web_wasm_runner` is the only pure Dart package with `@TestOn('browser')` tests
 - **CLI formats**: protobuf, archive, sqflite_common
 
 ## CI

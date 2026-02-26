@@ -192,7 +192,7 @@ jobs:
         run: melos bootstrap
 
       - name: Run Web Tests
-        run: dart test --reporter expanded --platform chrome
+        run: melos run web_test
 
   build_ios:
     name: Build Flutter for iOS (Without Signing)

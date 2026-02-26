@@ -289,4 +289,37 @@ melos:
 
     dart_test:
       run: melos run dart_test:pkg --no-select
-      description: Run all Flutter tests in this project.
+      description: Run all Dart tests in this project.
+
+    flutter_web_test:pkg:
+      run: flutter test --platform chrome
+      exec:
+        failFast: true
+      description: Run Flutter web tests for a specific package in this project.
+      packageFilters:
+        flutter: true
+        dirExists: test
+        dependsOn: flutter_test
+        noDependsOn: jni
+
+    dart_web_test:pkg:
+      run: dart test --reporter expanded --platform chrome
+      exec:
+        failFast: true
+      description: Run Dart web tests for a specific package in this project.
+      packageFilters:
+        dirExists: test
+        dependsOn: test
+        noDependsOn: flutter jni
+
+    web_test:
+      run: melos run flutter_web_test && melos run dart_web_test
+      description: Run all web-compatible tests in Chrome.
+
+    flutter_web_test:
+      run: melos run flutter_web_test:pkg --no-select
+      description: Run all Flutter web tests in this project.
+
+    dart_web_test:
+      run: melos run dart_web_test:pkg --no-select
+      description: Run all Dart web tests in this project.
