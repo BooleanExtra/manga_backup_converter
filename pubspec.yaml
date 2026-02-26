@@ -250,6 +250,7 @@ melos:
         noDependsOn: flutter jni
         ignore:
           - web_wasm_runner
+          - swiftsoup
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
