@@ -259,13 +259,13 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final (Object? data, List<String> warnings) = await port.first as (Object?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) = await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
-    if (data is String) throw Exception(data);
+    if (error != null) throw Exception(error);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
-      return decodeMangaPageResult(PostcardReader(data as Uint8List));
+      return decodeMangaPageResult(PostcardReader(data));
     } on Object {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
@@ -281,13 +281,13 @@ class AidokuPlugin {
         includeChapters: includeChapters,
       ),
     );
-    final (Object? data, List<String> warnings) = await port.first as (Object?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) = await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
-    if (data is String) throw Exception(data);
+    if (error != null) throw Exception(error);
     if (data == null) return null;
     try {
-      return decodeManga(PostcardReader(data as Uint8List));
+      return decodeManga(PostcardReader(data));
     } on Object {
       return null;
     }

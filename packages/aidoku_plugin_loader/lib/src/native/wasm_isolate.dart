@@ -67,7 +67,7 @@ class WasmSearchCmd {
   final Uint8List queryBytes;
   final int page;
   final Uint8List filtersBytes;
-  final SendPort replyPort; // replies with Uint8List? (postcard), null, or String (error)
+  final SendPort replyPort; // replies with (Uint8List? (postcard), String? (error), List<String> (warnings))
 }
 
 class WasmMangaDetailsCmd {
@@ -447,7 +447,7 @@ void _processCmd(
     }
     final warnings = List<String>.of(callErrors);
     callErrors.clear();
-    cmd.replyPort.send((error ?? result, warnings));
+    cmd.replyPort.send((result, error, warnings));
     return;
   }
 
@@ -470,7 +470,7 @@ void _processCmd(
     }
     final warnings = List<String>.of(callErrors);
     callErrors.clear();
-    cmd.replyPort.send((error ?? result, warnings));
+    cmd.replyPort.send((result, error, warnings));
     return;
   }
 
@@ -721,11 +721,11 @@ void _processCmd(
 void _sendErrorReply(Object cmd, String error) {
   // Commands that reply with (Object?, List<String>) — search & details.
   if (cmd is WasmSearchCmd) {
-    cmd.replyPort.send((error, const <String>[]));
+    cmd.replyPort.send((null, error, const <String>[]));
     return;
   }
   if (cmd is WasmMangaDetailsCmd) {
-    cmd.replyPort.send((error, const <String>[]));
+    cmd.replyPort.send((null, error, const <String>[]));
     return;
   }
   // All other commands reply with a single nullable value.
