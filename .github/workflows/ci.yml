@@ -36,8 +36,9 @@ permissions:
   contents: write
 
 jobs:
-  flutter_test:
-    name: Run flutter test and analyze
+  analyze:
+    name: Analyze
+    if: github.event.inputs.run_tests != 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -45,40 +46,8 @@ jobs:
         with:
           submodules: true
 
-      - name: Set Variables
-        run: |
-          echo "Inputs: ${{ toJSON(github.event.inputs) }}"
-
-          is_tag_string=${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
-          is_tag=false
-          if [ "$is_tag_string" = "true" ]; then
-            is_tag=true
-          fi
-
-          flavor=""
-          if $is_tag; then
-            flavor="prod"
-          elif [ -z "${{ github.event.inputs.flavor }}" ]; then
-            flavor="dev"
-          else
-            flavor="${{ github.event.inputs.flavor }}"
-          fi
-          echo "FLAVOR=$flavor" >> $GITHUB_ENV
-          echo "FLAVOR=$flavor"
-
-          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
-
-      - name: Print Variables
-        run: |
-          echo "Flutter Channel: ${{ env.FLUTTER_CHANNEL }}"
-          echo "Flutter Version: ${{ env.FLUTTER_VERSION }}"
-          echo "Current Flavor: ${{ env.FLAVOR }}"
-          echo "Current Branch: ${{ env.BRANCH_NAME }}"
-
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         with:
           channel: ${{env.FLUTTER_CHANNEL}}
           flutter-version: ${{env.FLUTTER_VERSION}}
@@ -88,66 +57,147 @@ jobs:
           architecture: x64
 
       - name: Check Flutter Version
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: flutter --version
 
-      # Make environment variables available to the melos generate script.
-      #
-      # The environment variables need to be defined in the repository secrets
       - name: Load Environment Variables
         uses: oNaiPs/secrets-to-env-action@v1
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         with:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos bootstrap
 
-      # Comment out this task if you don't want to enforce formatting.
       - name: Verify Formatting
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run verify_format
 
       - name: Annotate PR
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         uses: invertase/github-action-dart-analyzer@v2.0.0
         with:
           fatal-infos: false
           fatal-warnings: false
           annotate-only: true
-          # custom-lint: true
 
       - name: Run Dart Analyzer
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run analyze
 
-      # - name: Run Custom Lints
-      #   if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
-      #   run: melos run custom_lint
+  test:
+    name: Test (${{ matrix.os }})
+    needs: [analyze]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            architecture: x64
+          - os: windows-latest
+            architecture: x64
+          - os: macos-14
+            architecture: arm64
+    steps:
+      - name: Enable Git Long Paths
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
 
-      # Project needs to have tests in test/ and a dependency on
-      # package:flutter_test for this step to succeed.
-      #
-      # Each package in the packages/ directory should have its own
-      # test/ directory with tests for that package.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          flavor="${{ github.event.inputs.flavor }}"
+          if [ -z "$flavor" ]; then
+            flavor="dev"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: ${{ matrix.architecture }}
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Load Environment Variables
+        uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
       - name: Run Tests
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run test
 
       - name: Upload Coverage to Codecov
-        if: github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/v')
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/v')
         uses: codecov/codecov-action@v3
         with:
           files: "**/*/lcov.info"
 
+  test_web:
+    name: Test (Web)
+    needs: [analyze]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          flavor="${{ github.event.inputs.flavor }}"
+          if [ -z "$flavor" ]; then
+            flavor="dev"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Load Environment Variables
+        uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Run Web Tests
+        run: dart test --reporter expanded --platform chrome
+
   build_ios:
     name: Build Flutter for iOS (Without Signing)
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -330,7 +380,8 @@ jobs:
 
   build_android:
     name: Build Flutter for Android
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -462,7 +513,8 @@ jobs:
 
   build_windows:
     name: Build Flutter for Windows x64
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: windows-latest
     steps:
       # Need to enable long paths for Windows because the forked version of go_router
@@ -551,7 +603,8 @@ jobs:
 
   build_linux:
     name: Build Flutter for Linux
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -646,7 +699,8 @@ jobs:
 
   build_cli_windows:
     name: Build CLI for Windows x64
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: windows-latest
     steps:
       - name: Enable Git Long Paths
@@ -747,7 +801,8 @@ jobs:
 
   build_cli_linux:
     name: Build CLI for Linux x64
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -832,7 +887,8 @@ jobs:
 
   build_cli_macos:
     name: Build CLI for macOS arm64
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -908,7 +964,8 @@ jobs:
 
   build_macos:
     name: Build Flutter for MacOS
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -999,7 +1056,8 @@ jobs:
 
   build_web:
     name: Build Flutter for Web
-    needs: [flutter_test]
+    needs: [test, test_web]
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
