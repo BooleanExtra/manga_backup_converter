@@ -248,7 +248,7 @@ melos:
       run: dart pub global run coverage:test_with_coverage
       exec:
         failFast: true
-        # concurrency: 1
+        concurrency: 1
       description: Run Dart tests for a specific package in this project.
       packageFilters:
         dirExists: test
@@ -303,6 +303,7 @@ melos:
       run: flutter test --platform chrome
       exec:
         failFast: true
+        concurrency: 1
       description: Run Flutter web tests for a specific package in this project.
       packageFilters:
         flutter: true
@@ -314,6 +315,7 @@ melos:
       run: dart test --reporter expanded --platform chrome
       exec:
         failFast: true
+        concurrency: 1
       description: Run Dart web tests for a specific package in this project.
       packageFilters:
         dirExists: test
