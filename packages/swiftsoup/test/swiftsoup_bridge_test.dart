@@ -1,4 +1,4 @@
-@TestOn('vm')
+@TestOn('mac-os')
 library;
 
 import 'dart:ffi';
