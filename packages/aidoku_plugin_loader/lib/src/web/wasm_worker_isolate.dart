@@ -23,6 +23,7 @@ extension type _JSXMLHttpRequest._(JSObject _) implements JSObject {
   external JSNumber get status;
   external JSAny? get response;
   external JSString getAllResponseHeaders();
+  external JSString? getResponseHeader(JSString name);
   external JSString get responseType;
   external set responseType(JSString type);
 }
@@ -31,7 +32,7 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
 
 /// Synchronous XHR — blocks the worker thread. This is fine in a Web Worker
 /// and is required because WASM host imports must return synchronously.
-({int statusCode, Uint8List? body}) _syncXhr(
+({int statusCode, Uint8List? body, String? retryAfter}) _syncXhr(
   String url,
   int method,
   Map<String, String> headers,
@@ -56,15 +57,19 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
       xhr.send();
     }
     final int statusCode = xhr.status.toDartInt;
+    String? retryAfter;
+    if (statusCode == 429) {
+      retryAfter = xhr.getResponseHeader('Retry-After'.toJS)?.toDart;
+    }
     final JSAny? resp = xhr.response;
     Uint8List? responseBody;
     if (resp != null && !resp.isUndefinedOrNull) {
       responseBody = (resp as JSArrayBuffer).toDart.asUint8List();
     }
-    return (statusCode: statusCode, body: responseBody ?? Uint8List(0));
+    return (statusCode: statusCode, body: responseBody ?? Uint8List(0), retryAfter: retryAfter);
   } on Object catch (e) {
     print('[aidoku/net] XHR error: $e');
-    return (statusCode: -1, body: null);
+    return (statusCode: -1, body: null, retryAfter: null);
   }
 }
 
@@ -79,6 +84,23 @@ void _busyWaitMs(int ms) {
   while (DateTime.now().millisecondsSinceEpoch < endMs) {
     // spin
   }
+}
+
+/// Parse `Retry-After` header (integer seconds only on web) and return delay
+/// in milliseconds, falling back to exponential backoff: 1s, 2s, 4s.
+/// Uses exponential backoff as a floor so `Retry-After: 0` doesn't cause
+/// immediate retries. Clamped to 60 seconds max.
+int _retryDelayMs(String? retryAfter, int attempt) {
+  const maxDelayMs = 60000;
+  final int backoffMs = (1000 * (1 << attempt)).clamp(0, maxDelayMs);
+  if (retryAfter != null) {
+    final int? seconds = int.tryParse(retryAfter);
+    if (seconds != null) {
+      final int headerMs = (seconds * 1000).clamp(0, maxDelayMs);
+      return headerMs > backoffMs ? headerMs : backoffMs;
+    }
+  }
+  return backoffMs;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,13 +144,33 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     Uint8List? body,
     double timeout,
   ) {
-    final limiter = rateLimiter;
-    if (limiter != null) {
-      final Duration wait = limiter.waitDuration();
-      if (wait > Duration.zero) _busyWaitMs(wait.inMilliseconds);
-      limiter.recordRequest();
+    const maxRetries = 3;
+    for (var attempt = 0; attempt <= maxRetries; attempt++) {
+      // Enforce rate limiting before every attempt (first and retries).
+      final limiter = rateLimiter;
+      if (limiter != null) {
+        final Duration wait = limiter.waitDuration();
+        if (wait > Duration.zero) _busyWaitMs(wait.inMilliseconds);
+        limiter.recordRequest();
+      }
+
+      final ({int statusCode, Uint8List? body, String? retryAfter}) result = _syncXhr(
+        url,
+        method,
+        headers,
+        body,
+        timeout,
+      );
+      if (result.statusCode == 429 && attempt < maxRetries) {
+        final int delayMs = _retryDelayMs(result.retryAfter, attempt);
+        print('[aidoku/net] 429, retrying in ${delayMs}ms');
+        _busyWaitMs(delayMs);
+        continue;
+      }
+      return (statusCode: result.statusCode, body: result.body);
     }
-    return _syncXhr(url, method, headers, body, timeout);
+    // Unreachable — loop always returns.
+    return (statusCode: 429, body: null);
   }
 
   // Create jsoup HTML parser for this web worker isolate.
