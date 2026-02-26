@@ -161,7 +161,7 @@ String? _extractBridgeInterface(String headerContent) {
   final cFunctionDecls = <String>[];
   final cFuncPattern = RegExp(r'^(void|int|int32_t|bool)\s+\w+\s*\(');
   for (var i = 0; i < startIndex; i++) {
-    final trimmed = lines[i].trim();
+    final String trimmed = lines[i].trim();
     if (cFuncPattern.hasMatch(trimmed)) {
       cFunctionDecls.add(trimmed);
     }
