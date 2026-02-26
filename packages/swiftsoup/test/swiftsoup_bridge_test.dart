@@ -66,8 +66,7 @@ void main() {
     });
 
     test('parse with baseUri preserves it', () {
-      final int doc =
-          SwiftSoupBridge.parse(_ns('<a href="/p">x</a>'), baseUri: _ns('https://example.com'));
+      final int doc = SwiftSoupBridge.parse(_ns('<a href="/p">x</a>'), baseUri: _ns('https://example.com'));
       check(doc).isGreaterThan(0);
       check(_str(SwiftSoupBridge.nodeBaseUri(doc))).equals('https://example.com');
     });
@@ -139,8 +138,7 @@ void main() {
     });
 
     test('nodeAbsUrl resolves relative URL', () {
-      check(_str(SwiftSoupBridge.nodeAbsUrl(el, key: _ns('href'))))
-          .equals('https://example.com/link');
+      check(_str(SwiftSoupBridge.nodeAbsUrl(el, key: _ns('href')))).equals('https://example.com/link');
     });
   });
 
@@ -171,8 +169,7 @@ void main() {
 
     test('outerHtml', () {
       final int p = SwiftSoupBridge.selectFirst(doc, selector: _ns('p'));
-      check(_str(SwiftSoupBridge.outerHtml(p)))
-          .equals('<p>hello <b>world</b></p>');
+      check(_str(SwiftSoupBridge.outerHtml(p))).equals('<p>hello <b>world</b></p>');
     });
 
     test('setText replaces content', () {
@@ -192,8 +189,7 @@ void main() {
         _ns('<script>var x = 1;</script>'),
         baseUri: _ns(''),
       );
-      final int script =
-          SwiftSoupBridge.selectFirst(scriptDoc, selector: _ns('script'));
+      final int script = SwiftSoupBridge.selectFirst(scriptDoc, selector: _ns('script'));
       check(_str(SwiftSoupBridge.data(script))).equals('var x = 1;');
     });
   });
@@ -426,8 +422,7 @@ void main() {
 
     test('nodeOuterHtml for element', () {
       final int span = SwiftSoupBridge.selectFirst(doc, selector: _ns('span'));
-      check(_str(SwiftSoupBridge.nodeOuterHtml(span)))
-          .equals('<span>world</span>');
+      check(_str(SwiftSoupBridge.nodeOuterHtml(span))).equals('<span>world</span>');
     });
 
     test('removeNode', () {
