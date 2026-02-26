@@ -39,8 +39,7 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
   double timeout,
 ) {
   try {
-    final String methodStr =
-        (method >= 0 && method < _httpMethods.length) ? _httpMethods[method] : 'GET';
+    final String methodStr = (method >= 0 && method < _httpMethods.length) ? _httpMethods[method] : 'GET';
     final xhr = _JSXMLHttpRequest();
     xhr.open(methodStr.toJS, url.toJS, false.toJS);
     xhr.responseType = 'arraybuffer'.toJS;

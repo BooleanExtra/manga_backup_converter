@@ -259,7 +259,8 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final (Uint8List? data, String? error, List<String> warnings) = await port.first as (Uint8List?, String?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) =
+        await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
     if (error != null) throw Exception(error);
@@ -281,7 +282,8 @@ class AidokuPlugin {
         includeChapters: includeChapters,
       ),
     );
-    final (Uint8List? data, String? error, List<String> warnings) = await port.first as (Uint8List?, String?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) =
+        await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
     if (error != null) throw Exception(error);
