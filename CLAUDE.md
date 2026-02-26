@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup files between formats: Aidoku (.aib), Paperback (.pas4), Tachi (.tachibk, .proto.gz), Tachimanga (.tmb), and Mangayomi (.backup). Includes a multi-platform Flutter app and a standalone CLI package.
+Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup files between formats: Aidoku (.aib), Paperback (.pas4), Tachi (.tachibk, .proto.gz), Tachimanga (.tmb), and Mangayomi (.backup). Currently a standalone CLI; Flutter app is planned but not yet functional.
 
 ## Monorepo Structure (Melos)
 
@@ -206,6 +206,7 @@ Always run `melos run generate` after modifying annotated model classes. The env
 
 GitHub Actions runs on all branches: format verification, analysis, tests with coverage (Codecov), then platform builds (iOS, Android, Web, Windows, Linux). Flutter 3.41.1 stable.
 - All `actions/checkout@v4` steps require `submodules: true` — wasm3 vendored source is a git submodule at `packages/wasm3/vendor/wasm3`
+- `test_with_coverage` defaults to VM service port 8181; concurrent `melos exec` causes port conflicts and hangs — test scripts use `concurrency: 1`
 
 ## Commits
 
