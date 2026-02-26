@@ -92,13 +92,13 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
       return ctx.storeString(val);
     },
     'html': (int rid) {
-      if (ctx.htmlParser == null) return -1;
+      if (ctx.joup == null) return -1;
       final HttpRequestResource? req = ctx.store.get<HttpRequestResource>(rid);
       final Uint8List? body = req?.responseBody;
       if (body == null) return -1;
       try {
         final String html = utf8.decode(body, allowMalformed: true);
-        final Document doc = ctx.htmlParser!.parse(html, baseUri: req!.url ?? '');
+        final Document doc = ctx.joup!.parse(html, baseUri: req!.url ?? '');
         return ctx.store.add(HtmlElementResource(doc));
       } on Object catch (e) {
         ctx.onLog?.call('[CB] net::html failed: $e');

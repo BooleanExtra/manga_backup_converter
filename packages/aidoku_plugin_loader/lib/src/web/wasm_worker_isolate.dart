@@ -132,9 +132,9 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
   }
 
   // Create jsoup HTML parser for this web worker isolate.
-  Jsoup? htmlParser;
+  Jsoup? jsoup;
   try {
-    htmlParser = Jsoup();
+    jsoup = Jsoup();
   } on Object catch (e) {
     sendLog('[aidoku] failed to create HTML parser: $e');
   }
@@ -149,7 +149,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
       rateLimiter = RateLimiter(RateLimitConfig(permits: permits, periodMs: periodMs));
     },
     onLog: sendLog,
-    htmlParser: htmlParser,
+    jsoup: jsoup,
   );
 
   late final WasmRunner runner;
@@ -184,7 +184,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
     }
   }
 
-  htmlParser?.dispose();
+  jsoup?.dispose();
   store.dispose();
   cmdPort.close();
 }

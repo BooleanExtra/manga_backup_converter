@@ -27,7 +27,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
   AsyncSleepDispatch? asyncSleep,
   RateLimitCallback? onRateLimitSet,
   void Function(String message)? onLog,
-  Jsoup? htmlParser,
+  Jsoup? jsoup,
 }) {
   final ctx = ImportContext(
     runner: runner,
@@ -37,7 +37,7 @@ Map<String, Map<String, Function>> buildAidokuHostImports(
     asyncSleep: asyncSleep,
     onRateLimitSet: onRateLimitSet,
     onLog: onLog,
-    htmlParser: htmlParser,
+    joup: jsoup,
   );
 
   return <String, Map<String, Function>>{

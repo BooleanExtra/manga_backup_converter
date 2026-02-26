@@ -15,7 +15,7 @@ class ImportContext {
     this.asyncSleep,
     this.onRateLimitSet,
     this.onLog,
-    this.htmlParser,
+    this.joup,
   });
 
   final WasmRunner runner;
@@ -25,7 +25,7 @@ class ImportContext {
   final AsyncSleepDispatch? asyncSleep;
   final RateLimitCallback? onRateLimitSet;
   final void Function(String)? onLog;
-  final Jsoup? htmlParser;
+  final Jsoup? joup;
 
   // ---------------------------------------------------------------------------
   // String helpers (analogous to WasmEnv::read_string / write_bytes)
@@ -43,7 +43,7 @@ class ImportContext {
 
   /// Element → String property → store as bytes RID.
   int elementStringProp(int rid, String op, String Function(Element) getter) {
-    if (htmlParser == null) return -1;
+    if (joup == null) return -1;
     try {
       final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
       if (res == null) return -1;
@@ -56,7 +56,7 @@ class ImportContext {
 
   /// Element → Element? navigation → store new Element RID.
   int elementNav(int rid, String op, Element? Function(Element) nav) {
-    if (htmlParser == null) return -1;
+    if (joup == null) return -1;
     try {
       final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
       if (res == null) return -1;
@@ -71,7 +71,7 @@ class ImportContext {
 
   /// Elements[index] → store Element RID.
   int elementsAt(int rid, int index, String op) {
-    if (htmlParser == null) return -1;
+    if (joup == null) return -1;
     try {
       final HtmlElementsResource? res = store.get<HtmlElementsResource>(rid);
       if (res == null || index < 0 || index >= res.elements.length) return -1;
@@ -84,7 +84,7 @@ class ImportContext {
 
   /// Element mutation → return 0.
   int elementMutate(int rid, String op, void Function(Element) mutate) {
-    if (htmlParser == null) return 0;
+    if (joup == null) return 0;
     try {
       final HtmlElementResource? res = store.get<HtmlElementResource>(rid);
       if (res == null) return 0;

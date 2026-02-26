@@ -351,9 +351,9 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   // Create jsoup HTML parser for this isolate.
   // JNI requires Jni.setDylibDir / Jni.spawnIfNotExists in each new isolate.
   // JsoupParser() handles this via JreManager.ensureInitialized().
-  Jsoup? htmlParser;
+  Jsoup? jsoup;
   try {
-    htmlParser = Jsoup();
+    jsoup = Jsoup();
   } on Object catch (e) {
     sendLog('[aidoku] HTML parser unavailable (falling back to stubs): $e');
   }
@@ -368,7 +368,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
       init.asyncPort.send(WasmRateLimitMsg(permits: permits, periodMs: periodMs));
     },
     onLog: sendLog,
-    htmlParser: htmlParser,
+    jsoup: jsoup,
   );
 
   late final WasmRunner runner;
@@ -413,7 +413,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     }
   }
 
-  htmlParser?.dispose();
+  jsoup?.dispose();
   store.dispose();
   cmdPort.close();
 }

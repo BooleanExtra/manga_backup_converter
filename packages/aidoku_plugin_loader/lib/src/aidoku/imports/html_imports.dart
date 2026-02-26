@@ -5,13 +5,13 @@ import 'package:jsoup/jsoup.dart';
 /// `html` module host imports.
 Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
   'parse': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final String html = ctx.readString(ptr, len);
       final String baseUri = baseUriPtr != null && baseUriLen != null && baseUriLen > 0
           ? ctx.readString(baseUriPtr, baseUriLen)
           : '';
-      final Document doc = ctx.htmlParser!.parse(html, baseUri: baseUri);
+      final Document doc = ctx.joup!.parse(html, baseUri: baseUri);
       return ctx.store.add(HtmlElementResource(doc));
     } on Object catch (e) {
       ctx.onLog?.call('[CB] html::parse failed: $e');
@@ -19,13 +19,13 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'parse_fragment': (int ptr, int len, [int? baseUriPtr, int? baseUriLen]) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final String html = ctx.readString(ptr, len);
       final String baseUri = baseUriPtr != null && baseUriLen != null && baseUriLen > 0
           ? ctx.readString(baseUriPtr, baseUriLen)
           : '';
-      final Document doc = ctx.htmlParser!.parseFragment(html, baseUri: baseUri);
+      final Document doc = ctx.joup!.parseFragment(html, baseUri: baseUri);
       return ctx.store.add(HtmlElementResource(doc));
     } on Object catch (e) {
       ctx.onLog?.call('[CB] html::parse_fragment failed: $e');
@@ -33,7 +33,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'select': (int rid, int selectorPtr, int selectorLen) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final String selector = ctx.readString(selectorPtr, selectorLen);
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
@@ -51,7 +51,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'select_first': (int rid, int selectorPtr, int selectorLen) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final String selector = ctx.readString(selectorPtr, selectorLen);
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
@@ -71,7 +71,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'attr': (int rid, int keyPtr, int keyLen) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
       if (res == null) return -1;
@@ -89,7 +89,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'has_attr': (int rid, int keyPtr, int keyLen) {
-    if (ctx.htmlParser == null) return 0;
+    if (ctx.joup == null) return 0;
     try {
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
       if (res == null) return 0;
@@ -119,7 +119,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
   // --- Elements-at helpers (4 functions) ---
   'first': (int rid) => ctx.elementsAt(rid, 0, 'first'),
   'last': (int rid) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final HtmlElementsResource? res = ctx.store.get<HtmlElementsResource>(rid);
       if (res == null || res.elements.isEmpty) return -1;
@@ -134,7 +134,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
 
   // --- Elements size ---
   'size': (int rid) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final HtmlElementsResource? res = ctx.store.get<HtmlElementsResource>(rid);
       if (res == null) return -1;
@@ -147,7 +147,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
 
   // --- Children / siblings (return Elements) ---
   'children': (int rid) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
       if (res == null) return -1;
@@ -158,7 +158,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
     }
   },
   'siblings': (int rid) {
-    if (ctx.htmlParser == null) return -1;
+    if (ctx.joup == null) return -1;
     try {
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
       if (res == null) return -1;
@@ -240,7 +240,7 @@ Map<String, Function> buildHtmlImports(ImportContext ctx) => <String, Function>{
 
   // --- has_class (returns bool as 0/1) ---
   'has_class': (int rid, int classPtr, int classLen) {
-    if (ctx.htmlParser == null) return 0;
+    if (ctx.joup == null) return 0;
     try {
       final HtmlElementResource? res = ctx.store.get<HtmlElementResource>(rid);
       if (res == null) return 0;
