@@ -1,3 +1,6 @@
+@TestOn('vm')
+library;
+
 import 'package:checks/checks.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:test/scaffolding.dart';
