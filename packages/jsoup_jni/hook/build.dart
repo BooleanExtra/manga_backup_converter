@@ -63,7 +63,7 @@ void main(List<String> args) async {
     // and for jnigen/jni:setup tooling.
     if (codeConfig.targetOS == OS.windows || codeConfig.targetOS == OS.linux) {
       // Scraper handles these platforms — no JVM needed at runtime.
-      // Still download JDK+JAR for jnigen tooling (dev only).
+      // No JDK/Jsoup download is performed here; dev tooling must use a local JDK/Jsoup.
       return;
     }
 
