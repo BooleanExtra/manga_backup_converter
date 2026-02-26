@@ -28,8 +28,8 @@ void main(List<String> args) async {
       codeConfig.targetArchitecture,
     );
 
-    final Uri cargoDir = input.packageRoot.resolve('rust/');
-    final cargoDirFs = Directory.fromUri(cargoDir);
+    final Uri cargoDirUri = input.packageRoot.resolve('rust/');
+    final cargoDirFs = Directory.fromUri(cargoDirUri);
     if (!cargoDirFs.existsSync()) {
       throw StateError('Rust crate not found at ${cargoDirFs.path}');
     }
