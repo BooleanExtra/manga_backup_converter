@@ -4,6 +4,7 @@ library;
 
 import 'package:checks/checks.dart';
 import 'package:jsoup/jsoup.dart';
+import 'package:jsoup_jni/jsoup_jni.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {

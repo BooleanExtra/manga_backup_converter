@@ -6,7 +6,7 @@
 // include/jni.h).
 //
 // Usage:
-//   cd packages/jsoup
+//   cd packages/jsoup_jni
 //   dart run tool/generate_jni_bindings.dart            # run jnigen
 //   dart run tool/generate_jni_bindings.dart --jni-setup # run jni:setup
 
@@ -176,7 +176,7 @@ bool _rescueMinGWBuild(String monorepoRoot) {
 /// Finds the root directory of the bundled Adoptium JDK.
 ///
 /// Walks upward from [Directory.current] looking for the build hook's JDK
-/// output at `.dart_tool/hooks_runner/shared/jsoup/build/jdk-17-{os}-{arch}/`.
+/// output at `.dart_tool/hooks_runner/shared/jsoup_jni/build/jdk-17-{os}-{arch}/`.
 String? _findBundledJdk() {
   final os = Platform.isWindows ? 'windows' : 'linux';
   final String arch = _arch();
@@ -184,7 +184,7 @@ String? _findBundledJdk() {
   Directory dir = Directory.current;
   for (var i = 0; i < 10; i++) {
     final jdkDir = Directory(
-      '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
+      '${dir.path}/.dart_tool/hooks_runner/shared/jsoup_jni/build/'
       'jdk-17-$os-$arch',
     );
     if (jdkDir.existsSync()) {

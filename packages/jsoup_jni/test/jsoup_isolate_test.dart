@@ -22,6 +22,7 @@ import 'package:jni/jni.dart';
 import 'package:jni/src/third_party/global_env_extensions.dart';
 import 'package:jni/src/third_party/jni_bindings_generated.dart';
 import 'package:jsoup/jsoup.dart';
+import 'package:jsoup_jni/jsoup_jni.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {

@@ -1,10 +1,11 @@
+// ignore_for_file: invalid_use_of_internal_member
 @TestOn('vm')
 @Tags(['jni'])
 library;
 
 import 'package:checks/checks.dart';
 import 'package:jsoup/jsoup.dart';
-import 'package:jsoup/src/jni/jni_parser.dart';
+import 'package:jsoup_jni/jsoup_jni.dart';
 import 'package:test/scaffolding.dart';
 
 /// Runs :contains() tests against the Java Jsoup JNI backend for

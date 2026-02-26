@@ -1,7 +1,0 @@
-tags:
-  jni:
-    # JNI tests must run in isolation — Dart VM isolate teardown corrupts
-    # the JVM VEH chain on Windows, crashing FindClass after other tests
-    # have spawned isolates. Run separately:
-    #   dart test --reporter expanded -t jni --run-skipped
-    skip: "JNI tests must run separately (dart test -t jni --run-skipped)"

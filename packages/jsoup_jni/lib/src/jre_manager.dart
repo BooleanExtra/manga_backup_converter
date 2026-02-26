@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 import 'package:jni/jni.dart';
-import 'package:jsoup/src/jsoup_version.dart';
+import 'package:jsoup_jni/src/jsoup_version.dart';
 
 /// Manages JVM lifecycle for desktop platforms (Windows/Linux).
 ///
@@ -75,7 +75,7 @@ class JreManager {
     Directory dir = Directory.current;
     for (var i = 0; i < 10; i++) {
       final jar = File(
-        '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
+        '${dir.path}/.dart_tool/hooks_runner/shared/jsoup_jni/build/'
         'jsoup-$jsoupVersion/jsoup-$jsoupVersion.jar',
       );
       if (jar.existsSync()) return jar.path;
@@ -110,12 +110,12 @@ class JreManager {
 
     // Search upward from working directory for build hook output
     // (development/test). The build hook caches the JDK at
-    // .dart_tool/hooks_runner/shared/jsoup/build/jdk-17-{os}-{arch}/.
+    // .dart_tool/hooks_runner/shared/jsoup_jni/build/jdk-17-{os}-{arch}/.
     final os = Platform.isWindows ? 'windows' : 'linux';
     Directory dir = Directory.current;
     for (var i = 0; i < 10; i++) {
       final jdkDir = Directory(
-        '${dir.path}/.dart_tool/hooks_runner/shared/jsoup/build/'
+        '${dir.path}/.dart_tool/hooks_runner/shared/jsoup_jni/build/'
         'jdk-17-$os-x64',
       );
       if (jdkDir.existsSync()) {

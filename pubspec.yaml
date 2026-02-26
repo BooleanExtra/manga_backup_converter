@@ -277,13 +277,13 @@ melos:
       exec: dart run tool/generate_jni_bindings.dart
       description: Generate JNI bindings for jsoup (prepends bundled JRE to PATH).
       packageFilters:
-        scope: jsoup
+        scope: jsoup_jni
 
     jni_setup:
       exec: dart run tool/generate_jni_bindings.dart --jni-setup
       description: Build dartjni.dll via jni:setup with auto-discovered system JDK.
       packageFilters:
-        scope: jsoup
+        scope: jsoup_jni
 
     dart_test:
       run: melos run dart_test:pkg --no-select

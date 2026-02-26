@@ -1,17 +1,17 @@
-// ignore_for_file: invalid_use_of_internal_member, library_prefixes
+// ignore_for_file: implementation_imports, invalid_use_of_internal_member, library_prefixes
 
 import 'dart:io';
 
 import 'package:jni/_internal.dart' as jni$_;
 import 'package:jni/jni.dart';
 import 'package:jsoup/src/html_parser.dart';
-import 'package:jsoup/src/jni/bindings/org/jsoup/Jsoup.dart' as jsoup_lib;
-import 'package:jsoup/src/jni/bindings/org/jsoup/nodes/Document.dart';
-import 'package:jsoup/src/jni/bindings/org/jsoup/nodes/Element.dart' as jsoup_el;
-import 'package:jsoup/src/jni/bindings/org/jsoup/nodes/Node.dart' as jsoup_node;
-import 'package:jsoup/src/jni/bindings/org/jsoup/nodes/TextNode.dart' as jsoup_tn;
-import 'package:jsoup/src/jni/bindings/org/jsoup/select/Elements.dart' as jsoup_els;
-import 'package:jsoup/src/jni/jre_manager.dart';
+import 'package:jsoup_jni/src/bindings/org/jsoup/Jsoup.dart' as jsoup_lib;
+import 'package:jsoup_jni/src/bindings/org/jsoup/nodes/Document.dart';
+import 'package:jsoup_jni/src/bindings/org/jsoup/nodes/Element.dart' as jsoup_el;
+import 'package:jsoup_jni/src/bindings/org/jsoup/nodes/Node.dart' as jsoup_node;
+import 'package:jsoup_jni/src/bindings/org/jsoup/nodes/TextNode.dart' as jsoup_tn;
+import 'package:jsoup_jni/src/bindings/org/jsoup/select/Elements.dart' as jsoup_els;
+import 'package:jsoup_jni/src/jre_manager.dart';
 
 /// Jsoup-backed [NativeHtmlParser] using JNI.
 ///
