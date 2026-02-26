@@ -251,6 +251,7 @@ melos:
         ignore:
           - web_wasm_runner
           - swiftsoup
+          - jsoup_jni
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
@@ -314,6 +315,7 @@ melos:
         noDependsOn: flutter jni
         ignore:
           - swiftsoup
+          - jsoup_jni
 
     web_test:
       run: melos run flutter_web_test && melos run dart_web_test
