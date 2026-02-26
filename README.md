@@ -9,18 +9,18 @@ Convert manga backup files between formats. Available as a standalone CLI with a
 
 ## Supported Formats
 
-| Format | Extension | App |
-|--------|-----------|-----|
-| Aidoku | `.aib` | [Aidoku](https://aidoku.app/) |
-| Paperback | `.pas4` | [Paperback](https://paperback.moe/) |
-| Tachi (Mihon, TachiyomiSY, TachiyomiJ2K, Yokai, Neko) | `.tachibk`, `.proto.gz` | [Mihon](https://mihon.app/) and forks |
-| Tachimanga | `.tmb` | [Tachimanga](https://tachimanga.app/) |
-| Mangayomi | `.backup` | [Mangayomi](https://github.com/kodjodevf/mangayomi) |
+| App | Extension |
+|-----|-----------|
+| [Aidoku](https://aidoku.app/) | `.aib` |
+| [Paperback](https://paperback.moe/) | `.pas4` |
+| [Mihon](https://mihon.app/) and forks (TachiyomiSY, TachiyomiJ2K, Yokai, Neko) | `.tachibk`, `.proto.gz` |
+| [Tachimanga](https://tachimanga.app/) | `.tmb` |
+| [Mangayomi](https://github.com/kodjodevf/mangayomi) | `.backup` |
 
 ## Feature Support
 
-| Format | Import | Direct conversion | Plugin migration |
-|--------|:------:|:------------------:|:----------------:|
+| Format | Import | Direct conversion | Export via plugin migration |
+|--------|:------:|:------------------:|:--------------------------:|
 | Aidoku | :white_check_mark: | — | :white_check_mark: |
 | Paperback | :white_check_mark: | — | :x: |
 | Tachi | :white_check_mark: | :arrow_right: Tachimanga | :x: |
@@ -28,7 +28,7 @@ Convert manga backup files between formats. Available as a standalone CLI with a
 | Mangayomi | :white_check_mark: | — | :x: |
 
 - **Direct conversion** preserves data 1:1 between Tachi and Tachimanga without needing plugins.
-- **Plugin migration** uses Aidoku source extensions to search and match manga. Currently only Aidoku is supported as a migration target.
+- **Plugin migration** uses Aidoku source extensions to search and match manga, then builds a backup in the target format. Currently only Aidoku is supported as a target.
 
 ## Platforms
 
