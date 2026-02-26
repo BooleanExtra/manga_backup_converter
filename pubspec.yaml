@@ -316,6 +316,14 @@ melos:
         ignore:
           - swiftsoup
           - jsoup_jni
+          - wasmer_runner
+          - wasm3
+          - scraper
+          - jsoup
+          - app_lints
+          - assets
+          - constants
+          - wasm_runner
 
     web_test:
       run: melos run flutter_web_test && melos run dart_web_test
