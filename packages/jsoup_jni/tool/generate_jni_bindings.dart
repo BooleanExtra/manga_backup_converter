@@ -15,9 +15,9 @@
 import 'dart:io';
 
 void main(List<String> args) async {
-  final bool jniSetup = args.contains('--jni-setup');
+  final bool isJniSetupMode = args.contains('--jni-setup');
 
-  if (jniSetup) {
+  if (isJniSetupMode) {
     await _runJniSetup();
   } else {
     await _runJnigen();
