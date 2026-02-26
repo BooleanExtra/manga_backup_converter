@@ -265,29 +265,34 @@ class MigrationDashboard {
               break;
             }
             // Enrich top candidate from each plugin with details/chapters.
-            unawaited(Future.wait(
-              entry.candidates.map((PluginSearchResult r) async {
-                try {
-                  final (PluginMangaDetails, List<PluginChapter>)? result = await onFetchDetails(r.pluginSourceId, r.mangaKey);
-                  if (result == null) return r;
-                  return PluginSearchResult(
-                    pluginSourceId: r.pluginSourceId,
-                    mangaKey: r.mangaKey,
-                    title: r.title,
-                    coverUrl: r.coverUrl,
-                    authors: result.$1.authors.isNotEmpty ? result.$1.authors : r.authors,
-                    details: result.$1,
-                    chapters: result.$2,
-                  );
-                } on Object {
-                  return r; // Keep unenriched on failure.
+            unawaited(
+              Future.wait(
+                entry.candidates.map((PluginSearchResult r) async {
+                  try {
+                    final (PluginMangaDetails, List<PluginChapter>)? result = await onFetchDetails(
+                      r.pluginSourceId,
+                      r.mangaKey,
+                    );
+                    if (result == null) return r;
+                    return PluginSearchResult(
+                      pluginSourceId: r.pluginSourceId,
+                      mangaKey: r.mangaKey,
+                      title: r.title,
+                      coverUrl: r.coverUrl,
+                      authors: result.$1.authors.isNotEmpty ? result.$1.authors : r.authors,
+                      details: result.$1,
+                      chapters: result.$2,
+                    );
+                  } on Object {
+                    return r; // Keep unenriched on failure.
+                  }
+                }),
+              ).then((List<PluginSearchResult> enriched) {
+                if (!events.isClosed) {
+                  events.add(_EnrichmentDoneEvent(entry, enriched));
                 }
               }),
-            ).then((List<PluginSearchResult> enriched) {
-              if (!events.isClosed) {
-                events.add(_EnrichmentDoneEvent(entry, enriched));
-              }
-            }));
+            );
 
           case _EnrichmentDoneEvent(:final entry, :final enrichedCandidates):
             entry.candidates = enrichedCandidates;

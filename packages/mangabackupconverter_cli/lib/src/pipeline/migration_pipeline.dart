@@ -144,16 +144,18 @@ class MigrationPipeline {
           if (match == null) {
             return MangaMatchConfirmation(sourceManga: confirmation.sourceManga);
           }
-          final PluginSource? source =
-              plugins.where((PluginSource p) => p.sourceId == match.pluginSourceId).firstOrNull;
+          final PluginSource? source = plugins
+              .where((PluginSource p) => p.sourceId == match.pluginSourceId)
+              .firstOrNull;
           if (source == null) {
             return MangaMatchConfirmation(
               sourceManga: confirmation.sourceManga,
               confirmedMatch: match,
             );
           }
-          final (PluginMangaDetails, List<PluginChapter>)? detailResult =
-              await source.getMangaWithChapters(match.mangaKey);
+          final (PluginMangaDetails, List<PluginChapter>)? detailResult = await source.getMangaWithChapters(
+            match.mangaKey,
+          );
           if (detailResult == null) {
             return MangaMatchConfirmation(
               sourceManga: confirmation.sourceManga,

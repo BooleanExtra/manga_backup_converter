@@ -115,12 +115,15 @@ class WasmSemaphore {
     } else if (Platform.isMacOS || Platform.isIOS) {
       _detectedPlatform = _SemPlatform.gcd;
       final lib = ffi.DynamicLibrary.process();
-      _dispatchSemaphoreCreate =
-          lib.lookupFunction<_DispatchSemaphoreCreateC, _DispatchSemaphoreCreateDart>('dispatch_semaphore_create');
-      _dispatchSemaphoreWait =
-          lib.lookupFunction<_DispatchSemaphoreWaitC, _DispatchSemaphoreWaitDart>('dispatch_semaphore_wait');
-      _dispatchSemaphoreSignal =
-          lib.lookupFunction<_DispatchSemaphoreSignalC, _DispatchSemaphoreSignalDart>('dispatch_semaphore_signal');
+      _dispatchSemaphoreCreate = lib.lookupFunction<_DispatchSemaphoreCreateC, _DispatchSemaphoreCreateDart>(
+        'dispatch_semaphore_create',
+      );
+      _dispatchSemaphoreWait = lib.lookupFunction<_DispatchSemaphoreWaitC, _DispatchSemaphoreWaitDart>(
+        'dispatch_semaphore_wait',
+      );
+      _dispatchSemaphoreSignal = lib.lookupFunction<_DispatchSemaphoreSignalC, _DispatchSemaphoreSignalDart>(
+        'dispatch_semaphore_signal',
+      );
       _dispatchRelease = lib.lookupFunction<_DispatchReleaseC, _DispatchReleaseDart>('dispatch_release');
     } else {
       _detectedPlatform = _SemPlatform.posix;
