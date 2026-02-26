@@ -115,13 +115,7 @@ Future<void> _downloadJsoupJar(Uri outputDirectoryShared) async {
 
   if (!await jarFile.exists()) {
     print('Downloading Jsoup $jsoupVersion from Maven Central ...');
-    final http.Response response = await http.get(Uri.parse(_jsoupMavenUrl));
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Failed to download Jsoup: HTTP ${response.statusCode}\n'
-        'URL: $_jsoupMavenUrl',
-      );
-    }
+    final http.Response response = await _httpGetWithRetry(Uri.parse(_jsoupMavenUrl));
 
     if (!await cacheDir.exists()) {
       await cacheDir.create(recursive: true);
@@ -156,13 +150,7 @@ Future<Uri> _downloadJdk(
   );
 
   print('Downloading Adoptium JDK $_jdkVersion for ${info.os}/${info.arch} ...');
-  final http.Response response = await http.get(url);
-  if (response.statusCode != 200) {
-    throw Exception(
-      'Failed to download JDK: HTTP ${response.statusCode}\n'
-      'URL: $url',
-    );
-  }
+  final http.Response response = await _httpGetWithRetry(url);
 
   if (!await cacheDir.exists()) {
     await cacheDir.create(recursive: true);
@@ -226,4 +214,31 @@ String _findJdkSubdir(Directory cacheDir, String libPath) {
     }
   }
   return libPath;
+}
+
+/// Downloads [url] with up to [maxRetries] retry attempts using exponential
+/// backoff. CI downloads from Maven Central and Adoptium can be flaky.
+Future<http.Response> _httpGetWithRetry(
+  Uri url, {
+  int maxRetries = 3,
+}) async {
+  for (var attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      final http.Response response = await http.get(url);
+      if (response.statusCode == 200) return response;
+      if (attempt == maxRetries) {
+        throw Exception(
+          'Failed to download: HTTP ${response.statusCode}\n'
+          'URL: $url',
+        );
+      }
+      print('HTTP ${response.statusCode}, retrying (${attempt + 1}/$maxRetries)...');
+    } on Exception catch (e) {
+      if (attempt == maxRetries) rethrow;
+      print('Download failed: $e, retrying (${attempt + 1}/$maxRetries)...');
+    }
+    await Future<void>.delayed(Duration(seconds: 1 << attempt));
+  }
+  // Unreachable, but satisfies the type system.
+  throw StateError('unreachable');
 }

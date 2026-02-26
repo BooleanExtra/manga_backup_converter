@@ -94,13 +94,7 @@ Future<Uri> _downloadOrCached(
 
   final Uri url = Uri.parse('$_releaseBase/${info.archive}');
   print('Downloading wasmer v$_wasmerVersion from $url ...');
-  final http.Response response = await http.get(url);
-  if (response.statusCode != 200) {
-    throw Exception(
-      'Failed to download wasmer: HTTP ${response.statusCode}\n'
-      'URL: $url',
-    );
-  }
+  final http.Response response = await _httpGetWithRetry(url);
 
   // Verify SHA-256 if provided.
   if (info.sha256.isNotEmpty) {
@@ -139,4 +133,31 @@ Future<Uri> _downloadOrCached(
 
   print('Wasmer v$_wasmerVersion cached at ${cacheDir.path}');
   return libFile.uri;
+}
+
+/// Downloads [url] with up to [maxRetries] retry attempts using exponential
+/// backoff. GitHub release downloads can be flaky in CI environments.
+Future<http.Response> _httpGetWithRetry(
+  Uri url, {
+  int maxRetries = 3,
+}) async {
+  for (var attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      final http.Response response = await http.get(url);
+      if (response.statusCode == 200) return response;
+      if (attempt == maxRetries) {
+        throw Exception(
+          'Failed to download wasmer: HTTP ${response.statusCode}\n'
+          'URL: $url',
+        );
+      }
+      print('HTTP ${response.statusCode}, retrying (${attempt + 1}/$maxRetries)...');
+    } on Exception catch (e) {
+      if (attempt == maxRetries) rethrow;
+      print('Download failed: $e, retrying (${attempt + 1}/$maxRetries)...');
+    }
+    await Future<void>.delayed(Duration(seconds: 1 << attempt));
+  }
+  // Unreachable, but satisfies the type system.
+  throw StateError('unreachable');
 }
