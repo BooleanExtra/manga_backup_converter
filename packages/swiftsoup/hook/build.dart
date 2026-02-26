@@ -124,8 +124,18 @@ Future<Uri> _swiftBuild({
     );
   }
 
-  // Find the built library. With --triple, output goes to .build/<triple>/release.
-  final buildDir = '${swiftDir.path}/.build/$triple/release';
+  // Ask SPM for the actual binary output directory (may differ across versions).
+  final binPathResult = await Process.run(
+    'swift',
+    ['build', '--show-bin-path', '-c', 'release', '--triple', triple],
+    workingDirectory: swiftDir.path,
+  );
+  if (binPathResult.exitCode != 0) {
+    throw Exception(
+      'swift build --show-bin-path failed:\n${binPathResult.stderr}',
+    );
+  }
+  final buildDir = binPathResult.stdout.toString().trim();
 
   final builtLib = File('$buildDir/$libName');
   if (!builtLib.existsSync()) {
