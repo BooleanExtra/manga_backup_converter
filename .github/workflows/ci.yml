@@ -85,6 +85,7 @@ jobs:
 
   test:
     name: Test (${{ matrix.os }})
+    timeout-minutes: 30
     needs: [analyze]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -136,6 +137,10 @@ jobs:
 
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Install Rust toolchain
+        if: runner.os == 'Windows' || runner.os == 'Linux'
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Bootstrap Melos
         run: melos bootstrap

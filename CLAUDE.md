@@ -207,6 +207,8 @@ Always run `melos run generate` after modifying annotated model classes. The env
 GitHub Actions runs on all branches: format verification, analysis, tests with coverage (Codecov), then platform builds (iOS, Android, Web, Windows, Linux). Flutter 3.41.1 stable.
 - All `actions/checkout@v4` steps require `submodules: true` — wasm3 vendored source is a git submodule at `packages/wasm3/vendor/wasm3`
 - `test_with_coverage` defaults to VM service port 8181; concurrent `melos exec` causes port conflicts and hangs — test scripts use `concurrency: 1`
+- CI `test` job installs Rust toolchain (`dtolnay/rust-toolchain@stable`) on Windows/Linux before tests — scraper build hook needs `cargo`; without it, the hook downloads rustup from scratch and hangs
+- CI `test` job has `timeout-minutes: 30` as a safety net against hangs
 
 ## Commits
 
