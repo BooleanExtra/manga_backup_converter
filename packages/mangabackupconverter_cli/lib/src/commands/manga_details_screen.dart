@@ -114,10 +114,10 @@ class MangaDetailsScreen {
           if (!completer.isCompleted) completer.complete(false);
         case Enter():
           if (!completer.isCompleted) completer.complete(true);
-        case ArrowUp():
+        case ArrowUp() || ScrollUp():
           chapterScrollOffset = max(0, chapterScrollOffset - 1);
           render();
-        case ArrowDown():
+        case ArrowDown() || ScrollDown():
           final int maxOffset = sortedChapters.length <= chapterAreaLines
               ? 0
               : sortedChapters.length - (chapterAreaLines - 1);

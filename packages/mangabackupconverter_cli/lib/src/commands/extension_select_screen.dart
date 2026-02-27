@@ -212,12 +212,12 @@ class ExtensionSelectScreen {
             result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
             unawaited(events.close());
 
-          case _KeyEvent(key: ArrowUp()):
+          case _KeyEvent(key: ArrowUp() || ScrollUp()):
             cursorIndex = max(-1, cursorIndex - 1);
             searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: ArrowDown()):
+          case _KeyEvent(key: ArrowDown() || ScrollDown()):
             final List<ExtensionEntry> results = filtered();
             cursorIndex = min(
               max(0, results.length) - 1,

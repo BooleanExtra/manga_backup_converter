@@ -380,6 +380,10 @@ class Backspace extends KeyEvent {}
 
 class Delete extends KeyEvent {}
 
+class ScrollUp extends KeyEvent {}
+
+class ScrollDown extends KeyEvent {}
+
 class CharKey extends KeyEvent {
   CharKey(this.char);
   final String char;
@@ -460,6 +464,8 @@ class KeyInput {
     } on StdinException {
       // Already in raw mode from a parent screen.
     }
+    // Enable SGR extended mouse mode for scroll wheel detection.
+    stdout.write('\x1b[?1000h\x1b[?1006h');
     _sub = _broadcastStdin.listen(_parseBytes);
   }
 
@@ -475,6 +481,10 @@ class KeyInput {
     _decodeAndEmitUtf8();
     _sub?.cancel();
     _controller.close();
+    // Disable mouse tracking before restoring console mode.
+    if (_inputStream == null) {
+      stdout.write('\x1b[?1000l\x1b[?1006l');
+    }
     restoreConsoleMode();
     try {
       stdin.echoMode = true;
@@ -520,6 +530,21 @@ class KeyInput {
       _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
       return;
     }
+    // Buffer SGR mouse sequences: ESC [ < ... (digits/semicolons) waiting for
+    // M or m terminator.
+    if (combined.length >= 3 &&
+        combined[0] == 0x1b &&
+        combined[1] == 0x5b &&
+        combined[2] == 0x3c) {
+      // Check if the sequence has a terminator (M=0x4d or m=0x6d).
+      final bool hasTerminator = combined.length > 3 &&
+          (combined.last == 0x4d || combined.last == 0x6d);
+      if (!hasTerminator) {
+        _escBuffer = combined.toList();
+        _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
+        return;
+      }
+    }
 
     _processBytes(combined);
   }
@@ -536,6 +561,11 @@ class KeyInput {
     if (_controller.isClosed) return;
 
     if (bytes.length >= 3 && bytes[0] == 0x1b && bytes[1] == 0x5b) {
+      // SGR mouse sequences: ESC [ < button ; x ; y M/m
+      if (bytes[2] == 0x3c) {
+        _parseSgrMouse(bytes);
+        return;
+      }
       // ESC [ <digit> ~ sequences (e.g. Delete = ESC [ 3 ~).
       if (bytes.length >= 4 && bytes[3] == 0x7e) {
         switch (bytes[2]) {
@@ -588,6 +618,26 @@ class KeyInput {
     // Multi-byte UTF-8 printable characters.
     if (bytes.isNotEmpty && bytes[0] != 0x1b) {
       _bufferUtf8(bytes);
+    }
+  }
+
+  /// Parses SGR extended mouse protocol: ESC [ < button ; x ; y M/m
+  /// Only emits ScrollUp (button 64) and ScrollDown (button 65) press events.
+  void _parseSgrMouse(List<int> bytes) {
+    // Payload starts after ESC [ < (index 3) and ends before M/m terminator.
+    if (bytes.length < 5) return;
+    final int terminator = bytes.last;
+    // Only handle press events (M), ignore releases (m).
+    if (terminator != 0x4d) return;
+    final payload = String.fromCharCodes(bytes, 3, bytes.length - 1);
+    final List<String> parts = payload.split(';');
+    if (parts.isEmpty) return;
+    final int? button = int.tryParse(parts[0]);
+    switch (button) {
+      case 64:
+        _controller.add(ScrollUp());
+      case 65:
+        _controller.add(ScrollDown());
     }
   }
 
@@ -892,6 +942,9 @@ class PathInputState {
         cursorPos = _chars.length;
         _resetCompletions();
         return PathInputResult.cursorMoved;
+
+      case ScrollUp() || ScrollDown():
+        return PathInputResult.ignored;
     }
   }
 

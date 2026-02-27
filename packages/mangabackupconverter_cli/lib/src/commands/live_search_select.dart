@@ -247,12 +247,12 @@ class LiveSearchSelect {
             }
             unawaited(events.close());
 
-          case _KeyEvent(key: ArrowUp()):
+          case _KeyEvent(key: ArrowUp() || ScrollUp()):
             cursorIndex = max(-1, cursorIndex - 1);
             searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: ArrowDown()):
+          case _KeyEvent(key: ArrowDown() || ScrollDown()):
             final List<PluginSearchResult> results = allResults();
             cursorIndex = min(max(0, results.length) - 1, cursorIndex + 1);
             searchInput.focused = cursorIndex < 0;

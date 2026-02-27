@@ -56,13 +56,13 @@ class FormatSelectScreen {
             result = formats[cursorIndex];
             unawaited(events.close());
 
-          case ArrowUp():
+          case ArrowUp() || ScrollUp():
             if (cursorIndex > 0) {
               cursorIndex--;
               render();
             }
 
-          case ArrowDown():
+          case ArrowDown() || ScrollDown():
             if (cursorIndex < formats.length - 1) {
               cursorIndex++;
               render();
