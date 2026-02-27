@@ -98,6 +98,10 @@ List<String> wordWrap(String text, int width) {
   return lines;
 }
 
+/// Returns the number of lines [text] would occupy after word wrapping to
+/// [width] columns.
+int wrappedLineCount(String text, int width) => wordWrap(text, width).length;
+
 /// Truncates [text] to [maxWidth] visible columns, appending "…" if needed.
 String truncate(String text, int maxWidth) {
   if (maxWidth <= 0) return '';
