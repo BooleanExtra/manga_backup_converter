@@ -53,6 +53,12 @@ class ConvertCommand extends Command<void> {
         abbr: 'r',
         help: 'Extension repo URLs for plugin-based migration.',
       )
+      ..addMultiOption(
+        'extensions',
+        abbr: 'e',
+        help: 'Extension IDs to install (e.g. multi.mangadex). '
+            'Skips interactive extension selection.',
+      )
       ..addOption(
         'output',
         abbr: 'o',
@@ -315,6 +321,8 @@ class ConvertCommand extends Command<void> {
             print('[VERBOSE] Non-interactive mode: auto-accepting best matches');
           }
 
+          final List<String> extensionIds = results.multiOption('extensions');
+
           final pluginCache = PluginCache();
           final cachingLoader = CachingPluginLoader(
             outputFormat.pluginLoader,
@@ -323,37 +331,60 @@ class ConvertCommand extends Command<void> {
           final pipeline = MigrationPipeline(
             repoUrls: repoUrls,
             pluginLoader: cachingLoader,
-            onSelectExtensions: interactive
-                ? (List<ExtensionEntry> extensions) async {
-                    spinner!.stop();
-                    loadingRegion!.clear();
-                    context!.showCursor();
+            onSelectExtensions: (List<ExtensionEntry> extensions) async {
+              // --extensions flag: filter by ID, skip TUI/auto-select.
+              if (extensionIds.isNotEmpty) {
+                final Set<String> idSet = extensionIds.toSet();
+                final List<ExtensionEntry> matched = extensions
+                    .where((ExtensionEntry e) => idSet.contains(e.id))
+                    .toList();
+                final Set<String> unmatched = idSet.difference(
+                  matched.map((ExtensionEntry e) => e.id).toSet(),
+                );
+                for (final id in unmatched) {
+                  Zone.root.print('Warning: extension "$id" not found in repos.');
+                }
+                if (matched.isNotEmpty) return matched;
+                if (!interactive) {
+                  throw UsageException(
+                    'None of the specified extensions were found.',
+                    usage,
+                  );
+                }
+                // Fall through to TUI when interactive.
+              }
 
-                    final List<ExtensionEntry>? result = await ExtensionSelectScreen().run(
-                      context: context,
-                      extensions: extensions,
-                    );
+              if (interactive) {
+                spinner!.stop();
+                loadingRegion!.clear();
+                context!.showCursor();
 
-                    if (result == null || result.isEmpty) {
-                      throw const MigrationException('No extensions selected.');
-                    }
+                final List<ExtensionEntry>? result = await ExtensionSelectScreen().run(
+                  context: context,
+                  extensions: extensions,
+                );
 
-                    context.hideCursor();
-                    spinner.start(
-                      () => loadingRegion.render(
-                        ['${spinner.frame} $loadingMessage'],
-                      ),
-                    );
-                    return result;
-                  }
-                : (List<ExtensionEntry> extensions) async {
-                    return [
-                      extensions.firstWhereOrNull(
-                            (ExtensionEntry e) => e.id == 'multi.mangadex',
-                          ) ??
-                          extensions.first,
-                    ];
-                  },
+                if (result == null || result.isEmpty) {
+                  throw const MigrationException('No extensions selected.');
+                }
+
+                context.hideCursor();
+                spinner.start(
+                  () => loadingRegion.render(
+                    ['${spinner.frame} $loadingMessage'],
+                  ),
+                );
+                return result;
+              }
+
+              // Non-interactive fallback: auto-select MangaDex or first.
+              return [
+                extensions.firstWhereOrNull(
+                      (ExtensionEntry e) => e.id == 'multi.mangadex',
+                    ) ??
+                    extensions.first,
+              ];
+            },
             onConfirmMatches: onConfirmMatches,
             onProgress: (int current, int total, String message) {
               if (verbose) print('[$current/$total] $message');
