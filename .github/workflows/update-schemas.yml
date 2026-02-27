@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # Adjust the Python version as needed
+          python-version: "3.x" # Adjust the Python version as needed
 
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
@@ -34,12 +34,13 @@ jobs:
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
-      
+
       - name: Install Protoc
         run: |
-          sudo apt install -y protobuf-compiler
+          sudo apt-get update -y
+          sudo apt-get install -y protobuf-compiler
           protoc --version
-      
+
       - name: Activate Protoc Plugin
         run: dart pub global activate protoc_plugin ${{env.PROTOC_PLUGGIN_VERSION}}
 
@@ -73,7 +74,7 @@ jobs:
         run: flutter pub get
       - name: Format Generated Dart Code
         run: dart format .
-      
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v6
@@ -87,7 +88,7 @@ jobs:
           labels: |
             automated pr
           draft: false
-          title: '[Automated] Update Tachi Protobuf Schemas'
+          title: "[Automated] Update Tachi Protobuf Schemas"
           body: Automated changes by [update-schemas](https://github.com/getBoolean/manga_backup_converter/blob/main/.github/workflows/update-schemas.yml) GitHub action
 
       - name: Enable auto-merge
