@@ -135,7 +135,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - `diceCoefficient` in `terminal_ui.dart` — bigram Dice coefficient (0.0–1.0) for title similarity; used by live search sorting
 - `live_search_select.dart` display rows include non-selectable group headers (result index `-1`); scroll offset operates in display-row space, not result-index space
 - `get_manga_update` WASM ABI: `(manga_descriptor_rid, needs_details, needs_chapters)` — `getMangaDetails` accepts `{bool includeChapters = false}`; `plugin_source_aidoku.dart` passes `includeChapters: true` so chapters are included in migration output
-- `PluginSearchResult` carries optional `details` (`PluginMangaDetails?`) and `chapters` (`List<PluginChapter>`) — NOT populated during search; the TUI uses `onFetchDetails` callback when needed; `detailedConfirmations` in `_runMigration` fetches details for confirmed matches before building target backup
+- `PluginSearchResult` carries optional `pluginSourceName` (friendly display name, falls back to `pluginSourceId`), `details` (`PluginMangaDetails?`), and `chapters` (`List<PluginChapter>`) — NOT populated during search; the TUI uses `onFetchDetails` callback when needed; `detailedConfirmations` in `_runMigration` fetches details for confirmed matches before building target backup; when constructing enriched copies, always preserve `pluginSourceName`
 - WASM `get_search_manga_list` returns minimal data (authors typically empty); full author/artist data comes from `getMangaWithChapters` (called in `detailedConfirmations`, not during search) — always prefer detail-level fields over search-level fields when both exist
 - `PluginMangaDetails` has separate `authors` and `artists` lists — display code should merge both into a `<String>{}` set to deduplicate (authors who are also artists)
 - `lib/src/proto/` — Protocol buffer schemas for Tachi forks (mihon, j2k, neko, sy, yokai)
@@ -159,7 +159,7 @@ Each backup format class has a `fromData(Uint8List)` factory and conversion meth
 ### Pipeline Data Flow
 
 - `MigrationPipeline.onConfirmMatches` is a batch callback — receives all `SourceMangaData` plus `onSearch` (streaming) and `onFetchDetails` functions; UI handles searching and user interaction
-- `PluginSearchEvent` (sealed) streams search results per-plugin: `PluginSearchStarted` (emitted before each plugin's search begins) / `PluginSearchResults` / `PluginSearchError`
+- `PluginSearchEvent` (sealed) streams search results per-plugin: `PluginSearchStarted` (with optional `pluginName`) / `PluginSearchResults` (with optional `pluginName`) / `PluginSearchError`
 - `MangaMatchConfirmation.sourceManga` is `SourceMangaData` (not `MangaSearchDetails`) — carries chapters, history, tracking, categories from source backup
 - `ConvertableBackup.sourceMangaDataEntries` extracts `List<SourceMangaData>` from each backup format
 - `MangaMatchProposal.sourceManga` remains `MangaSearchDetails` (UI display only)
