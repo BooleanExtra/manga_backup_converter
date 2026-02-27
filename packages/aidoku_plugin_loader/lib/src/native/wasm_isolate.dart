@@ -337,8 +337,10 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     }
     final int statusCode = WasmSharedState.readStatus(init.statusSlotAddress);
     final Uint8List respBody = WasmSharedState.readResponse(init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
-    final Map<String, String> respHeaders =
-        WasmSharedState.readHeaders(init.headersPtrSlotAddress, init.headersLenSlotAddress);
+    final Map<String, String> respHeaders = WasmSharedState.readHeaders(
+      init.headersPtrSlotAddress,
+      init.headersLenSlotAddress,
+    );
     return (statusCode: statusCode, body: respBody, headers: respHeaders);
   }
 
