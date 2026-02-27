@@ -532,13 +532,9 @@ class KeyInput {
     }
     // Buffer SGR mouse sequences: ESC [ < ... (digits/semicolons) waiting for
     // M or m terminator.
-    if (combined.length >= 3 &&
-        combined[0] == 0x1b &&
-        combined[1] == 0x5b &&
-        combined[2] == 0x3c) {
+    if (combined.length >= 3 && combined[0] == 0x1b && combined[1] == 0x5b && combined[2] == 0x3c) {
       // Check if the sequence has a terminator (M=0x4d or m=0x6d).
-      final bool hasTerminator = combined.length > 3 &&
-          (combined.last == 0x4d || combined.last == 0x6d);
+      final bool hasTerminator = combined.length > 3 && (combined.last == 0x4d || combined.last == 0x6d);
       if (!hasTerminator) {
         _escBuffer = combined.toList();
         _escTimer = Timer(const Duration(milliseconds: 50), _flushEscBuffer);
