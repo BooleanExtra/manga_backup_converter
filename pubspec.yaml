@@ -26,7 +26,7 @@ dependencies:
     path: packages/wasm3
   awesome_flutter_extensions: ^1.2.0
   collection: ^1.18.0
-  connectivity_plus: ^6.0.2
+  connectivity_plus: ^7.0.0
   constants:
     path: packages/constants
   cupertino_icons: ^1.0.6
