@@ -383,6 +383,7 @@ class ConvertCommand extends Command<void> {
                 final List<ExtensionEntry>? result = await ExtensionSelectScreen().run(
                   context: context,
                   extensions: extensions,
+                  hiddenByRating: allExtensions.length - extensions.length,
                 );
 
                 if (result == null || result.isEmpty) {

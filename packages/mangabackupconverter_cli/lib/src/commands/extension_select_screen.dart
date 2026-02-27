@@ -23,6 +23,7 @@ class ExtensionSelectScreen {
   Future<List<ExtensionEntry>?> run({
     required TerminalContext context,
     required List<ExtensionEntry> extensions,
+    int hiddenByRating = 0,
   }) async {
     final searchInput = SearchInputState();
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
@@ -132,9 +133,10 @@ class ExtensionSelectScreen {
       // Header.
       final int selectedCount = selected.length;
       final int shownCount = results.length;
+      final hiddenLabel = hiddenByRating > 0 ? ' ($hiddenByRating hidden by rating)' : '';
       lines.add(
         '┌ ${bold('Extensions')} · '
-        '$selectedCount selected · $shownCount shown',
+        '$selectedCount selected · $shownCount shown$hiddenLabel',
       );
       lines.add('│');
 
