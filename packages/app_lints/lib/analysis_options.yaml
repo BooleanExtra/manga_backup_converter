@@ -89,3 +89,4 @@ linter:
     lines_longer_than_80_chars: false
     unnecessary_library_name: true
     invalid_runtime_check_with_js_interop_types: true
+    sort_pub_dependencies: false
