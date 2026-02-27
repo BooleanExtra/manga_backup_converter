@@ -23,6 +23,10 @@ on:
     tags:
       - "v*"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   FLUTTER_CHANNEL: "stable"
   FLUTTER_VERSION: "3.41.1"
