@@ -89,7 +89,7 @@ Future<Uri> _swiftBuild({
       ),
     };
     // Discover the iOS SDK so Swift can find standard library headers.
-    final sdkResult = await Process.run(
+    final ProcessResult sdkResult = await Process.run(
       'xcrun',
       ['--sdk', 'iphoneos', '--show-sdk-path'],
     );
@@ -98,7 +98,7 @@ Future<Uri> _swiftBuild({
         'xcrun --sdk iphoneos --show-sdk-path failed:\n${sdkResult.stderr}',
       );
     }
-    final sdkPath = sdkResult.stdout.toString().trim();
+    final String sdkPath = sdkResult.stdout.toString().trim();
     buildArgs = [
       'build',
       '-c',
@@ -108,6 +108,10 @@ Future<Uri> _swiftBuild({
       '-Xswiftc',
       '-sdk',
       '-Xswiftc',
+      sdkPath,
+      '-Xcc',
+      '-isysroot',
+      '-Xcc',
       sdkPath,
     ];
   }
@@ -125,7 +129,7 @@ Future<Uri> _swiftBuild({
   }
 
   // Ask SPM for the actual binary output directory (may differ across versions).
-  final binPathResult = await Process.run(
+  final ProcessResult binPathResult = await Process.run(
     'swift',
     ['build', '--show-bin-path', '-c', 'release', '--triple', triple],
     workingDirectory: swiftDir.path,
@@ -135,7 +139,7 @@ Future<Uri> _swiftBuild({
       'swift build --show-bin-path failed:\n${binPathResult.stderr}',
     );
   }
-  final buildDir = binPathResult.stdout.toString().trim();
+  final String buildDir = binPathResult.stdout.toString().trim();
 
   final builtLib = File('$buildDir/$libName');
   if (!builtLib.existsSync()) {
