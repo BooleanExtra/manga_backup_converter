@@ -137,16 +137,48 @@ class MigrationPipeline {
         },
       );
 
-      // Use already-enriched details from _streamSearch (no re-fetch needed).
-      final List<MangaMatchConfirmation> detailedConfirmations = confirmations.map((confirmation) {
-        final PluginSearchResult? match = confirmation.confirmedMatch;
-        return MangaMatchConfirmation(
-          sourceManga: confirmation.sourceManga,
-          confirmedMatch: match,
-          targetMangaDetails: match?.details,
-          targetChapters: match?.chapters ?? const <PluginChapter>[],
-        );
-      }).toList();
+      // Fetch details for confirmed matches (not fetched during search).
+      final List<MangaMatchConfirmation> detailedConfirmations = await Future.wait(
+        confirmations.map((confirmation) async {
+          final PluginSearchResult? match = confirmation.confirmedMatch;
+          if (match == null) {
+            return MangaMatchConfirmation(sourceManga: confirmation.sourceManga);
+          }
+          final PluginSource? source = plugins
+              .where((PluginSource p) => p.sourceId == match.pluginSourceId)
+              .firstOrNull;
+          if (source == null) {
+            return MangaMatchConfirmation(
+              sourceManga: confirmation.sourceManga,
+              confirmedMatch: match,
+            );
+          }
+          final (PluginMangaDetails, List<PluginChapter>)? detailResult = await source.getMangaWithChapters(
+            match.mangaKey,
+          );
+          if (detailResult == null) {
+            return MangaMatchConfirmation(
+              sourceManga: confirmation.sourceManga,
+              confirmedMatch: match,
+            );
+          }
+          final enrichedMatch = PluginSearchResult(
+            pluginSourceId: match.pluginSourceId,
+            mangaKey: match.mangaKey,
+            title: match.title,
+            coverUrl: match.coverUrl,
+            authors: detailResult.$1.authors.isNotEmpty ? detailResult.$1.authors : match.authors,
+            details: detailResult.$1,
+            chapters: detailResult.$2,
+          );
+          return MangaMatchConfirmation(
+            sourceManga: confirmation.sourceManga,
+            confirmedMatch: enrichedMatch,
+            targetMangaDetails: detailResult.$1,
+            targetChapters: detailResult.$2,
+          );
+        }),
+      );
 
       return _buildTargetBackup(sourceBackup, sourceFormat, targetFormat, detailedConfirmations);
     } finally {
@@ -156,10 +188,10 @@ class MigrationPipeline {
     }
   }
 
-  /// Searches all [plugins] in parallel, emitting results as they arrive.
+  /// Searches all [plugins] in parallel, emitting raw results as they arrive.
   ///
-  /// Each result is enriched with details from [PluginSource.getMangaWithChapters]
-  /// before being emitted, so consumers receive URL and chapter data upfront.
+  /// Results are NOT enriched with details — enrichment happens later in
+  /// [_runMigration] only for confirmed matches.
   Stream<PluginSearchEvent> _streamSearch(String query, List<PluginSource> plugins) {
     final controller = StreamController<PluginSearchEvent>();
     var cancelled = false;
@@ -176,35 +208,9 @@ class MigrationPipeline {
       plugin
           .search(query, 1)
           .then(
-            (PluginSearchPageResult result) async {
-              final enriched = <PluginSearchResult>[];
-              for (final PluginSearchResult r in result.results) {
-                if (cancelled) break;
-                try {
-                  final (PluginMangaDetails, List<PluginChapter>)? detailResult = await plugin.getMangaWithChapters(
-                    r.mangaKey,
-                  );
-                  if (detailResult != null) {
-                    enriched.add(
-                      PluginSearchResult(
-                        pluginSourceId: r.pluginSourceId,
-                        mangaKey: r.mangaKey,
-                        title: r.title,
-                        coverUrl: r.coverUrl,
-                        authors: detailResult.$1.authors.isNotEmpty ? detailResult.$1.authors : r.authors,
-                        details: detailResult.$1,
-                        chapters: detailResult.$2,
-                      ),
-                    );
-                    continue;
-                  }
-                } on Object {
-                  // Fall through — use result without details.
-                }
-                enriched.add(r);
-              }
+            (PluginSearchPageResult result) {
               if (!cancelled && !controller.isClosed) {
-                controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: enriched));
+                controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: result.results));
                 if (result.warnings.isNotEmpty) {
                   controller.add(
                     PluginSearchError(

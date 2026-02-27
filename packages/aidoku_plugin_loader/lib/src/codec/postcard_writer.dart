@@ -22,8 +22,11 @@ class PostcardWriter {
   }
 
   /// Encode a signed integer using zigzag encoding then LEB128.
+  /// ZigZag maps signed integers to unsigned so that small magnitudes stay small:
+  /// this arithmetic form is equivalent to the usual bitwise
+  /// `(v << 1) ^ (v >> (N - 1))` definition (e.g. `(v << 1) ^ (v >> 63)` for i64).
   void writeSignedVarInt(int v) {
-    writeVarInt((v << 1) ^ (v >> 63));
+    writeVarInt(v >= 0 ? v * 2 : (-v - 1) * 2 + 1);
   }
 
   void writeF32(double v) {

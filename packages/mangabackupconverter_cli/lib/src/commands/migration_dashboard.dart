@@ -44,6 +44,12 @@ class _SearchDoneEvent extends _DashboardEvent {
   final MigrationEntry entry;
 }
 
+class _EnrichmentDoneEvent extends _DashboardEvent {
+  _EnrichmentDoneEvent(this.entry, this.enrichedCandidates);
+  final MigrationEntry entry;
+  final List<PluginSearchResult> enrichedCandidates;
+}
+
 class _SpinnerTickEvent extends _DashboardEvent {}
 
 // ---------------------------------------------------------------------------
@@ -241,8 +247,7 @@ class MigrationDashboard {
 
           case _SearchResultEvent(:final entry, event: PluginSearchResults(:final results)):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
-            entry.candidates.addAll(results);
-            entry.match = _findBestMatch(entry.source.details.title, entry.candidates);
+            if (results.isNotEmpty) entry.candidates.add(results.first);
             render();
 
           case _SearchResultEvent(:final entry, event: PluginSearchError(:final failure)):
@@ -252,6 +257,46 @@ class MigrationDashboard {
 
           case _SearchDoneEvent(:final entry):
             if (entry != activeEntry) break; // Stale event from cancelled sub.
+            if (entry.candidates.isEmpty) {
+              entry.searching = false;
+              activeEntry = null;
+              startNextSearch();
+              render();
+              break;
+            }
+            // Enrich top candidate from each plugin with details/chapters.
+            unawaited(
+              Future.wait(
+                entry.candidates.map((PluginSearchResult r) async {
+                  try {
+                    final (PluginMangaDetails, List<PluginChapter>)? result = await onFetchDetails(
+                      r.pluginSourceId,
+                      r.mangaKey,
+                    );
+                    if (result == null) return r;
+                    return PluginSearchResult(
+                      pluginSourceId: r.pluginSourceId,
+                      mangaKey: r.mangaKey,
+                      title: r.title,
+                      coverUrl: r.coverUrl,
+                      authors: result.$1.authors.isNotEmpty ? result.$1.authors : r.authors,
+                      details: result.$1,
+                      chapters: result.$2,
+                    );
+                  } on Object {
+                    return r; // Keep unenriched on failure.
+                  }
+                }),
+              ).then((List<PluginSearchResult> enriched) {
+                if (!events.isClosed) {
+                  events.add(_EnrichmentDoneEvent(entry, enriched));
+                }
+              }),
+            );
+
+          case _EnrichmentDoneEvent(:final entry, :final enrichedCandidates):
+            entry.candidates = enrichedCandidates;
+            entry.match = _findBestMatch(entry.candidates);
             entry.searching = false;
             activeEntry = null;
             startNextSearch();
@@ -352,8 +397,7 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
         if (d != null) ...d.artists,
       }.join(', ');
       final String? chapterCount = d != null ? '${m.chapters.length} chapters' : null;
-      final String errorHint =
-          entry.failures.isNotEmpty ? yellow('\u26A0 ${entry.failures.length} error(s)') : '';
+      final String errorHint = entry.failures.isNotEmpty ? yellow('\u26A0 ${entry.failures.length} error(s)') : '';
       final String infoLine = [
         m.pluginSourceId,
         if (matchAuthors.isNotEmpty) matchAuthors,
@@ -373,15 +417,13 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
   return lines;
 }
 
-PluginSearchResult? _findBestMatch(String sourceTitle, List<PluginSearchResult> results) {
+PluginSearchResult? _findBestMatch(List<PluginSearchResult> results) {
   if (results.isEmpty) return null;
-  final String lower = sourceTitle.toLowerCase();
   PluginSearchResult? best;
-  var bestScore = -1.0;
+  var bestChapters = -1;
   for (final r in results) {
-    final double score = diceCoefficient(lower, r.title.toLowerCase());
-    if (score > bestScore) {
-      bestScore = score;
+    if (r.chapters.length > bestChapters) {
+      bestChapters = r.chapters.length;
       best = r;
     }
   }

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/aix_parser.dart';
-import 'package:aidoku_plugin_loader/src/aidoku/host_store.dart';
+import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:aidoku_plugin_loader/src/models/chapter.dart';
 import 'package:aidoku_plugin_loader/src/models/filter.dart';
@@ -167,21 +168,29 @@ class AidokuPlugin {
     );
 
     asyncPort.listen((Object? msg) async {
-      if (msg is WasmHttpMsg) {
-        await plugin._handleHttpMsg(msg);
-      } else if (msg is WasmSleepMsg) {
-        await Future<void>.delayed(Duration(seconds: msg.seconds));
-        WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
-      } else if (msg is WasmLogMsg) {
+      try {
+        if (msg is WasmHttpMsg) {
+          await plugin._handleHttpMsg(msg);
+        } else if (msg is WasmSleepMsg) {
+          try {
+            await Future<void>.delayed(Duration(seconds: msg.seconds));
+          } finally {
+            WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
+          }
+        } else if (msg is WasmLogMsg) {
+          // ignore: avoid_print
+          print('[wasm] ${msg.message}\n${msg.stackTrace}');
+        } else if (msg is WasmRateLimitMsg) {
+          plugin._rateLimiter = RateLimiter(
+            RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
+          );
+        } else if (msg is WasmPartialResultMsg) {
+          final HomePartialResult? decoded = decodeHomePartialResultFromBytes(msg.data);
+          if (decoded != null) plugin._partialResultsController.add(decoded);
+        }
+      } on Object catch (e, st) {
         // ignore: avoid_print
-        print('[wasm] ${msg.message}\n${msg.stackTrace}');
-      } else if (msg is WasmRateLimitMsg) {
-        plugin._rateLimiter = RateLimiter(
-          RateLimitConfig(permits: msg.permits, periodMs: msg.periodMs),
-        );
-      } else if (msg is WasmPartialResultMsg) {
-        final HomePartialResult? decoded = decodeHomePartialResultFromBytes(msg.data);
-        if (decoded != null) plugin._partialResultsController.add(decoded);
+        print('[wasm/async] unhandled error: $e\n$st');
       }
     });
 
@@ -189,46 +198,61 @@ class AidokuPlugin {
   }
 
   Future<void> _handleHttpMsg(WasmHttpMsg msg) async {
-    // Enforce rate limiting if configured by the plugin.
-    final RateLimiter? limiter = _rateLimiter;
-    if (limiter != null) {
-      final Duration wait = limiter.waitDuration();
-      if (wait > Duration.zero) {
-        await Future<void>.delayed(wait);
-      }
-      limiter.recordRequest();
-    }
-
     try {
       final Uri uri = Uri.parse(msg.url);
       if (!uri.hasScheme || !uri.hasAuthority) {
         // ignore: avoid_print
         print('[wasm/net] error: relative URL from plugin: ${msg.url}');
         _sharedState.writeError();
-        WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
         return;
       }
       final String methodStr = msg.method < _httpMethodNames.length ? _httpMethodNames[msg.method] : 'GET';
-      // ignore: avoid_print
-      print('[wasm/net] $methodStr ${msg.url}');
-      final request = http.Request(methodStr, uri);
-      request.headers.addAll(msg.headers);
-      if (msg.body != null) {
-        request.bodyBytes = Uint8List.fromList(msg.body!);
+      final int timeoutSeconds = msg.timeout.isFinite ? msg.timeout.toInt() : 30;
+
+      const maxRetries = 3;
+      for (var attempt = 0; attempt <= maxRetries; attempt++) {
+        // Enforce rate limiting before every attempt (first and retries).
+        final RateLimiter? limiter = _rateLimiter;
+        if (limiter != null) {
+          final Duration wait = limiter.waitDuration();
+          if (wait > Duration.zero) {
+            await Future<void>.delayed(wait);
+          }
+          limiter.recordRequest();
+        }
+
+        // ignore: avoid_print
+        print('[wasm/net] $methodStr ${msg.url}');
+        final request = http.Request(methodStr, uri);
+        request.headers.addAll(msg.headers);
+        if (msg.body != null) {
+          request.bodyBytes = Uint8List.fromList(msg.body!);
+        }
+        final http.StreamedResponse response = await _httpClient
+            .send(request)
+            .timeout(Duration(seconds: timeoutSeconds));
+        final Uint8List body = await response.stream.toBytes();
+        // ignore: avoid_print
+        print('[wasm/net] ${response.statusCode} ${body.length}b');
+
+        if (response.statusCode == 429 && attempt < maxRetries) {
+          final int delayMs = _retryDelayMs(response.headers['retry-after'], attempt);
+          // ignore: avoid_print
+          print('[wasm/net] 429, retrying in ${delayMs}ms');
+          await Future<void>.delayed(Duration(milliseconds: delayMs));
+          continue;
+        }
+
+        _sharedState.writeResponse(statusCode: response.statusCode, body: body);
+        return;
       }
-      final http.StreamedResponse response = await _httpClient
-          .send(request)
-          .timeout(Duration(seconds: msg.timeout.toInt()));
-      final Uint8List body = await response.stream.toBytes();
-      // ignore: avoid_print
-      print('[wasm/net] ${response.statusCode} ${body.length}b');
-      _sharedState.writeResponse(statusCode: response.statusCode, body: body);
-    } on Exception catch (e) {
+    } on Object catch (e) {
       // ignore: avoid_print
       print('[wasm/net] error: $e');
       _sharedState.writeError();
+    } finally {
+      WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
     }
-    WasmSemaphore.fromAddress(msg.semaphoreAddress).signal();
   }
 
   // ---------------------------------------------------------------------------
@@ -252,13 +276,14 @@ class AidokuPlugin {
         replyPort: port.sendPort,
       ),
     );
-    final (Object? data, List<String> warnings) = await port.first as (Object?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) =
+        await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
-    if (data is String) throw Exception(data);
+    if (error != null) throw Exception(error);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
-      return decodeMangaPageResult(PostcardReader(data as Uint8List));
+      return decodeMangaPageResult(PostcardReader(data));
     } on Object {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
@@ -274,9 +299,11 @@ class AidokuPlugin {
         includeChapters: includeChapters,
       ),
     );
-    final (Uint8List? data, List<String> warnings) = await port.first as (Uint8List?, List<String>);
+    final (Uint8List? data, String? error, List<String> warnings) =
+        await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
+    if (error != null) throw Exception(error);
     if (data == null) return null;
     try {
       return decodeManga(PostcardReader(data));
@@ -525,3 +552,27 @@ class AidokuPlugin {
 }
 
 const List<String> _httpMethodNames = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'];
+
+/// Parse `Retry-After` header (integer seconds or HTTP-date) and return delay
+/// in milliseconds, falling back to exponential backoff: 1s, 2s, 4s.
+/// Uses exponential backoff as a floor so `Retry-After: 0` doesn't cause
+/// immediate retries. Clamped to 60 seconds max.
+int _retryDelayMs(String? retryAfter, int attempt) {
+  const maxDelayMs = 60000;
+  final int backoffMs = (1000 * (1 << attempt)).clamp(0, maxDelayMs);
+  if (retryAfter != null) {
+    final int? seconds = int.tryParse(retryAfter);
+    if (seconds != null) {
+      final int headerMs = (seconds * 1000).clamp(0, maxDelayMs);
+      return headerMs > backoffMs ? headerMs : backoffMs;
+    }
+    try {
+      final DateTime date = HttpDate.parse(retryAfter);
+      final int headerMs = date.difference(DateTime.now()).inMilliseconds.clamp(0, maxDelayMs);
+      return headerMs > backoffMs ? headerMs : backoffMs;
+    } on Object {
+      // Fall through to exponential backoff.
+    }
+  }
+  return backoffMs;
+}

@@ -216,6 +216,12 @@ packages/mangabackupconverter_cli/web/sqflite_sw.js
 packages/mangabackupconverter_cli/web/sqlite3.wasm
 .claude/settings.local.json
 
+# TeaVM build artifacts
+packages/jsoup/tool/teavm/target/
+
 # Git worktrees
 .worktrees/
 /.playwright-mcp
+/packages/scraper/rust/target
+/packages/jsoup_jni/mvn_jar
+/packages/jsoup_jni/mvn_java

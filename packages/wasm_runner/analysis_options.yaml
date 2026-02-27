@@ -1,0 +1,8 @@
+include: package:app_lints/analysis_options.yaml
+
+analyzer:
+  language:
+    strict-inference: true
+
+formatter:
+  page_width: 120

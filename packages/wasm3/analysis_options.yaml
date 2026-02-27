@@ -1,0 +1,5 @@
+include: package:app_lints/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - lib/src/wasm3_bindings_generated.dart

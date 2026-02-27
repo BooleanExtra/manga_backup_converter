@@ -1,0 +1,17 @@
+output:
+  dart:
+    path: lib/src/bindings/
+
+classes:
+  - org.jsoup.Jsoup
+  - org.jsoup.nodes.Document
+  - org.jsoup.nodes.Element
+  - org.jsoup.nodes.Node
+  - org.jsoup.nodes.TextNode
+  - org.jsoup.select.Elements
+
+maven_downloads:
+  source_deps:
+    - org.jsoup:jsoup:1.18.3
+  jar_only_deps:
+    - org.jspecify:jspecify:1.0.0

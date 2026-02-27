@@ -1,0 +1,33 @@
+name: jsoup
+description: >-
+  Jsoup-compatible HTML parsing and CSS selector engine for Dart.
+  Uses Rust scraper on Windows/Linux/Android, SwiftSoup on iOS/macOS, and TeaVM-compiled Jsoup on Web.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+resolution: workspace
+
+dependencies:
+  ffi: ^2.2.0
+  meta: ^1.12.0
+  objective_c: ^9.2.0
+  scraper:
+    path: ../scraper
+  swiftsoup:
+    path: ../swiftsoup
+
+dev_dependencies:
+  app_lints:
+    path: ../app_lints
+  checks: ^0.3.0
+  test: ^1.24.0
+
+platforms:
+  ios:
+  android:
+  windows:
+  macos:
+  linux:
+  web:

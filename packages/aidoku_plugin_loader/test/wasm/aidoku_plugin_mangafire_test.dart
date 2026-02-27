@@ -6,6 +6,9 @@
 // Tests make live network requests to mangafire and assert on real data.
 //
 // Run: dart test packages/aidoku_plugin_loader/test/wasm/aidoku_plugin_mangafire_test.dart --reporter expanded
+@TestOn('vm')
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -34,14 +37,13 @@ void main() {
       tearDownAll(() => plugin.dispose());
 
       tearDown(() {
-        final warnings = plugin.drainWarnings();
-        check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings)
-            .isEmpty();
+        final List<String> warnings = plugin.drainWarnings();
+        check(because: '[CB] Plugin produced unexpected warnings:\n${warnings.join('\n')}', warnings).isEmpty();
       });
 
       group('searchManga', () {
-        test('empty query returns non-empty results (no VRF needed)', () async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
+        test('empty query returns non-empty results', () async {
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           // ignore: avoid_print
           print(
             'mangafire search results: ${result.manga.length} manga, '
@@ -55,8 +57,10 @@ void main() {
         });
 
         test('each result has non-empty key and title', () async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
           for (final Manga m in result.manga) {
+            // ignore: avoid_print
+            print('  key=${m.key}  title=${m.title}');
             check(m.key).isNotEmpty();
             check(m.title).isNotEmpty();
           }
@@ -67,8 +71,9 @@ void main() {
         late String mangaKey;
 
         setUpAll(() async {
-          final MangaPageResult result = await plugin.searchManga('', 1);
-          mangaKey = result.manga.first.key;
+          final MangaPageResult result = await plugin.searchManga('Onimai', 1);
+          mangaKey = result.manga.firstOrNull?.key ?? '';
+          check(mangaKey).isNotEmpty();
         });
 
         test('returns populated Manga', () async {

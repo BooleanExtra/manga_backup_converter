@@ -1,0 +1,16 @@
+output: lib/src/scraper_bindings_generated.dart
+name: NativeScraperBindings
+description: FFI bindings for the Rust scraper_bridge crate.
+headers:
+  entry-points:
+    - rust/target/scraper_bridge.h
+  include-directives:
+    - rust/target/scraper_bridge.h
+compiler-opts:
+  - '-include'
+  - 'stdint.h'
+ffi-native:
+  asset-id: 'package:scraper/src/scraper_bindings_generated.dart'
+functions:
+  include:
+    - 'scraper_.*'

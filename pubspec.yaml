@@ -14,8 +14,16 @@ workspace:
 
 dependencies:
   accessibility_tools: ^2.5.0
+  aidoku_plugin_loader:
+    path: packages/aidoku_plugin_loader
   assets:
     path: packages/assets
+  scraper:
+    path: packages/scraper
+  swiftsoup:
+    path: packages/swiftsoup
+  wasm3:
+    path: packages/wasm3
   awesome_flutter_extensions: ^1.2.0
   collection: ^1.18.0
   connectivity_plus: ^6.0.2
@@ -53,6 +61,12 @@ dependencies:
   url_launcher: ^6.2.6
   window_manager: ^0.4.2
   wolt_modal_sheet: ^0.11.0
+
+dependency_overrides:
+  propertylistserialization:
+    git:
+      url: https://github.com/getBoolean/dart-propertylistserialization.git
+      ref: fix/webCompatibility
 
 dev_dependencies:
   app_lints:
@@ -234,12 +248,16 @@ melos:
       run: dart pub global run coverage:test_with_coverage
       exec:
         failFast: true
-        # concurrency: 1
+        concurrency: 1
       description: Run Dart tests for a specific package in this project.
       packageFilters:
         dirExists: test
         dependsOn: test
-        noDependsOn: flutter
+        noDependsOn: flutter jni
+        ignore:
+          - web_wasm_runner
+          - swiftsoup
+          - jsoup_jni
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
@@ -251,6 +269,7 @@ melos:
         flutter: true
         dirExists: test
         dependsOn: flutter_test
+        noDependsOn: jni
 
     test:
       run: melos run flutter_test && melos run dart_test
@@ -264,6 +283,83 @@ melos:
       run: dart run packages/mangabackupconverter_cli/bin/mangabackupconverter_cli.dart
       description: Run the CLI directly (faster than `dart run mangabackupconverter_cli:mangabackupconverter_cli`).
 
+    jnigen:
+      exec: dart run tool/generate_jni_bindings.dart
+      description: Generate JNI bindings for jsoup (prepends bundled JRE to PATH).
+      packageFilters:
+        scope: jsoup_jni
+
+    jni_setup:
+      exec: dart run tool/generate_jni_bindings.dart --jni-setup
+      description: Build dartjni.dll via jni:setup with auto-discovered system JDK.
+      packageFilters:
+        scope: jsoup_jni
+
     dart_test:
       run: melos run dart_test:pkg --no-select
-      description: Run all Flutter tests in this project.
+      description: Run all Dart tests in this project.
+
+    dart_test_no_coverage:pkg:
+      run: dart test --reporter expanded
+      exec:
+        failFast: true
+        concurrency: 1
+      description: Run Dart tests without coverage (for Windows/macOS CI).
+      packageFilters:
+        dirExists: test
+        dependsOn: test
+        noDependsOn: flutter jni
+        ignore:
+          - web_wasm_runner
+          - swiftsoup
+          - jsoup_jni
+
+    dart_test_no_coverage:
+      run: melos run dart_test_no_coverage:pkg --no-select
+      description: Run all Dart tests without coverage.
+
+    flutter_web_test:pkg:
+      run: flutter test --platform chrome
+      exec:
+        failFast: true
+        concurrency: 1
+      description: Run Flutter web tests for a specific package in this project.
+      packageFilters:
+        flutter: true
+        dirExists: test
+        dependsOn: flutter_test
+        noDependsOn: jni
+
+    dart_web_test:pkg:
+      run: dart test --reporter expanded --platform chrome
+      exec:
+        failFast: true
+        concurrency: 1
+      description: Run Dart web tests for a specific package in this project.
+      packageFilters:
+        dirExists: test
+        dependsOn: test
+        noDependsOn: flutter jni
+        ignore:
+          - swiftsoup
+          - jsoup_jni
+          - wasmer_runner
+          - wasm3
+          - scraper
+          - jsoup
+          - app_lints
+          - assets
+          - constants
+          - wasm_runner
+
+    web_test:
+      run: melos run flutter_web_test && melos run dart_web_test
+      description: Run all web-compatible tests in Chrome.
+
+    flutter_web_test:
+      run: melos run flutter_web_test:pkg --no-select
+      description: Run all Flutter web tests in this project.
+
+    dart_web_test:
+      run: melos run dart_web_test:pkg --no-select
+      description: Run all Dart web tests in this project.

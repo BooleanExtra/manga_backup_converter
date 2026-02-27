@@ -1,3 +1,6 @@
+@TestOn('vm')
+library;
+
 // test/aidoku/aix_parser_fixture_test.dart
 //
 // Parses the real .aix fixture with AixParser directly — no WASM required.

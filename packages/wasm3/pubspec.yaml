@@ -1,0 +1,31 @@
+name: wasm3
+description: Dart FFI bindings for the wasm3 WebAssembly interpreter.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+resolution: workspace
+
+dependencies:
+  code_assets: ^1.0.0
+  ffi: ^2.2.0
+  hooks: ^1.0.0
+  meta: ^1.12.0
+  native_toolchain_c: ^0.17.4
+  wasm_runner:
+    path: ../wasm_runner
+
+dev_dependencies:
+  app_lints:
+    path: ../app_lints
+  checks: ^0.3.0
+  ffigen: ^20.1.1
+  test: ^1.24.0
+
+platforms:
+  ios:
+  android:
+  windows:
+  macos:
+  linux:

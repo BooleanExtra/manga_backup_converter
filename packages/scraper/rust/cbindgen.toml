@@ -1,0 +1,8 @@
+language = "C"
+include_guard = "SCRAPER_BRIDGE_H"
+
+[export]
+prefix = ""
+
+[fn]
+prefix = ""

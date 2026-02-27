@@ -173,26 +173,36 @@ class PaperbackBackup with PaperbackBackupMappable implements ConvertableBackup 
   Future<Uint8List> toData() async {
     final archive = Archive();
 
-    archive.addFile(ArchiveFile.string(
-      '__CHAPTER_PROGRESS_MARKER_V4-1',
-      jsonEncode(_toIdMap(chapterProgressMarker, (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id)),
-    ));
-    archive.addFile(ArchiveFile.string(
-      '__CHAPTER_V4',
-      jsonEncode(_toIdMap(chapters, (PaperbackBackupChapter c) => c.id)),
-    ));
-    archive.addFile(ArchiveFile.string(
-      '__LIBRARY_MANGA_V4',
-      jsonEncode(_toIdMap(libraryManga, (PaperbackBackupLibraryManga l) => l.id)),
-    ));
-    archive.addFile(ArchiveFile.string(
-      '__MANGA_INFO_V4',
-      jsonEncode(_toIdMap(mangaInfo, (PaperbackBackupMangaInfo m) => m.id)),
-    ));
-    archive.addFile(ArchiveFile.string(
-      '__SOURCE_MANGA_V4',
-      jsonEncode(_toIdMap(sourceManga, (PaperbackBackupSourceManga sm) => sm.id)),
-    ));
+    archive.addFile(
+      ArchiveFile.string(
+        '__CHAPTER_PROGRESS_MARKER_V4-1',
+        jsonEncode(_toIdMap(chapterProgressMarker, (PaperbackBackupChapterProgressMarker pm) => pm.chapter.id)),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile.string(
+        '__CHAPTER_V4',
+        jsonEncode(_toIdMap(chapters, (PaperbackBackupChapter c) => c.id)),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile.string(
+        '__LIBRARY_MANGA_V4',
+        jsonEncode(_toIdMap(libraryManga, (PaperbackBackupLibraryManga l) => l.id)),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile.string(
+        '__MANGA_INFO_V4',
+        jsonEncode(_toIdMap(mangaInfo, (PaperbackBackupMangaInfo m) => m.id)),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile.string(
+        '__SOURCE_MANGA_V4',
+        jsonEncode(_toIdMap(sourceManga, (PaperbackBackupSourceManga sm) => sm.id)),
+      ),
+    );
     return ZipEncoder().encodeBytes(archive);
   }
 

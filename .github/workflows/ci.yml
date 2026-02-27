@@ -36,47 +36,18 @@ permissions:
   contents: write
 
 jobs:
-  flutter_test:
-    name: Run flutter test and analyze
+  analyze:
+    name: Analyze
+    if: github.event.inputs.run_tests != 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set Variables
-        run: |
-          echo "Inputs: ${{ toJSON(github.event.inputs) }}"
-
-          is_tag_string=${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
-          is_tag=false
-          if [ "$is_tag_string" = "true" ]; then
-            is_tag=true
-          fi
-
-          flavor=""
-          if $is_tag; then
-            flavor="prod"
-          elif [ -z "${{ github.event.inputs.flavor }}" ]; then
-            flavor="dev"
-          else
-            flavor="${{ github.event.inputs.flavor }}"
-          fi
-          echo "FLAVOR=$flavor" >> $GITHUB_ENV
-          echo "FLAVOR=$flavor"
-
-          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
-
-      - name: Print Variables
-        run: |
-          echo "Flutter Channel: ${{ env.FLUTTER_CHANNEL }}"
-          echo "Flutter Version: ${{ env.FLUTTER_VERSION }}"
-          echo "Current Flavor: ${{ env.FLAVOR }}"
-          echo "Current Branch: ${{ env.BRANCH_NAME }}"
+        with:
+          submodules: true
 
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v2
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         with:
           channel: ${{env.FLUTTER_CHANNEL}}
           flutter-version: ${{env.FLUTTER_VERSION}}
@@ -86,70 +57,163 @@ jobs:
           architecture: x64
 
       - name: Check Flutter Version
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: flutter --version
 
-      # Make environment variables available to the melos generate script.
-      #
-      # The environment variables need to be defined in the repository secrets
       - name: Load Environment Variables
         uses: oNaiPs/secrets-to-env-action@v1
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         with:
           secrets: ${{ toJSON(secrets) }}
 
       - name: Activate Melos
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
       - name: Bootstrap Melos
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos bootstrap
 
-      # Comment out this task if you don't want to enforce formatting.
       - name: Verify Formatting
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run verify_format
 
       - name: Annotate PR
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         uses: invertase/github-action-dart-analyzer@v2.0.0
         with:
           fatal-infos: false
           fatal-warnings: false
           annotate-only: true
-          # custom-lint: true
 
       - name: Run Dart Analyzer
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
         run: melos run analyze
 
-      # - name: Run Custom Lints
-      #   if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
-      #   run: melos run custom_lint
+  test:
+    name: Test (${{ matrix.os }})
+    timeout-minutes: 30
+    needs: [analyze]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            architecture: x64
+          - os: windows-latest
+            architecture: x64
+          - os: macos-14
+            architecture: arm64
+    steps:
+      - name: Enable Git Long Paths
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
 
-      # Project needs to have tests in test/ and a dependency on
-      # package:flutter_test for this step to succeed.
-      #
-      # Each package in the packages/ directory should have its own
-      # test/ directory with tests for that package.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          flavor="${{ github.event.inputs.flavor }}"
+          if [ -z "$flavor" ]; then
+            flavor="dev"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: ${{ matrix.architecture }}
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Load Environment Variables
+        uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Install Rust toolchain
+        if: runner.os == 'Windows' || runner.os == 'Linux'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
       - name: Run Tests
-        if: github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == null
+        if: runner.os == 'Linux'
         run: melos run test
 
+      - name: Run Tests (no coverage)
+        if: runner.os != 'Linux'
+        run: melos run flutter_test && melos run dart_test_no_coverage
+
       - name: Upload Coverage to Codecov
-        if: github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/v')
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/v')
         uses: codecov/codecov-action@v3
         with:
           files: "**/*/lcov.info"
 
+  test_web:
+    name: Test (Web)
+    needs: [analyze]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          flavor="${{ github.event.inputs.flavor }}"
+          if [ -z "$flavor" ]; then
+            flavor="dev"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Load Environment Variables
+        uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Run Web Tests
+        run: melos run web_test
+
   build_ios:
     name: Build Flutter for iOS (Without Signing)
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -326,11 +390,14 @@ jobs:
 
   build_android:
     name: Build Flutter for Android
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -389,28 +456,28 @@ jobs:
       - name: Bootstrap Melos
         run: melos bootstrap
 
-      - name: Build Android Split APK
-        run: |
-          flutter pub get
-          flutter build apk --release --split-per-abi
-          cd build/app/outputs/flutter-apk
-          mv app-arm64-v8a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-arm64-v8a.apk
-          mv app-armeabi-v7a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-armeabi-v7a.apk
-          mv app-x86_64-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-x86_64.apk
+      # - name: Build Android Split APK
+      #   run: |
+      #     flutter pub get
+      #     flutter build apk --release --split-per-abi
+      #     cd build/app/outputs/flutter-apk
+      #     mv app-arm64-v8a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-arm64-v8a.apk
+      #     mv app-armeabi-v7a-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-armeabi-v7a.apk
+      #     mv app-x86_64-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-x86_64.apk
 
-      - name: Upload Split APKs
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-split
-          path: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
+      # - name: Upload Split APKs
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-split
+      #     path: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
 
-      - name: Release Split APKs
-        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
-          allowUpdates: true
-          omitBodyDuringUpdate: true
+      # - name: Release Split APKs
+      #   if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-*.apk
+      #     allowUpdates: true
+      #     omitBodyDuringUpdate: true
 
       - name: Build Universal APK
         run: |
@@ -456,7 +523,8 @@ jobs:
 
   build_windows:
     name: Build Flutter for Windows x64
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: windows-latest
     steps:
       # Need to enable long paths for Windows because the forked version of go_router
@@ -465,6 +533,8 @@ jobs:
         run: git config --system core.longpaths true
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -526,7 +596,7 @@ jobs:
         run: |
           dart run msix:create --build-windows false
           cd build\windows\x64\runner\Release
-          mv ${{ github.event.repository.name }}.msix ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-windows.msix
+          mv mangabackupconverter.msix ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-windows.msix
       - name: Upload MSIX
         uses: actions/upload-artifact@v4
         with:
@@ -543,11 +613,14 @@ jobs:
 
   build_linux:
     name: Build Flutter for Linux
-    needs: [flutter_test]
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -634,13 +707,281 @@ jobs:
           allowUpdates: true
           omitBodyDuringUpdate: true
 
-  build_macos:
-    name: Build Flutter for MacOS
-    needs: [flutter_test]
+  build_cli_windows:
+    name: Build CLI for Windows x64
+    needs: [test]
+    if: ${{ !failure() }}
+    runs-on: windows-latest
+    steps:
+      - name: Enable Git Long Paths
+        run: git config --system core.longpaths true
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          $is_tag = "${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}"
+          $flavor = ""
+          if ($is_tag) {
+              $flavor = "prod"
+          }
+          elseif ([string]::IsNullOrEmpty("${{ github.event.inputs.flavor }}")) {
+              $flavor = "dev"
+          }
+          else {
+              $flavor = "${{ github.event.inputs.flavor }}"
+          }
+
+          "FLAVOR=$flavor" | Out-File -Append -LiteralPath $Env:GITHUB_ENV
+          Write-Output "FLAVOR=$flavor"
+
+
+          "BRANCH_NAME=${{ env.BRANCH_NAME }}" | Out-File -Append -LiteralPath $Env:GITHUB_ENV
+          Write-Output "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+        shell: pwsh
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Build CLI
+        run: |
+          cd packages/mangabackupconverter_cli
+          dart build cli
+
+      - name: Package CLI
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/windows_x64/bundle
+          mv bin/mangabackupconverter_cli.exe bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.exe
+        shell: bash
+
+      - name: Upload CLI Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows
+          path: packages/mangabackupconverter_cli/build/cli/windows_x64/bundle/
+
+      - name: Compile Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: packages/mangabackupconverter_cli/installer/windows_setup.iss
+          options: /DBundleDir=${{ github.workspace }}\packages\mangabackupconverter_cli\build\cli\windows_x64\bundle /DAppVersion=${{ env.BRANCH_NAME }} /O${{ github.workspace }}\installer-output
+
+      - name: Rename Installer
+        run: |
+          mv installer-output/mangabackupconverter-cli-windows-setup.exe "installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe"
+        shell: bash
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup
+          path: installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe
+
+      - name: Create Release Archive
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/windows_x64
+          Compress-Archive -Path bundle/* -DestinationPath ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
+        shell: pwsh
+
+      - name: Release CLI
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            packages/mangabackupconverter_cli/build/cli/windows_x64/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows.zip
+            installer-output/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-windows-setup.exe
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+
+  build_cli_linux:
+    name: Build CLI for Linux x64
+    needs: [test]
+    if: ${{ !failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          echo "Inputs: ${{ toJSON(github.event.inputs) }}"
+
+          is_tag_string=${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
+          is_tag=false
+          if [ "$is_tag_string" = "true" ]; then
+            is_tag=true
+          fi
+
+          flavor=""
+          if $is_tag; then
+            flavor="prod"
+          elif [ -z "${{ github.event.inputs.flavor }}" ]; then
+            flavor="dev"
+          else
+            flavor="${{ github.event.inputs.flavor }}"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+          echo "FLAVOR=$flavor"
+
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libsqlite3-dev
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: x64
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Build CLI
+        run: |
+          cd packages/mangabackupconverter_cli
+          dart build cli
+
+      - name: Package CLI
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/linux_x64/bundle
+          mv bin/mangabackupconverter_cli bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+
+      - name: Upload CLI Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux
+          path: packages/mangabackupconverter_cli/build/cli/linux_x64/bundle/
+
+      - name: Create Release Archive
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/linux_x64
+          tar -czf ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz -C bundle .
+
+      - name: Release CLI
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: packages/mangabackupconverter_cli/build/cli/linux_x64/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-linux.tar.gz
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+
+  build_cli_macos:
+    name: Build CLI for macOS arm64
+    needs: [test]
+    if: ${{ !failure() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set Variables
+        run: |
+          is_tag_string=${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
+          is_tag=false
+          if [ "$is_tag_string" = "true" ]; then
+            is_tag=true
+          fi
+
+          flavor=""
+          if $is_tag; then
+            flavor="prod"
+          elif [ -z "${{ github.event.inputs.flavor }}" ]; then
+            flavor="dev"
+          else
+            flavor="${{ github.event.inputs.flavor }}"
+          fi
+          echo "FLAVOR=$flavor" >> $GITHUB_ENV
+
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+
+      - name: Install and set Flutter version
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+          flutter-version: ${{env.FLUTTER_VERSION}}
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          architecture: arm64
+
+      - name: Activate Melos
+        run: dart pub global activate melos ${{ env.MELOS_VERSION }}
+
+      - name: Bootstrap Melos
+        run: melos bootstrap
+
+      - name: Build CLI
+        run: |
+          cd packages/mangabackupconverter_cli
+          dart build cli
+
+      - name: Package CLI
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/macos_arm64/bundle
+          mv bin/mangabackupconverter_cli bin/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-macos
+
+      - name: Upload CLI Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-macos
+          path: packages/mangabackupconverter_cli/build/cli/macos_arm64/bundle/
+
+      - name: Create Release Archive
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        run: |
+          cd packages/mangabackupconverter_cli/build/cli/macos_arm64
+          tar -czf ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-macos.tar.gz -C bundle .
+
+      - name: Release CLI
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: packages/mangabackupconverter_cli/build/cli/macos_arm64/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-cli-macos.tar.gz
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+
+  build_macos:
+    name: Build Flutter for MacOS
+    needs: [test]
+    if: ${{ !failure() }}
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -725,11 +1066,14 @@ jobs:
 
   build_web:
     name: Build Flutter for Web
-    needs: [flutter_test]
+    needs: [test, test_web]
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set Variables
         run: |
@@ -816,6 +1160,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install and set Flutter version
         if: github.actor != 'dependabot[bot]'

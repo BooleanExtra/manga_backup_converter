@@ -1,8 +1,7 @@
 // ignore_for_file: avoid_print
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
@@ -16,26 +15,25 @@ import 'package:aidoku_plugin_loader/src/models/manga.dart';
 import 'package:aidoku_plugin_loader/src/models/page.dart';
 import 'package:aidoku_plugin_loader/src/models/setting_item.dart';
 import 'package:aidoku_plugin_loader/src/models/source_info.dart';
-import 'package:aidoku_plugin_loader/src/web/wasm_worker_js.dart';
-import 'package:aidoku_plugin_loader/src/web/wasm_worker_launcher.dart';
+import 'package:aidoku_plugin_loader/src/web/wasm_worker_isolate.dart';
 
 /// A loaded Aidoku WASM source plugin (web implementation).
 ///
-/// WASM executes in a dedicated Web Worker where synchronous XMLHttpRequest is
-/// allowed, enabling HTTP host imports (`net::send`) to work. Communication
-/// between the main thread and the worker uses `postMessage`.
+/// WASM executes in a Dart isolate (web worker) where synchronous XMLHttpRequest
+/// is allowed, enabling HTTP host imports (`net::send`) to work. Communication
+/// between the main thread and the worker uses [SendPort]/[ReceivePort].
 class AidokuPlugin {
   AidokuPlugin._({
-    required JSWorker worker,
-    required JSString blobUrl,
+    required SendPort cmdPort,
+    required ReceivePort mainPort,
     required this.sourceInfo,
     required this.settings,
     required this.filterDefinitions,
-  }) : _worker = worker,
-       _blobUrl = blobUrl;
+  }) : _cmdPort = cmdPort,
+       _mainPort = mainPort;
 
-  final JSWorker _worker;
-  final JSString _blobUrl;
+  final SendPort _cmdPort;
+  final ReceivePort _mainPort;
   final SourceInfo sourceInfo;
 
   /// Parsed settings from `settings.json`.
@@ -51,10 +49,16 @@ class AidokuPlugin {
       .whereType<FilterValue>()
       .toList();
 
+  /// Accumulated warnings from host import errors during WASM calls.
+  final List<String> _warnings = <String>[];
+
   /// Returns and clears any host-level warnings accumulated during recent
-  /// WASM calls. Web worker does not currently capture host errors, so this
-  /// always returns an empty list.
-  List<String> drainWarnings() => const <String>[];
+  /// WASM calls.
+  List<String> drainWarnings() {
+    final result = List<String>.of(_warnings);
+    _warnings.clear();
+    return result;
+  }
 
   /// Pending call completers, keyed by call ID.
   final Map<int, Completer<_WorkerResult>> _pending = <int, Completer<_WorkerResult>>{};
@@ -115,85 +119,73 @@ class AidokuPlugin {
       }
     }
 
-    // Create the worker.
-    final (:JSWorker worker, :JSString blobUrl) = createWasmWorker(workerJs);
+    // Create the main port for receiving messages from the worker isolate.
+    final mainPort = ReceivePort();
 
-    final plugin = AidokuPlugin._(
-      worker: worker,
-      blobUrl: blobUrl,
+    // Spawn the worker isolate with all initialization data.
+    await Isolate.spawn(
+      wasmWorkerMain,
+      <String, Object?>{
+        'mainPort': mainPort.sendPort,
+        'wasmBytes': bundle.wasmBytes,
+        'sourceId': sourceId,
+        'defaults': initialDefaults,
+      },
+    );
+
+    // Wait for the 'ready' message containing the command port.
+    final readyCompleter = Completer<SendPort>();
+
+    // Temporary plugin reference for the listener closure.
+    late final AidokuPlugin plugin;
+
+    mainPort.listen((Object? rawMsg) {
+      final msg = rawMsg! as Map<String, Object?>;
+      final type = msg['type']! as String;
+
+      if (type == 'ready') {
+        readyCompleter.complete(msg['cmdPort']! as SendPort);
+        return;
+      }
+
+      if (type == 'error' && !readyCompleter.isCompleted) {
+        readyCompleter.completeError(Exception(msg['message'] as String?));
+        return;
+      }
+
+      if (type == 'result') {
+        final id = msg['id']! as int;
+        final Completer<_WorkerResult>? completer = plugin._pending.remove(id);
+        if (completer == null) return;
+
+        final data = msg['data'] as Uint8List?;
+        final int returnValue = (msg['returnValue'] as int?) ?? 0;
+        final List<String> warnings = (msg['warnings'] as List<Object?>?)?.cast<String>() ?? const <String>[];
+        plugin._warnings.addAll(warnings);
+
+        completer.complete(_WorkerResult(data: data, returnValue: returnValue));
+      } else if (type == 'partial_result') {
+        final bytes = msg['data'] as Uint8List?;
+        if (bytes != null) {
+          final HomePartialResult? decoded = decodeHomePartialResultFromBytes(bytes);
+          if (decoded != null) plugin._partialResultsController.add(decoded);
+        }
+      } else if (type == 'log') {
+        print(msg['message'] as String? ?? '');
+      }
+    });
+
+    final SendPort cmdPort = await readyCompleter.future;
+
+    // The listener closure captured `plugin` by reference via `late final`,
+    // so messages arriving after this point are handled correctly.
+    return plugin = AidokuPlugin._(
+      cmdPort: cmdPort,
+      mainPort: mainPort,
       sourceInfo: bundle.sourceInfo,
       settings: settings,
       filterDefinitions: filterDefinitions,
     );
-
-    // Set up message listener.
-    worker.onmessage = ((JSObject event) {
-      final msgData = event.getProperty('data'.toJS)! as JSObject;
-      final String type = (msgData.getProperty('type'.toJS)! as JSString).toDart;
-
-      if (type == 'result') {
-        final int id = (msgData.getProperty('id'.toJS)! as JSNumber).toDartInt;
-        final Completer<_WorkerResult>? completer = plugin._pending.remove(id);
-        if (completer == null) return;
-
-        final JSAny? jsData = msgData.getProperty('data'.toJS);
-        final JSAny? jsReturnValue = msgData.getProperty('returnValue'.toJS);
-        Uint8List? resultData;
-        var returnValue = 0;
-
-        if (jsData != null && !jsData.isUndefinedOrNull) {
-          resultData = (jsData as JSUint8Array).toDart;
-        }
-        if (jsReturnValue != null && !jsReturnValue.isUndefinedOrNull) {
-          returnValue = (jsReturnValue as JSNumber).toDartInt;
-        }
-
-        completer.complete(_WorkerResult(data: resultData, returnValue: returnValue));
-      } else if (type == 'init_done') {
-        final Completer<_WorkerResult>? completer = plugin._pending.remove(-1);
-        completer?.complete(const _WorkerResult());
-      } else if (type == 'error') {
-        final int id = (msgData.getProperty('id'.toJS)! as JSNumber).toDartInt;
-        final String message = (msgData.getProperty('message'.toJS)! as JSString).toDart;
-        final Completer<_WorkerResult>? completer = plugin._pending.remove(id);
-        completer?.completeError(Exception(message));
-      } else if (type == 'partial_result') {
-        final JSAny? jsData = msgData.getProperty('data'.toJS);
-        if (jsData != null && !jsData.isUndefinedOrNull) {
-          final Uint8List bytes = (jsData as JSUint8Array).toDart;
-          final HomePartialResult? decoded = decodeHomePartialResultFromBytes(bytes);
-          if (decoded != null) plugin._partialResultsController.add(decoded);
-        }
-      }
-    }).toJS;
-
-    // Send init message with WASM bytes and defaults.
-    final initCompleter = Completer<_WorkerResult>();
-    plugin._pending[-1] = initCompleter;
-
-    // Serialize defaults for JS: int values stay as-is, Uint8List → JSUint8Array.
-    final jsDefaults = JSObject();
-    for (final MapEntry<String, Object> entry in initialDefaults.entries) {
-      final Object value = entry.value;
-      if (value is int) {
-        jsDefaults.setProperty(entry.key.toJS, value.toJS);
-      } else if (value is Uint8List) {
-        jsDefaults.setProperty(entry.key.toJS, value.toJS);
-      }
-    }
-
-    final initMsg = JSObject();
-    initMsg.setProperty('type'.toJS, 'init'.toJS);
-    initMsg.setProperty('wasmBytes'.toJS, bundle.wasmBytes.buffer.toJS);
-    initMsg.setProperty('sourceId'.toJS, sourceId.toJS);
-    initMsg.setProperty('defaults'.toJS, jsDefaults);
-
-    final JSArrayBuffer wasmTransfer = bundle.wasmBytes.buffer.toJS;
-    worker.postMessage(initMsg, <JSObject>[wasmTransfer].toJS);
-
-    await initCompleter.future;
-
-    return plugin;
   }
 
   // ---------------------------------------------------------------------------
@@ -437,13 +429,10 @@ class AidokuPlugin {
   /// `get_home` and other streaming exports.
   Stream<HomePartialResult> get partialResults => _partialResultsController.stream;
 
-  /// Shut down the Web Worker and free the Blob URL.
+  /// Shut down the worker isolate.
   void dispose() {
-    final shutdownMsg = JSObject();
-    shutdownMsg.setProperty('type'.toJS, 'shutdown'.toJS);
-    _worker.postMessage(shutdownMsg);
-    _worker.terminate();
-    revokeObjectURL(_blobUrl);
+    _cmdPort.send(<String, Object?>{'type': 'shutdown'});
+    _mainPort.close();
     _partialResultsController.close();
     // Complete any pending calls with null.
     for (final Completer<_WorkerResult> completer in _pending.values) {
@@ -456,7 +445,7 @@ class AidokuPlugin {
   // Internal helpers
   // ---------------------------------------------------------------------------
 
-  /// Send a call to the worker and await the result.
+  /// Send a call to the worker isolate and await the result.
   Future<_WorkerResult> _call(
     String exportName, {
     List<Uint8List> rids = const <Uint8List>[],
@@ -467,35 +456,16 @@ class AidokuPlugin {
     final completer = Completer<_WorkerResult>();
     _pending[id] = completer;
 
-    // Build the rids array as JS objects with data property.
-    final JSArray<JSObject> jsRids = <JSObject>[
-      for (final Uint8List bytes in rids) _makeRidObject(bytes),
-    ].toJS;
-
-    // Build the args array as JS values.
-    final JSArray<JSAny?> jsArgs = <JSAny?>[
-      for (final Object? arg in args) arg == null ? null : (arg as num).toJS,
-    ].toJS;
-
-    final callMsg = JSObject();
-    callMsg.setProperty('type'.toJS, 'call'.toJS);
-    callMsg.setProperty('id'.toJS, id.toJS);
-    callMsg.setProperty('export'.toJS, exportName.toJS);
-    callMsg.setProperty('rids'.toJS, jsRids);
-    callMsg.setProperty('args'.toJS, jsArgs);
-    if (returnType != null) {
-      callMsg.setProperty('returnType'.toJS, returnType.toJS);
-    }
-
-    _worker.postMessage(callMsg);
+    _cmdPort.send(<String, Object?>{
+      'type': 'call',
+      'id': id,
+      'export': exportName,
+      'rids': rids,
+      'args': args,
+      if (returnType != null) 'returnType': returnType,
+    });
 
     return completer.future;
-  }
-
-  static JSObject _makeRidObject(Uint8List bytes) {
-    final obj = JSObject();
-    obj.setProperty('data'.toJS, bytes.toJS);
-    return obj;
   }
 
   Future<Uint8List?> _rawGet(String funcName) async {

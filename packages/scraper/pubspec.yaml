@@ -1,0 +1,29 @@
+name: scraper
+description: >-
+  Rust scraper crate FFI bindings for HTML parsing and CSS selectors.
+  Wraps html5ever/Servo's selector engine via a C ABI bridge.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+resolution: workspace
+
+dependencies:
+  code_assets: ^1.0.0
+  ffi: ^2.2.0
+  hooks: ^1.0.0
+  http: ^1.2.0
+  meta: ^1.12.0
+
+dev_dependencies:
+  app_lints:
+    path: ../app_lints
+  checks: ^0.3.0
+  ffigen: ^20.1.1
+  test: ^1.24.0
+
+platforms:
+  android:
+  windows:
+  linux:
