@@ -24,6 +24,9 @@ class ConvertCommand extends Command<void> {
   final String description = 'Convert a manga backup to another format.';
 
   static final List<String> _aliases = BackupFormat.values.map((BackupFormat f) => f.alias).toList();
+  static final List<BackupFormat> _outputFormats = BackupFormat.values
+      .where((BackupFormat f) => f.backupBuilder is! UnimplementedBackupBuilder)
+      .toList();
 
   ConvertCommand() {
     argParser
@@ -37,7 +40,7 @@ class ConvertCommand extends Command<void> {
         'output-format',
         abbr: 'f',
         help: 'The output backup format.',
-        allowed: _aliases,
+        allowed: _outputFormats.map((BackupFormat f) => f.alias).toList(),
       )
       ..addOption(
         'input-format',
@@ -122,7 +125,7 @@ class ConvertCommand extends Command<void> {
       }
       final BackupFormat? picked = await FormatSelectScreen().run(
         context: context!,
-        formats: BackupFormat.values,
+        formats: _outputFormats,
         title: 'Select output format',
       );
       if (picked == null) {
