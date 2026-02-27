@@ -133,7 +133,7 @@ class ExtensionSelectScreen {
           // Line 2: plugin ID + languages (dimmed, indented).
           final String langStr = e.languages.join(', ');
           final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
-          lines.add(truncate('      ${dim(detail)}', width));
+          lines.add('      ${dim(truncate(detail, width - 6))}');
         }
 
         if (visibleEnd < results.length) lines.add(dim('↓ more below'));
