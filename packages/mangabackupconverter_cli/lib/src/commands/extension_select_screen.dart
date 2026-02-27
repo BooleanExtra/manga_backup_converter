@@ -130,13 +130,10 @@ class ExtensionSelectScreen {
           }
           lines.add(truncate(buf.toString(), width));
 
-          // Line 2: languages (dimmed, indented).
+          // Line 2: plugin ID + languages (dimmed, indented).
           final String langStr = e.languages.join(', ');
-          if (langStr.isNotEmpty) {
-            lines.add(truncate('      ${dim(langStr)}', width));
-          } else {
-            lines.add('');
-          }
+          final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
+          lines.add(truncate('      ${dim(detail)}', width));
         }
 
         if (visibleEnd < results.length) lines.add(dim('↓ more below'));
