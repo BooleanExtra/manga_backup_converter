@@ -27,6 +27,8 @@ class WasmIsolateInit {
     required this.statusSlotAddress,
     required this.bufferPtrSlotAddress,
     required this.bufferLenSlotAddress,
+    required this.headersPtrSlotAddress,
+    required this.headersLenSlotAddress,
     required this.sourceId,
     this.initialDefaults = const <String, Object>{},
   });
@@ -45,11 +47,13 @@ class WasmIsolateInit {
   final int statusSlotAddress;
   final int bufferPtrSlotAddress;
   final int bufferLenSlotAddress;
+  final int headersPtrSlotAddress;
+  final int headersLenSlotAddress;
 
   /// Source ID — prepended to all defaults keys in the host imports.
   final String sourceId;
 
-  /// Pre-seeded defaults from settings.json (int | Uint8List values).
+  /// Pre-seeded defaults from settings.json (Uint8List values only).
   final Map<String, Object> initialDefaults;
 }
 
@@ -218,6 +222,8 @@ class WasmHttpMsg {
     required this.statusSlotAddress,
     required this.bufferPtrSlotAddress,
     required this.bufferLenSlotAddress,
+    required this.headersPtrSlotAddress,
+    required this.headersLenSlotAddress,
     this.body,
   });
 
@@ -231,6 +237,8 @@ class WasmHttpMsg {
   final int statusSlotAddress;
   final int bufferPtrSlotAddress;
   final int bufferLenSlotAddress;
+  final int headersPtrSlotAddress;
+  final int headersLenSlotAddress;
 }
 
 class WasmSleepMsg {
@@ -296,7 +304,7 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
   // WASM's perspective) and block this thread via the OS semaphore while the
   // main isolate handles the actual async work.
 
-  ({int statusCode, Uint8List? body}) asyncHttp(
+  ({int statusCode, Uint8List? body, Map<String, String> headers}) asyncHttp(
     String url,
     int method,
     Map<String, String> headers,
@@ -315,6 +323,8 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
         statusSlotAddress: init.statusSlotAddress,
         bufferPtrSlotAddress: init.bufferPtrSlotAddress,
         bufferLenSlotAddress: init.bufferLenSlotAddress,
+        headersPtrSlotAddress: init.headersPtrSlotAddress,
+        headersLenSlotAddress: init.headersLenSlotAddress,
         body: body != null ? List<int>.from(body) : null,
       ),
     );
@@ -323,11 +333,13 @@ Future<void> wasmIsolateMain(WasmIsolateInit init) async {
     // 3. Read result from shared native memory.
     final int result = WasmSharedState.readResult(init.resultSlotAddress);
     if (result != 0) {
-      return (statusCode: -1, body: null);
+      return (statusCode: -1, body: null, headers: const <String, String>{});
     }
     final int statusCode = WasmSharedState.readStatus(init.statusSlotAddress);
     final Uint8List respBody = WasmSharedState.readResponse(init.bufferPtrSlotAddress, init.bufferLenSlotAddress);
-    return (statusCode: statusCode, body: respBody);
+    final Map<String, String> respHeaders =
+        WasmSharedState.readHeaders(init.headersPtrSlotAddress, init.headersLenSlotAddress);
+    return (statusCode: statusCode, body: respBody, headers: respHeaders);
   }
 
   void asyncSleep(int seconds) {

@@ -100,11 +100,6 @@ void main() {
         check(store.defaults).isEmpty();
       });
 
-      test('can set and read back int values', () {
-        store.defaults['pref_key'] = 7;
-        check(store.defaults['pref_key']).equals(7);
-      });
-
       test('can set and read back Uint8List values', () {
         final writer = PostcardWriter()..writeString('hello');
         final Uint8List bytes = writer.bytes;
@@ -114,9 +109,11 @@ void main() {
       });
 
       test('can be pre-seeded with addAll', () {
-        store.defaults.addAll(<String, Object>{'a': 1, 'b': 0});
-        check(store.defaults['a']).equals(1);
-        check(store.defaults['b']).equals(0);
+        final Uint8List a = (PostcardWriter()..writeBool(true)).bytes;
+        final Uint8List b = (PostcardWriter()..writeBool(false)).bytes;
+        store.defaults.addAll(<String, Object>{'a': a, 'b': b});
+        check(store.defaults['a']).isA<Uint8List>().deepEquals(a);
+        check(store.defaults['b']).isA<Uint8List>().deepEquals(b);
       });
     });
 

@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:aidoku_plugin_loader/src/models/setting_item.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
@@ -121,18 +121,21 @@ void main() {
   });
 
   group('SettingItem.defaultEntry', () {
-    test('SwitchSetting true → 1', () {
+    test('SwitchSetting true → postcard bool true', () {
       const item = SwitchSetting(defaultValue: true, key: 'nsfw');
       final ({String key, Object value})? entry = item.defaultEntry;
       check(entry).isNotNull();
       if (entry == null) throw Exception('entry is null');
       check(entry.key).equals('nsfw');
-      check(entry.value).equals(1);
+      check(entry.value).isA<Uint8List>();
+      check(PostcardReader(entry.value as Uint8List).readBool()).isTrue();
     });
 
-    test('SwitchSetting false → 0', () {
+    test('SwitchSetting false → postcard bool false', () {
       const item = SwitchSetting(defaultValue: false, key: 'safe');
-      check(item.defaultEntry?.value).equals(0);
+      final Object? value = item.defaultEntry?.value;
+      check(value).isA<Uint8List>();
+      check(PostcardReader(value! as Uint8List).readBool()).isFalse();
     });
 
     test('SwitchSetting without key → null', () {
@@ -140,43 +143,51 @@ void main() {
       check(item.defaultEntry).isNull();
     });
 
-    test('SelectSetting → index of defaultValue', () {
+    test('SelectSetting → postcard zigzag index of defaultValue', () {
       const item = SelectSetting(
         values: <String>['en', 'ja', 'ko'],
         titles: <String>[],
         key: 'lang',
         defaultValue: 'ja',
       );
-      check(item.defaultEntry?.value).equals(1);
+      final Object? value = item.defaultEntry?.value;
+      check(value).isA<Uint8List>();
+      check(PostcardReader(value! as Uint8List).readSignedVarInt()).equals(1);
     });
 
-    test('SelectSetting with unknown default → 0', () {
+    test('SelectSetting with unknown default → postcard zigzag 0', () {
       const item = SelectSetting(
         values: <String>['en', 'ja'],
         titles: <String>[],
         key: 'lang',
         defaultValue: 'fr',
       );
-      check(item.defaultEntry?.value).equals(0);
+      final Object? value = item.defaultEntry?.value;
+      check(value).isA<Uint8List>();
+      check(PostcardReader(value! as Uint8List).readSignedVarInt()).equals(0);
     });
 
-    test('SegmentSetting → defaultValue int', () {
+    test('SegmentSetting → postcard zigzag defaultValue', () {
       const item = SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'r');
-      check(item.defaultEntry?.value).equals(2);
+      final Object? value = item.defaultEntry?.value;
+      check(value).isA<Uint8List>();
+      check(PostcardReader(value! as Uint8List).readSignedVarInt()).equals(2);
     });
 
-    test('StepperSetting → rounded int', () {
+    test('StepperSetting → postcard zigzag rounded int', () {
       const item = StepperSetting(min: 0, max: 100, step: 1, defaultValue: 20.7, key: 'n');
-      check(item.defaultEntry?.value).equals(21);
+      final Object? value = item.defaultEntry?.value;
+      check(value).isA<Uint8List>();
+      check(PostcardReader(value! as Uint8List).readSignedVarInt()).equals(21);
     });
 
-    test('TextSetting → UTF-8 Uint8List', () {
+    test('TextSetting → postcard string', () {
       const item = TextSetting(defaultValue: 'hello', key: 'api');
       final ({String key, Object value})? entry = item.defaultEntry;
       check(entry).isNotNull();
       if (entry == null) throw Exception('entry is null');
       check(entry.value).isA<Uint8List>();
-      check(utf8.decode(entry.value as Uint8List)).equals('hello');
+      check(PostcardReader(entry.value as Uint8List).readString()).equals('hello');
     });
 
     test('GroupSetting itself → null (children flattened separately)', () {
@@ -203,7 +214,9 @@ void main() {
         const SwitchSetting(defaultValue: false, key: 'b'),
       ];
       final Map<String, Object> result = flattenSettingDefaults(items);
-      check(result).deepEquals(<Object?, Object?>{'a': 1, 'b': 0});
+      check(result).length.equals(2);
+      check(PostcardReader(result['a']! as Uint8List).readBool()).isTrue();
+      check(PostcardReader(result['b']! as Uint8List).readBool()).isFalse();
     });
 
     test('recurses into GroupSetting', () {
@@ -217,8 +230,8 @@ void main() {
         ),
       ];
       final Map<String, Object> result = flattenSettingDefaults(items);
-      check(result['nsfw']).equals(1);
-      check(result['lang']).equals(1);
+      check(PostcardReader(result['nsfw']! as Uint8List).readBool()).isTrue();
+      check(PostcardReader(result['lang']! as Uint8List).readSignedVarInt()).equals(1);
     });
 
     test('recurses into PageSetting', () {
@@ -230,7 +243,7 @@ void main() {
       ];
       final Map<String, Object> result = flattenSettingDefaults(items);
       check(result['token']).isA<Uint8List>();
-      check(utf8.decode(result['token']! as Uint8List)).equals('abc');
+      check(PostcardReader(result['token']! as Uint8List).readString()).equals('abc');
     });
 
     test('skips items without keys', () {
@@ -252,7 +265,7 @@ void main() {
       final Map<String, Object> result = flattenSettingDefaults(items, sourceId: 'en.test');
       check(result.containsKey('en.test.nsfw')).isTrue();
       check(result.containsKey('nsfw')).isFalse();
-      check(result['en.test.nsfw']).equals(0);
+      check(PostcardReader(result['en.test.nsfw']! as Uint8List).readBool()).isFalse();
     });
 
     test('no prefix when sourceId is null', () {

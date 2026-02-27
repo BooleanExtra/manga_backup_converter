@@ -1,57 +1,74 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
 import 'package:aidoku_plugin_loader/src/models/setting_item.dart';
 import 'package:checks/checks.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
   group('flattenSettingDefaults', () {
-    test('switch true seeds 1', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        SwitchSetting(defaultValue: true, key: 'nsfw'),
+    test('switch true seeds postcard bool true', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SwitchSetting(defaultValue: true, key: 'nsfw'),
       ]);
-      check(result['nsfw']).equals(1);
+      final Object? bytes = result['nsfw'];
+      check(bytes).isA<Uint8List>();
+      check(PostcardReader(bytes! as Uint8List).readBool()).isTrue();
     });
 
-    test('switch false seeds 0', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        SwitchSetting(defaultValue: false, key: 'nsfw'),
+    test('switch false seeds postcard bool false', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SwitchSetting(defaultValue: false, key: 'nsfw'),
       ]);
-      check(result['nsfw']).equals(0);
+      final Object? bytes = result['nsfw'];
+      check(bytes).isA<Uint8List>();
+      check(PostcardReader(bytes! as Uint8List).readBool()).isFalse();
     });
 
-    test('select seeds index of default', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        SelectSetting(
+    test('select seeds postcard zigzag int of index', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SelectSetting(
           values: <String>['safe', 'suggestive', 'erotica'],
           titles: <String>['Safe', 'Suggestive', 'Erotica'],
           key: 'content',
           defaultValue: 'suggestive',
         ),
       ]);
-      check(result['content']).equals(1);
+      final Object? bytes = result['content'];
+      check(bytes).isA<Uint8List>();
+      check(PostcardReader(bytes! as Uint8List).readSignedVarInt()).equals(1);
     });
 
-    test('stepper seeds rounded int', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        StepperSetting(min: 0, max: 100, step: 5, defaultValue: 25.0, key: 'limit'),
+    test('segment seeds postcard zigzag int', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'c'),
       ]);
-      check(result['limit']).equals(25);
+      final Object? bytes = result['c'];
+      check(bytes).isA<Uint8List>();
+      check(PostcardReader(bytes! as Uint8List).readSignedVarInt()).equals(2);
     });
 
-    test('text seeds utf8 bytes', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        TextSetting(defaultValue: 'secret', key: 'token'),
+    test('stepper seeds postcard zigzag int (rounded)', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const StepperSetting(min: 0, max: 100, step: 5, defaultValue: 25.0, key: 'limit'),
+      ]);
+      final Object? bytes = result['limit'];
+      check(bytes).isA<Uint8List>();
+      check(PostcardReader(bytes! as Uint8List).readSignedVarInt()).equals(25);
+    });
+
+    test('text seeds postcard string', () {
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const TextSetting(defaultValue: 'secret', key: 'token'),
       ]);
       final Object? bytes = result['token'];
       check(bytes).isA<Uint8List>();
-      check(utf8.decode(bytes! as Uint8List)).equals('secret');
+      check(PostcardReader(bytes! as Uint8List).readString()).equals('secret');
     });
 
     test('multi-select seeds postcard-encoded string list', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        MultiSelectSetting(values: <String>['en', 'ja', 'ko'], defaultValue: <String>['en', 'ja'], key: 'langs'),
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const MultiSelectSetting(values: <String>['en', 'ja', 'ko'], defaultValue: <String>['en', 'ja'], key: 'langs'),
       ]);
       final Object? bytes = result['langs'];
       check(bytes).isA<Uint8List>();
@@ -60,8 +77,8 @@ void main() {
     });
 
     test('group children are flattened', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        GroupSetting(
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const GroupSetting(
           title: 'Advanced',
           items: <SettingItem>[
             SwitchSetting(defaultValue: true, key: 'advanced'),
@@ -69,13 +86,13 @@ void main() {
           ],
         ),
       ]);
-      check(result['advanced']).equals(1);
-      check(result['debug']).equals(0);
+      check(PostcardReader(result['advanced']! as Uint8List).readBool()).isTrue();
+      check(PostcardReader(result['debug']! as Uint8List).readBool()).isFalse();
     });
 
     test('nested groups are fully flattened', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        GroupSetting(
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const GroupSetting(
           title: 'Outer',
           items: <SettingItem>[
             GroupSetting(
@@ -85,27 +102,27 @@ void main() {
           ],
         ),
       ]);
-      check(result['deep']).equals(1);
+      check(PostcardReader(result['deep']! as Uint8List).readBool()).isTrue();
     });
 
     test('settings without keys are skipped', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        SwitchSetting(defaultValue: true), // no key
-        UnknownSetting(type: 'button', title: 'Reset'),
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SwitchSetting(defaultValue: true), // no key
+        const UnknownSetting(type: 'button', title: 'Reset'),
       ]);
       check(result).isEmpty();
     });
 
     test('multiple settings produce all entries', () {
-      final Map<String, Object> result = flattenSettingDefaults(const <SettingItem>[
-        SwitchSetting(defaultValue: true, key: 'a'),
-        SwitchSetting(defaultValue: false, key: 'b'),
-        SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'c'),
+      final Map<String, Object> result = flattenSettingDefaults(<SettingItem>[
+        const SwitchSetting(defaultValue: true, key: 'a'),
+        const SwitchSetting(defaultValue: false, key: 'b'),
+        const SegmentSetting(values: <String>[], titles: <String>[], defaultValue: 2, key: 'c'),
       ]);
       check(result).length.equals(3);
-      check(result['a']).equals(1);
-      check(result['b']).equals(0);
-      check(result['c']).equals(2);
+      check(PostcardReader(result['a']! as Uint8List).readBool()).isTrue();
+      check(PostcardReader(result['b']! as Uint8List).readBool()).isFalse();
+      check(PostcardReader(result['c']! as Uint8List).readSignedVarInt()).equals(2);
     });
   });
 }

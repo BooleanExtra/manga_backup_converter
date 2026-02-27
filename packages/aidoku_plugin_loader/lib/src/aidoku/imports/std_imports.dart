@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/libs/import_context.dart';
+import 'package:intl/intl.dart';
 
 /// `std` module host imports.
 Map<String, Function> buildStdImports(ImportContext ctx) {
@@ -44,9 +45,44 @@ Map<String, Function> buildStdImports(ImportContext ctx) {
   ) {
     try {
       final String dateStr = utf8.decode(ctx.runner.readMemory(strPtr, strLen));
-      final DateTime? parsed = tryParseDate(dateStr);
-      return parsed != null ? parsed.millisecondsSinceEpoch / 1000.0 : -1.0;
-    } on Exception catch (e) {
+      final String format = fmtLen > 0 ? utf8.decode(ctx.runner.readMemory(fmtPtr, fmtLen)) : '';
+      final String locale = localeLen > 0 ? utf8.decode(ctx.runner.readMemory(localePtr, localeLen)) : '';
+      final String timezone = tzLen > 0 ? utf8.decode(ctx.runner.readMemory(tzPtr, tzLen)) : '';
+
+      DateTime? parsed;
+      if (format.isNotEmpty) {
+        // Use intl DateFormat with the provided format string (Unicode TR35/ICU).
+        final String? intlLocale = locale.isNotEmpty ? locale : null;
+        try {
+          final df = DateFormat(format, intlLocale);
+          parsed = df.parseLoose(dateStr.trim());
+        } on FormatException {
+          // Format didn't match — try ISO fallback.
+          parsed = tryParseDate(dateStr);
+        }
+      } else {
+        parsed = tryParseDate(dateStr);
+      }
+
+      if (parsed == null) return -1.0;
+
+      // Timezone handling: "UTC" → treat as UTC, otherwise treat as local.
+      if (timezone.toUpperCase() == 'UTC' || timezone == 'GMT') {
+        if (!parsed.isUtc) {
+          parsed = DateTime.utc(
+            parsed.year,
+            parsed.month,
+            parsed.day,
+            parsed.hour,
+            parsed.minute,
+            parsed.second,
+            parsed.millisecond,
+          );
+        }
+      }
+
+      return parsed.millisecondsSinceEpoch / 1000.0;
+    } on Object catch (e) {
       ctx.onLog?.call('[aidoku] parse_date failed: $e');
       return -1.0;
     }
