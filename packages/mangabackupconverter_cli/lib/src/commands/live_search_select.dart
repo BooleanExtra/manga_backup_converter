@@ -313,7 +313,10 @@ class LiveSearchSelect {
             pluginStatuses.putIfAbsent(pluginId, () => _PluginStatus(name: pluginName));
             render();
 
-          case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final pluginName, :final results)):
+          case _PluginResultEvent(
+            :final generation,
+            event: PluginSearchResults(:final pluginId, :final pluginName, :final results),
+          ):
             if (generation != searchGeneration) break; // Discard stale results.
             cachedResults = [];
             pluginStatuses.putIfAbsent(pluginId, () => _PluginStatus(name: pluginName)).results.addAll(results);

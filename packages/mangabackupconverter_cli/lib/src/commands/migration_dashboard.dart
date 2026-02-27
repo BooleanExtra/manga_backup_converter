@@ -165,7 +165,13 @@ class MigrationDashboard {
       final bool allDone = !entries.any((MigrationEntry e) => e.searching && e.selected);
       final acceptHint = allDone ? 'y to accept selections' : 'searching... ${spinner.frame}';
       lines.add(
-        dim(acceptHint) + dim(' · ') + dim('Space to toggle') + dim(' · ') + dim('Tab details') + dim(' · ') + dim('Enter to choose manually'),
+        dim(acceptHint) +
+            dim(' · ') +
+            dim('Space to toggle') +
+            dim(' · ') +
+            dim('Tab details') +
+            dim(' · ') +
+            dim('Enter to choose manually'),
       );
 
       screen.render(lines);

@@ -213,7 +213,13 @@ class MigrationPipeline {
           .then(
             (PluginSearchPageResult result) {
               if (!cancelled && !controller.isClosed) {
-                controller.add(PluginSearchResults(pluginId: plugin.sourceId, pluginName: plugin.sourceName, results: result.results));
+                controller.add(
+                  PluginSearchResults(
+                    pluginId: plugin.sourceId,
+                    pluginName: plugin.sourceName,
+                    results: result.results,
+                  ),
+                );
                 if (result.warnings.isNotEmpty) {
                   controller.add(
                     PluginSearchError(
