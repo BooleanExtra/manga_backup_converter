@@ -13,7 +13,9 @@ import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
 enum _PluginSearchState { searching, done, failed }
 
 class _PluginStatus {
+  _PluginStatus({this.name});
   _PluginSearchState state = _PluginSearchState.searching;
+  final String? name;
   final results = <PluginSearchResult>[];
 }
 
@@ -152,7 +154,8 @@ class LiveSearchSelect {
           final PluginSearchResult r = results[i];
           if (r.pluginSourceId != lastPlugin) {
             lastPlugin = r.pluginSourceId;
-            final String header = dim('── $lastPlugin ──');
+            final String displayName = r.pluginSourceName ?? r.pluginSourceId;
+            final String header = dim('── $displayName ──');
             displayRows.add((-1, header));
           }
           final String detailAuthors = <String>{
@@ -206,12 +209,13 @@ class LiveSearchSelect {
       // Per-plugin spinners / errors (suppress when showing cached results).
       if (!usingCached) {
         for (final MapEntry<String, _PluginStatus> entry in pluginStatuses.entries) {
+          final String label = entry.value.name ?? entry.key;
           if (entry.value.state == _PluginSearchState.searching) {
-            lines.add('  [${entry.key}] ${spinner.frame}');
+            lines.add('  [$label] ${spinner.frame}');
           } else if (entry.value.state == _PluginSearchState.failed) {
-            lines.add('  ${yellow('[${entry.key}] ⚠ search failed')}');
+            lines.add('  ${yellow('[$label] ⚠ search failed')}');
           } else if (entry.value.state == _PluginSearchState.done && entry.value.results.isEmpty) {
-            lines.add('  ${dim('[${entry.key}] no results')}');
+            lines.add('  ${dim('[$label] no results')}');
           }
         }
       }
@@ -304,15 +308,15 @@ class LiveSearchSelect {
             startSearch(searchInput.query);
             render();
 
-          case _PluginResultEvent(:final generation, event: PluginSearchStarted(:final pluginId)):
+          case _PluginResultEvent(:final generation, event: PluginSearchStarted(:final pluginId, :final pluginName)):
             if (generation != searchGeneration) break;
-            pluginStatuses.putIfAbsent(pluginId, _PluginStatus.new);
+            pluginStatuses.putIfAbsent(pluginId, () => _PluginStatus(name: pluginName));
             render();
 
-          case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final results)):
+          case _PluginResultEvent(:final generation, event: PluginSearchResults(:final pluginId, :final pluginName, :final results)):
             if (generation != searchGeneration) break; // Discard stale results.
             cachedResults = [];
-            pluginStatuses.putIfAbsent(pluginId, _PluginStatus.new).results.addAll(results);
+            pluginStatuses.putIfAbsent(pluginId, () => _PluginStatus(name: pluginName)).results.addAll(results);
             pluginStatuses[pluginId]!.state = _PluginSearchState.done;
             render();
 

@@ -14,6 +14,7 @@ class PluginSearchResult {
     required this.pluginSourceId,
     required this.mangaKey,
     required this.title,
+    this.pluginSourceName,
     this.coverUrl,
     this.authors = const <String>[],
     this.details,
@@ -21,6 +22,7 @@ class PluginSearchResult {
   });
 
   final String pluginSourceId;
+  final String? pluginSourceName;
   final String mangaKey;
   final String title;
   final String? coverUrl;

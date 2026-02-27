@@ -21,6 +21,7 @@ class AidokuPluginSource implements PluginSource {
           .map(
             (Manga m) => PluginSearchResult(
               pluginSourceId: sourceId,
+              pluginSourceName: sourceName,
               mangaKey: m.key,
               title: m.title,
               coverUrl: m.coverUrl,

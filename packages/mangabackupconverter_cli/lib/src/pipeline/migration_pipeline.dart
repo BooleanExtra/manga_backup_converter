@@ -19,15 +19,17 @@ import 'package:mangabackupconverter_cli/src/pipeline/source_manga_data.dart';
 sealed class PluginSearchEvent {}
 
 class PluginSearchStarted extends PluginSearchEvent {
-  PluginSearchStarted({required this.pluginId});
+  PluginSearchStarted({required this.pluginId, this.pluginName});
 
   final String pluginId;
+  final String? pluginName;
 }
 
 class PluginSearchResults extends PluginSearchEvent {
-  PluginSearchResults({required this.pluginId, required this.results});
+  PluginSearchResults({required this.pluginId, required this.results, this.pluginName});
 
   final String pluginId;
+  final String? pluginName;
   final List<PluginSearchResult> results;
 }
 
@@ -164,6 +166,7 @@ class MigrationPipeline {
           }
           final enrichedMatch = PluginSearchResult(
             pluginSourceId: match.pluginSourceId,
+            pluginSourceName: match.pluginSourceName,
             mangaKey: match.mangaKey,
             title: match.title,
             coverUrl: match.coverUrl,
@@ -204,13 +207,13 @@ class MigrationPipeline {
       return controller.stream;
     }
     for (final plugin in plugins) {
-      controller.add(PluginSearchStarted(pluginId: plugin.sourceId));
+      controller.add(PluginSearchStarted(pluginId: plugin.sourceId, pluginName: plugin.sourceName));
       plugin
           .search(query, 1)
           .then(
             (PluginSearchPageResult result) {
               if (!cancelled && !controller.isClosed) {
-                controller.add(PluginSearchResults(pluginId: plugin.sourceId, results: result.results));
+                controller.add(PluginSearchResults(pluginId: plugin.sourceId, pluginName: plugin.sourceName, results: result.results));
                 if (result.warnings.isNotEmpty) {
                   controller.add(
                     PluginSearchError(

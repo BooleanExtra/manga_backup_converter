@@ -276,6 +276,7 @@ class MigrationDashboard {
                     if (result == null) return r;
                     return PluginSearchResult(
                       pluginSourceId: r.pluginSourceId,
+                      pluginSourceName: r.pluginSourceName,
                       mangaKey: r.mangaKey,
                       title: r.title,
                       coverUrl: r.coverUrl,
@@ -399,7 +400,7 @@ List<String> _renderEntry(MigrationEntry entry, bool isCursor, Spinner spinner, 
       final String? chapterCount = d != null ? '${m.chapters.length} chapters' : null;
       final String errorHint = entry.failures.isNotEmpty ? yellow('\u26A0 ${entry.failures.length} error(s)') : '';
       final String infoLine = [
-        m.pluginSourceId,
+        m.pluginSourceName ?? m.pluginSourceId,
         if (matchAuthors.isNotEmpty) matchAuthors,
         if (chapterCount != null) chapterCount,
         if (errorHint.isNotEmpty) errorHint,

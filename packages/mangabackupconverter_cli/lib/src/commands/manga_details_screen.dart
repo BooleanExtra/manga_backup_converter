@@ -55,7 +55,7 @@ class MangaDetailsScreen {
 
     final String authors = <String>{...details.authors, ...details.artists}.join(', ');
     if (authors.isNotEmpty) headerLines.add('Author: $authors');
-    headerLines.add('Source: ${result.pluginSourceId}');
+    headerLines.add('Source: ${result.pluginSourceName ?? result.pluginSourceId}');
 
     if (details.description != null && details.description!.isNotEmpty) {
       headerLines.add('');
