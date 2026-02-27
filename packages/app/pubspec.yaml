@@ -43,7 +43,7 @@ dependencies:
     sdk: flutter
   fpdart: ^1.1.0
   freezed_annotation: ^3.0.0
-  go_router: ^15.1.2
+  go_router: ^17.1.0
   google_fonts: ^6.2.1
   hooks_riverpod: ^3.0.0
   http: ^1.4.0
