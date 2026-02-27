@@ -211,7 +211,7 @@ jobs:
   build_ios:
     name: Build Flutter for iOS (Without Signing)
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -396,7 +396,7 @@ jobs:
   build_android:
     name: Build Flutter for Android
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -531,7 +531,7 @@ jobs:
   build_windows:
     name: Build Flutter for Windows x64
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: windows-latest
     steps:
       # Need to enable long paths for Windows because the forked version of go_router
@@ -623,7 +623,7 @@ jobs:
   build_linux:
     name: Build Flutter for Linux
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -720,7 +720,7 @@ jobs:
   build_cli_windows:
     name: Build CLI for Windows x64
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: windows-latest
     steps:
       - name: Enable Git Long Paths
@@ -822,7 +822,7 @@ jobs:
   build_cli_linux:
     name: Build CLI for Linux x64
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -908,7 +908,7 @@ jobs:
   build_cli_macos:
     name: Build CLI for macOS arm64
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -985,7 +985,7 @@ jobs:
   build_macos:
     name: Build Flutter for MacOS
     needs: [test]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -1078,7 +1078,7 @@ jobs:
   build_web:
     name: Build Flutter for Web
     needs: [test, test_web]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
