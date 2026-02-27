@@ -8,21 +8,21 @@
             "name": "debug mode",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main.dart"
+            "program": "packages/app/lib/main.dart"
         },
         {
             "name": "profile mode",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "program": "lib/main.dart"
+            "program": "packages/app/lib/main.dart"
         },
         {
             "name": "release mode",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "program": "lib/main.dart"
+            "program": "packages/app/lib/main.dart"
         },
         {
             "name": "Import Paperback (debug mode)",
