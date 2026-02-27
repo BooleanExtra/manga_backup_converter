@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:mangabackupconverter_cli/src/commands/live_search_select.dart';
+import 'package:mangabackupconverter_cli/src/commands/manga_details_screen.dart';
 import 'package:mangabackupconverter_cli/src/commands/terminal_ui.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/migration_pipeline.dart';
 import 'package:mangabackupconverter_cli/src/pipeline/plugin_source.dart';
@@ -164,7 +165,7 @@ class MigrationDashboard {
       final bool allDone = !entries.any((MigrationEntry e) => e.searching && e.selected);
       final acceptHint = allDone ? 'y to accept selections' : 'searching... ${spinner.frame}';
       lines.add(
-        dim(acceptHint) + dim(' · ') + dim('Space to toggle') + dim(' · ') + dim('Enter to choose manually'),
+        dim(acceptHint) + dim(' · ') + dim('Space to toggle') + dim(' · ') + dim('Tab details') + dim(' · ') + dim('Enter to choose manually'),
       );
 
       screen.render(lines);
@@ -200,6 +201,36 @@ class MigrationDashboard {
               pendingRetries.add(toggled);
               if (activeEntry == null) startNextSearch();
             }
+            render();
+
+          case _KeyEvent(key: Tab()):
+            final MigrationEntry tabEntry = entries[cursorIndex];
+            if (tabEntry.match == null) break;
+
+            await keySub.cancel();
+            screen.clear();
+
+            final detailsScreen = MangaDetailsScreen();
+            await detailsScreen.run(
+              context: context,
+              result: tabEntry.match!,
+              fetchDetails: (String mangaKey) {
+                if (tabEntry.match!.details != null) {
+                  return Future.value(
+                    (tabEntry.match!.details!, tabEntry.match!.chapters),
+                  );
+                }
+                return onFetchDetails(
+                  tabEntry.match!.pluginSourceId,
+                  mangaKey,
+                );
+              },
+            );
+
+            keySub = context.keyInput.stream.listen(
+              (KeyEvent key) => events.add(_KeyEvent(key)),
+            );
+            context.hideCursor();
             render();
 
           case _KeyEvent(key: CharKey(char: 'y')):
