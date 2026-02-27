@@ -8,7 +8,6 @@ void main() {
   test(
     'ensure_gen',
     () => expectBuildClean(packageRelativeDirectory: 'packages/app'),
-    // Skipped because build_verify package does not support flutter gen-l10n.
     skip: false,
   );
 }
