@@ -60,7 +60,7 @@ done < <(
 #   copy_if_exists "$file"
 # done < <(
 #   git -C "$main_worktree" ls-files --others --exclude-standard \
-#     | grep -E '^(packages|lib|test|integration_test)/' \
+#     | grep -E '^packages/' \
 #     | grep -vE '(/\.dart_tool/|/build/|/\.pub[-/]|/\.packages)' \
 #     || true
 # )

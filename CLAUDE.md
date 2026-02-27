@@ -8,7 +8,8 @@ Manga Backup Converter — a Flutter/Dart monorepo that converts manga backup fi
 
 ## Monorepo Structure (Melos)
 
-- Root: Flutter app (iOS, Android, macOS, Windows, Linux, Web)
+- Root: Monorepo workspace config (melos scripts, dependency_overrides)
+- `packages/app/` — Flutter app (iOS, Android, macOS, Windows, Linux, Web)
 - `packages/mangabackupconverter_cli/` — Core conversion logic (pure Dart, no Flutter dependency)
 - `packages/aidoku_plugin_loader/` — Aidoku WASM plugin loader (host imports, isolate management, picks runtime)
 - `packages/wasm_runner/` — Abstract WASM runner interface (`WasmRunner`, `WasmRuntimeException`, `WasmTrapException`)
@@ -44,8 +45,8 @@ melos run dart_test:pkg          # Dart tests for a specific package
                                  # Interactive melos scripts (dart_test:pkg, generate:pkg) fail in non-TTY shells;
                                  # run `dart test --reporter expanded` directly in the package directory instead
                                  # Native WASM tests skip automatically if test fixture is absent
-                                 # Root pubspec.yaml must depend on packages with build hooks (native code assets)
-                                 # for `dart test` from root to discover them (e.g. wasm3, jsoup)
+                                 # App pubspec.yaml (packages/app) must depend on packages with build hooks (native code assets)
+                                 # for `dart test` from packages/app to discover them (e.g. wasm3, jsoup)
 melos run cli                    # Run CLI directly (args forwarded automatically)
 melos run jnigen                 # Generate JNI bindings for jsoup (uses system JDK for javadoc)
 melos run jni_setup              # Build dartjni.dll (uses bundled JDK, handles MSYS2)
@@ -55,7 +56,7 @@ melos run format                 # Format all packages
 melos run fix                    # Auto-fix lint issues
 ```
 
-Build: `flutter build <platform>`
+Build: `cd packages/app && flutter build <platform>`
 
 ## CLI Build Output
 
@@ -70,7 +71,7 @@ Build: `flutter build <platform>`
 **Riverpod App Architecture** — feature-first with layered structure per feature:
 
 ```txt
-lib/src/features/<feature>/
+packages/app/lib/src/features/<feature>/
   ├── domain/         # Entities, value objects (freezed + modddels)
   ├── data/           # Repositories, DTOs (dart_mappable), data sources
   ├── application/    # Riverpod providers/controllers (riverpod_generator)
@@ -120,7 +121,7 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - ffigen config in `packages/wasm3/ffigen.yaml`; uses `ffi-native` mode — generates `@Native`-annotated top-level functions
 - `Wasm3Runner` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`)
 - **WASM runner conditional export**: `aidoku_plugin_loader/lib/src/wasm/wasm_runner.dart` re-exports `wasm3` on native, `web_wasm_runner` on web via `if (dart.library.js_interop)`
-- Root `pubspec.yaml` must depend on `wasm3` (has build hook) for `dart test` from root to discover code assets
+- `packages/app/pubspec.yaml` must depend on packages with build hooks (wasm3, scraper, swiftsoup) for `dart test` from `packages/app/` to discover code assets
 - **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and the active WASM runner route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them
 - `_processCmd` in `wasm_isolate.dart` replies via `cmd.replyPort.send()` — when changing reply format (e.g. to a tuple), update ALL corresponding `await port.first as ...` casts in `aidoku_plugin_io.dart`
 - **Isolate error handling**: `wasmIsolateMain` and `_processCmd` use `on Object catch` (not `on Exception catch`) — `Error` subtypes (`ArgumentError`, `RangeError`, `StateError`) from the WASM runner/FFI must be caught or the isolate dies silently, causing `port.first` hangs on the main isolate
@@ -210,6 +211,7 @@ GitHub Actions runs on all branches: format verification, analysis, tests with c
 - `test_with_coverage` defaults to VM service port 8181; concurrent `melos exec` causes port conflicts and hangs — test scripts use `concurrency: 1`
 - CI `test` job installs Rust toolchain (`dtolnay/rust-toolchain@stable`) on Windows/Linux before tests — scraper build hook needs `cargo`; without it, the hook downloads rustup from scratch and hangs
 - CI `test` job has `timeout-minutes: 30` as a safety net against hangs
+- CI flutter build jobs use `working-directory: packages/app` — build artifacts are under `packages/app/build/`
 
 ## Commits
 
