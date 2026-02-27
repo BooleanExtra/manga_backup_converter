@@ -299,6 +299,25 @@ melos:
       run: melos run dart_test:pkg --no-select
       description: Run all Dart tests in this project.
 
+    dart_test_no_coverage:pkg:
+      run: dart test --reporter expanded
+      exec:
+        failFast: true
+        concurrency: 1
+      description: Run Dart tests without coverage (for Windows/macOS CI).
+      packageFilters:
+        dirExists: test
+        dependsOn: test
+        noDependsOn: flutter jni
+        ignore:
+          - web_wasm_runner
+          - swiftsoup
+          - jsoup_jni
+
+    dart_test_no_coverage:
+      run: melos run dart_test_no_coverage:pkg --no-select
+      description: Run all Dart tests without coverage.
+
     flutter_web_test:pkg:
       run: flutter test --platform chrome
       exec:

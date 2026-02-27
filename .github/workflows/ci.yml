@@ -146,7 +146,12 @@ jobs:
         run: melos bootstrap
 
       - name: Run Tests
+        if: runner.os == 'Linux'
         run: melos run test
+
+      - name: Run Tests (no coverage)
+        if: runner.os != 'Linux'
+        run: melos run flutter_test && melos run dart_test_no_coverage
 
       - name: Upload Coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/v')
