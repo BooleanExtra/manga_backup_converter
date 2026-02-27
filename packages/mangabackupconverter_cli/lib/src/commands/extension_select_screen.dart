@@ -49,14 +49,14 @@ class ExtensionSelectScreen {
         )) {
           return true;
         }
+        final String rating = switch (e.contentRating) {
+          0 => 'safe',
+          1 => 'suggestive',
+          2 => 'nsfw',
+          _ => '',
+        };
+        if (rating.isNotEmpty && rating.contains(lowerQuery)) return true;
         if (e is AidokuExtensionEntry) {
-          final String rating = switch (e.contentRating) {
-            0 => 'safe',
-            1 => 'suggestive',
-            2 => 'nsfw',
-            _ => '',
-          };
-          if (rating.isNotEmpty && rating.contains(lowerQuery)) return true;
           if (e.altNames.any(
             (String alt) => alt.toLowerCase().contains(lowerQuery),
           )) {
@@ -78,8 +78,7 @@ class ExtensionSelectScreen {
         for (final ExtensionEntry e in results)
           () {
             final String langStr = e.languages.join(', ');
-            final String detail =
-                langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
+            final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
             return 1 + wrappedLineCount(detail, width - 6);
           }(),
       ];
@@ -116,8 +115,7 @@ class ExtensionSelectScreen {
         if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
         // Scroll down: ensure cursor fits in the viewport from scrollOffset.
         while (scrollOffset < cursorIndex) {
-          final int visible =
-              countFitting(scrollOffset, entryBudget(scrollOffset));
+          final int visible = countFitting(scrollOffset, entryBudget(scrollOffset));
           if (cursorIndex < scrollOffset + visible) break;
           scrollOffset++;
         }
@@ -155,22 +153,19 @@ class ExtensionSelectScreen {
 
           // Line 1: checkbox + name + version + content rating.
           final buf = StringBuffer('$prefix$checkbox ${e.name}');
-          if (e is AidokuExtensionEntry) {
-            buf.write(' v${e.version}');
-            final String rating = switch (e.contentRating) {
-              0 => 'Safe',
-              1 => 'Suggestive',
-              2 => 'NSFW',
-              _ => '',
-            };
-            if (rating.isNotEmpty) buf.write(' · $rating');
-          }
+          if (e is AidokuExtensionEntry) buf.write(' v${e.version}');
+          final String rating = switch (e.contentRating) {
+            0 => 'Safe',
+            1 => 'Suggestive',
+            2 => 'NSFW',
+            _ => '',
+          };
+          if (rating.isNotEmpty) buf.write(' · $rating');
           lines.add(truncate(buf.toString(), width));
 
           // Detail lines: plugin ID + languages (dimmed, indented, wrapped).
           final String langStr = e.languages.join(', ');
-          final String detail =
-              langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
+          final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
           for (final String line in wordWrap(detail, width - 6)) {
             lines.add('      ${dim(line)}');
           }

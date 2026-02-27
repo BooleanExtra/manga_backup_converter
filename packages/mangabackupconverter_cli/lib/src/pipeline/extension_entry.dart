@@ -5,11 +5,13 @@ sealed class ExtensionEntry {
     required this.id,
     required this.name,
     this.languages = const <String>[],
+    this.contentRating = 0,
   });
 
   final String id;
   final String name;
   final List<String> languages;
+  final int contentRating;
 
   String get cacheKey;
 }
@@ -22,7 +24,7 @@ class AidokuExtensionEntry extends ExtensionEntry {
     required this.iconUrl,
     required this.downloadUrl,
     super.languages,
-    this.contentRating = 0,
+    super.contentRating,
     this.baseUrl,
     this.altNames = const <String>[],
   });
@@ -44,7 +46,6 @@ class AidokuExtensionEntry extends ExtensionEntry {
   final int version;
   final String iconUrl;
   final String downloadUrl;
-  final int contentRating;
   final String? baseUrl;
   final List<String> altNames;
 

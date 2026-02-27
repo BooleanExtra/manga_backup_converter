@@ -56,8 +56,15 @@ class ConvertCommand extends Command<void> {
       ..addMultiOption(
         'extensions',
         abbr: 'e',
-        help: 'Extension IDs to install (e.g. multi.mangadex). '
+        help:
+            'Extension IDs to install (e.g. multi.mangadex). '
             'Skips interactive extension selection.',
+      )
+      ..addOption(
+        'max-rating',
+        help: 'Maximum extension content rating (safe, suggestive, nsfw).',
+        allowed: <String>['safe', 'suggestive', 'nsfw'],
+        defaultsTo: 'suggestive',
       )
       ..addOption(
         'output',
@@ -322,6 +329,11 @@ class ConvertCommand extends Command<void> {
           }
 
           final List<String> extensionIds = results.multiOption('extensions');
+          final int maxRating = switch (results.option('max-rating')) {
+            'safe' => 0,
+            'nsfw' => 2,
+            _ => 1,
+          };
 
           final pluginCache = PluginCache();
           final cachingLoader = CachingPluginLoader(
@@ -331,7 +343,16 @@ class ConvertCommand extends Command<void> {
           final pipeline = MigrationPipeline(
             repoUrls: repoUrls,
             pluginLoader: cachingLoader,
-            onSelectExtensions: (List<ExtensionEntry> extensions) async {
+            onSelectExtensions: (List<ExtensionEntry> allExtensions) async {
+              final List<ExtensionEntry> extensions = allExtensions
+                  .where((ExtensionEntry e) => e.contentRating <= maxRating)
+                  .toList();
+              if (extensions.isEmpty) {
+                throw const MigrationException(
+                  'No extensions available at the selected content rating.',
+                );
+              }
+
               // --extensions flag: filter by ID, skip TUI/auto-select.
               if (extensionIds.isNotEmpty) {
                 final Set<String> idSet = extensionIds.toSet();
