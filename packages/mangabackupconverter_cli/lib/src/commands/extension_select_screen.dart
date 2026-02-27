@@ -112,7 +112,10 @@ class ExtensionSelectScreen {
 
       // Adjust scrollOffset so cursorIndex is visible.
       scrollOffset = scrollOffset.clamp(0, max(0, results.length - 1));
-      if (cursorIndex >= 0) {
+      if (cursorIndex < 0) {
+        // Search bar focused — show from the top.
+        scrollOffset = 0;
+      } else {
         if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
         // Scroll down: ensure cursor fits in the viewport from scrollOffset.
         while (scrollOffset < cursorIndex) {

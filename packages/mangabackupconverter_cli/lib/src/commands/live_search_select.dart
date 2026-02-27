@@ -179,7 +179,9 @@ class LiveSearchSelect {
 
       // Adjust scroll offset in display-row space.
       var displayScroll = scrollOffset;
-      if (cursorIndex >= 0 && displayRows.isNotEmpty) {
+      if (cursorIndex < 0) {
+        displayScroll = 0;
+      } else if (displayRows.isNotEmpty) {
         final int cdr = cursorDisplayRow();
         if (cdr < displayScroll) displayScroll = cdr;
         if (cdr >= displayScroll + maxVisible) {
