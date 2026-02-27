@@ -1,5 +1,5 @@
-name: mangabackupconverter
-description: An opinionated template for a Flutter project.
+name: mangabackupconverter_workspace
+description: Manga Backup Converter monorepo workspace.
 
 publish_to: none
 
@@ -7,60 +7,9 @@ version: 0.1.0
 
 environment:
   sdk: ^3.11.0
-  flutter: ">=3.29.0 <4.0.0"
 
 workspace:
   - packages/*
-
-dependencies:
-  accessibility_tools: ^2.5.0
-  aidoku_plugin_loader:
-    path: packages/aidoku_plugin_loader
-  assets:
-    path: packages/assets
-  scraper:
-    path: packages/scraper
-  swiftsoup:
-    path: packages/swiftsoup
-  wasm3:
-    path: packages/wasm3
-  awesome_flutter_extensions: ^1.2.0
-  collection: ^1.18.0
-  connectivity_plus: ^7.0.0
-  constants:
-    path: packages/constants
-  cupertino_icons: ^1.0.6
-  dart_mappable: ^4.1.0
-  flex_color_picker: ^3.7.1
-  flex_color_scheme: ^8.1.1
-  flutter:
-    sdk: flutter
-  flutter_adaptive_scaffold: ^0.3.3
-  flutter_flavor: ^3.1.1
-  flutter_hooks: ^0.21.2
-  flutter_native_splash: ^2.4.0
-  flutter_settings_ui: ^3.0.1
-  flutter_web_plugins:
-    sdk: flutter
-  fpdart: ^1.1.0
-  freezed_annotation: ^3.0.0
-  go_router: ^15.1.2
-  google_fonts: ^6.2.1
-  hooks_riverpod: ^3.0.0
-  http: ^1.4.0
-  logging: ^1.2.0
-  package_info_plus: ^8.0.2
-  path: ^1.9.0
-  path_provider: ^2.1.5
-  riverpod: ^3.0.0
-  riverpod_annotation: ^3.0.0
-  shared_preferences: ^2.3.3
-  skeletonizer: ^2.1.3
-  super_clipboard: ^0.8.22
-  universal_html: ^2.2.4
-  url_launcher: ^6.2.6
-  window_manager: ^0.5.1
-  wolt_modal_sheet: ^0.11.0
 
 dependency_overrides:
   propertylistserialization:
@@ -69,42 +18,7 @@ dependency_overrides:
       ref: fix/webCompatibility
 
 dev_dependencies:
-  app_lints:
-    path: packages/app_lints
-  build_runner: any
-  build_verify: ^3.1.0
-  change_app_package_name: ^1.1.0
-  custom_lint: ^0.8.0
-  dart_mappable_builder: ^4.2.3
-  flutter_launcher_icons: ^0.14.3
-  flutter_test:
-    sdk: flutter
-  freezed: ^3.0.0
-  integration_test:
-    sdk: flutter
-  mason: ^0.1.0-dev.52
   melos: ^7.4.0
-  mocktail: ^1.0.3
-  msix: ^3.16.7
-  patrol: ^4.1.1
-  riverpod_generator: ^3.0.0
-  riverpod_lint: ^3.0.0
-  sqflite_common_ffi_web: ^0.4.3+1
-  test: any
-
-flutter:
-  uses-material-design: true
-
-msix_config:
-  display_name: Flutter Template App
-  install_certificate: false
-
-patrol:
-  app_name: Manga Backup Converter
-  android:
-    package_name: dev.getboolean.mangabackupconverter
-  ios:
-    bundle_id: dev.getboolean.mangabackupconverter
 
 melos:
   command:
