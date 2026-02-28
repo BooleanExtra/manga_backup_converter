@@ -112,7 +112,7 @@ void addAlias(Map<String, Function> map, String name, Function fn) {
 
 /// Synchronously dispatch an HTTP request and return the response.
 typedef AsyncHttpDispatch =
-    ({int statusCode, Uint8List? body}) Function(
+    ({int statusCode, Uint8List? body, Map<String, String> headers}) Function(
       String url,
       int method,
       Map<String, String> headers,

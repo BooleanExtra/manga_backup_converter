@@ -11,6 +11,10 @@ environment:
 workspace:
   - packages/*
 
+dependencies:
+  flutter:
+    sdk: flutter
+
 dependency_overrides:
   propertylistserialization:
     git:
@@ -21,6 +25,7 @@ dev_dependencies:
   melos: ^7.4.0
 
 melos:
+  sdkPath: auto
   command:
     bootstrap:
       # It seems so that running "pub get" in parallel has some issues (like
@@ -172,6 +177,7 @@ melos:
           - web_wasm_runner
           - swiftsoup
           - jsoup_jni
+          - app
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
@@ -227,6 +233,7 @@ melos:
           - web_wasm_runner
           - swiftsoup
           - jsoup_jni
+          - app
 
     dart_test_no_coverage:
       run: melos run dart_test_no_coverage:pkg --no-select
@@ -265,6 +272,7 @@ melos:
           - assets
           - constants
           - wasm_runner
+          - app
 
     web_test:
       run: melos run flutter_web_test && melos run dart_web_test

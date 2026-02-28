@@ -184,11 +184,11 @@ class MigrationDashboard {
     try {
       await for (final _DashboardEvent event in events.stream) {
         switch (event) {
-          case _KeyEvent(key: ArrowUp()):
+          case _KeyEvent(key: ArrowUp() || ScrollUp()):
             cursorIndex = max(0, cursorIndex - 1);
             render();
 
-          case _KeyEvent(key: ArrowDown()):
+          case _KeyEvent(key: ArrowDown() || ScrollDown()):
             cursorIndex = min(entries.length - 1, cursorIndex + 1);
             render();
 

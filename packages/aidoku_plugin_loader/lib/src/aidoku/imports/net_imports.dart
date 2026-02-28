@@ -39,7 +39,7 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
       final HttpRequestResource? req = ctx.store.get<HttpRequestResource>(rid);
       if (req == null || req.url == null) return -1;
       if (ctx.asyncHttp == null) return -1;
-      final ({Uint8List? body, int statusCode}) resp = ctx.asyncHttp!(
+      final ({Uint8List? body, Map<String, String> headers, int statusCode}) resp = ctx.asyncHttp!(
         req.url!,
         req.method,
         Map<String, String>.from(req.headers),
@@ -48,6 +48,7 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
       );
       req.statusCode = resp.statusCode;
       req.responseBody = resp.body;
+      req.responseHeaders.addAll(resp.headers);
       return rid;
     },
     'send_all': (int ridsPtr, int count) {
@@ -57,7 +58,7 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
         final int rid = ByteData.sublistView(ridBytes).getInt32(0, Endian.little);
         final HttpRequestResource? req = ctx.store.get<HttpRequestResource>(rid);
         if (req == null || req.url == null) continue;
-        final ({Uint8List? body, int statusCode}) resp = ctx.asyncHttp!(
+        final ({Uint8List? body, Map<String, String> headers, int statusCode}) resp = ctx.asyncHttp!(
           req.url!,
           req.method,
           Map<String, String>.from(req.headers),
@@ -66,6 +67,7 @@ Map<String, Function> buildNetImports(ImportContext ctx) {
         );
         req.statusCode = resp.statusCode;
         req.responseBody = resp.body;
+        req.responseHeaders.addAll(resp.headers);
       }
       return 0;
     },

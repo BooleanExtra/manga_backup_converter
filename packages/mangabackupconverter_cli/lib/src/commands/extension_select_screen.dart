@@ -23,6 +23,7 @@ class ExtensionSelectScreen {
   Future<List<ExtensionEntry>?> run({
     required TerminalContext context,
     required List<ExtensionEntry> extensions,
+    int hiddenByRating = 0,
   }) async {
     final searchInput = SearchInputState();
     var cursorIndex = -1; // -1 = search bar, >= 0 = result index
@@ -49,14 +50,14 @@ class ExtensionSelectScreen {
         )) {
           return true;
         }
+        final String rating = switch (e.contentRating) {
+          0 => 'safe',
+          1 => 'suggestive',
+          2 => 'nsfw',
+          _ => '',
+        };
+        if (rating.isNotEmpty && rating.contains(lowerQuery)) return true;
         if (e is AidokuExtensionEntry) {
-          final String rating = switch (e.contentRating) {
-            0 => 'safe',
-            1 => 'suggestive',
-            2 => 'nsfw',
-            _ => '',
-          };
-          if (rating.isNotEmpty && rating.contains(lowerQuery)) return true;
           if (e.altNames.any(
             (String alt) => alt.toLowerCase().contains(lowerQuery),
           )) {
@@ -71,23 +72,61 @@ class ExtensionSelectScreen {
       final int width = context.width;
       final List<ExtensionEntry> results = filtered();
 
-      // Two lines per entry, plus ~8 lines for chrome.
-      final int maxVisible = max(1, (context.height - 8) ~/ 2);
+      final int availableLines = context.height - 8;
 
-      // Always clamp scrollOffset to valid range for current results.
-      final int maxScroll = max(0, results.length - maxVisible);
-      scrollOffset = scrollOffset.clamp(0, maxScroll);
+      // Pre-compute heights for all results.
+      final List<int> heights = [
+        for (final ExtensionEntry e in results)
+          () {
+            final String langStr = e.languages.join(', ');
+            final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
+            return 1 + wrappedLineCount(detail, width - 6);
+          }(),
+      ];
 
-      // Adjust scroll.
-      if (cursorIndex >= 0) {
-        if (results.isNotEmpty) {
-          cursorIndex = cursorIndex.clamp(0, results.length - 1);
+      /// How many entries fit starting from [from] within [budget] lines.
+      int countFitting(int from, int lineBudget) {
+        var remaining = lineBudget;
+        var count = 0;
+        for (var i = from; i < results.length && remaining > 0; i++) {
+          if (heights[i] > remaining && count > 0) break;
+          remaining -= heights[i];
+          count++;
         }
+        return max(1, count);
+      }
+
+      // Clamp cursorIndex first.
+      if (cursorIndex >= 0 && results.isNotEmpty) {
+        cursorIndex = cursorIndex.clamp(0, results.length - 1);
+      }
+
+      // Budget available for entries, reserving lines for scroll indicators.
+      int entryBudget(int from) {
+        var budget = availableLines;
+        if (from > 0) budget--; // "↑ more above"
+        final int visible = countFitting(from, budget);
+        if (from + visible < results.length) budget--; // "↓ more below"
+        return max(1, budget);
+      }
+
+      // Adjust scrollOffset so cursorIndex is visible.
+      scrollOffset = scrollOffset.clamp(0, max(0, results.length - 1));
+      if (cursorIndex < 0) {
+        // Search bar focused — show from the top.
+        scrollOffset = 0;
+      } else {
         if (cursorIndex < scrollOffset) scrollOffset = cursorIndex;
-        if (cursorIndex >= scrollOffset + maxVisible) {
-          scrollOffset = cursorIndex - maxVisible + 1;
+        // Scroll down: ensure cursor fits in the viewport from scrollOffset.
+        while (scrollOffset < cursorIndex) {
+          final int visible = countFitting(scrollOffset, entryBudget(scrollOffset));
+          if (cursorIndex < scrollOffset + visible) break;
+          scrollOffset++;
         }
       }
+
+      final int budget = entryBudget(scrollOffset);
+      final int maxVisible = countFitting(scrollOffset, budget);
 
       final lines = <String>[];
 
@@ -97,9 +136,10 @@ class ExtensionSelectScreen {
       // Header.
       final int selectedCount = selected.length;
       final int shownCount = results.length;
+      final hiddenLabel = hiddenByRating > 0 ? ' ($hiddenByRating hidden by rating)' : '';
       lines.add(
         '┌ ${bold('Extensions')} · '
-        '$selectedCount selected · $shownCount shown',
+        '$selectedCount selected · $shownCount shown$hiddenLabel',
       );
       lines.add('│');
 
@@ -118,24 +158,21 @@ class ExtensionSelectScreen {
 
           // Line 1: checkbox + name + version + content rating.
           final buf = StringBuffer('$prefix$checkbox ${e.name}');
-          if (e is AidokuExtensionEntry) {
-            buf.write(' v${e.version}');
-            final String rating = switch (e.contentRating) {
-              0 => 'Safe',
-              1 => 'Suggestive',
-              2 => 'NSFW',
-              _ => '',
-            };
-            if (rating.isNotEmpty) buf.write(' · $rating');
-          }
+          if (e is AidokuExtensionEntry) buf.write(' v${e.version}');
+          final String rating = switch (e.contentRating) {
+            0 => 'Safe',
+            1 => 'Suggestive',
+            2 => 'NSFW',
+            _ => '',
+          };
+          if (rating.isNotEmpty) buf.write(' · $rating');
           lines.add(truncate(buf.toString(), width));
 
-          // Line 2: languages (dimmed, indented).
+          // Detail lines: plugin ID + languages (dimmed, indented, wrapped).
           final String langStr = e.languages.join(', ');
-          if (langStr.isNotEmpty) {
-            lines.add(truncate('      ${dim(langStr)}', width));
-          } else {
-            lines.add('');
+          final String detail = langStr.isNotEmpty ? '${e.id} · $langStr' : e.id;
+          for (final String line in wordWrap(detail, width - 6)) {
+            lines.add('      ${dim(line)}');
           }
         }
 
@@ -178,12 +215,12 @@ class ExtensionSelectScreen {
             result = extensions.where((ExtensionEntry e) => selected.contains(e.id)).toList();
             unawaited(events.close());
 
-          case _KeyEvent(key: ArrowUp()):
+          case _KeyEvent(key: ArrowUp() || ScrollUp()):
             cursorIndex = max(-1, cursorIndex - 1);
             searchInput.focused = cursorIndex < 0;
             render();
 
-          case _KeyEvent(key: ArrowDown()):
+          case _KeyEvent(key: ArrowDown() || ScrollDown()):
             final List<ExtensionEntry> results = filtered();
             cursorIndex = min(
               max(0, results.length) - 1,

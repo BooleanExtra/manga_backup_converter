@@ -100,11 +100,6 @@ void main() {
         check(store.defaults).isEmpty();
       });
 
-      test('can set and read back int values', () {
-        store.defaults['pref_key'] = 7;
-        check(store.defaults['pref_key']).equals(7);
-      });
-
       test('can set and read back Uint8List values', () {
         final writer = PostcardWriter()..writeString('hello');
         final Uint8List bytes = writer.bytes;
@@ -114,9 +109,11 @@ void main() {
       });
 
       test('can be pre-seeded with addAll', () {
-        store.defaults.addAll(<String, Object>{'a': 1, 'b': 0});
-        check(store.defaults['a']).equals(1);
-        check(store.defaults['b']).equals(0);
+        final Uint8List a = (PostcardWriter()..writeBool(true)).bytes;
+        final Uint8List b = (PostcardWriter()..writeBool(false)).bytes;
+        store.defaults.addAll(<String, Object>{'a': a, 'b': b});
+        check(store.defaults['a']).isA<Uint8List>().deepEquals(a);
+        check(store.defaults['b']).isA<Uint8List>().deepEquals(b);
       });
     });
 
@@ -142,6 +139,35 @@ void main() {
         check(events[0]).deepEquals(<Object?>[1]);
         check(events[1]).deepEquals(<Object?>[2]);
         check(events[2]).deepEquals(<Object?>[3]);
+      });
+    });
+
+    group('JsContextResource disposal', () {
+      late HostStore store;
+      setUp(() => store = HostStore());
+      tearDown(() => store.dispose());
+
+      test('onDispose called when resource removed', () {
+        var disposed = false;
+        final int rid = store.add(
+          JsContextResource(context: Object(), onDispose: () => disposed = true),
+        );
+        store.remove(rid);
+        check(disposed).isTrue();
+      });
+
+      test('onDispose called on store dispose', () {
+        var disposed = false;
+        store.add(
+          JsContextResource(context: Object(), onDispose: () => disposed = true),
+        );
+        store.dispose();
+        check(disposed).isTrue();
+      });
+
+      test('onDispose not called for non-JsContext resources', () {
+        final int rid = store.add(BytesResource(Uint8List(0)));
+        store.remove(rid); // should not throw
       });
     });
 

@@ -57,6 +57,16 @@ class HtmlElementsResource extends HostResource {
   final Elements elements;
 }
 
+class JsContextResource extends HostResource {
+  JsContextResource({required this.context, required this.onDispose});
+
+  /// The JS context object (QuickJsContext on native, Object on web).
+  final Object context;
+
+  /// Callback to dispose the underlying JS context.
+  final void Function() onDispose;
+}
+
 /// Host-side resource registry mapping i32 Rids to resources.
 /// WASM reads Dart resources by calling back into host imports.
 class HostStore {
@@ -96,15 +106,22 @@ class HostStore {
 
   /// Remove a resource by Rid.
   void remove(int rid) {
-    _map.remove(rid);
+    final HostResource? r = _map.remove(rid);
+    if (r is JsContextResource) r.onDispose();
     if (_map.isEmpty) _nextId = 1;
   }
 
   bool contains(int rid) => _map.containsKey(rid);
 
   void dispose() {
-    _map.clear();
-    _partialResultsController.close();
+    try {
+      for (final HostResource r in _map.values) {
+        if (r is JsContextResource) r.onDispose();
+      }
+    } finally {
+      _map.clear();
+      _partialResultsController.close();
+    }
   }
 }
 

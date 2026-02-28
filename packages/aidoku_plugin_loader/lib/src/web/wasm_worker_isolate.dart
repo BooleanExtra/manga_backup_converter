@@ -32,7 +32,7 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
 
 /// Synchronous XHR — blocks the worker thread. This is fine in a Web Worker
 /// and is required because WASM host imports must return synchronously.
-({int statusCode, Uint8List? body, String? retryAfter}) _syncXhr(
+({int statusCode, Uint8List? body, Map<String, String> headers, String? retryAfter}) _syncXhr(
   String url,
   int method,
   Map<String, String> headers,
@@ -66,11 +66,24 @@ const List<String> _httpMethods = <String>['GET', 'POST', 'PUT', 'PATCH', 'DELET
     if (resp != null && !resp.isUndefinedOrNull) {
       responseBody = (resp as JSArrayBuffer).toDart.asUint8List();
     }
-    return (statusCode: statusCode, body: responseBody ?? Uint8List(0), retryAfter: retryAfter);
+    // Parse response headers into a map (lowercased keys).
+    final Map<String, String> respHeaders = _parseAllResponseHeaders(xhr.getAllResponseHeaders().toDart);
+    return (statusCode: statusCode, body: responseBody ?? Uint8List(0), headers: respHeaders, retryAfter: retryAfter);
   } on Object catch (e) {
     print('[aidoku/net] XHR error: $e');
-    return (statusCode: -1, body: null, retryAfter: null);
+    return (statusCode: -1, body: null, headers: const <String, String>{}, retryAfter: null);
   }
+}
+
+/// Parse the raw header string from `getAllResponseHeaders()` into a Map.
+Map<String, String> _parseAllResponseHeaders(String raw) {
+  final result = <String, String>{};
+  for (final String line in raw.split('\r\n')) {
+    final int idx = line.indexOf(':');
+    if (idx < 0) continue;
+    result[line.substring(0, idx).trim().toLowerCase()] = line.substring(idx + 1).trim();
+  }
+  return result;
 }
 
 /// Busy-wait sleep — blocks the worker thread.
@@ -137,7 +150,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
   // must live in-worker rather than on the main isolate.
   RateLimiter? rateLimiter;
 
-  ({int statusCode, Uint8List? body}) rateLimitedXhr(
+  ({int statusCode, Uint8List? body, Map<String, String> headers}) rateLimitedXhr(
     String url,
     int method,
     Map<String, String> headers,
@@ -154,7 +167,7 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
         limiter.recordRequest();
       }
 
-      final ({int statusCode, Uint8List? body, String? retryAfter}) result = _syncXhr(
+      final ({int statusCode, Uint8List? body, Map<String, String> headers, String? retryAfter}) result = _syncXhr(
         url,
         method,
         headers,
@@ -167,10 +180,10 @@ Future<void> wasmWorkerMain(Map<String, Object?> init) async {
         _busyWaitMs(delayMs);
         continue;
       }
-      return (statusCode: result.statusCode, body: result.body);
+      return (statusCode: result.statusCode, body: result.body, headers: result.headers);
     }
     // Unreachable — loop always returns.
-    return (statusCode: 429, body: null);
+    return (statusCode: 429, body: null, headers: const <String, String>{});
   }
 
   // Create jsoup HTML parser for this web worker isolate.

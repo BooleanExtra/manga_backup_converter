@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aidoku_plugin_loader/src/codec/postcard_writer.dart';
@@ -162,7 +161,7 @@ class SwitchSetting extends SettingItem {
   ({String key, Object value})? get defaultEntry {
     final String? k = key;
     if (k == null) return null;
-    return (key: k, value: defaultValue ? 1 : 0);
+    return (key: k, value: (PostcardWriter()..writeBool(defaultValue)).bytes);
   }
 }
 
@@ -188,7 +187,7 @@ class SelectSetting extends SettingItem {
     final String? k = key;
     if (k == null) return null;
     final int idx = defaultValue != null ? values.indexOf(defaultValue!) : -1;
-    return (key: k, value: idx >= 0 ? idx : 0);
+    return (key: k, value: (PostcardWriter()..writeSignedVarInt(idx >= 0 ? idx : 0)).bytes);
   }
 }
 
@@ -213,7 +212,7 @@ class SegmentSetting extends SettingItem {
   ({String key, Object value})? get defaultEntry {
     final String? k = key;
     if (k == null) return null;
-    return (key: k, value: defaultValue);
+    return (key: k, value: (PostcardWriter()..writeSignedVarInt(defaultValue)).bytes);
   }
 }
 
@@ -263,7 +262,7 @@ class StepperSetting extends SettingItem {
   ({String key, Object value})? get defaultEntry {
     final String? k = key;
     if (k == null) return null;
-    return (key: k, value: defaultValue.round());
+    return (key: k, value: (PostcardWriter()..writeSignedVarInt(defaultValue.round())).bytes);
   }
 }
 
@@ -284,7 +283,7 @@ class TextSetting extends SettingItem {
   ({String key, Object value})? get defaultEntry {
     final String? k = key;
     if (k == null) return null;
-    return (key: k, value: Uint8List.fromList(utf8.encode(defaultValue)));
+    return (key: k, value: (PostcardWriter()..writeString(defaultValue)).bytes);
   }
 }
 

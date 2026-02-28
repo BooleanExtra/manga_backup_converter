@@ -197,6 +197,23 @@ Values can be `Uint8List` (stored as-is), `String` (UTF-8 encoded), `bool`, or `
 For a JSON-parsed field (e.g. a login token read via `defaults_get_json::<T>`), the stored bytes
 must be postcard-encoded `String(json_text)` — e.g. for `"{}"`:  `[0x02, 0x7B, 0x7D]`.
 
+### Module: `"js"`
+
+JavaScript execution context for plugins that need to decode obfuscated content (e.g. encrypted manga chapter data). Native uses QuickJS; web uses the JS Function constructor within the Worker scope.
+
+| Name                   | Signature                                              | Dart behavior                                        | Status       |
+|------------------------|--------------------------------------------------------|------------------------------------------------------|--------------|
+| `context_create`       | `() → i32`                                             | Create a JS execution context; return RID (>0) or -1 on error | Implemented  |
+| `context_eval`         | `(ctx_rid: i32, str_ptr: i32, len: i32) → i32`        | Evaluate JS code in context; return string RID or error (-1=MissingResult, -2=InvalidContext) | Implemented  |
+| `context_get`          | `(ctx_rid: i32, name_ptr: i32, name_len: i32) → i32`  | Get named variable from context as string RID; same error codes | Implemented  |
+| `webview_create`       | `() → i32`                                             | Stub — returns -1                                    | Stubbed      |
+| `webview_load`         | `(webview: i32, request: i32) → i32`                   | Stub — returns -1                                    | Stubbed      |
+| `webview_load_html`    | `(webview: i32, html_ptr: i32, html_len: i32, base_ptr: i32, base_len: i32) → i32` | Stub — returns -1 | Stubbed      |
+| `webview_wait_for_load`| `(webview: i32) → i32`                                 | Stub — returns -1                                    | Stubbed      |
+| `webview_eval`         | `(webview: i32, str_ptr: i32, len: i32) → i32`        | Stub — returns -1                                    | Stubbed      |
+
+**Result encoding**: `context_eval` and `context_get` store the JS result as raw UTF-8 bytes via `ctx.storeString()`. Strings are returned as-is; objects/arrays are JSON-stringified; numbers and booleans are converted to their string representation. `undefined` and `null` return -1 (MissingResult).
+
 ---
 
 ## String/RID read pattern (inside WASM)

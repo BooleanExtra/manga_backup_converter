@@ -8,6 +8,7 @@ import 'package:aidoku_plugin_loader/src/aidoku/_aidoku_decode.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/aix_parser.dart';
 import 'package:aidoku_plugin_loader/src/aidoku/libs/host_store.dart';
 import 'package:aidoku_plugin_loader/src/codec/postcard_reader.dart';
+import 'package:aidoku_plugin_loader/src/codec/postcard_writer.dart';
 import 'package:aidoku_plugin_loader/src/models/chapter.dart';
 import 'package:aidoku_plugin_loader/src/models/filter.dart';
 import 'package:aidoku_plugin_loader/src/models/filter_info.dart';
@@ -116,16 +117,16 @@ class AidokuPlugin {
         if (value == null) {
           // skip
         } else if (value is bool) {
-          initialDefaults[key] = value ? 1 : 0;
+          initialDefaults[key] = (PostcardWriter()..writeBool(value)).bytes;
         } else if (value is int) {
-          initialDefaults[key] = value;
+          initialDefaults[key] = (PostcardWriter()..writeSignedVarInt(value)).bytes;
         } else if (value is Uint8List) {
           initialDefaults[key] = value;
         } else if (value is String) {
-          initialDefaults[key] = Uint8List.fromList(utf8.encode(value));
+          initialDefaults[key] = (PostcardWriter()..writeString(value)).bytes;
         } else {
-          // double, List, Map → JSON-encoded UTF-8 bytes
-          initialDefaults[key] = Uint8List.fromList(utf8.encode(jsonEncode(value)));
+          // double, List, Map → JSON-encoded as postcard string
+          initialDefaults[key] = (PostcardWriter()..writeString(jsonEncode(value))).bytes;
         }
       }
     }
@@ -149,6 +150,8 @@ class AidokuPlugin {
         statusSlotAddress: sharedState.statusSlotAddress,
         bufferPtrSlotAddress: sharedState.bufferPtrSlotAddress,
         bufferLenSlotAddress: sharedState.bufferLenSlotAddress,
+        headersPtrSlotAddress: sharedState.headersPtrSlotAddress,
+        headersLenSlotAddress: sharedState.headersLenSlotAddress,
         sourceId: sourceId,
         initialDefaults: initialDefaults,
       ),
@@ -243,7 +246,12 @@ class AidokuPlugin {
           continue;
         }
 
-        _sharedState.writeResponse(statusCode: response.statusCode, body: body);
+        // Collect response headers (lowercased keys for case-insensitive lookup).
+        final respHeaders = <String, String>{};
+        response.headers.forEach((String key, String value) {
+          respHeaders[key.toLowerCase()] = value;
+        });
+        _sharedState.writeResponse(statusCode: response.statusCode, body: body, headers: respHeaders);
         return;
       }
     } on Object catch (e) {
