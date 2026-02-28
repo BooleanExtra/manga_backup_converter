@@ -1059,7 +1059,7 @@ jobs:
           retry_on: error
           command: |
             brew install create-dmg
-            create-dmg --volname ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos --window-pos 200 120 --window-size 800 450 --icon-size 100 --app-drop-link 600 185 ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos.dmg packages/app/build/macos/Build/Products/Release/${{ github.event.repository.name }}.app
+            create-dmg --volname ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos --window-pos 200 120 --window-size 800 450 --icon-size 100 --app-drop-link 600 185 ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos.dmg packages/app/build/macos/Build/Products/Release/mangabackupconverter.app
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
