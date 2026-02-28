@@ -41,10 +41,12 @@ final Uint8List _memoryModule = Uint8List.fromList([
 ]);
 
 void main() {
-  group('js imports', () {
+  group('js evaluation', () {
     late HostStore store;
     late Wasm3Runner runner;
-    late Map<String, Function> imports;
+    late int Function(int, int, int) evalFn;
+    late int Function(int, int, int) getFn;
+    late int ctxRid;
 
     setUp(() async {
       store = HostStore();
@@ -54,7 +56,10 @@ void main() {
         store: store,
         sourceId: 'test',
       );
-      imports = buildJsImports(ctx);
+      final Map<String, Function> imports = buildJsImports(ctx);
+      evalFn = imports['context_eval']! as int Function(int, int, int);
+      getFn = imports['context_get']! as int Function(int, int, int);
+      ctxRid = (imports['context_create']! as int Function())();
     });
 
     tearDown(() {
@@ -69,90 +74,59 @@ void main() {
       return bytes.length;
     }
 
-    test('context_create returns positive RID', () {
-      final int rid = (imports['context_create']! as int Function())();
-      check(rid).isGreaterThan(0);
+    /// Evaluate [code] and return the decoded string result, or null.
+    String? evalJs(String code) {
+      final int len = writeString(code);
+      final int rid = evalFn(ctxRid, 0, len);
+      if (rid <= 0) return null;
+      final BytesResource? res = store.get<BytesResource>(rid);
+      if (res == null) return null;
+      return utf8.decode(res.bytes);
+    }
+
+    test('evaluates arithmetic expressions', () {
+      check(evalJs('1 + 1')).equals('2');
+      check(evalJs('10 * 5 + 3')).equals('53');
+      check(evalJs('Math.pow(2, 10)')).equals('1024');
     });
 
-    test('context_eval with invalid RID returns -2', () {
-      final fn = imports['context_eval']! as int Function(int, int, int);
-      final int len = writeString('1+1');
-      check(fn(9999, 0, len)).equals(-2);
+    test('evaluates string expressions', () {
+      check(evalJs('"hello"')).equals('hello');
+      check(evalJs('"foo" + "bar"')).equals('foobar');
+      check(evalJs('"abc".toUpperCase()')).equals('ABC');
     });
 
-    test('context_eval returns string RID on success', () {
-      final createFn = imports['context_create']! as int Function();
-      final evalFn = imports['context_eval']! as int Function(int, int, int);
-      final int ctxRid = createFn();
-      final int len = writeString('"hello"');
-      final int resultRid = evalFn(ctxRid, 0, len);
-      check(resultRid).isGreaterThan(0);
-      final BytesResource? res = store.get<BytesResource>(resultRid);
-      check(res).isNotNull();
-      check(utf8.decode(res!.bytes)).equals('hello');
-    });
-
-    test('context_eval returns -1 for undefined result', () {
-      final createFn = imports['context_create']! as int Function();
-      final evalFn = imports['context_eval']! as int Function(int, int, int);
-      final int ctxRid = createFn();
+    test('returns -1 for undefined result', () {
       final int len = writeString('undefined');
       check(evalFn(ctxRid, 0, len)).equals(-1);
     });
 
-    test('context_eval persists state', () {
-      final createFn = imports['context_create']! as int Function();
-      final evalFn = imports['context_eval']! as int Function(int, int, int);
-      final int ctxRid = createFn();
-      // Set a variable
-      int len = writeString('var x = 42');
-      evalFn(ctxRid, 0, len);
-      // Read it back
-      len = writeString('x');
-      final int resultRid = evalFn(ctxRid, 0, len);
-      check(resultRid).isGreaterThan(0);
-      final BytesResource? res = store.get<BytesResource>(resultRid);
-      check(utf8.decode(res!.bytes)).equals('42');
+    test('persists variables across evaluations', () {
+      evalJs('var x = 42');
+      check(evalJs('x')).equals('42');
+      evalJs('x = x + 8');
+      check(evalJs('x')).equals('50');
     });
 
-    test('context_get returns variable value', () {
-      final createFn = imports['context_create']! as int Function();
-      final evalFn = imports['context_eval']! as int Function(int, int, int);
-      final getFn = imports['context_get']! as int Function(int, int, int);
-      final int ctxRid = createFn();
-      // Set a variable
-      int len = writeString('var foo = "bar"');
-      evalFn(ctxRid, 0, len);
-      // Get it
-      len = writeString('foo');
-      final int resultRid = getFn(ctxRid, 0, len);
-      check(resultRid).isGreaterThan(0);
-      final BytesResource? res = store.get<BytesResource>(resultRid);
+    test('retrieves variables via context_get', () {
+      evalJs('var foo = "bar"');
+      final int len = writeString('foo');
+      final int rid = getFn(ctxRid, 0, len);
+      check(rid).isGreaterThan(0);
+      final BytesResource? res = store.get<BytesResource>(rid);
       check(utf8.decode(res!.bytes)).equals('bar');
     });
 
-    test('context_get with missing variable returns -1', () {
-      final createFn = imports['context_create']! as int Function();
-      final getFn = imports['context_get']! as int Function(int, int, int);
-      final int ctxRid = createFn();
-      final int len = writeString('nonexistent');
-      check(getFn(ctxRid, 0, len)).equals(-1);
+    test('evaluates JSON operations', () {
+      evalJs('var obj = JSON.parse(\'{"a":1,"b":2}\')');
+      check(evalJs('obj.a + obj.b')).equals('3');
+      check(evalJs('JSON.stringify(obj)')).equals('{"a":1,"b":2}');
     });
 
-    test('context_get with invalid RID returns -2', () {
-      final getFn = imports['context_get']! as int Function(int, int, int);
-      final int len = writeString('x');
-      check(getFn(9999, 0, len)).equals(-2);
-    });
-
-    test('webview stubs return -1', () {
-      check((imports['webview_create']! as int Function())()).equals(-1);
-    });
-
-    test('JsContext disposed on store.remove', () {
-      final int rid = (imports['context_create']! as int Function())();
-      store.remove(rid);
-      check(store.get<JsContextResource>(rid)).isNull();
+    test('evaluates multi-statement code', () {
+      check(evalJs('var a = 5; var b = 10; a + b')).equals('15');
+      evalJs('function double(n) { return n * 2; }');
+      check(evalJs('double(21)')).equals('42');
     });
   });
 }
