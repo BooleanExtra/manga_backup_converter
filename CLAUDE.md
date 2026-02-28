@@ -33,7 +33,7 @@ git config core.hooksPath .githooks   # Enable .githooks/post-checkout for workt
 
 ```bash
 melos bootstrap                  # Install deps + generate env files + activate coverage
-                                 # If bare `melos` is not on PATH, use `dart run melos` as fallback
+                                 # If bare `melos` is not on PATH, use `flutter pub run melos` as fallback (root is a Flutter package)
                                  # Melos config is in root pubspec.yaml (workspace: key), NOT melos.yaml
 melos run generate               # Run all code generation (assets, env, build_runner, format)
 melos run generate:pkg           # Run build_runner for a specific package (interactive)
