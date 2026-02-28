@@ -228,6 +228,7 @@ melos:
           - web_wasm_runner
           - swiftsoup
           - jsoup_jni
+          - app
 
     dart_test_no_coverage:
       run: melos run dart_test_no_coverage:pkg --no-select
