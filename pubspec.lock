@@ -1213,7 +1213,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6e04e19ddc1a26cbba169979df1bb4d01baf9503"
+      resolved-ref: "807475e82deca7d667414f8c0500b6723d2cc21d"
       url: "https://github.com/BooleanExtra/quickjs-dart"
     source: git
     version: "1.1.0-dev.1"
