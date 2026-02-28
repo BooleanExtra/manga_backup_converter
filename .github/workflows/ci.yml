@@ -273,7 +273,6 @@ jobs:
       # Zip into IPA from here:
       # https://gist.github.com/devhammed/617d920b7ee886591a46c22633ab0093
       - name: Build Flutter IPA
-        working-directory: packages/app
         run: |
           flutter build ios --release --no-codesign
           cd build/ios/iphoneos
@@ -287,12 +286,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-ios
-          path: packages/app/build/ios/iphoneos/${{ github.event.repository.name }}-*.ipa
+          path: build/ios/iphoneos/${{ github.event.repository.name }}-*.ipa
       - name: Release IPA
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/app/build/ios/iphoneos/${{ github.event.repository.name }}-*.ipa
+          artifacts: build/ios/iphoneos/${{ github.event.repository.name }}-*.ipa
           allowUpdates: true
           omitBodyDuringUpdate: true
 
@@ -485,7 +484,6 @@ jobs:
       #     omitBodyDuringUpdate: true
 
       - name: Build Universal APK
-        working-directory: packages/app
         run: |
           flutter pub get
           flutter build apk --release
@@ -496,18 +494,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal
-          path: packages/app/build/app/outputs/flutter-apk/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
+          path: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
 
       - name: Release Universal APKs
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/app/build/app/outputs/flutter-apk/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
+          artifacts: build/app/outputs/flutter-apk/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
           allowUpdates: true
           omitBodyDuringUpdate: true
 
       - name: Build Android App Bundle
-        working-directory: packages/app
         run: |
           flutter pub get
           flutter build appbundle --release
@@ -518,13 +515,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-appbundle
-          path: packages/app/build/app/outputs/bundle/release/*.aab
+          path: build/app/outputs/bundle/release/*.aab
 
       - name: Release Android App Bundle
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/app/build/app/outputs/bundle/release/${{ github.event.repository.name }}-*.aab
+          artifacts: build/app/outputs/bundle/release/${{ github.event.repository.name }}-*.aab
           allowUpdates: true
           omitBodyDuringUpdate: true
 
@@ -597,11 +594,9 @@ jobs:
         run: melos bootstrap
 
       - name: Build Windows
-        working-directory: packages/app
         run: flutter build windows --release
 
       - name: Build MSIX
-        working-directory: packages/app
         run: |
           dart run msix:create --build-windows false
           cd build\windows\x64\runner\Release
@@ -610,13 +605,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-windows
-          path: packages/app/build/windows/x64/runner/Release/*.msix
+          path: build/windows/x64/runner/Release/*.msix
 
       - name: Release MSIX
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/app/build/windows/x64/runner/Release/${{ github.event.repository.name }}-*.msix
+          artifacts: build/windows/x64/runner/Release/${{ github.event.repository.name }}-*.msix
           allowUpdates: true
           omitBodyDuringUpdate: true
 
@@ -689,7 +684,6 @@ jobs:
         run: melos bootstrap
 
       - name: Build Linux
-        working-directory: packages/app
         run: flutter build linux --release
 
       - name: Build AppImage
@@ -698,22 +692,22 @@ jobs:
           chmod a+x appimagetool-x86_64.AppImage
           mv appimagetool-x86_64.AppImage appimagetool
 
-          mv packages/app/build/linux/x64/release/bundle/{${{ github.event.repository.name }},AppRun}
-          cp packages/app/linux/appimage/* packages/app/build/linux/x64/release/bundle/
-          ./appimagetool packages/app/build/linux/x64/release/bundle/
-          mv *.AppImage packages/app/build/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-linux.AppImage
+          mv build/linux/x64/release/bundle/{${{ github.event.repository.name }},AppRun}
+          cp linux/appimage/* build/linux/x64/release/bundle/
+          ./appimagetool build/linux/x64/release/bundle/
+          mv *.AppImage build/${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-linux.AppImage
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-linux-appimage
-          path: packages/app/build/${{ github.event.repository.name }}-*.AppImage
+          path: build/${{ github.event.repository.name }}-*.AppImage
 
       - name: Release AppImage
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: packages/app/build/${{ github.event.repository.name }}-*.AppImage
+          artifacts: build/${{ github.event.repository.name }}-*.AppImage
           allowUpdates: true
           omitBodyDuringUpdate: true
 
@@ -1045,7 +1039,6 @@ jobs:
         run: melos bootstrap
 
       - name: Build MacOS
-        working-directory: packages/app
         run: |
           git config --global core.longpaths true
           flutter pub get
@@ -1059,7 +1052,7 @@ jobs:
           retry_on: error
           command: |
             brew install create-dmg
-            create-dmg --volname ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos --window-pos 200 120 --window-size 800 450 --icon-size 100 --app-drop-link 600 185 ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos.dmg packages/app/build/macos/Build/Products/Release/mangabackupconverter.app
+            create-dmg --volname ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos --window-pos 200 120 --window-size 800 450 --icon-size 100 --app-drop-link 600 185 ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-macos.dmg build/macos/Build/Products/Release/mangabackupconverter.app
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
@@ -1144,7 +1137,6 @@ jobs:
           dart run sqflite_common_ffi_web:setup --force
 
       - name: Build Web
-        working-directory: packages/app
         run: |
           flutter pub get
           flutter build web --release
@@ -1153,7 +1145,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-web
-          path: packages/app/build/web
+          path: build/web
 
   deploy_web:
     name: Deploy Flutter Web to GitHub Pages
@@ -1205,7 +1197,6 @@ jobs:
 
       - name: Get Dependencies
         if: github.actor != 'dependabot[bot]'
-        working-directory: packages/app
         run: flutter pub get
 
       - name: Activate Melos
@@ -1225,7 +1216,6 @@ jobs:
 
       - name: Build Web
         if: github.actor != 'dependabot[bot]'
-        working-directory: packages/app
         run: |
           flutter build web --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
 
@@ -1237,7 +1227,7 @@ jobs:
           # PAT required to trigger gh_pages_readme.yml workflow
           token: ${{ secrets.PAT }}
           branch: gh-pages # The branch the action should deploy to.
-          folder: packages/app/build/web # The folder the action should deploy.
+          folder: build/web # The folder the action should deploy.
           target-folder: "${{ steps.branch-name.outputs.current_branch }}"
 
       # Ref: https://github.com/orgs/community/discussions/27071

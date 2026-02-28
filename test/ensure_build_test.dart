@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test(
     'ensure_gen',
-    () => expectBuildClean(packageRelativeDirectory: 'packages/app'),
+    () => expectBuildClean(packageRelativeDirectory: '.'),
     skip: false,
   );
 }
