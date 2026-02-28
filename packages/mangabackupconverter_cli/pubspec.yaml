@@ -23,7 +23,7 @@ dependencies:
   meta: ^1.12.0
   path: ^1.9.0
   propertylistserialization: ^1.4.0
-  protobuf: ^3.1.0
+  protobuf: ^6.0.0
   sqflite_common: ^2.5.4
   sqflite_common_ffi: ^2.3.3
   sqflite_common_ffi_web: ^0.4.4
