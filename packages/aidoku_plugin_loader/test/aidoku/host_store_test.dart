@@ -142,6 +142,35 @@ void main() {
       });
     });
 
+    group('JsContextResource disposal', () {
+      late HostStore store;
+      setUp(() => store = HostStore());
+      tearDown(() => store.dispose());
+
+      test('onDispose called when resource removed', () {
+        var disposed = false;
+        final int rid = store.add(
+          JsContextResource(context: Object(), onDispose: () => disposed = true),
+        );
+        store.remove(rid);
+        check(disposed).isTrue();
+      });
+
+      test('onDispose called on store dispose', () {
+        var disposed = false;
+        store.add(
+          JsContextResource(context: Object(), onDispose: () => disposed = true),
+        );
+        store.dispose();
+        check(disposed).isTrue();
+      });
+
+      test('onDispose not called for non-JsContext resources', () {
+        final int rid = store.add(BytesResource(Uint8List(0)));
+        store.remove(rid); // should not throw
+      });
+    });
+
     group('dispose', () {
       test('clears all resources', () {
         final store = HostStore();

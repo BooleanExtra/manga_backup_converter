@@ -21,6 +21,10 @@ dependencies:
     path: ../scraper
   swiftsoup:
     path: ../swiftsoup
+  quickjs:
+    git:
+      url: https://github.com/getBoolean/quickjs-dart
+      ref: fix/pinnedDart
   wasm3:
     path: ../wasm3
   awesome_flutter_extensions: ^1.2.0

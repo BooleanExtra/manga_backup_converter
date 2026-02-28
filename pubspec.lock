@@ -1208,6 +1208,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  quickjs:
+    dependency: transitive
+    description:
+      path: "."
+      ref: "fix/pinnedDart"
+      resolved-ref: "3548e2427150a4b454be3eb0ac867bfd1345200b"
+      url: "https://github.com/getBoolean/quickjs-dart"
+    source: git
+    version: "1.1.0-dev.1"
   quiver:
     dependency: transitive
     description:
