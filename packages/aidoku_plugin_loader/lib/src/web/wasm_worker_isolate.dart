@@ -278,8 +278,7 @@ void _processCall(
     Object? ptr;
     try {
       ptr = runner.call(exportName, resolvedArgs);
-    } on Object catch (e) {
-      if (e is! ArgumentError) rethrow;
+    } on WasmRuntimeException {
       // Export not found — return null result.
       mainPort.send(<String, Object?>{
         'type': 'result',

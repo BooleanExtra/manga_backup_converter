@@ -61,7 +61,7 @@ class SourceListManager {
       _urls.map((url) async {
         try {
           return await fetchRemoteSourceList(url);
-        } on Object catch (e) {
+        } on Exception catch (e) {
           failures.add(SourceListFetchFailure(url: url, error: e));
           return null;
         }
@@ -96,10 +96,21 @@ class SourceListFetchFailure {
 /// Thrown by [SourceListManager.fetchRemoteSourceList] when the server
 /// returns a non-200 status code.
 class SourceListFetchException implements Exception {
-  const SourceListFetchException({required this.url, required this.statusCode});
+  const SourceListFetchException({
+    required this.url,
+    required this.statusCode,
+    this.cause,
+    this.stackTrace,
+  });
 
   final String url;
   final int statusCode;
+
+  /// The underlying error that caused this exception, if any.
+  final Object? cause;
+
+  /// The stack trace of the [cause], if available.
+  final StackTrace? stackTrace;
 
   @override
   String toString() => 'SourceListFetchException: HTTP $statusCode for $url';

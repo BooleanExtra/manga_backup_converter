@@ -55,8 +55,11 @@ class AidokuBackup with AidokuBackupMappable implements ConvertableBackup {
   Future<Uint8List> toData() async {
     try {
       return Uint8List.sublistView(PropertyListSerialization.dataWithPropertyList(toMap()));
-    } on PropertyListWriteStreamException catch (e) {
-      throw AidokuException(e);
+    } on PropertyListWriteStreamException catch (e, st) {
+      Error.throwWithStackTrace(
+        AidokuException(e.toString(), e, st),
+        st,
+      );
     }
   }
 

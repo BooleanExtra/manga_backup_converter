@@ -44,7 +44,7 @@ void main() async {
   if (result.exitCode != 0) {
     print('Maven stdout:\n${result.stdout}');
     print('Maven stderr:\n${result.stderr}');
-    throw Exception('Maven build failed (exit code ${result.exitCode})');
+    throw StateError('Maven build failed (exit code ${result.exitCode})');
   }
   print(result.stdout.toString().split('\n').where((String l) => l.contains('[INFO]')).join('\n'));
 
@@ -53,7 +53,7 @@ void main() async {
       '$teavmDir${Platform.pathSeparator}target${Platform.pathSeparator}js${Platform.pathSeparator}jsoup-bridge.js';
   final jsFile = File(jsPath);
   if (!jsFile.existsSync()) {
-    throw Exception('TeaVM output not found at $jsPath');
+    throw StateError('TeaVM output not found at $jsPath');
   }
   final String js = await jsFile.readAsString();
   final int sizeKb = js.length ~/ 1024;
@@ -64,7 +64,7 @@ void main() async {
   // raw string delimited by triple-single-quotes. Any literal ''' in the JS
   // would break this, but TeaVM's minified output does not produce them.
   if (js.contains("'''")) {
-    throw Exception(
+    throw StateError(
       'TeaVM output contains triple single quotes — cannot embed as raw string literal. '
       'Use a different escaping strategy.',
     );

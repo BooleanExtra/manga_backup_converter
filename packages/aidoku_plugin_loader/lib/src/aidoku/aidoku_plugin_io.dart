@@ -21,6 +21,7 @@ import 'package:aidoku_plugin_loader/src/native/wasm_isolate.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_semaphore_io.dart';
 import 'package:aidoku_plugin_loader/src/native/wasm_shared_state_io.dart';
 import 'package:http/http.dart' as http;
+import 'package:wasm_runner/wasm_runner.dart';
 
 /// A loaded Aidoku WASM source plugin (native implementation).
 ///
@@ -288,11 +289,11 @@ class AidokuPlugin {
         await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
-    if (error != null) throw Exception(error);
+    if (error != null) throw WasmRuntimeException(error);
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
       return decodeMangaPageResult(PostcardReader(data));
-    } on Object {
+    } on Exception {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }
@@ -311,11 +312,11 @@ class AidokuPlugin {
         await port.first as (Uint8List?, String?, List<String>);
     port.close();
     _recentWarnings.addAll(warnings);
-    if (error != null) throw Exception(error);
+    if (error != null) throw WasmRuntimeException(error);
     if (data == null) return null;
     try {
       return decodeManga(PostcardReader(data));
-    } on Object {
+    } on Exception {
       return null;
     }
   }
@@ -352,7 +353,7 @@ class AidokuPlugin {
     if (data == null) return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     try {
       return decodeMangaPageResult(PostcardReader(data));
-    } on Object {
+    } on Exception {
       return const MangaPageResult(manga: <Manga>[], hasNextPage: false);
     }
   }

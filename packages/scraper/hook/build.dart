@@ -122,7 +122,7 @@ Future<String> _ensureCargo(Uri sharedDir) async {
     runInShell: true,
   );
   if (dlResult.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'Failed to download rustup-init: ${dlResult.stderr}',
     );
   }
@@ -142,13 +142,13 @@ Future<String> _ensureCargo(Uri sharedDir) async {
     runInShell: true,
   );
   if (installResult.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'rustup-init failed: ${installResult.stderr}',
     );
   }
 
   if (!File(cargoBin).existsSync()) {
-    throw Exception('cargo binary not found after rustup installation');
+    throw StateError('cargo binary not found after rustup installation');
   }
 
   print('scraper: Rust toolchain installed.');
@@ -193,7 +193,7 @@ Future<Uri> _cargoBuild({
   );
 
   if (result.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'cargo build failed:\n${result.stdout}\n${result.stderr}',
     );
   }
@@ -203,7 +203,7 @@ Future<Uri> _cargoBuild({
     '${cargoDir.path}${Platform.pathSeparator}target${Platform.pathSeparator}$target${Platform.pathSeparator}release${Platform.pathSeparator}$libName',
   );
   if (!builtLib.existsSync()) {
-    throw Exception(
+    throw StateError(
       'Built library not found at ${builtLib.path}',
     );
   }
@@ -231,7 +231,7 @@ Future<void> _ensureRustTarget(String cargoExe, String target) async {
     runInShell: true,
   );
   if (result.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'rustup target add $target failed:\n${result.stdout}\n${result.stderr}',
     );
   }
@@ -242,7 +242,7 @@ void _setupAndroidNdk(Map<String, String> env, String target) {
   // Discover NDK from explicit env vars or by scanning the Android SDK.
   final String? ndkHome = env['ANDROID_NDK_HOME'] ?? env['ANDROID_NDK_ROOT'] ?? _findNdkInSdk(env);
   if (ndkHome == null || ndkHome.isEmpty) {
-    throw Exception(
+    throw StateError(
       'ANDROID_NDK_HOME not set and no NDK found in ANDROID_HOME/ANDROID_SDK_ROOT '
       '— required for Android cross-compilation.',
     );

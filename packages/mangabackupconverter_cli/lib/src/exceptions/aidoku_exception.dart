@@ -1,7 +1,7 @@
-import 'package:mangabackupconverter_cli/src/exceptions/base_exeption.dart';
+import 'package:mangabackupconverter_cli/src/exceptions/base_exception.dart';
 
 class AidokuException extends MangaConverterException {
-  const AidokuException([super.message]);
+  const AidokuException([super.message, super.cause, super.stackTrace]);
 
   @override
   String toString() {

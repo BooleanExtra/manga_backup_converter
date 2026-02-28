@@ -184,7 +184,7 @@ Future<Uri> _downloadJdk(
   if (!await resolvedFile.exists()) {
     // List what was extracted to help debug.
     final String contents = cacheDir.listSync().map((e) => e.path).join('\n  ');
-    throw Exception(
+    throw StateError(
       'Expected JVM library not found after extraction.\n'
       'Looked for: ${info.jvmLibPath}\n'
       'Cache dir contents:\n  $contents',
@@ -227,7 +227,7 @@ Future<http.Response> _httpGetWithRetry(
       final http.Response response = await http.get(url);
       if (response.statusCode == 200) return response;
       if (attempt == maxRetries) {
-        throw Exception(
+        throw StateError(
           'Failed to download: HTTP ${response.statusCode}\n'
           'URL: $url',
         );

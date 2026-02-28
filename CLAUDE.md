@@ -125,6 +125,8 @@ Active features: `books`, `connectivity`, `initialization`, `settings`. The `exa
 - **Wasm3 version**: vendored at latest HEAD (`79d412e`, post-v0.5.0); `m3_emit.c`, `m3_emit.h`, `m3_optimize.c` were removed upstream (merged into `m3_compile.c`) — `hook/build.dart` reflects this; regenerate bindings with `dart run ffigen --config ffigen.yaml` from `packages/wasm3/`
 - ffigen config in `packages/wasm3/ffigen.yaml`; uses `ffi-native` mode — generates `@Native`-annotated top-level functions
 - `Wasm3Runner` `readMemory`/`writeMemory`/`call` throw `WasmRuntimeException` (an `Exception`, not `Error`)
+- `WebWasmRunner.call` throws `WasmRuntimeException` for missing exports — NOT `ArgumentError`
+- `MangaConverterException`, `WasmRuntimeException`, `WasmTrapException`, `AixParseException`, `SourceListFetchException` all have optional `cause` and `stackTrace` fields — use `Error.throwWithStackTrace` when re-wrapping exceptions to preserve the original stack trace
 - **WASM runner conditional export**: `aidoku_plugin_loader/lib/src/wasm/wasm_runner.dart` re-exports `wasm3` on native, `web_wasm_runner` on web via `if (dart.library.js_interop)`
 - `packages/app/pubspec.yaml` must depend on packages with build hooks (wasm3, scraper, swiftsoup, quickjs) for `dart test` from `packages/app/` to discover code assets
 - **No `print()` in WASM isolate code** — `aidoku_host.dart`, `wasm_isolate.dart`, and the active WASM runner route all log messages through `onLog` callback (threaded via `buildAidokuHostImports` and `WasmRunner.fromBytes`), which sends `WasmLogMsg` to the main isolate; this allows `convert_command.dart`'s `runZoned` print redirect to capture them

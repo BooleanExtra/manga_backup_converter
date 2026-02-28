@@ -61,7 +61,7 @@ class CachingPluginLoader extends PluginLoader {
             'Warning: failed to load ${entry.name}: unsupported format',
           );
         }
-      } on Object catch (e) {
+      } on Exception catch (e) {
         onProgress?.call(
           i + 1,
           extensions.length,

@@ -1,7 +1,7 @@
-import 'package:mangabackupconverter_cli/src/exceptions/base_exeption.dart';
+import 'package:mangabackupconverter_cli/src/exceptions/base_exception.dart';
 
 class TachiException extends MangaConverterException {
-  const TachiException([super.message]);
+  const TachiException([super.message, super.cause, super.stackTrace]);
 
   @override
   String toString() {

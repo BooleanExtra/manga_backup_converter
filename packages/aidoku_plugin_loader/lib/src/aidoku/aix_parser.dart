@@ -109,9 +109,15 @@ class AixParser {
 }
 
 class AixParseException implements Exception {
-  const AixParseException(this.message);
+  const AixParseException(this.message, {this.cause, this.stackTrace});
 
   final String message;
+
+  /// The underlying error that caused this exception, if any.
+  final Object? cause;
+
+  /// The stack trace of the [cause], if available.
+  final StackTrace? stackTrace;
 
   @override
   String toString() => 'AixParseException: $message';

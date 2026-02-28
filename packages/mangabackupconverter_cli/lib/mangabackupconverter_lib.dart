@@ -1,7 +1,7 @@
 export 'src/common/convertable.dart';
 export 'src/converter.dart';
 export 'src/exceptions/aidoku_exception.dart';
-export 'src/exceptions/base_exeption.dart';
+export 'src/exceptions/base_exception.dart';
 export 'src/exceptions/mangayomi_exception.dart';
 export 'src/exceptions/migration_exception.dart';
 export 'src/exceptions/paperback_exception.dart';

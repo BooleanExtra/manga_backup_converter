@@ -61,7 +61,7 @@ class AidokuPluginLoader extends PluginLoader {
             );
           }),
         );
-      } on Object catch (e) {
+      } on Exception catch (e) {
         onWarning?.call('Failed to fetch repo $url: $e');
       }
     }
@@ -98,7 +98,7 @@ class AidokuPluginLoader extends PluginLoader {
           defaults: entry.baseUrl != null ? <String, dynamic>{'url': entry.baseUrl} : null,
         );
         plugins.add(AidokuPluginSource(plugin: plugin));
-      } on Object catch (e) {
+      } on Exception catch (e) {
         onProgress?.call(
           i + 1,
           extensions.length,

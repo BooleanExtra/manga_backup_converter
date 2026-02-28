@@ -100,7 +100,7 @@ Future<Uri> _downloadOrCached(
   if (info.sha256.isNotEmpty) {
     final computed = sha256.convert(response.bodyBytes).toString();
     if (computed != info.sha256) {
-      throw Exception(
+      throw StateError(
         'SHA-256 mismatch for ${info.archive}:\n'
         '  expected: ${info.sha256}\n'
         '  computed: $computed',
@@ -125,7 +125,7 @@ Future<Uri> _downloadOrCached(
   }
 
   if (!await libFile.exists()) {
-    throw Exception(
+    throw StateError(
       'Expected library at ${libFile.path} not found after extraction.\n'
       'Archive contents: ${archive.map((ArchiveFile f) => f.name).join(', ')}',
     );
@@ -146,7 +146,7 @@ Future<http.Response> _httpGetWithRetry(
       final http.Response response = await http.get(url);
       if (response.statusCode == 200) return response;
       if (attempt == maxRetries) {
-        throw Exception(
+        throw StateError(
           'Failed to download wasmer: HTTP ${response.statusCode}\n'
           'URL: $url',
         );

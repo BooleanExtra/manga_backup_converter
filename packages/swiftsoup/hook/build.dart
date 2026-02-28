@@ -94,7 +94,7 @@ Future<Uri> _swiftBuild({
       ['--sdk', 'iphoneos', '--show-sdk-path'],
     );
     if (sdkResult.exitCode != 0) {
-      throw Exception(
+      throw StateError(
         'xcrun --sdk iphoneos --show-sdk-path failed:\n${sdkResult.stderr}',
       );
     }
@@ -123,7 +123,7 @@ Future<Uri> _swiftBuild({
   );
 
   if (result.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'swift build failed:\n${result.stdout}\n${result.stderr}',
     );
   }
@@ -135,7 +135,7 @@ Future<Uri> _swiftBuild({
     workingDirectory: swiftDir.path,
   );
   if (binPathResult.exitCode != 0) {
-    throw Exception(
+    throw StateError(
       'swift build --show-bin-path failed:\n${binPathResult.stderr}',
     );
   }
@@ -143,7 +143,7 @@ Future<Uri> _swiftBuild({
 
   final builtLib = File('$buildDir/$libName');
   if (!builtLib.existsSync()) {
-    throw Exception('Built library not found at ${builtLib.path}');
+    throw StateError('Built library not found at ${builtLib.path}');
   }
 
   if (!buildCacheDir.existsSync()) {
