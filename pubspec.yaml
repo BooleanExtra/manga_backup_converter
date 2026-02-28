@@ -172,6 +172,7 @@ melos:
           - web_wasm_runner
           - swiftsoup
           - jsoup_jni
+          - app
 
     flutter_test:pkg:
       run: flutter test --no-pub --coverage
