@@ -23,7 +23,7 @@ dependencies:
   universal_ffi: ^1.4.0
   wasm3:
     path: ../wasm3
-  wasm_ffi: ^2.2.0
+  wasm_ffi: ^2.3.0
   wasm_runner:
     path: ../wasm_runner
   web_wasm_runner:
