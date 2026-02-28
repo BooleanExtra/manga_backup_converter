@@ -11,6 +11,10 @@ environment:
 workspace:
   - packages/*
 
+dependencies:
+  flutter:
+    sdk: flutter
+
 dependency_overrides:
   propertylistserialization:
     git:
@@ -21,6 +25,7 @@ dev_dependencies:
   melos: ^7.4.0
 
 melos:
+  sdkPath: auto
   command:
     bootstrap:
       # It seems so that running "pub get" in parallel has some issues (like
