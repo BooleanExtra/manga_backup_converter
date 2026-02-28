@@ -266,6 +266,7 @@ melos:
           - assets
           - constants
           - wasm_runner
+          - app
 
     web_test:
       run: melos run flutter_web_test && melos run dart_web_test
