@@ -23,8 +23,7 @@ dependencies:
     path: ../swiftsoup
   quickjs:
     git:
-      url: https://github.com/getBoolean/quickjs-dart
-      ref: fix/pinnedDart
+      url: https://github.com/BooleanExtra/quickjs-dart
   wasm3:
     path: ../wasm3
   awesome_flutter_extensions: ^1.2.0
