@@ -43,7 +43,8 @@ melos run flutter_test:pkg       # Flutter tests for a specific package
 melos run dart_test:pkg          # Dart tests for a specific package
                                  # For dart test directly: use --reporter expanded (not -v, which is invalid)
                                  # Interactive melos scripts (dart_test:pkg, generate:pkg) fail in non-TTY shells;
-                                 # run `dart test --reporter expanded` directly in the package directory instead
+                                 # use `flutter test packages/<pkg>/test/<path> --reporter expanded` from repo root instead
+                                 # (`dart test` in package dirs fails "Flutter SDK required" — workspace resolves through Flutter root)
                                  # Native WASM tests skip automatically if test fixture is absent
                                  # Root pubspec.yaml must depend on packages with build hooks (native code assets)
                                  # for `dart test` from root to discover them (e.g. wasm3, jsoup)
@@ -256,6 +257,7 @@ Do not commit changes with "Co-Authored-By: Claude" or similar in the descriptio
 - **html5ever fragment wrapping**: `Html::parse_fragment()` wraps content in implicit `<html>/<head>/<body>` — `collect_fragment_trees()` in `mutation.rs` unwraps these before transplanting children
 - **Scraper build hook caching**: To force rebuild after Rust changes, delete BOTH `.dart_tool/hooks_runner/scraper/` (per-package hash/output cache) AND `.dart_tool/hooks_runner/shared/scraper/` (built DLL cache); deleting only the DLL causes `PathNotFoundException` because the hooks_runner skips re-running the hook if hashes match
 - **SwiftSoup build hook caching**: Same pattern — delete BOTH `.dart_tool/hooks_runner/swiftsoup/` AND `.dart_tool/hooks_runner/shared/swiftsoup/` to force rebuild after Swift source changes
+- **quickjs build hook caching**: Hook cache key is the hook binary hash — changing only `.github/workflows/asset_build.yaml` in quickjs-dart does NOT invalidate the cache; force re-download by copying a DLL from the release directly to `.dart_tool/lib/`, or make a trivial change in `hook/build.dart`
 - **SwiftSoup cross-compilation**: macOS: `--triple arm64-apple-macosx10.15` / `x86_64-apple-macosx10.15`; iOS: `-Xswiftc -sdk -Xswiftc $(xcrun --sdk iphoneos --show-sdk-path)`; `swift build --show-bin-path` locates output dir
 - **Windows build hook DLL race**: `PathExistsException` when `dart test` tries to copy native DLLs that already exist in `<package>/.dart_tool/lib/`; fix: `rm -rf <package>/.dart_tool/lib/` and retry
 - **jsoup platform routing**: Windows/Linux → Rust scraper (`ScraperParser`); Android → Rust scraper; iOS/macOS → SwiftSoup (`SwiftSoupParser`); Web → TeaVM (`TeaVMParser`); `parser_native.dart` returns `SwiftSoupParser()` for iOS/macOS, `ScraperParser()` for all others
