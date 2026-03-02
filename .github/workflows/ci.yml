@@ -267,21 +267,41 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       # Zip into IPA from here:
       # https://gist.github.com/devhammed/617d920b7ee886591a46c22633ab0093
       - name: Build Flutter IPA
-        run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app-release.ipa Payload
-          mv app-release.ipa ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-ios.ipa
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            flutter build ios --release --no-codesign
+            cd build/ios/iphoneos
+            mkdir Payload
+            cd Payload
+            ln -s ../Runner.app
+            cd ..
+            zip -r app-release.ipa Payload
+            mv app-release.ipa ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-ios.ipa
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
@@ -457,6 +477,21 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
@@ -484,11 +519,16 @@ jobs:
       #     omitBodyDuringUpdate: true
 
       - name: Build Universal APK
-        run: |
-          flutter pub get
-          flutter build apk --release
-          cd build/app/outputs/flutter-apk
-          mv app-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            flutter pub get
+            flutter build apk --release
+            cd build/app/outputs/flutter-apk
+            mv app-release.apk ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-universal.apk
 
       - name: Upload Universal APK
         uses: actions/upload-artifact@v4
@@ -505,11 +545,16 @@ jobs:
           omitBodyDuringUpdate: true
 
       - name: Build Android App Bundle
-        run: |
-          flutter pub get
-          flutter build appbundle --release
-          cd build/app/outputs/bundle/release
-          mv app-release.aab ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-appbundle.aab
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            flutter pub get
+            flutter build appbundle --release
+            cd build/app/outputs/bundle/release
+            mv app-release.aab ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }}-android-appbundle.aab
 
       - name: Upload Android App Bundle
         uses: actions/upload-artifact@v4
@@ -590,11 +635,31 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build Windows
-        run: flutter build windows --release
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: flutter build windows --release
 
       - name: Build MSIX
         run: |
@@ -680,11 +745,31 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build Linux
-        run: flutter build linux --release
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: flutter build linux --release
 
       - name: Build AppImage
         run: |
@@ -759,13 +844,33 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build CLI
-        run: |
-          cd packages/mangabackupconverter_cli
-          dart build cli
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            cd packages/mangabackupconverter_cli
+            dart build cli
 
       - name: Package CLI
         run: |
@@ -866,13 +971,33 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build CLI
-        run: |
-          cd packages/mangabackupconverter_cli
-          dart build cli
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            cd packages/mangabackupconverter_cli
+            dart build cli
 
       - name: Package CLI
         run: |
@@ -943,13 +1068,33 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build CLI
-        run: |
-          cd packages/mangabackupconverter_cli
-          dart build cli
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            cd packages/mangabackupconverter_cli
+            dart build cli
 
       - name: Package CLI
         run: |
@@ -1035,14 +1180,34 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
+      - name: Cache build hook artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .dart_tool/hooks_runner/shared/wasm3
+            .dart_tool/hooks_runner/shared/scraper-*
+            .dart_tool/hooks_runner/shared/swiftsoup-*
+          key: build-hooks-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('packages/wasm3/hook/build.dart', 'packages/scraper/hook/build.dart', 'packages/scraper/rust/Cargo.lock', 'packages/swiftsoup/hook/build.dart', 'packages/swiftsoup/swift/Sources/**') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
       - name: Build MacOS
-        run: |
-          git config --global core.longpaths true
-          flutter pub get
-          flutter build macos --release
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            git config --global core.longpaths true
+            flutter pub get
+            flutter build macos --release
 
       - name: Build DMG
         uses: nick-fields/retry@v2
@@ -1126,6 +1291,12 @@ jobs:
       - name: Activate Melos
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
       - name: Bootstrap Melos
         run: melos bootstrap
 
@@ -1137,9 +1308,14 @@ jobs:
           dart run sqflite_common_ffi_web:setup --force
 
       - name: Build Web
-        run: |
-          flutter pub get
-          flutter build web --release
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: |
+            flutter pub get
+            flutter build web --release
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -1203,6 +1379,13 @@ jobs:
         if: github.actor != 'dependabot[bot]'
         run: dart pub global activate melos ${{ env.MELOS_VERSION }}
 
+      - name: Cache QuickJS dylibs
+        if: github.actor != 'dependabot[bot]'
+        uses: actions/cache@v4
+        with:
+          path: .dart_tool/hooks_runner/shared/quickjs
+          key: quickjs-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+
       - name: Bootstrap Melos
         if: github.actor != 'dependabot[bot]'
         run: melos bootstrap
@@ -1216,8 +1399,12 @@ jobs:
 
       - name: Build Web
         if: github.actor != 'dependabot[bot]'
-        run: |
-          flutter build web --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          retry_on: error
+          command: flutter build web --release --base-href="/${{ github.event.repository.name }}/${{ steps.branch-name.outputs.current_branch }}/"
 
       - name: Deploy to GitHub Pages 🚀
         if: github.actor != 'dependabot[bot]'
