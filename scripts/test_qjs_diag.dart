@@ -11,7 +11,9 @@ void main() {
     final engine = NativeJsEngine();
     print('Created engine');
     final JsEvalResult result = engine.eval('1 + 1');
-    print('eval result: ${result.value}, isError=${result.isError}, stderr=${result.stderr}');
+    print(
+      'eval result: ${result.value}, isError=${result.isError}, stderr=${result.stderr}',
+    );
     engine.dispose();
     mgr.dispose();
     print('Done');
