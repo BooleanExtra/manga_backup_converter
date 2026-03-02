@@ -27,7 +27,7 @@ dependencies:
       url: https://github.com/BooleanExtra/quickjs-dart
   wasm3:
     path: packages/wasm3
-  awesome_flutter_extensions: ^1.2.0
+  awesome_flutter_extensions: ^2.0.1
   collection: ^1.18.0
   connectivity_plus: ^7.0.0
   constants:
