@@ -52,7 +52,7 @@ dependencies:
   hooks_riverpod: ^3.0.0
   http: ^1.4.0
   logging: ^1.2.0
-  package_info_plus: ^8.0.2
+  package_info_plus: ^9.0.0
   path: ^1.9.0
   path_provider: ^2.1.5
   riverpod: ^3.0.0
